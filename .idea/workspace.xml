@@ -64,13 +64,22 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="game.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/game.java">
+      <file leaf-file-name="gameWorld.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/gameWorld.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="38" column="46" selection-start="829" selection-end="829" vertical-scroll-proportion="-0.035842296" vertical-offset="666" max-vertical-offset="1224">
+            <state line="17" column="23" selection-start="408" selection-end="408" vertical-scroll-proportion="0.33512545" vertical-offset="102" max-vertical-offset="1632">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="game.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/game.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="4" column="34" selection-start="155" selection-end="155" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="221">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -96,6 +105,7 @@
       <list>
         <option value="$PROJECT_DIR$/src/GeometryFactory.java" />
         <option value="$PROJECT_DIR$/src/game.java" />
+        <option value="$PROJECT_DIR$/src/gameWorld.java" />
       </list>
     </option>
   </component>
@@ -190,7 +200,7 @@
     <property name="MemberChooser.sorted" value="false" />
     <property name="MemberChooser.showClasses" value="true" />
     <property name="MemberChooser.copyJavadoc" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/lwjgl-2.9.1/lwjgl-2.9.1/jar/lzma.jar!/" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/lwjgl-2.9.1/lib" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
@@ -211,7 +221,7 @@
   <component name="RunManager" selected="Application.game">
     <configuration default="false" name="game" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="game" />
-      <option name="VM_PARAMETERS" value="-Djava.library.path=C:\projects\game\lwjgl-2.9.1\lib\windows" />
+      <option name="VM_PARAMETERS" value="-Djava.library.path=&quot;C:\projects\game\lwjgl-2.9.1\lib\windows&quot;" />
       <option name="PROGRAM_PARAMETERS" value="" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
@@ -400,6 +410,7 @@
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32901832" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
@@ -418,7 +429,6 @@
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32901832" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -443,7 +453,7 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/game.java">
+    <entry file="file://$PROJECT_DIR$/src/gameWorld.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="50" column="30" selection-start="1232" selection-end="1232" vertical-scroll-proportion="0.0" vertical-offset="616" max-vertical-offset="1377">
           <folding>
@@ -459,7 +469,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/game.java">
+    <entry file="file://$PROJECT_DIR$/src/gameWorld.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="22" column="0" selection-start="530" selection-end="530" vertical-scroll-proportion="0.0" vertical-offset="374" max-vertical-offset="1649">
           <folding>
@@ -468,7 +478,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/game.java">
+    <entry file="file://$PROJECT_DIR$/src/gameWorld.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="15" column="0" selection-start="345" selection-end="345" vertical-scroll-proportion="0.0" vertical-offset="255" max-vertical-offset="2499">
           <folding>
@@ -496,7 +506,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/game.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="38" column="46" selection-start="829" selection-end="829" vertical-scroll-proportion="-0.035842296" vertical-offset="666" max-vertical-offset="1224">
+        <state line="4" column="34" selection-start="155" selection-end="155" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="221">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/gameWorld.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="17" column="23" selection-start="408" selection-end="408" vertical-scroll-proportion="0.33512545" vertical-offset="102" max-vertical-offset="1632">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
