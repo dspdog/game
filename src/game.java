@@ -1,20 +1,12 @@
 import org.lwjgl.LWJGLException;
-import org.lwjgl.Sys;
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.glu.GLU;
 
 import static org.lwjgl.util.glu.GLU.*;
 
 public class game {
-
-    /** position of quad */
-    float x = 400, y = 300;
-    /** angle of quad rotation */
-    double rotation = 0;
 
     public void start() {
         try {
@@ -40,7 +32,7 @@ public class game {
     }
 
     public void update() {
-        rotation ++;
+
     }
 
     public void initGL() {
@@ -52,20 +44,19 @@ public class game {
     }
 
     public void renderGL() {
-
-
-        double rotationx = Mouse.getX();//((System.currentTimeMillis()%5000)/5000f) * 360f;
-        double rotationy = Mouse.getY();//(1.0d*y / Display.getHeight()) * 360f + 90f;
-        System.out.println(rotationx);
-        // Clear The Screen And The Depth Buffer
+        double rotationx = Mouse.getX();
+        double rotationy = Mouse.getY();
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glLoadIdentity();
-        gluLookAt(100,100,100,0,0,0,0,1,0);
+        gluLookAt(100,100,100,50,50,50,0,1,0);
         GL11.glPushMatrix();
+            GL11.glScalef(0.5f, 0.5f, 0.5f);
+            GL11.glTranslatef(50,50,50);
             GL11.glRotatef((float) rotationx, 1f, 0f, 0f);
             GL11.glRotatef((float) rotationy, 0f, 1f, 0f);
-            GeometryFactory.grid();
+            GL11.glTranslatef(-50,-50,-50);
+            GeometryFactory.gridCube(100);
         GL11.glPopMatrix();
     }
 
