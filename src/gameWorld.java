@@ -66,7 +66,7 @@ public class gameWorld {
     public void initGL() {
         GL11.glMatrixMode(GL11.GL_PROJECTION);
         GL11.glLoadIdentity();
-        gluPerspective(myFOV, ((float)myWidth) / ((float)myHeight), 0.01f, 500f);
+        gluPerspective(myFOV, ((float)myWidth) / ((float)myHeight), 0.01f, 2500f);
         GL11.glMatrixMode(GL11.GL_MODELVIEW);
         GL11.glLoadIdentity();
     }
@@ -77,14 +77,15 @@ public class gameWorld {
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glLoadIdentity();
-        gluLookAt(100,100,100,50,50,50,0,1,0);
+        gluLookAt(500,500,500,50,50,50,0,1,0);
         GL11.glPushMatrix();
-            GL11.glScalef(0.5f, 0.5f, 0.5f);
+            GL11.glScalef(2.5f, 2.5f, 2.5f);
             GL11.glTranslatef(50,50,50);
-            GL11.glRotatef((float) rotationx, 1f, 0f, 0f);
+            //GL11.glRotatef((float) rotationx, 1f, 0f, 0f);
             GL11.glRotatef((float) rotationy, 0f, 1f, 0f);
             GL11.glTranslatef(-50, -50, -50);
-            GeometryFactory.gridCube(100);
+            GeometryFactory.gridFlat();
+            GeometryFactory.tree();
         GL11.glPopMatrix();
     }
 
