@@ -4,6 +4,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
+import shapes.tree;
 
 import static org.lwjgl.util.glu.GLU.*;
 
@@ -15,10 +16,15 @@ public class gameWorld {
     public int myWidth, myHeight;
     public float myFOV;
 
+    private long lastGameLogic;
+
+    //game objs
+    tree theTree;
+
     public gameWorld(){
         myFOV = 75;
-        myWidth = 512;
-        myHeight = 512;
+        myWidth = 640;
+        myHeight = 480;
     }
 
     public void updateFPS() {
@@ -36,7 +42,9 @@ public class gameWorld {
     }
 
     public void start() {
+        lastGameLogic = getTime();
         lastFPS = getTime(); //initialise lastFPS by setting to current Time
+
         try {
             Display.setDisplayMode(new DisplayMode(myWidth, myHeight));
             Display.create();
@@ -46,7 +54,8 @@ public class gameWorld {
             System.exit(0);
         }
 
-        initGL(); // init OpenGL
+        initWorld();
+        initGL();
 
         while (!Display.isCloseRequested()) {
             update();
@@ -61,6 +70,7 @@ public class gameWorld {
 
     public void update() {
         updateFPS();
+        updateGameLogic();
     }
 
     public void initGL() {
@@ -71,21 +81,34 @@ public class gameWorld {
         GL11.glLoadIdentity();
     }
 
+    public void initWorld(){
+        theTree = new tree();
+        theTree.setToPreset(0); //1 or 0 or 9
+        theTree.iterations = 500;
+        theTree.reIndex();
+    }
+
+    public void updateGameLogic(){
+        if(getTime() - lastGameLogic> 20){ //20ms timeout
+            theTree.perturb(0.1f);
+            lastGameLogic=getTime();
+        }
+    }
+
     public void renderGL() {
-        double rotationx = Mouse.getX();
-        double rotationy = Mouse.getY();
+        double rotationx = Mouse.getY();
+        double rotationy = Mouse.getX();
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glLoadIdentity();
         gluLookAt(500,500,500,50,50,50,0,1,0);
         GL11.glPushMatrix();
-            GL11.glScalef(2.5f, 2.5f, 2.5f);
+            GL11.glScalef(3.5f, 3.5f, 3.5f);
             GL11.glTranslatef(50,50,50);
-            //GL11.glRotatef((float) rotationx, 1f, 0f, 0f);
             GL11.glRotatef((float) rotationy, 0f, 1f, 0f);
             GL11.glTranslatef(-50, -50, -50);
-            GeometryFactory.gridFlat();
-            GeometryFactory.tree();
+            GeometryFactory.plane();
+            GeometryFactory.addObj(theTree);
         GL11.glPopMatrix();
     }
 

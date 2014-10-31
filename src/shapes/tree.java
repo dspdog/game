@@ -112,6 +112,38 @@ public final class tree implements java.io.Serializable {
         return pShape;
     }
 
+    public tree perturb(float intensity){
+        perturb(false,false,intensity);
+        return this;
+    }
+
+    public tree perturb(){
+        perturb(1.0f);
+        return this;
+    }
+
+    public tree perturb(boolean staySymmetric, boolean affectIterations, float intensity){
+        treePt intensityDescriptor = new treePt(intensity,intensity,intensity,
+                                                intensity,intensity,intensity);
+
+        if(affectIterations)
+            this.iterations += new Random().nextGaussian() * 10;
+
+        long seed = (long)(Math.random()*Long.MAX_VALUE);
+
+        for(int i=0; i<this.pointsInUse; i++){
+            this.pts[i] = new treePt(this.pts[i], true);
+            if(staySymmetric){
+                this.pts[i].perturb(intensityDescriptor, seed);
+            }else{
+                this.pts[i].perturb(intensityDescriptor, -1);
+            }
+        }
+
+        this.reIndex();
+        return this;
+    }
+
     public void saveState(){
         for(int a = 0; a < pointsInUse; a++){
             pts[a].saveState();
@@ -299,7 +331,7 @@ public final class tree implements java.io.Serializable {
 
 
 
-    final int NUM_LINES= 256*256; //MAX LINES
+    final int NUM_LINES= 1024*1024; //MAX LINES
     public int lineIndex=0;
     long lastIndex = System.currentTimeMillis();
 
