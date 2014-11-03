@@ -14,7 +14,7 @@ import static org.lwjgl.opengl.GL11.*;
 
 import static org.lwjgl.util.glu.GLU.*;
 
-public class gameWorld {
+public class gameWorld{
 
     private int fps;
     private long lastFPS;
@@ -22,15 +22,13 @@ public class gameWorld {
     public int myWidth, myHeight;
     public float myFOV;
 
-    private long lastGameLogic;
+    gameWorldLogic myLogic;
 
-    //game objs
-    tree theTree;
-
-    public gameWorld(){
+    public gameWorld(gameWorldLogic gl){
         myFOV = 75;
         myWidth = 640;
         myHeight = 480;
+        myLogic=gl;
     }
 
     public void updateFPS() {
@@ -48,7 +46,7 @@ public class gameWorld {
     }
 
     public void start() {
-        lastGameLogic = getTime();
+
         lastFPS = getTime(); //initialise lastFPS by setting to current Time
 
         try {
@@ -60,7 +58,6 @@ public class gameWorld {
             System.exit(0);
         }
 
-        initWorld();
         initGL();
 
         while (!Display.isCloseRequested()) {
@@ -76,7 +73,6 @@ public class gameWorld {
 
     public void update() {
         updateFPS();
-        updateGameLogic();
     }
 
     public void initGL() {
@@ -85,20 +81,6 @@ public class gameWorld {
         gluPerspective(myFOV, ((float)myWidth) / ((float)myHeight), 0.01f, 2500f);
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
-    }
-
-    public void initWorld(){
-        theTree = new tree();
-        theTree.setToPreset(0); //1 or 0 or 9
-        theTree.iterations = 590;
-        theTree.reIndex();
-    }
-
-    public void updateGameLogic(){
-        if(getTime() - lastGameLogic> 20){ //20ms timeout
-            theTree.perturb(false, false, 0.20f);
-            lastGameLogic=getTime();
-        }
     }
 
     public void renderGL() {
@@ -112,11 +94,11 @@ public class gameWorld {
         gluLookAt(500,500,500,centerPt.x,centerPt.y,centerPt.z,0,1,0);
         glPushMatrix();
             glScalef(3.5f, 3.5f, 3.5f);
-            glTranslatef(centerPt.x,centerPt.y,centerPt.z);
+            glTranslatef(centerPt.x, centerPt.y, centerPt.z);
             glRotatef((float) rotationy, 0f, 1f, 0f);
             glTranslatef(-centerPt.x, -centerPt.y, -centerPt.z);
             GeometryFactory.plane();
-            GeometryFactory.addObj(theTree);
+            GeometryFactory.addObj(myLogic.theTree);
         glPopMatrix();
     }
 
