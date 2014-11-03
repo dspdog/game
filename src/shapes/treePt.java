@@ -4,7 +4,7 @@ import utils.Quaternion;
 
 import java.util.Random;
 
-final class treePt implements java.io.Serializable{
+public final class treePt implements java.io.Serializable{
 
     public float x, y, z;
     public float scale;
@@ -139,7 +139,7 @@ final class treePt implements java.io.Serializable{
     }
 
     public double distTo(treePt p){
-        return Math.sqrt((p.x-this.x) * (p.x-this.x) + (p.y-this.y) * (p.y-this.y) + (p.z-this.z) * (p.z-this.z));
+        return Math.sqrt((p.x - this.x) * (p.x - this.x) + (p.y - this.y) * (p.y - this.y) + (p.z - this.z) * (p.z - this.z));
     }
 
     public treePt interpolateTo(treePt dest, float factor, float outerScale, float outerRotation){
