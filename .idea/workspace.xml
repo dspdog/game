@@ -76,28 +76,28 @@
       <file leaf-file-name="tree.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/shapes/tree.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="414" column="19" selection-start="12664" selection-end="12675" vertical-scroll-proportion="-14.923077" vertical-offset="6565" max-vertical-offset="8092">
+            <state line="336" column="29" selection-start="9812" selection-end="9816" vertical-scroll-proportion="-4.4615383" vertical-offset="5511" max-vertical-offset="8092">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GeometryFactory.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="GeometryFactory.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/GeometryFactory.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="47" column="41" selection-start="1494" selection-end="1494" vertical-scroll-proportion="0.5057637" vertical-offset="244" max-vertical-offset="1649">
+            <state line="37" column="56" selection-start="1103" selection-end="1103" vertical-scroll-proportion="0.0" vertical-offset="244" max-vertical-offset="1649">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CubeMarcher.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="CubeMarcher.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/CubeMarcher.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="499" column="32" selection-start="28023" selection-end="28034" vertical-scroll-proportion="-14.923077" vertical-offset="8095" max-vertical-offset="10438">
+            <state line="493" column="62" selection-start="27879" selection-end="27879" vertical-scroll-proportion="0.34893617" vertical-offset="8135" max-vertical-offset="11543">
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#26521#26531#0" expanded="true" />
+                <element signature="e#26541#26551#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -106,7 +106,7 @@
       <file leaf-file-name="gameWorldLogic.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/gameWorldLogic.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="17" column="0" selection-start="332" selection-end="332" vertical-scroll-proportion="0.0" vertical-offset="51" max-vertical-offset="952">
+            <state line="12" column="0" selection-start="243" selection-end="243" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="952">
               <folding />
             </state>
           </provider>
@@ -147,18 +147,19 @@
         <option value="$PROJECT_DIR$/src/game.java" />
         <option value="$PROJECT_DIR$/src/gameWorld.java" />
         <option value="$PROJECT_DIR$/src/shapes/treePt.java" />
-        <option value="$PROJECT_DIR$/src/shapes/tree.java" />
         <option value="$PROJECT_DIR$/src/GeometryFactory.java" />
-        <option value="$PROJECT_DIR$/src/gameWorldLogic.java" />
         <option value="$PROJECT_DIR$/src/gameWorldRender.java" />
+        <option value="$PROJECT_DIR$/src/gameWorldLogic.java" />
+        <option value="$PROJECT_DIR$/src/shapes/tree.java" />
         <option value="$PROJECT_DIR$/src/CubeMarcher.java" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="960" />
-    <option name="width" value="960" />
-    <option name="height" value="1040" />
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="1936" />
+    <option name="height" value="1056" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -493,8 +494,8 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="960" y="0" width="960" height="1040" extended-state="0" />
-    <editor active="false" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -515,8 +516,8 @@
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Debug with VisualVM" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2804878" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.18660812" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.13471779" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.18338726" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -590,7 +591,7 @@
         <state line="24" column="0" selection-start="620" selection-end="620" vertical-scroll-proportion="0.0" vertical-offset="408" max-vertical-offset="7395">
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#26521#26531#0" expanded="true" />
+            <element signature="e#26541#26551#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -838,16 +839,16 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/shapes/tree.java">
+    <entry file="file://$PROJECT_DIR$/src/gameWorldLogic.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="414" column="19" selection-start="12664" selection-end="12675" vertical-scroll-proportion="-14.923077" vertical-offset="6565" max-vertical-offset="8092">
+        <state line="12" column="0" selection-start="243" selection-end="243" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="952">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/gameWorldLogic.java">
+    <entry file="file://$PROJECT_DIR$/src/shapes/tree.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="17" column="0" selection-start="332" selection-end="332" vertical-scroll-proportion="0.0" vertical-offset="51" max-vertical-offset="952">
+        <state line="336" column="29" selection-start="9812" selection-end="9816" vertical-scroll-proportion="-4.4615383" vertical-offset="5511" max-vertical-offset="8092">
           <folding />
         </state>
       </provider>
@@ -859,20 +860,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/CubeMarcher.java">
+    <entry file="file://$PROJECT_DIR$/src/GeometryFactory.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="499" column="32" selection-start="28023" selection-end="28034" vertical-scroll-proportion="-14.923077" vertical-offset="8095" max-vertical-offset="10438">
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#26521#26531#0" expanded="true" />
-          </folding>
+        <state line="37" column="56" selection-start="1103" selection-end="1103" vertical-scroll-proportion="0.0" vertical-offset="244" max-vertical-offset="1649">
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/GeometryFactory.java">
+    <entry file="file://$PROJECT_DIR$/src/CubeMarcher.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="47" column="41" selection-start="1494" selection-end="1494" vertical-scroll-proportion="0.5057637" vertical-offset="244" max-vertical-offset="1649">
-          <folding />
+        <state line="493" column="62" selection-start="27879" selection-end="27879" vertical-scroll-proportion="0.34893617" vertical-offset="8135" max-vertical-offset="11543">
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#26541#26551#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
