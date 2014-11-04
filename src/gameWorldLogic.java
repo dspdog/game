@@ -8,12 +8,14 @@ public class gameWorldLogic implements Runnable {
 
     tree theTree;
 
+    public CubeMarcher cm = new CubeMarcher();
     public gameWorldLogic(){
 
     }
 
     public void updateGameLogic(){
         theTree.perturb(false, false, 2.50f);
+        cm.generateTris();
         lastGameLogic = getTime();
     }
 
@@ -36,11 +38,7 @@ public class gameWorldLogic implements Runnable {
         while(running){
             try {
                 updateGameLogic();
-
-                CubeMarcher cm = new CubeMarcher();
-                cm.generateTris();
-
-                Thread.sleep(1000);
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

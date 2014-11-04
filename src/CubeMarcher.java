@@ -1,3 +1,6 @@
+import org.lwjgl.BufferUtils;
+
+import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
 public class CubeMarcher implements Runnable{
@@ -331,6 +334,10 @@ public class CubeMarcher implements Runnable{
             p2x=0; p2y=0; p2z=0;
         }
 
+        public float[] asFloatArray(){
+            return new float[]{p0x, p0y, p0z, p1x, p1y, p1z, p2x, p2y, p2z};
+        }
+
         public Triangle(Triangle tri){
             invalid=false;
             setPoint0(new xyz(tri.p2x, tri.p2y, tri.p2z));
@@ -452,9 +459,18 @@ public class CubeMarcher implements Runnable{
 
     }
 
+    int NUM_TRIS=20000;
+    int vertex_size = 3;
+    public FloatBuffer vertex_data = BufferUtils.createFloatBuffer(NUM_TRIS * vertex_size * 3); //XYZ1 XYZ2
+    public FloatBuffer color_data = BufferUtils.createFloatBuffer(NUM_TRIS * vertex_size * 3); //RGB1 RGB2
+
     public void generateTris(){
 
-        theTriangles = new ArrayList<Triangle>();
+        vertex_data = BufferUtils.createFloatBuffer(NUM_TRIS * vertex_size * 3); //XYZ1 XYZ2
+        color_data = BufferUtils.createFloatBuffer(NUM_TRIS * vertex_size * 3); //RGB1 RGB2
+
+        //System.out.println(vertex_data.limit());
+        theTriangles.clear();
 
         analyzer p = new analyzer() {
             @Override
@@ -481,10 +497,15 @@ public class CubeMarcher implements Runnable{
                     num_tri += new_tris;
                     for(int t=0; t<new_tris; t++){
                         theTriangles.add(new Triangle(temp_triangles[t]));
+                        vertex_data.put(temp_triangles[t].asFloatArray());
+                        color_data.put(temp_triangles[t].asFloatArray());
                     }
                 }
             }
         }
+
+        vertex_data.flip();
+        color_data.flip();
 
         System.out.println("TRIANGLES " + theTriangles.size());
     }

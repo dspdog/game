@@ -3,13 +3,9 @@ import org.lwjgl.Sys;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
-import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector3f;
 import shapes.tree;
-import org.lwjgl.*;
-import org.lwjgl.opengl.*;
-import static org.lwjgl.opengl.ARBBufferObject.*;
-import static org.lwjgl.opengl.ARBVertexBufferObject.*;
+
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
 
@@ -27,8 +23,11 @@ public class gameWorldRender {
 
     gameWorldLogic myLogic;
 
-    int[] vboHandles = new int[2];
-    int verts = 0;
+    int[] treeVBOHandles = new int[2];
+    int treeVerts = 0;
+    int[] cubeMarcherVBOHandles = new int[2];
+    int cubesVerts = 0;
+
     boolean handlesFound = false;
 
     public gameWorldRender(gameWorldLogic gl){
@@ -77,12 +76,18 @@ public class gameWorldRender {
             if(myLogic.lastGameLogic - lastVBOUpdate > 10){
 
                 if(handlesFound){
-                    glDeleteBuffers(vboHandles[0]);
-                    glDeleteBuffers(vboHandles[1]);
+                    glDeleteBuffers(cubeMarcherVBOHandles[0]);
+                    glDeleteBuffers(cubeMarcherVBOHandles[1]);
+                    glDeleteBuffers(treeVBOHandles[0]);
+                    glDeleteBuffers(treeVBOHandles[1]);
                 }
 
-                vboHandles = GeometryFactory.treeVBOHandles(myLogic.theTree);
-                verts = myLogic.theTree.vertices;
+                cubeMarcherVBOHandles = GeometryFactory.cubeMarcherVBOHandles(myLogic.cm);
+                cubesVerts = myLogic.cm.theTriangles.size()*3;
+
+                treeVBOHandles = GeometryFactory.treeVBOHandles(myLogic.theTree);
+                treeVerts = myLogic.theTree.vertices;
+
                 lastVBOUpdate=getTime();
                 handlesFound=true;
             }
@@ -90,9 +95,6 @@ public class gameWorldRender {
             Display.update();
             //Display.sync(60); // cap fps to 60fps
         }
-
-        glDeleteBuffers(vboHandles[0]);
-        glDeleteBuffers(vboHandles[1]);
 
         myLogic.end();
         Display.destroy();
@@ -125,9 +127,10 @@ public class gameWorldRender {
             glRotatef((float) rotationy, 0f, 1f, 0f);
             glRotatef((float) rotationx, 1f, 0f, 0f);
             glTranslatef(-centerPt.x, -centerPt.y, -centerPt.z);
-            //GeometryFactory.plane();
+            GeometryFactory.plane();
             if(handlesFound){
-                GeometryFactory.treeVBO(verts, vboHandles);
+                GeometryFactory.drawLinesByVBOHandles(treeVerts, treeVBOHandles);
+                GeometryFactory.drawTrisByVBOHandles(cubesVerts, cubeMarcherVBOHandles);
             }
         glPopMatrix();
     }

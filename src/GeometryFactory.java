@@ -42,8 +42,22 @@ public class GeometryFactory {
         return new int[]{vbo_vertex_handle,vbo_color_handle};
     }
 
-    static void treeVBO(int vertices, int[] handles){
+    static int[] cubeMarcherVBOHandles(CubeMarcher cm){
+        int vbo_vertex_handle = glGenBuffers();
+        glBindBuffer(GL_ARRAY_BUFFER, vbo_vertex_handle);
+        glBufferData(GL_ARRAY_BUFFER, cm.vertex_data, GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+        int vbo_color_handle = glGenBuffers();
+        glBindBuffer(GL_ARRAY_BUFFER, vbo_color_handle);
+        glBufferData(GL_ARRAY_BUFFER, cm.color_data, GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        return new int[]{vbo_vertex_handle,vbo_color_handle};
+    }
+
+
+    static void drawLinesByVBOHandles(int vertices, int[] handles){
         int vertex_size = 3; // X, Y, Z,
         int color_size = 3; // R, G, B,
 
@@ -60,6 +74,28 @@ public class GeometryFactory {
         glEnableClientState(GL_COLOR_ARRAY);
 
         glDrawArrays(GL_LINES, 0, vertices*2);
+
+        glDisableClientState(GL_COLOR_ARRAY);
+        glDisableClientState(GL_VERTEX_ARRAY);
+    }
+
+    static void drawTrisByVBOHandles(int triangles, int[] handles){
+        int vertex_size = 3; // X, Y, Z,
+        int color_size = 3; // R, G, B,
+
+        int vbo_vertex_handle = handles[0];
+        int vbo_color_handle = handles[1];
+
+        glBindBuffer(GL_ARRAY_BUFFER, vbo_vertex_handle);
+        glVertexPointer(vertex_size, GL_FLOAT, 0, 0L);
+
+        glBindBuffer(GL_ARRAY_BUFFER, vbo_color_handle);
+        glColorPointer(color_size, GL_FLOAT, 0, 0L);
+
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glEnableClientState(GL_COLOR_ARRAY);
+
+        glDrawArrays(GL_TRIANGLES, 0, triangles);
 
         glDisableClientState(GL_COLOR_ARRAY);
         glDisableClientState(GL_VERTEX_ARRAY);
