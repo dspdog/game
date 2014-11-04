@@ -125,7 +125,7 @@ public class gameWorldRender {
             glRotatef((float) rotationy, 0f, 1f, 0f);
             glRotatef((float) rotationx, 1f, 0f, 0f);
             glTranslatef(-centerPt.x, -centerPt.y, -centerPt.z);
-            GeometryFactory.plane();
+            //GeometryFactory.plane();
             if(handlesFound){
                 GeometryFactory.treeVBO(verts, vboHandles);
             }

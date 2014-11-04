@@ -36,7 +36,11 @@ public class gameWorldLogic implements Runnable {
         while(running){
             try {
                 updateGameLogic();
-                Thread.sleep(100);
+
+                CubeMarcher cm = new CubeMarcher();
+                cm.generateTris();
+
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

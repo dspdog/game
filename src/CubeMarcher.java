@@ -1,5 +1,6 @@
+import java.util.ArrayList;
 
-public class CubeMarcher {
+public class CubeMarcher implements Runnable{
     private final static int[] edgeTable=new int[]{
             0x0  , 0x109, 0x203, 0x30a, 0x406, 0x50f, 0x605, 0x70c,
             0x80c, 0x905, 0xa0f, 0xb06, 0xc0a, 0xd03, 0xe09, 0xf00,
@@ -292,6 +293,7 @@ public class CubeMarcher {
                     0, 3, 8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
                     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
 
+
     private class xyz {
         public double x,y,z;
         public xyz(){
@@ -443,12 +445,21 @@ public class CubeMarcher {
     private static GridCell grid;
     public static final Triangle[] temp_triangles = new Triangle[12];
 
+    ArrayList<Triangle> theTriangles = new ArrayList<Triangle>();
+
+    @Override
+    public void run() {
+
+    }
+
     public void generateTris(){
+
+        theTriangles = new ArrayList<Triangle>();
 
         analyzer p = new analyzer() {
             @Override
             public double getStep() {
-                return 4f;
+                return 1f;
             }
             @Override
             public double potential(double x, double y, double z) {
@@ -466,12 +477,16 @@ public class CubeMarcher {
         for(float x=0; x<100; x+=step){
             for(float y=0; y<100; y+=step){
                 for(float z=0; z<100; z+=step){
-                    num_tri += Polygonise(x,y,z,15d,p);
+                    int new_tris = Polygonise(x,y,z,15d,p);
+                    num_tri += new_tris;
+                    for(int t=0; t<new_tris; t++){
+                        theTriangles.add(new Triangle(temp_triangles[t]));
+                    }
                 }
             }
         }
 
-        System.out.println("TRIANGLES " + num_tri);
+        System.out.println("TRIANGLES " + theTriangles.size());
     }
 
     public int Polygonise(double x, double y, double z, double isolevel, analyzer p)
