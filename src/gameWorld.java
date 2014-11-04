@@ -67,7 +67,8 @@ public class gameWorld{
             Display.update();
             //Display.sync(60); // cap fps to 60fps
         }
-
+        
+        myLogic.end();
         Display.destroy();
     }
 

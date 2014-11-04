@@ -64,10 +64,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="gameWorld.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="gameWorld.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/gameWorld.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="42" column="0" selection-start="1024" selection-end="1024" vertical-scroll-proportion="-10.730769" vertical-offset="435" max-vertical-offset="1870">
+            <state line="69" column="8" selection-start="1669" selection-end="1669" vertical-scroll-proportion="0.83558995" vertical-offset="741" max-vertical-offset="1887">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -78,16 +78,16 @@
       <file leaf-file-name="tree.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/shapes/tree.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="142" column="23" selection-start="4085" selection-end="4085" vertical-scroll-proportion="-6.6153846" vertical-offset="2208" max-vertical-offset="8398">
+            <state line="28" column="21" selection-start="615" selection-end="628" vertical-scroll-proportion="-6.6153846" vertical-offset="270" max-vertical-offset="8398">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="gameWorldLogic.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="gameWorldLogic.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/gameWorldLogic.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="31" column="0" selection-start="557" selection-end="557" vertical-scroll-proportion="0.9705341" vertical-offset="0" max-vertical-offset="935">
+            <state line="38" column="32" selection-start="711" selection-end="711" vertical-scroll-proportion="0.0" vertical-offset="290" max-vertical-offset="935">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -138,16 +138,16 @@
         <option value="$PROJECT_DIR$/src/shapes/ifsPt.java" />
         <option value="$PROJECT_DIR$/src/shapes/treePt.java" />
         <option value="$PROJECT_DIR$/src/GeometryFactory.java" />
-        <option value="$PROJECT_DIR$/src/shapes/tree.java" />
-        <option value="$PROJECT_DIR$/src/gameWorld.java" />
         <option value="$PROJECT_DIR$/src/game.java" />
+        <option value="$PROJECT_DIR$/src/shapes/tree.java" />
         <option value="$PROJECT_DIR$/src/gameWorldLogic.java" />
+        <option value="$PROJECT_DIR$/src/gameWorld.java" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="448" />
-    <option name="y" value="124" />
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
     <option name="width" value="1936" />
     <option name="height" value="1056" />
   </component>
@@ -484,7 +484,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="448" y="124" width="1936" height="1056" extended-state="0" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -764,16 +764,16 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/shapes/treePt.java">
+    <entry file="file://$PROJECT_DIR$/src/game.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="17" selection-start="172" selection-end="172" vertical-scroll-proportion="0.0" vertical-offset="2177" max-vertical-offset="3077">
+        <state line="10" column="0" selection-start="251" selection-end="251" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="272">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/game.java">
+    <entry file="file://$PROJECT_DIR$/src/shapes/treePt.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="0" selection-start="251" selection-end="251" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="272">
+        <state line="9" column="17" selection-start="172" selection-end="172" vertical-scroll-proportion="0.0" vertical-offset="2177" max-vertical-offset="3077">
           <folding />
         </state>
       </provider>
@@ -789,23 +789,23 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/shapes/tree.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="142" column="23" selection-start="4085" selection-end="4085" vertical-scroll-proportion="-6.6153846" vertical-offset="2208" max-vertical-offset="8398">
+        <state line="28" column="21" selection-start="615" selection-end="628" vertical-scroll-proportion="-6.6153846" vertical-offset="270" max-vertical-offset="8398">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/gameWorld.java">
+    <entry file="file://$PROJECT_DIR$/src/gameWorldLogic.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="42" column="0" selection-start="1024" selection-end="1024" vertical-scroll-proportion="-10.730769" vertical-offset="435" max-vertical-offset="1870">
+        <state line="38" column="32" selection-start="711" selection-end="711" vertical-scroll-proportion="0.0" vertical-offset="290" max-vertical-offset="935">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/gameWorldLogic.java">
+    <entry file="file://$PROJECT_DIR$/src/gameWorld.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="31" column="0" selection-start="557" selection-end="557" vertical-scroll-proportion="0.9705341" vertical-offset="0" max-vertical-offset="935">
+        <state line="69" column="8" selection-start="1669" selection-end="1669" vertical-scroll-proportion="0.83558995" vertical-offset="741" max-vertical-offset="1887">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
