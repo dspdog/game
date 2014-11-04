@@ -332,7 +332,8 @@ public final class tree implements java.io.Serializable {
 
 
     final int NUM_LINES= 1024*1024; //MAX LINES
-    public int lineIndex=0;
+    private int lineIndex=0;
+    public int vertices=0;
     long lastIndex = System.currentTimeMillis();
 
     int zMin, zMax, xMin, xMax, yMin, yMax;
@@ -364,6 +365,7 @@ public final class tree implements java.io.Serializable {
         int pruneThresh=500;
         //System.out.println("CENTERPT " + this.pts[0].x + " " + this.pts[0].y  + " " + this.pts[0].z );
         indexFunction(0, (int)(this.iterations/100)+1, this.iterations%100,  1.0f, new treePt(0,0,0), new treePt(this.pts[0]), rnd, randomScale, (short)0, maxBranchDist, pruneThresh, 0);
+        vertices=lineIndex;
     }
 
     public void clearZLists(){
@@ -411,9 +413,9 @@ public final class tree implements java.io.Serializable {
 
         lineDI[lineIndex]=(((short)(dist))<<16) + ((short)_iterations);
 
-        lineXY1[lineIndex]=(((short)(dpt.x))<<16) + ((short)dpt.y);
+        lineXY1[lineIndex]=(((short)(dpt.x))<<16) + ((short)Math.max(dpt.y,0));
         lineZS1[lineIndex]=(((short)(dpt.z))<<16) + ((short)(256f *_cumulativeScale*thePt.scale/centerPt.scale));
-        lineXY2[lineIndex]=(((short)(odp.x))<<16) + ((short)odp.y);
+        lineXY2[lineIndex]=(((short)(odp.x))<<16) + ((short)Math.max(odp.y,0));
         lineZS2[lineIndex]=(((short)(odp.z))<<16) + ((short)(256f * _cumulativeScale));
 
         int maxDist = 0;

@@ -11,10 +11,11 @@ import org.lwjgl.opengl.*;
 import static org.lwjgl.opengl.ARBBufferObject.*;
 import static org.lwjgl.opengl.ARBVertexBufferObject.*;
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL15.*;
 
 import static org.lwjgl.util.glu.GLU.*;
 
-public class gameWorld{
+public class gameWorldRender {
 
     private int fps;
     private long lastFPS;
@@ -22,13 +23,20 @@ public class gameWorld{
     public int myWidth, myHeight;
     public float myFOV;
 
+    long lastVBOUpdate=0;
+
     gameWorldLogic myLogic;
 
-    public gameWorld(gameWorldLogic gl){
+    int[] vboHandles = new int[2];
+    int verts = 0;
+    boolean handlesFound = false;
+
+    public gameWorldRender(gameWorldLogic gl){
         myFOV = 75;
         myWidth = 640;
         myHeight = 480;
         myLogic=gl;
+        handlesFound=false;
     }
 
     public void updateFPS() {
@@ -49,6 +57,8 @@ public class gameWorld{
 
         lastFPS = getTime(); //initialise lastFPS by setting to current Time
 
+
+
         try {
             Display.setDisplayMode(new DisplayMode(myWidth, myHeight));
             Display.create();
@@ -64,10 +74,26 @@ public class gameWorld{
             update();
             renderGL();
 
+            if(myLogic.lastGameLogic - lastVBOUpdate > 10){
+
+                if(handlesFound){
+                    glDeleteBuffers(vboHandles[0]);
+                    glDeleteBuffers(vboHandles[1]);
+                }
+
+                vboHandles = GeometryFactory.treeVBOHandles(myLogic.theTree);
+                verts = myLogic.theTree.vertices;
+                lastVBOUpdate=getTime();
+                handlesFound=true;
+            }
+
             Display.update();
             //Display.sync(60); // cap fps to 60fps
         }
-        
+
+        glDeleteBuffers(vboHandles[0]);
+        glDeleteBuffers(vboHandles[1]);
+
         myLogic.end();
         Display.destroy();
     }
@@ -97,9 +123,12 @@ public class gameWorld{
             glScalef(3.5f, 3.5f, 3.5f);
             glTranslatef(centerPt.x, centerPt.y, centerPt.z);
             glRotatef((float) rotationy, 0f, 1f, 0f);
+            glRotatef((float) rotationx, 1f, 0f, 0f);
             glTranslatef(-centerPt.x, -centerPt.y, -centerPt.z);
             GeometryFactory.plane();
-            GeometryFactory.addObj(myLogic.theTree);
+            if(handlesFound){
+                GeometryFactory.treeVBO(verts, vboHandles);
+            }
         glPopMatrix();
     }
 

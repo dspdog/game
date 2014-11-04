@@ -13,8 +13,8 @@ public class gameWorldLogic implements Runnable {
     }
 
     public void updateGameLogic(){
+        theTree.perturb(false, false, 2.60f);
         lastGameLogic = getTime();
-        theTree.perturb(false, false, 0.20f);
     }
 
     public void end(){
@@ -36,7 +36,7 @@ public class gameWorldLogic implements Runnable {
         while(running){
             try {
                 updateGameLogic();
-                Thread.sleep(500);
+                Thread.sleep(1);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

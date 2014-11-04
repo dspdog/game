@@ -1,6 +1,6 @@
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL20;
+
 import shapes.tree;
 import org.lwjgl.*;
 import org.lwjgl.opengl.*;
@@ -10,6 +10,7 @@ import java.nio.FloatBuffer;
 import static org.lwjgl.opengl.ARBBufferObject.*;
 import static org.lwjgl.opengl.ARBVertexBufferObject.*;
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL15.*;
 
 public class GeometryFactory {
     static void gridCube(){
@@ -59,16 +60,16 @@ public class GeometryFactory {
         glEnd();
     }
 
-    static void addObj(Object o){
+    /*static void addObj(Object o){
         if(o instanceof tree){
             treeVA((shapes.tree) o);
         }
-    }
+    }*/
 
     static void tree(shapes.tree theTree){
         float scale = 0.12f;
         float thickness = 0f;
-        for(int i=0; i<theTree.lineIndex; i++){
+        for(int i=0; i<theTree.vertices; i++){
             glLineWidth(theTree.getS1(i) / scale * thickness);
             glBegin(GL_LINES);
 
@@ -95,24 +96,25 @@ public class GeometryFactory {
         
     }
 
-    static void treeVA(shapes.tree theTree){
+    static int[] treeVBOHandles(shapes.tree theTree){
         float scale = 0.12f;
-        float thickness = 0f;
-        int numLines = theTree.lineIndex;
-        int bufferStride = 6;
-        int bufferSize = bufferStride*numLines;
-        FloatBuffer cBuffer = BufferUtils.createFloatBuffer(bufferSize);
-        FloatBuffer vBuffer = BufferUtils.createFloatBuffer(bufferSize);
+        int vertices = theTree.vertices;
 
-        for(int i=0; i<numLines; i++){
-            cBuffer.put(theTree.getX1(i)*scale/100f).
+        int vertex_size = 3; // X, Y, Z,
+        int color_size = 3; // R, G, B,
+
+        FloatBuffer vertex_data = BufferUtils.createFloatBuffer(vertices * vertex_size * 2);
+        FloatBuffer color_data = BufferUtils.createFloatBuffer(vertices * color_size * 2);
+
+        for(int i=0; i<vertices; i++){
+            color_data.put(theTree.getX1(i)*scale/100f).
                     put(theTree.getY1(i)*scale/100f).
                     put(theTree.getZ1(i)*scale/100f).
                     put(theTree.getX2(i)*scale/100f).
                     put(theTree.getY2(i)*scale/100f).
                     put(theTree.getZ2(i)*scale/100f);
 
-            vBuffer.put(theTree.getX1(i)*scale).
+            vertex_data.put(theTree.getX1(i)*scale).
                     put(theTree.getY1(i)*scale).
                     put(theTree.getZ1(i)*scale).
                     put(theTree.getX2(i)*scale).
@@ -120,15 +122,40 @@ public class GeometryFactory {
                     put(theTree.getZ2(i)*scale);
         }
 
-        cBuffer.flip();
-        vBuffer.flip();
+        color_data.flip();
+        vertex_data.flip();
+
+        int vbo_vertex_handle = glGenBuffers();
+        glBindBuffer(GL_ARRAY_BUFFER, vbo_vertex_handle);
+        glBufferData(GL_ARRAY_BUFFER, vertex_data, GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        int vbo_color_handle = glGenBuffers();
+        glBindBuffer(GL_ARRAY_BUFFER, vbo_color_handle);
+        glBufferData(GL_ARRAY_BUFFER, color_data, GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        return new int[]{vbo_vertex_handle,vbo_color_handle};
+    }
+
+    static void treeVBO(int vertices, int[] handles){
+
+        int vertex_size = 3; // X, Y, Z,
+        int color_size = 3; // R, G, B,
+
+        int vbo_vertex_handle = handles[0];
+        int vbo_color_handle = handles[1];
+
+        glBindBuffer(GL_ARRAY_BUFFER, vbo_vertex_handle);
+        glVertexPointer(vertex_size, GL_FLOAT, 0, 0L);
+
+        glBindBuffer(GL_ARRAY_BUFFER, vbo_color_handle);
+        glColorPointer(color_size, GL_FLOAT, 0, 0L);
 
         glEnableClientState(GL_VERTEX_ARRAY);
         glEnableClientState(GL_COLOR_ARRAY);
 
-        glColorPointer(3, 0, cBuffer);
-        glVertexPointer(3, 0, vBuffer);
-        glDrawArrays(GL_LINES, 0, numLines*2);
+        glDrawArrays(GL_LINES, 0, vertices*2);
 
         glDisableClientState(GL_COLOR_ARRAY);
         glDisableClientState(GL_VERTEX_ARRAY);

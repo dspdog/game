@@ -2,7 +2,7 @@
 public class game {
     public static void main(String[] argv) {
         gameWorldLogic theLogic = new gameWorldLogic();
-        gameWorld theWorld = new gameWorld(theLogic);
+        gameWorldRender theWorld = new gameWorldRender(theLogic);
 
         (new Thread(theLogic)).start();
         theWorld.start();
