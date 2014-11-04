@@ -408,30 +408,33 @@ public class CubeMarcher {
     }
 
     interface analyzer{
+        public double getStep();
         public double potential(double x, double y, double z);
     }
 
     public GridCell generateCell(double x, double y, double z, analyzer p){
         GridCell thisCell = new GridCell();
 
+        double step = p.getStep();
+
         thisCell.p[0].setTo(x,y,z);
-        thisCell.p[1].setTo(x+1,y,z);
-        thisCell.p[2].setTo(x+1,y,z+1);
-        thisCell.p[3].setTo(x,y,z+1);
-        thisCell.p[4].setTo(x,y+1,z);
-        thisCell.p[5].setTo(x+1,y+1,z);
-        thisCell.p[6].setTo(x+1,y+1,z+1);
-        thisCell.p[7].setTo(x,y+1,z+1);
+        thisCell.p[1].setTo(x+step,y,z);
+        thisCell.p[2].setTo(x+step,y,z+step);
+        thisCell.p[3].setTo(x,y,z+step);
+        thisCell.p[4].setTo(x,y+step,z);
+        thisCell.p[5].setTo(x+step,y+step,z);
+        thisCell.p[6].setTo(x+step,y+step,z+step);
+        thisCell.p[7].setTo(x,y+step,z+step);
 
-        thisCell.val[0] = p.potential(x,y,z);
-        thisCell.val[1] = p.potential(x+1,y,z);
-        thisCell.val[4] = p.potential(x,y+1,z);
-        thisCell.val[5] = p.potential(x+1,y+1,z);
+        thisCell.val[0] = p.potential(x, y, z);
+        thisCell.val[1] = p.potential(x + step, y, z);
+        thisCell.val[4] = p.potential(x, y + step, z);
+        thisCell.val[5] = p.potential(x + step, y + step, z);
 
-        thisCell.val[3] = p.potential(x,y,z+1);
-        thisCell.val[2] = p.potential(x+1,y,z+1);
-        thisCell.val[7] = p.potential(x,y+1,z+1);
-        thisCell.val[6] = p.potential(x+1,y+1,z+1);
+        thisCell.val[3] = p.potential(x, y, z + step);
+        thisCell.val[2] = p.potential(x + step, y, z + step);
+        thisCell.val[7] = p.potential(x, y + step, z + step);
+        thisCell.val[6] = p.potential(x + step, y + step, z + step);
 
         return thisCell;
     }
@@ -439,6 +442,37 @@ public class CubeMarcher {
     private static final xyz vertlist[] = new xyz[12];
     private static GridCell grid;
     public static final Triangle[] temp_triangles = new Triangle[12];
+
+    public void generateTris(){
+
+        analyzer p = new analyzer() {
+            @Override
+            public double getStep() {
+                return 4f;
+            }
+            @Override
+            public double potential(double x, double y, double z) {
+                return distance(x,y,z);
+            }
+
+            public double distance(double x, double y, double z){
+                return Math.sqrt(x * x + y * y + z * z);
+            }
+        };
+
+        double step = p.getStep();
+        int num_tri=0;
+
+        for(float x=0; x<100; x+=step){
+            for(float y=0; y<100; y+=step){
+                for(float z=0; z<100; z+=step){
+                    num_tri += Polygonise(x,y,z,15d,p);
+                }
+            }
+        }
+
+        System.out.println("TRIANGLES " + num_tri);
+    }
 
     public int Polygonise(double x, double y, double z, double isolevel, analyzer p)
     {

@@ -339,10 +339,9 @@ public final class tree implements java.io.Serializable {
     public int vertices=0;
     long lastIndex = System.currentTimeMillis();
 
-    int zMin, zMax, xMin, xMax, yMin, yMax;
+    float zMin, zMax, xMin, xMax, yMin, yMax;
     Random branchRandom = new Random();
     long indexCount;
-    static ArrayList<Integer>[] zLists = new ArrayList[1024];
 
     //final int[] lineDI= new int[NUM_LINES];
     //final int[] lineXY1= new int[NUM_LINES];
@@ -385,15 +384,6 @@ public final class tree implements java.io.Serializable {
             //zLists[i].clear();
         }
     }*/
-    long count=0;
-    public void addLineToZList(int index, int z1, int z2, int max){
-        int _z1 = Math.max(Math.min(z1, z2)-max, 1);
-        int _z2 = Math.min(Math.max(z1, z2)+max, 1023);
-        for(int i=_z1; i<_z2; i++){
-            zLists[i].add(index);
-            count++;
-        }
-    }
 
 
     private void indexFunction(int _index, int _iterations, int _subiters, float _cumulativeScale,
@@ -443,16 +433,16 @@ public final class tree implements java.io.Serializable {
         //lineXY2[lineIndex]=(((short)(odp.x))<<16) + ((short)Math.max(odp.y,0));
         //lineZS2[lineIndex]=(((short)(odp.z))<<16) + ((short)(256f * _cumulativeScale));
 
-        //int maxDist = 0;
+        int maxDist = 0;
 
         //addLineToZList(lineIndex, (int)odp.z, (int)dpt.z, maxDist);
 
-        /*xMin = (int)Math.max(0,Math.min(Math.min(xMin,odp.x-maxDist),Math.min(xMin,dpt.x-maxDist)));
+        xMin = (int)Math.max(0,Math.min(Math.min(xMin,odp.x-maxDist),Math.min(xMin,dpt.x-maxDist)));
         yMin = (int)Math.max(0,Math.min(Math.min(yMin,odp.y-maxDist),Math.min(yMin,dpt.y-maxDist)));
         zMin = (int)Math.max(0,Math.min(Math.min(zMin,odp.z-maxDist),Math.min(zMin,dpt.z-maxDist)));
         xMax = (int)Math.min(1023,Math.max(Math.max(xMax,odp.x+maxDist),Math.max(xMax,dpt.x+maxDist)));
         yMax = (int)Math.min(1023,Math.max(Math.max(yMax,odp.y+maxDist),Math.max(yMax,dpt.y+maxDist)));
-        zMax = (int)Math.min(1023,Math.max(Math.max(zMax,odp.z+maxDist),Math.max(zMax,dpt.z+maxDist)));*/
+        zMax = (int)Math.min(1023,Math.max(Math.max(zMax,odp.z+maxDist),Math.max(zMax,dpt.z+maxDist)));
 
         lineIndex++;
         lineIndex=Math.min(lineIndex, NUM_LINES-1);
