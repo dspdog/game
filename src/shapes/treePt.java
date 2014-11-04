@@ -49,6 +49,11 @@ public final class treePt implements java.io.Serializable{
         z=pt.z;
     }
 
+    public int posHash(int tableSize){ //http://www.beosil.com/download/CollisionDetectionHashing_VMV03.pdf
+        final int p1 = 73856093, p2 = 19349663, p3 = 83492791;
+        return (int)(((long)(x*p1)^(long)(y*p2)^(long)(z*p3)) % tableSize);
+    }
+
     public treePt(treePt pt, boolean full){
         this.x=pt.x;
         this.y=pt.y;

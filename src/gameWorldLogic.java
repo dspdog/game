@@ -13,7 +13,7 @@ public class gameWorldLogic implements Runnable {
     }
 
     public void updateGameLogic(){
-        theTree.perturb(false, false, 0.10f);
+        theTree.perturb(false, false, 0.50f);
         lastGameLogic = getTime();
     }
 
