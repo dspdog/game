@@ -1,6 +1,9 @@
 package shapes;
 
+import org.lwjgl.BufferUtils;
+
 import java.io.*;
+import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -341,17 +344,21 @@ public final class tree implements java.io.Serializable {
     long indexCount;
     static ArrayList<Integer>[] zLists = new ArrayList[1024];
 
-    final int[] lineDI= new int[NUM_LINES];
-    final int[] lineXY1= new int[NUM_LINES];
-    final int[] lineZS1= new int[NUM_LINES];
-    final int[] lineXY2= new int[NUM_LINES];
-    final int[] lineZS2= new int[NUM_LINES];
+    //final int[] lineDI= new int[NUM_LINES];
+    //final int[] lineXY1= new int[NUM_LINES];
+    //final int[] lineZS1= new int[NUM_LINES];
+    //final int[] lineXY2= new int[NUM_LINES];
+    //final int[] lineZS2= new int[NUM_LINES];
+
+    int vertex_size = 3;
+    public final FloatBuffer vertex_data = BufferUtils.createFloatBuffer(NUM_LINES * vertex_size * 2); //XYZ1 XYZ2
+    public final FloatBuffer color_data = BufferUtils.createFloatBuffer(NUM_LINES * vertex_size * 2); //RGB1 RGB2
 
     public void reIndex(){
         Random rnd = new Random();
         rnd.setSeed(0);
         indexCount=0;
-        clearZLists();
+        //clearZLists();
         xMin = 1024;
         yMin = 1024;
         zMin = 1024;
@@ -364,17 +371,20 @@ public final class tree implements java.io.Serializable {
         int maxBranchDist = 10000;
         int pruneThresh=500;
         //System.out.println("CENTERPT " + this.pts[0].x + " " + this.pts[0].y  + " " + this.pts[0].z );
+
         indexFunction(0, (int)(this.iterations/100)+1, this.iterations%100,  1.0f, new treePt(0,0,0), new treePt(this.pts[0]), rnd, randomScale, (short)0, maxBranchDist, pruneThresh, 0);
+        vertex_data.flip();
+        color_data.flip();
         vertices=lineIndex;
     }
 
-    public void clearZLists(){
+    /*public void clearZLists(){
         zLists = new ArrayList[1024];
         for(int i=0; i<1024; i++){
             zLists[i]= new ArrayList<>();
             //zLists[i].clear();
         }
-    }
+    }*/
     long count=0;
     public void addLineToZList(int index, int z1, int z2, int max){
         int _z1 = Math.max(Math.min(z1, z2)-max, 1);
@@ -410,24 +420,39 @@ public final class tree implements java.io.Serializable {
         treePt rpt = thePt.subtract(centerPt).scale(_cumulativeScale).getRotatedPt(cumulativeRotation);
         treePt odp = new treePt(dpt);
         dpt._add(rpt);
+        float scale = 0.12f;
 
-        lineDI[lineIndex]=(((short)(dist))<<16) + ((short)_iterations);
+        vertex_data.put(dpt.x*scale).
+                    put(dpt.y*scale).
+                    put(dpt.z*scale).
+                    put(odp.x*scale).
+                    put(Math.max(odp.y*scale, 0)).
+                    put(odp.z*scale);
 
-        lineXY1[lineIndex]=(((short)(dpt.x))<<16) + ((short)Math.max(dpt.y,0));
-        lineZS1[lineIndex]=(((short)(dpt.z))<<16) + ((short)(256f *_cumulativeScale*thePt.scale/centerPt.scale));
-        lineXY2[lineIndex]=(((short)(odp.x))<<16) + ((short)Math.max(odp.y,0));
-        lineZS2[lineIndex]=(((short)(odp.z))<<16) + ((short)(256f * _cumulativeScale));
+        scale = 0.0014f;
+        color_data.put(dpt.x*scale).
+                   put(dpt.y*scale).
+                   put(dpt.z*scale).
+                   put(odp.x*scale).
+                   put(Math.max(odp.y*scale, 0)).
+                   put(odp.z * scale);
 
-        int maxDist = 0;
+        //lineDI[lineIndex]=(((short)(dist))<<16) + ((short)_iterations);
+        //lineXY1[lineIndex]=(((short)(dpt.x))<<16) + ((short)Math.max(dpt.y, 0));
+        //lineZS1[lineIndex]=(((short)(dpt.z))<<16) + ((short)(256f *_cumulativeScale*thePt.scale/centerPt.scale));
+        //lineXY2[lineIndex]=(((short)(odp.x))<<16) + ((short)Math.max(odp.y,0));
+        //lineZS2[lineIndex]=(((short)(odp.z))<<16) + ((short)(256f * _cumulativeScale));
 
-        addLineToZList(lineIndex, (int)odp.z, (int)dpt.z, maxDist);
+        //int maxDist = 0;
 
-        xMin = (int)Math.max(0,Math.min(Math.min(xMin,odp.x-maxDist),Math.min(xMin,dpt.x-maxDist)));
+        //addLineToZList(lineIndex, (int)odp.z, (int)dpt.z, maxDist);
+
+        /*xMin = (int)Math.max(0,Math.min(Math.min(xMin,odp.x-maxDist),Math.min(xMin,dpt.x-maxDist)));
         yMin = (int)Math.max(0,Math.min(Math.min(yMin,odp.y-maxDist),Math.min(yMin,dpt.y-maxDist)));
         zMin = (int)Math.max(0,Math.min(Math.min(zMin,odp.z-maxDist),Math.min(zMin,dpt.z-maxDist)));
         xMax = (int)Math.min(1023,Math.max(Math.max(xMax,odp.x+maxDist),Math.max(xMax,dpt.x+maxDist)));
         yMax = (int)Math.min(1023,Math.max(Math.max(yMax,odp.y+maxDist),Math.max(yMax,dpt.y+maxDist)));
-        zMax = (int)Math.min(1023,Math.max(Math.max(zMax,odp.z+maxDist),Math.max(zMax,dpt.z+maxDist)));
+        zMax = (int)Math.min(1023,Math.max(Math.max(zMax,odp.z+maxDist),Math.max(zMax,dpt.z+maxDist)));*/
 
         lineIndex++;
         lineIndex=Math.min(lineIndex, NUM_LINES-1);
@@ -453,38 +478,6 @@ public final class tree implements java.io.Serializable {
                 }
             }
         }
-    }
-
-    public int getX1(int index){
-        return lineXY1[index]>>16;
-    }
-
-    public int getY1(int index){
-        return lineXY1[index]&65535;
-    }
-
-    public int getX2(int index){
-        return lineXY2[index]>>16;
-    }
-
-    public int getY2(int index){
-        return lineXY2[index] & 65535;
-    }
-
-    public int getZ1(int index){
-        return lineZS1[index]>>16;
-    }
-
-    public float getS1(int index){
-        return (lineZS1[index]&65535)/256f;
-    }
-
-    public int getZ2(int index){
-        return lineZS2[index]>>16;
-    }
-
-    public float getS2(int index){
-        return (lineZS2[index]&65535)/256f;
     }
 
     public static float distance(float x, float y, float z){
