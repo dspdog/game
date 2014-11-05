@@ -339,6 +339,10 @@ public class CubeMarcher implements Runnable{
             return new float[]{p0x, p0y, p0z, p1x, p1y, p1z, p2x, p2y, p2z};
         }
 
+        public float[] asFloatArray(float scale){
+            return new float[]{p0x*scale, p0y*scale, p0z*scale, p1x*scale, p1y*scale, p1z*scale, p2x*scale, p2y*scale, p2z*scale};
+        }
+
         public Triangle(Triangle tri){
             invalid=false;
             setPoint0(new xyz(tri.p2x, tri.p2y, tri.p2z));
@@ -460,7 +464,7 @@ public class CubeMarcher implements Runnable{
 
     }
 
-    int NUM_TRIS=20000;
+    int NUM_TRIS=200000;
     int vertex_size = 3;
     public FloatBuffer vertex_data = BufferUtils.createFloatBuffer(NUM_TRIS * vertex_size * 3); //XYZ1 XYZ2
     public FloatBuffer color_data = BufferUtils.createFloatBuffer(NUM_TRIS * vertex_size * 3); //RGB1 RGB2
@@ -479,7 +483,7 @@ public class CubeMarcher implements Runnable{
         analyzer p = new analyzer() {
             @Override
             public double getStep() {
-                return 1f;
+                return 2f;
             }
             @Override
             public double potential(double x, double y, double z) {
@@ -563,7 +567,7 @@ public class CubeMarcher implements Runnable{
                     for(int t=0; t<new_tris; t++){
                         theTriangles.add(new Triangle(temp_triangles[t]));
                         vertex_data.put(temp_triangles[t].asFloatArray());
-                        color_data.put(temp_triangles[t].asFloatArray());
+                        color_data.put(temp_triangles[t].asFloatArray(0.005f));
                     }
                 }
             }

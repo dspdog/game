@@ -67,7 +67,7 @@
       <file leaf-file-name="gameWorldRender.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/gameWorldRender.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="78" column="20" selection-start="1779" selection-end="1779" vertical-scroll-proportion="0.0" vertical-offset="839" max-vertical-offset="2244">
+            <state line="124" column="34" selection-start="3258" selection-end="3258" vertical-scroll-proportion="0.0" vertical-offset="1513" max-vertical-offset="2244">
               <folding />
             </state>
           </provider>
@@ -76,7 +76,7 @@
       <file leaf-file-name="tree.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/shapes/tree.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="336" column="29" selection-start="9812" selection-end="9816" vertical-scroll-proportion="-4.4615383" vertical-offset="5511" max-vertical-offset="8092">
+            <state line="35" column="21" selection-start="747" selection-end="747" vertical-scroll-proportion="-18.846153" vertical-offset="20" max-vertical-offset="8092">
               <folding />
             </state>
           </provider>
@@ -91,22 +91,22 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CubeMarcher.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="CubeMarcher.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/CubeMarcher.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="493" column="62" selection-start="27879" selection-end="27879" vertical-scroll-proportion="0.34893617" vertical-offset="8135" max-vertical-offset="11543">
+            <state line="467" column="24" selection-start="26843" selection-end="26843" vertical-scroll-proportion="-8.384615" vertical-offset="7721" max-vertical-offset="11611">
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#26541#26551#0" expanded="true" />
+                <element signature="e#26733#26743#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="gameWorldLogic.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="gameWorldLogic.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/gameWorldLogic.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="12" column="0" selection-start="243" selection-end="243" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="952">
+            <state line="40" column="32" selection-start="792" selection-end="792" vertical-scroll-proportion="0.60465115" vertical-offset="221" max-vertical-offset="952">
               <folding />
             </state>
           </provider>
@@ -148,10 +148,10 @@
         <option value="$PROJECT_DIR$/src/gameWorld.java" />
         <option value="$PROJECT_DIR$/src/shapes/treePt.java" />
         <option value="$PROJECT_DIR$/src/GeometryFactory.java" />
-        <option value="$PROJECT_DIR$/src/gameWorldRender.java" />
         <option value="$PROJECT_DIR$/src/gameWorldLogic.java" />
-        <option value="$PROJECT_DIR$/src/shapes/tree.java" />
         <option value="$PROJECT_DIR$/src/CubeMarcher.java" />
+        <option value="$PROJECT_DIR$/src/shapes/tree.java" />
+        <option value="$PROJECT_DIR$/src/gameWorldRender.java" />
       </list>
     </option>
   </component>
@@ -591,7 +591,7 @@
         <state line="24" column="0" selection-start="620" selection-end="620" vertical-scroll-proportion="0.0" vertical-offset="408" max-vertical-offset="7395">
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#26541#26551#0" expanded="true" />
+            <element signature="e#26733#26743#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -839,27 +839,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/gameWorldLogic.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="0" selection-start="243" selection-end="243" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="952">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/shapes/tree.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="336" column="29" selection-start="9812" selection-end="9816" vertical-scroll-proportion="-4.4615383" vertical-offset="5511" max-vertical-offset="8092">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/gameWorldRender.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="78" column="20" selection-start="1779" selection-end="1779" vertical-scroll-proportion="0.0" vertical-offset="839" max-vertical-offset="2244">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/GeometryFactory.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="37" column="56" selection-start="1103" selection-end="1103" vertical-scroll-proportion="0.0" vertical-offset="244" max-vertical-offset="1649">
@@ -869,11 +848,32 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/CubeMarcher.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="493" column="62" selection-start="27879" selection-end="27879" vertical-scroll-proportion="0.34893617" vertical-offset="8135" max-vertical-offset="11543">
+        <state line="467" column="24" selection-start="26843" selection-end="26843" vertical-scroll-proportion="-8.384615" vertical-offset="7721" max-vertical-offset="11611">
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#26541#26551#0" expanded="true" />
+            <element signature="e#26733#26743#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/shapes/tree.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="35" column="21" selection-start="747" selection-end="747" vertical-scroll-proportion="-18.846153" vertical-offset="20" max-vertical-offset="8092">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/gameWorldRender.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="124" column="34" selection-start="3258" selection-end="3258" vertical-scroll-proportion="0.0" vertical-offset="1513" max-vertical-offset="2244">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/gameWorldLogic.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="40" column="32" selection-start="792" selection-end="792" vertical-scroll-proportion="0.60465115" vertical-offset="221" max-vertical-offset="952">
+          <folding />
         </state>
       </provider>
     </entry>

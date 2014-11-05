@@ -33,7 +33,7 @@ public final class tree implements java.io.Serializable {
     }
 
     public void resetShape(){
-        iterations = 150;
+        iterations =350;
 
         hasDrawList = false;
         evolutionDisqualified=false;
