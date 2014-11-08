@@ -32,8 +32,8 @@ public class gameWorldRender {
 
     public gameWorldRender(gameWorldLogic gl){
         myFOV = 75;
-        myWidth = 640;
-        myHeight = 480;
+        myWidth = 1024;
+        myHeight = 1024;
         myLogic=gl;
         handlesFound=false;
     }
@@ -119,10 +119,11 @@ public class gameWorldRender {
         double rotationy = Mouse.getX();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glEnable(GL_DEPTH_TEST);
+        //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
         glLoadIdentity();
         gluLookAt(500,500,500,centerPt.x,centerPt.y,centerPt.z,0,1,0);
         glPushMatrix();
-            glScalef(3.5f, 3.5f, 3.5f);
+            glScalef(5f, 5f, 5f);
             glTranslatef(centerPt.x, centerPt.y, centerPt.z);
             glRotatef((float) rotationy, 0f, 1f, 0f);
             glRotatef((float) rotationx, 1f, 0f, 0f);
