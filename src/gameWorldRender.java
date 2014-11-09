@@ -140,7 +140,7 @@ public class gameWorldRender {
             glRotatef((float) rotationx, 1f, 0f, 0f);
             glTranslatef(-centerPt.x, -centerPt.y, -centerPt.z);
             GeometryFactory.plane();
-            GeometryFactory.drawCSG(sphere);
+            GeometryFactory.drawCSG(myLogic.theTree.myCSG);
             if(handlesFound){
                 GeometryFactory.drawLinesByVBOHandles(treeVerts, treeVBOHandles);
                 //List<Polygon>

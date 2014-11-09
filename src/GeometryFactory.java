@@ -60,32 +60,13 @@ public class GeometryFactory {
     }
 
     static void drawCSG(CSG csg){
-
         for(Polygon poly : csg.getPolygons()){
-            if(poly.vertices.size() == 3){
-                glBegin(GL11.GL_TRIANGLES);
-                glColor3f((float)poly.vertices.get(0).normal.x, (float)poly.vertices.get(0).normal.y, (float)poly.vertices.get(0).normal.z);
-                glVertex3f((float)poly.vertices.get(0).pos.x, (float)poly.vertices.get(0).pos.y, (float)poly.vertices.get(0).pos.z);
-                glColor3f((float)poly.vertices.get(1).normal.x, (float)poly.vertices.get(1).normal.y, (float)poly.vertices.get(1).normal.z);
-                glVertex3f((float)poly.vertices.get(1).pos.x, (float)poly.vertices.get(1).pos.y, (float)poly.vertices.get(1).pos.z);
-                glColor3f((float)poly.vertices.get(2).normal.x, (float)poly.vertices.get(2).normal.y, (float)poly.vertices.get(2).normal.z);
-                glVertex3f((float)poly.vertices.get(2).pos.x, (float)poly.vertices.get(2).pos.y, (float)poly.vertices.get(2).pos.z);
-                glEnd();
-            }else if(poly.vertices.size() == 4){
-                glBegin(GL11.GL_QUADS);
-                glColor3f((float)poly.vertices.get(0).normal.x, (float)poly.vertices.get(0).normal.y, (float)poly.vertices.get(0).normal.z);
-                glVertex3f((float)poly.vertices.get(0).pos.x, (float)poly.vertices.get(0).pos.y, (float)poly.vertices.get(0).pos.z);
-                glColor3f((float)poly.vertices.get(1).normal.x, (float)poly.vertices.get(1).normal.y, (float)poly.vertices.get(1).normal.z);
-                glVertex3f((float)poly.vertices.get(1).pos.x, (float)poly.vertices.get(1).pos.y, (float)poly.vertices.get(1).pos.z);
-                glColor3f((float)poly.vertices.get(2).normal.x, (float)poly.vertices.get(2).normal.y, (float)poly.vertices.get(2).normal.z);
-                glVertex3f((float)poly.vertices.get(2).pos.x, (float)poly.vertices.get(2).pos.y, (float)poly.vertices.get(2).pos.z);
-                glColor3f((float)poly.vertices.get(3).normal.x, (float)poly.vertices.get(3).normal.y, (float)poly.vertices.get(3).normal.z);
-                glVertex3f((float)poly.vertices.get(3).pos.x, (float)poly.vertices.get(3).pos.y, (float)poly.vertices.get(3).pos.z);
-                glEnd();
-            }else{
-                System.out.println("VERTS?" + poly.vertices.size());
+            glBegin(GL_POLYGON);
+            for(int v=0; v<poly.vertices.size(); v++){
+                glColor3f((float)poly.vertices.get(v).normal.x, (float)poly.vertices.get(v).normal.y, (float)poly.vertices.get(v).normal.z);
+                glVertex3f((float)poly.vertices.get(v).pos.x, (float)poly.vertices.get(v).pos.y, (float)poly.vertices.get(v).pos.z);
             }
-
+            glEnd();
         }
     }
 

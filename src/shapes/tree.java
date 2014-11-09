@@ -1,5 +1,8 @@
 package shapes;
 
+import eu.mihosoft.vrl.v3d.CSG;
+import eu.mihosoft.vrl.v3d.Cylinder;
+import eu.mihosoft.vrl.v3d.Vector3d;
 import org.lwjgl.BufferUtils;
 
 import java.io.*;
@@ -32,8 +35,10 @@ public final class tree implements java.io.Serializable {
         resetShape();
     }
 
+    public CSG myCSG = new Cylinder().toCSG();
+
     public void resetShape(){
-        iterations =350;
+        iterations =250;
 
         hasDrawList = false;
         evolutionDisqualified=false;
@@ -67,6 +72,24 @@ public final class tree implements java.io.Serializable {
         for(int a=0; a< pointsInUse; a++){
             pts[a] = new treePt(_oldShape.pts[a], true);
         }
+    }
+
+    public void updateCSG(){
+        myCSG = this.toCSG();
+    }
+
+    private CSG toCSG(){
+        Cylinder c1 = new Cylinder();
+
+        CSG theTreeCSG = c1.toCSG();
+
+        for(int i=0; i<60; i++){
+            c1 = new Cylinder(new Vector3d(vertex_data.get(i*6),vertex_data.get(i*6+1),vertex_data.get(i*6+2)),
+                              new Vector3d(vertex_data.get(i*6+3),vertex_data.get(i*6+4),vertex_data.get(i*6+5)),
+                              2d, 5d, 5);
+            theTreeCSG = theTreeCSG.union(c1.toCSG());
+        }
+        return theTreeCSG;
     }
 
     public void freshPoints(){
