@@ -1,5 +1,6 @@
 import eu.mihosoft.vrl.v3d.CSG;
 import eu.mihosoft.vrl.v3d.Cube;
+import eu.mihosoft.vrl.v3d.Polygon;
 import eu.mihosoft.vrl.v3d.Sphere;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
@@ -8,6 +9,8 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.util.vector.Vector3f;
 import shapes.tree;
+
+import java.util.List;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
@@ -117,6 +120,10 @@ public class gameWorldRender {
     }
 
     public void renderGL() {
+
+        //CSG cube = new Cube(2).toCSG();
+        CSG sphere = new Sphere(1.25).toCSG();
+
         Vector3f centerPt = new Vector3f(50,50,50);
 
         double rotationx = Mouse.getY();
@@ -133,14 +140,16 @@ public class gameWorldRender {
             glRotatef((float) rotationx, 1f, 0f, 0f);
             glTranslatef(-centerPt.x, -centerPt.y, -centerPt.z);
             GeometryFactory.plane();
+            GeometryFactory.drawPolys(sphere.getPolygons());
             if(handlesFound){
                 GeometryFactory.drawLinesByVBOHandles(treeVerts, treeVBOHandles);
-                GeometryFactory.drawTrisByVBOHandles(cubesVerts, cubeMarcherVBOHandles);
+                //List<Polygon>
+
+
+                //GeometryFactory.drawTrisByVBOHandles(cubesVerts, cubeMarcherVBOHandles);
             }
         glPopMatrix();
     }
 
-    //CSG cube = new Cube(2).toCSG();
-    //CSG sphere = new Sphere(1.25).toCSG();
 
 }

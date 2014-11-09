@@ -1,3 +1,4 @@
+import eu.mihosoft.vrl.v3d.Polygon;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
@@ -6,6 +7,7 @@ import org.lwjgl.*;
 import org.lwjgl.opengl.*;
 
 import java.nio.FloatBuffer;
+import java.util.List;
 
 import static org.lwjgl.opengl.ARBBufferObject.*;
 import static org.lwjgl.opengl.ARBVertexBufferObject.*;
@@ -56,6 +58,34 @@ public class GeometryFactory {
         return new int[]{vbo_vertex_handle,vbo_color_handle};
     }
 
+    static void drawPolys(List<Polygon> polys){
+        for(Polygon poly : polys){
+            if(poly.vertices.size() == 3){
+                glBegin(GL11.GL_TRIANGLES);
+                glColor3f((float)poly.vertices.get(0).normal.x, (float)poly.vertices.get(0).normal.y, (float)poly.vertices.get(0).normal.z);
+                glVertex3f((float)poly.vertices.get(0).pos.x, (float)poly.vertices.get(0).pos.y, (float)poly.vertices.get(0).pos.z);
+                glColor3f((float)poly.vertices.get(1).normal.x, (float)poly.vertices.get(1).normal.y, (float)poly.vertices.get(1).normal.z);
+                glVertex3f((float)poly.vertices.get(1).pos.x, (float)poly.vertices.get(1).pos.y, (float)poly.vertices.get(1).pos.z);
+                glColor3f((float)poly.vertices.get(2).normal.x, (float)poly.vertices.get(2).normal.y, (float)poly.vertices.get(2).normal.z);
+                glVertex3f((float)poly.vertices.get(2).pos.x, (float)poly.vertices.get(2).pos.y, (float)poly.vertices.get(2).pos.z);
+                glEnd();
+            }else if(poly.vertices.size() == 4){
+                glBegin(GL11.GL_QUADS);
+                glColor3f((float)poly.vertices.get(0).normal.x, (float)poly.vertices.get(0).normal.y, (float)poly.vertices.get(0).normal.z);
+                glVertex3f((float)poly.vertices.get(0).pos.x, (float)poly.vertices.get(0).pos.y, (float)poly.vertices.get(0).pos.z);
+                glColor3f((float)poly.vertices.get(1).normal.x, (float)poly.vertices.get(1).normal.y, (float)poly.vertices.get(1).normal.z);
+                glVertex3f((float)poly.vertices.get(1).pos.x, (float)poly.vertices.get(1).pos.y, (float)poly.vertices.get(1).pos.z);
+                glColor3f((float)poly.vertices.get(2).normal.x, (float)poly.vertices.get(2).normal.y, (float)poly.vertices.get(2).normal.z);
+                glVertex3f((float)poly.vertices.get(2).pos.x, (float)poly.vertices.get(2).pos.y, (float)poly.vertices.get(2).pos.z);
+                glColor3f((float)poly.vertices.get(3).normal.x, (float)poly.vertices.get(3).normal.y, (float)poly.vertices.get(3).normal.z);
+                glVertex3f((float)poly.vertices.get(3).pos.x, (float)poly.vertices.get(3).pos.y, (float)poly.vertices.get(3).pos.z);
+                glEnd();
+            }else{
+                System.out.println("VERTS?" + poly.vertices.size());
+            }
+
+        }
+    }
 
     static void drawLinesByVBOHandles(int vertices, int[] handles){
         int vertex_size = 3; // X, Y, Z,
