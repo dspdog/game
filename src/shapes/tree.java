@@ -38,7 +38,7 @@ public final class tree implements java.io.Serializable {
     public CSG myCSG = new Cylinder().toCSG();
 
     public void resetShape(){
-        iterations =250;
+        iterations =350;
 
         hasDrawList = false;
         evolutionDisqualified=false;
@@ -83,11 +83,11 @@ public final class tree implements java.io.Serializable {
 
         CSG theTreeCSG = c1.toCSG();
 
-        for(int i=0; i<60; i++){
+        for(int i=0; i<indexCount; i++){
             c1 = new Cylinder(new Vector3d(vertex_data.get(i*6),vertex_data.get(i*6+1),vertex_data.get(i*6+2)),
                               new Vector3d(vertex_data.get(i*6+3),vertex_data.get(i*6+4),vertex_data.get(i*6+5)),
-                              2d, 5d, 5);
-            theTreeCSG = theTreeCSG.union(c1.toCSG());
+                              2d, 5d, 4);
+            theTreeCSG = theTreeCSG.dumbUnion(c1.toCSG());
         }
         return theTreeCSG;
     }
