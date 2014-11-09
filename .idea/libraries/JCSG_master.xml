@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="JCSG-master">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/JCSG-master/build/libs/JCSG-master.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

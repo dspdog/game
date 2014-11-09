@@ -1,3 +1,6 @@
+import eu.mihosoft.vrl.v3d.CSG;
+import eu.mihosoft.vrl.v3d.Cube;
+import eu.mihosoft.vrl.v3d.Sphere;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
 import org.lwjgl.input.Mouse;
@@ -98,6 +101,7 @@ public class gameWorldRender {
 
         myLogic.end();
         Display.destroy();
+
     }
 
     public void update() {
@@ -135,5 +139,8 @@ public class gameWorldRender {
             }
         glPopMatrix();
     }
+
+    //CSG cube = new Cube(2).toCSG();
+    //CSG sphere = new Sphere(1.25).toCSG();
 
 }
