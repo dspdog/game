@@ -15,7 +15,7 @@ public class gameWorldLogic implements Runnable {
 
     public void updateGameLogic(){
         theTree.perturb(false, false, 2.50f);
-        cm.generateTris(theTree);
+        //cm.generateTris(theTree);
         lastGameLogic = getTime();
     }
 

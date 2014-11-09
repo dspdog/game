@@ -1,3 +1,4 @@
+import eu.mihosoft.vrl.v3d.CSG;
 import eu.mihosoft.vrl.v3d.Polygon;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
@@ -58,8 +59,9 @@ public class GeometryFactory {
         return new int[]{vbo_vertex_handle,vbo_color_handle};
     }
 
-    static void drawPolys(List<Polygon> polys){
-        for(Polygon poly : polys){
+    static void drawCSG(CSG csg){
+
+        for(Polygon poly : csg.getPolygons()){
             if(poly.vertices.size() == 3){
                 glBegin(GL11.GL_TRIANGLES);
                 glColor3f((float)poly.vertices.get(0).normal.x, (float)poly.vertices.get(0).normal.y, (float)poly.vertices.get(0).normal.z);
