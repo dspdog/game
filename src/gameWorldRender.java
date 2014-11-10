@@ -34,6 +34,8 @@ public class gameWorldRender {
     int[] cubeMarcherVBOHandles = new int[2];
     int cubesVerts = 0;
 
+    public float scrollPos = 1.0f;
+
     boolean handlesFound = false;
 
     public gameWorldRender(gameWorldLogic gl){
@@ -128,13 +130,24 @@ public class gameWorldRender {
 
         double rotationx = Mouse.getY();
         double rotationy = Mouse.getX();
+
+        int scroll = Mouse.getDWheel();
+
+        if(scroll<0){
+            scrollPos*=0.95f;
+        }else if(scroll>0){
+            scrollPos*=1.05f;
+        }
+
+        float zoom = 5f*scrollPos;
+
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glEnable(GL_DEPTH_TEST);
         //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
         glLoadIdentity();
         gluLookAt(500,500,500,centerPt.x,centerPt.y,centerPt.z,0,1,0);
         glPushMatrix();
-            glScalef(5f, 5f, 5f);
+            glScalef(zoom, zoom, zoom);
             glTranslatef(centerPt.x, centerPt.y, centerPt.z);
             glRotatef((float) rotationy, 0f, 1f, 0f);
             glRotatef((float) rotationx, 1f, 0f, 0f);
