@@ -128,7 +128,7 @@ public class gameWorldRender {
 
         Vector3f centerPt = new Vector3f(50,50,50);
 
-        double rotationx = Mouse.getY();
+        double rotationx = 90f- 180f * Mouse.getY()/myHeight;
         double rotationy = Mouse.getX();
 
         int scroll = Mouse.getDWheel();
