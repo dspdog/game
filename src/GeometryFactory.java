@@ -9,6 +9,7 @@ import org.lwjgl.opengl.*;
 
 import java.nio.FloatBuffer;
 import java.util.List;
+import java.util.function.DoubleBinaryOperator;
 
 import static org.lwjgl.opengl.ARBBufferObject.*;
 import static org.lwjgl.opengl.ARBVertexBufferObject.*;
@@ -67,6 +68,29 @@ public class GeometryFactory {
                 glVertex3f((float)poly.vertices.get(v).pos.x, (float)poly.vertices.get(v).pos.y, (float)poly.vertices.get(v).pos.z);
             }
             glEnd();
+        }
+    }
+
+    interface gridFunction{
+        float getValue(int x, int y);
+    }
+
+    static void drawFunctionGrid(gridFunction d){
+        for(int x=0; x<256; x++){
+            for(int z=0; z<256; z++){
+                glBegin(GL_TRIANGLES);
+                    glColor3f(d.getValue(x, z)/32f,d.getValue(x+1, z)/32f,d.getValue(x, z+1)/32f); //color as normal
+
+                    glVertex3f(x, d.getValue(x, z), z);
+                    glVertex3f(x, d.getValue(x,z+1),z+1);
+                    glVertex3f(x+1, d.getValue(x+1,z),z);
+
+                    glVertex3f(x+1, d.getValue(x+1,z),z);
+                    glVertex3f(x, d.getValue(x,z+1),z+1);
+                    glVertex3f(x+1, d.getValue(x+1,z+1),z+1);
+
+                glEnd();
+            }
         }
     }
 

@@ -123,9 +123,6 @@ public class gameWorldRender {
 
     public void renderGL() {
 
-        //CSG cube = new Cube(2).toCSG();
-        CSG sphere = new Sphere(1.25).toCSG();
-
         Vector3f centerPt = new Vector3f(50,50,50);
 
         double rotationx = 90f- 180f * Mouse.getY()/myHeight;
@@ -152,8 +149,14 @@ public class gameWorldRender {
             glRotatef((float) rotationy, 0f, 1f, 0f);
             glRotatef((float) rotationx, 1f, 0f, 0f);
             glTranslatef(-centerPt.x, -centerPt.y, -centerPt.z);
-            GeometryFactory.plane();
-            GeometryFactory.drawCSG(myLogic.theTree.myCSG);
+            //GeometryFactory.plane();
+            //GeometryFactory.drawCSG(myLogic.theTree.myCSG);
+            GeometryFactory.drawFunctionGrid(new GeometryFactory.gridFunction() {
+                @Override
+                public float getValue(int x, int y) {
+                    return Math.abs((float)Math.sin(x/10d + y/10d)*16f);
+                }
+            });
             if(handlesFound){
                 GeometryFactory.drawLinesByVBOHandles(treeVerts, treeVBOHandles);
                 //List<Polygon>
