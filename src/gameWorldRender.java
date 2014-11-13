@@ -9,6 +9,7 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.util.vector.Vector3f;
 import shapes.tree;
+import utils.SimplexNoise;
 
 import java.util.List;
 
@@ -21,6 +22,7 @@ public class gameWorldRender {
 
     private int fps;
     private long lastFPS;
+    private long startTime;
     public int myFPS = 0;
     public int myWidth, myHeight;
     public float myFOV;
@@ -44,6 +46,7 @@ public class gameWorldRender {
         myHeight = 1024;
         myLogic=gl;
         handlesFound=false;
+        startTime=getTime();
     }
 
     public void updateFPS() {
@@ -154,7 +157,7 @@ public class gameWorldRender {
             GeometryFactory.drawFunctionGrid(new GeometryFactory.gridFunction() {
                 @Override
                 public float getValue(int x, int y) {
-                    return Math.abs((float)Math.sin(x/10d + y/10d)*16f);
+                    return (float)(SimplexNoise.noise(x/20f,y/20f)+1f)*2f;
                 }
             });
             if(handlesFound){
