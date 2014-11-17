@@ -8,9 +8,14 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.util.vector.Vector3f;
+import org.newdawn.slick.opengl.Texture;
+import org.newdawn.slick.opengl.TextureLoader;
 import shapes.tree;
 import utils.SimplexNoise;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.List;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -107,14 +112,17 @@ public class gameWorldRender {
             //Display.sync(60); // cap fps to 60fps
         }
 
+        myTexture.release();
         myLogic.end();
         Display.destroy();
-
+        System.exit(1);
     }
 
     public void update() {
         updateFPS();
     }
+
+    Texture myTexture;
 
     public void initGL() {
         glMatrixMode(GL_PROJECTION);
@@ -122,10 +130,15 @@ public class gameWorldRender {
         gluPerspective(myFOV, ((float)myWidth) / ((float)myHeight), 0.01f, 2500f);
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
+
+        try {
+            myTexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("./res/myball.png")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void renderGL() {
-
         Vector3f centerPt = new Vector3f(50,50,50);
 
         double rotationx = 90f- 180f * Mouse.getY()/myHeight;
@@ -152,14 +165,18 @@ public class gameWorldRender {
             glRotatef((float) rotationy, 0f, 1f, 0f);
             glRotatef((float) rotationx, 1f, 0f, 0f);
             glTranslatef(-centerPt.x, -centerPt.y, -centerPt.z);
-            //GeometryFactory.plane();
-            //GeometryFactory.drawCSG(myLogic.theTree.myCSG);
-            GeometryFactory.drawFunctionGrid(new GeometryFactory.gridFunction() {
+
+            glTranslatef(0, 100f, 0);
+            GeometryFactory.plane(myTexture);
+            glTranslatef(0, -100f, 0);
+
+            GeometryFactory.drawCSG(myLogic.theTree.myCSG);
+            /*GeometryFactory.drawFunctionGrid(new GeometryFactory.gridFunction() {
                 @Override
                 public float getValue(int x, int y) {
                     return (float)(SimplexNoise.noise(x/20f,y/20f)+1f)*2f;
                 }
-            });
+            });*/
             if(handlesFound){
                 GeometryFactory.drawLinesByVBOHandles(treeVerts, treeVBOHandles);
                 //List<Polygon>

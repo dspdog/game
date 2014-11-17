@@ -1,6 +1,7 @@
 import eu.mihosoft.vrl.v3d.CSG;
 import eu.mihosoft.vrl.v3d.Polygon;
 import org.lwjgl.BufferUtils;
+import org.newdawn.slick.opengl.*;
 import org.lwjgl.opengl.GL11;
 
 import shapes.tree;
@@ -30,6 +31,32 @@ public class GeometryFactory {
         glColor3f(0, 0, 1);
         glVertex3f(0, 0, size);
         glEnd();
+    }
+
+    static void plane(Texture tex){
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, tex.getTextureID());
+        int size = 250;
+        glBegin(GL11.GL_QUADS);
+
+        glTexCoord2f(0, 0);
+        glColor3f(0, 0, 0);
+        glVertex3f(0, 0, 0);
+
+        glTexCoord2f(1, 0);
+        glColor3f(1, 1, 1);
+        glVertex3f(size, 0, 0);
+
+        glTexCoord2f(1, 1);
+        glColor3f(1, 1, 1);
+        glVertex3f(size, 0, size);
+
+        glTexCoord2f(0, 1);
+        glColor3f(1, 1, 1);
+        glVertex3f(0, 0, size);
+
+        glEnd();
+        glDisable(GL_TEXTURE_2D);
     }
 
     static int[] treeVBOHandles(shapes.tree theTree){
@@ -76,18 +103,19 @@ public class GeometryFactory {
     }
 
     static void drawFunctionGrid(gridFunction d){
-        for(int x=0; x<256; x++){
-            for(int z=0; z<256; z++){
+        int step = 2;
+        for(int x=0; x<256; x+=step){
+            for(int z=0; z<256; z+=step){
                 glBegin(GL_TRIANGLES);
-                    glColor3f(d.getValue(x, z)/32f,d.getValue(x+1, z)/32f,d.getValue(x, z+1)/32f); //color as normal
+                    glColor3f(d.getValue(x, z)/32f,d.getValue(x+step, z)/32f,d.getValue(x, z+step)/32f); //color as normal
 
                     glVertex3f(x, d.getValue(x, z), z);
-                    glVertex3f(x, d.getValue(x,z+1),z+1);
-                    glVertex3f(x+1, d.getValue(x+1,z),z);
+                    glVertex3f(x, d.getValue(x,z+step),z+step);
+                    glVertex3f(x+step, d.getValue(x+step,z),z);
 
-                    glVertex3f(x+1, d.getValue(x+1,z),z);
-                    glVertex3f(x, d.getValue(x,z+1),z+1);
-                    glVertex3f(x+1, d.getValue(x+1,z+1),z+1);
+                    glVertex3f(x+step, d.getValue(x+step,z),z);
+                    glVertex3f(x, d.getValue(x,z+step),z+step);
+                    glVertex3f(x+step, d.getValue(x+step,z+step),z+step);
 
                 glEnd();
             }
