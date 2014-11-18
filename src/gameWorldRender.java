@@ -124,6 +124,7 @@ public class gameWorldRender {
     }
 
     Texture myTexture;
+    scene myScene;
 
     public void initGL() {
         glMatrixMode(GL_PROJECTION);
@@ -137,6 +138,11 @@ public class gameWorldRender {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        myScene = new scene();
+        myScene.addWorldObject(new WorldObject(myTexture));
+        myScene.addWorldObject(new WorldObject(myLogic.theTree.myCSG));
+        myScene.addWorldObject(new WorldObject((x, y) -> (float)(SimplexNoise.noise(x/20f,y/20f)+1f)*2f));
     }
 
     public void renderGL() {
@@ -163,28 +169,12 @@ public class gameWorldRender {
         glPushMatrix();
             glScalef(zoom, zoom, zoom);
             glTranslatef(centerPt.x, centerPt.y, centerPt.z);
-            glRotatef((float) rotationy, 0f, 1f, 0f);
+        glRotatef((float) rotationy, 0f, 1f, 0f);
             glRotatef((float) rotationx, 1f, 0f, 0f);
             glTranslatef(-centerPt.x, -centerPt.y, -centerPt.z);
 
-            glTranslatef(0, 100f, 0);
-            GeometryFactory.plane(myTexture);
-            glTranslatef(0, -100f, 0);
+            myScene.drawScene();
 
-            GeometryFactory.drawCSG(myLogic.theTree.myCSG);
-            /*GeometryFactory.drawFunctionGrid(new GeometryFactory.gridFunction() {
-                @Override
-                public float getValue(int x, int y) {
-                    return (float)(SimplexNoise.noise(x/20f,y/20f)+1f)*2f;
-                }
-            });*/
-            if(handlesFound){
-                GeometryFactory.drawLinesByVBOHandles(treeVerts, treeVBOHandles);
-                //List<Polygon>
-
-
-                //GeometryFactory.drawTrisByVBOHandles(cubesVerts, cubeMarcherVBOHandles);
-            }
         glPopMatrix();
     }
 
@@ -192,7 +182,15 @@ public class gameWorldRender {
         private ArrayList<WorldObject> objs;
 
         public void drawScene(){
-
+            for(WorldObject wo : objs){
+                if(wo.isCSG){
+                    GeometryFactory.drawCSG(wo.myCSG);
+                }else if(wo.isGrid){
+                    GeometryFactory.drawFunctionGrid(wo.myFunction);
+                }else if (wo.isPlane){
+                    GeometryFactory.plane(wo.myTexture);
+                }
+            }
         }
 
         public scene(){
@@ -202,13 +200,32 @@ public class gameWorldRender {
         public void addWorldObject(WorldObject wo){
             objs.add(wo);
         }
+    }
 
-        class WorldObject{
-            CSG myCSG;
+    public class WorldObject{ //have this handle all the interactions w/ geometryfactory...
+        CSG myCSG;
+        Texture myTexture;
+        GeometryFactory.gridFunction myFunction;
 
-            public WorldObject(CSG csg){
-                myCSG = csg;
-            }
+        int stencilId; //for stencil buffer
+        boolean isCSG = false;
+        boolean isGrid = false;
+        boolean isPlane = false;
+
+        public WorldObject(CSG csg){
+            isCSG=true;
+            myCSG = csg;
+        }
+
+        public WorldObject(Texture texture){
+            isPlane = true;
+            myTexture = texture;
+        }
+
+        public WorldObject(GeometryFactory.gridFunction d){
+            isGrid=true;
+            myFunction = d;
+            //TODO store grid in memory, no re-calc
         }
     }
 }
