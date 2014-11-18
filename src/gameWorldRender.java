@@ -2,11 +2,13 @@ import eu.mihosoft.vrl.v3d.CSG;
 import eu.mihosoft.vrl.v3d.Cube;
 import eu.mihosoft.vrl.v3d.Polygon;
 import eu.mihosoft.vrl.v3d.Sphere;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
+import org.lwjgl.opengl.PixelFormat;
 import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
@@ -16,6 +18,9 @@ import utils.SimplexNoise;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,7 +82,7 @@ public class gameWorldRender {
 
         try {
             Display.setDisplayMode(new DisplayMode(myWidth, myHeight));
-            Display.create();
+            Display.create(new PixelFormat(0, 16, 8));
 
         } catch (LWJGLException e) {
             e.printStackTrace();
@@ -153,6 +158,11 @@ public class gameWorldRender {
 
         int scroll = Mouse.getDWheel();
 
+        int window_width = Display.getWidth(); //glutGet(GLUT_WINDOW_WIDTH);
+        int window_height = Display.getHeight();
+        int index = 0;
+
+
         if(scroll<0){
             scrollPos*=0.95f;
         }else if(scroll>0){
@@ -161,8 +171,11 @@ public class gameWorldRender {
 
         float zoom = 5f*scrollPos;
 
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
         glEnable(GL_DEPTH_TEST);
+        glEnable(GL_STENCIL_TEST);
+        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
         //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
         glLoadIdentity();
         gluLookAt(500,500,500,centerPt.x,centerPt.y,centerPt.z,0,1,0);
@@ -176,6 +189,16 @@ public class gameWorldRender {
             myScene.drawScene();
 
         glPopMatrix();
+
+        IntBuffer ib = BufferUtils.createIntBuffer(1);
+
+        FloatBuffer fb = BufferUtils.createFloatBuffer(1);
+
+        glReadPixels(Mouse.getX(), window_height - Mouse.getY() - 1, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, ib);
+        System.out.println("index?" +ib.get(0));
+
+        glReadPixels(Mouse.getX(), window_height - Mouse.getY() - 1, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, fb);
+        System.out.println("depth?" +fb.get(0));
     }
 
     class scene{
@@ -183,6 +206,7 @@ public class gameWorldRender {
 
         public void drawScene(){
             for(WorldObject wo : objs){
+                glStencilFunc(GL_ALWAYS, wo.stencilId + 1, -1);
                 if(wo.isCSG){
                     GeometryFactory.drawCSG(wo.myCSG);
                 }else if(wo.isGrid){
@@ -207,7 +231,7 @@ public class gameWorldRender {
         Texture myTexture;
         GeometryFactory.gridFunction myFunction;
 
-        int stencilId; //for stencil buffer
+        int stencilId = (int)(System.currentTimeMillis()%100); //for stencil buffer
         boolean isCSG = false;
         boolean isGrid = false;
         boolean isPlane = false;
