@@ -16,6 +16,7 @@ import utils.SimplexNoise;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -187,5 +188,27 @@ public class gameWorldRender {
         glPopMatrix();
     }
 
+    class scene{
+        private ArrayList<WorldObject> objs;
 
+        public void drawScene(){
+
+        }
+
+        public scene(){
+            objs = new ArrayList<>();
+        }
+
+        public void addWorldObject(WorldObject wo){
+            objs.add(wo);
+        }
+
+        class WorldObject{
+            CSG myCSG;
+
+            public WorldObject(CSG csg){
+                myCSG = csg;
+            }
+        }
+    }
 }
