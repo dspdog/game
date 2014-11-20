@@ -20,6 +20,7 @@ import static org.lwjgl.opengl.GL15.*;
 public class GeometryFactory {
 
     static void plane(){
+
         int size = 250;
         glBegin(GL11.GL_QUADS);
         glColor3f(0, 0, 0);
@@ -89,8 +90,10 @@ public class GeometryFactory {
 
     static void drawCSG(CSG csg){
         for(Polygon poly : csg.getPolygons()){
-            glBegin(GL_POLYGON);
-            for(int v=0; v<poly.vertices.size(); v++){
+            glBegin(GL_TRIANGLE_FAN); //http://stackoverflow.com/questions/8043923/gl-triangle-fan-explanation
+            glColor3f((float)poly.vertices.get(0).normal.x, (float)poly.vertices.get(0).normal.y, (float)poly.vertices.get(0).normal.z);
+            glVertex3f((float)poly.vertices.get(0).pos.x, (float)poly.vertices.get(0).pos.y, (float)poly.vertices.get(0).pos.z);
+            for(int v=1; v<poly.vertices.size(); v++){
                 glColor3f((float)poly.vertices.get(v).normal.x, (float)poly.vertices.get(v).normal.y, (float)poly.vertices.get(v).normal.z);
                 glVertex3f((float)poly.vertices.get(v).pos.x, (float)poly.vertices.get(v).pos.y, (float)poly.vertices.get(v).pos.z);
             }
@@ -98,12 +101,66 @@ public class GeometryFactory {
         }
     }
 
+    static int[] csgVBOHandles(CSG csg){
+
+        int vbo_vertex_handle = glGenBuffers();
+        glBindBuffer(GL_ARRAY_BUFFER, vbo_vertex_handle);
+        glBufferData(GL_ARRAY_BUFFER, getCSGVertexData(csg), GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        int vbo_color_handle = glGenBuffers();
+        glBindBuffer(GL_ARRAY_BUFFER, vbo_color_handle);
+        glBufferData(GL_ARRAY_BUFFER, getCSGColorData(csg), GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        return new int[]{vbo_vertex_handle,vbo_color_handle};
+    }
+
+    static FloatBuffer getCSGVertexData(CSG csg){
+        final FloatBuffer vertex_data = BufferUtils.createFloatBuffer(csg.numTriangles*9);
+        for(Polygon poly : csg.getPolygons()){
+            for(int v=1; v<poly.vertices.size()-1; v++){
+                vertex_data.put((float)poly.vertices.get(0).pos.x).
+                            put((float)poly.vertices.get(0).pos.y).
+                            put((float)poly.vertices.get(0).pos.z).
+                            put((float)poly.vertices.get(v).pos.x).
+                            put((float)poly.vertices.get(v).pos.y).
+                            put((float)poly.vertices.get(v).pos.z).
+                            put((float)poly.vertices.get(v+1).pos.x).
+                            put((float)poly.vertices.get(v+1).pos.y).
+                            put((float)poly.vertices.get(v+1).pos.z);
+            }
+        }
+        vertex_data.flip();
+        return vertex_data;
+    }
+
+    static FloatBuffer getCSGColorData(CSG csg){
+        final FloatBuffer color_data = BufferUtils.createFloatBuffer(csg.numTriangles*9);
+        for(Polygon poly : csg.getPolygons()){
+            for(int v=1; v<poly.vertices.size()-1; v++){
+                //fill up buffers
+                color_data.put((float)poly.vertices.get(0).normal.x).
+                        put((float)poly.vertices.get(0).normal.y).
+                        put((float)poly.vertices.get(0).normal.z).
+                        put((float)poly.vertices.get(v).normal.x).
+                        put((float)poly.vertices.get(v).normal.y).
+                        put((float)poly.vertices.get(v).normal.z).
+                        put((float)poly.vertices.get(v+1).normal.x).
+                        put((float)poly.vertices.get(v+1).normal.y).
+                        put((float)poly.vertices.get(v+1).normal.z);
+            }
+        }
+        color_data.flip();
+        return color_data;
+    }
+
     interface gridFunction{
         float getValue(int x, int y);
     }
 
     static void drawFunctionGrid(gridFunction d){
-        int step = 2;
+        int step = 1;
         for(int x=0; x<256; x+=step){
             for(int z=0; z<256; z+=step){
                 glBegin(GL_TRIANGLES);
@@ -160,7 +217,7 @@ public class GeometryFactory {
         glEnableClientState(GL_VERTEX_ARRAY);
         glEnableClientState(GL_COLOR_ARRAY);
 
-        glDrawArrays(GL_TRIANGLES, 0, triangles);
+        glDrawArrays(GL_TRIANGLES, 0, triangles*vertex_size);
 
         glDisableClientState(GL_COLOR_ARRAY);
         glDisableClientState(GL_VERTEX_ARRAY);

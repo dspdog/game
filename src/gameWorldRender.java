@@ -13,6 +13,7 @@ import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 import shapes.tree;
+import sun.font.TrueTypeFont;
 import utils.SimplexNoise;
 
 import java.io.File;
@@ -42,11 +43,6 @@ public class gameWorldRender {
 
     gameWorldLogic myLogic;
 
-    int[] treeVBOHandles = new int[2];
-    int treeVerts = 0;
-    int[] cubeMarcherVBOHandles = new int[2];
-    int cubesVerts = 0;
-
     public float scrollPos = 1.0f;
 
     boolean handlesFound = false;
@@ -58,6 +54,7 @@ public class gameWorldRender {
         myLogic=gl;
         handlesFound=false;
         startTime=getTime();
+
     }
 
     public void updateFPS() {
@@ -78,12 +75,10 @@ public class gameWorldRender {
 
         lastFPS = getTime(); //initialise lastFPS by setting to current Time
 
-
-
         try {
             Display.setDisplayMode(new DisplayMode(myWidth, myHeight));
+            //Display.create(new PixelFormat(0, 16, 8, 16)); //anti aliasing 16x max
             Display.create(new PixelFormat(0, 16, 8));
-
         } catch (LWJGLException e) {
             e.printStackTrace();
             System.exit(0);
@@ -94,26 +89,6 @@ public class gameWorldRender {
         while (!Display.isCloseRequested()) {
             update();
             renderGL();
-
-            if(myLogic.lastGameLogic - lastVBOUpdate > 10){
-
-                if(handlesFound){
-                    glDeleteBuffers(cubeMarcherVBOHandles[0]);
-                    glDeleteBuffers(cubeMarcherVBOHandles[1]);
-                    glDeleteBuffers(treeVBOHandles[0]);
-                    glDeleteBuffers(treeVBOHandles[1]);
-                }
-
-                cubeMarcherVBOHandles = GeometryFactory.cubeMarcherVBOHandles(myLogic.cm);
-                cubesVerts = myLogic.cm.theTriangles.size()*3;
-
-                treeVBOHandles = GeometryFactory.treeVBOHandles(myLogic.theTree);
-                treeVerts = myLogic.theTree.vertices;
-
-                lastVBOUpdate=getTime();
-                handlesFound=true;
-            }
-
             Display.update();
             //Display.sync(60); // cap fps to 60fps
         }
@@ -146,6 +121,7 @@ public class gameWorldRender {
 
         myScene = new scene();
         myScene.addWorldObject(new WorldObject(myTexture));
+        myLogic.theTree.updateCSG();
         myScene.addWorldObject(new WorldObject(myLogic.theTree.myCSG));
         myScene.addWorldObject(new WorldObject((x, y) -> (float)(SimplexNoise.noise(x/20f,y/20f)+1f)*2f));
     }
@@ -190,15 +166,16 @@ public class gameWorldRender {
 
         glPopMatrix();
 
-        IntBuffer ib = BufferUtils.createIntBuffer(1);
+        //sampling:
 
-        FloatBuffer fb = BufferUtils.createFloatBuffer(1);
+        //IntBuffer ib = BufferUtils.createIntBuffer(1);
+        //FloatBuffer fb = BufferUtils.createFloatBuffer(1);
 
-        glReadPixels(Mouse.getX(), window_height - Mouse.getY() - 1, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, ib);
-        System.out.println("index?" +ib.get(0));
+        //glReadPixels(Mouse.getX(), window_height - Mouse.getY() - 1, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, ib);
+        //System.out.println("index?" +ib.get(0));
 
-        glReadPixels(Mouse.getX(), window_height - Mouse.getY() - 1, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, fb);
-        System.out.println("depth?" +fb.get(0));
+        //glReadPixels(Mouse.getX(), window_height - Mouse.getY() - 1, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, fb);
+        //System.out.println("depth?" +fb.get(0));
     }
 
     class scene{
@@ -208,7 +185,7 @@ public class gameWorldRender {
             for(WorldObject wo : objs){
                 glStencilFunc(GL_ALWAYS, wo.stencilId + 1, -1);
                 if(wo.isCSG){
-                    GeometryFactory.drawCSG(wo.myCSG);
+                    GeometryFactory.drawTrisByVBOHandles(wo.myCSG.numTriangles, wo.VBOHandles);
                 }else if(wo.isGrid){
                     GeometryFactory.drawFunctionGrid(wo.myFunction);
                 }else if (wo.isPlane){
@@ -230,6 +207,7 @@ public class gameWorldRender {
         CSG myCSG;
         Texture myTexture;
         GeometryFactory.gridFunction myFunction;
+        int[] VBOHandles;
 
         int stencilId = (int)(System.currentTimeMillis()%100); //for stencil buffer
         boolean isCSG = false;
@@ -239,6 +217,9 @@ public class gameWorldRender {
         public WorldObject(CSG csg){
             isCSG=true;
             myCSG = csg;
+            csg.getTriangles();
+            VBOHandles = GeometryFactory.csgVBOHandles(csg);
+            //System.out.println("ok! " + csg.numTriangles() + "tris");
         }
 
         public WorldObject(Texture texture){

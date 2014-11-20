@@ -105,6 +105,8 @@ public class CSG {
         storage = new PropertyStorage();
     }
 
+    public int numTriangles=0;
+
     /**
      * Constructs a CSG from a list of {@link Polygon} instances.
      *
@@ -117,6 +119,16 @@ public class CSG {
         csg.polygons = polygons;
 
         return csg;
+    }
+
+    public void getTriangles(){ //hacky
+        int tris=0;
+        for(Polygon poly : this.getPolygons()){
+            for(int v=1; v<poly.vertices.size()-1; v++){
+                tris++;
+            }
+        }
+        numTriangles = tris;
     }
 
     /**
