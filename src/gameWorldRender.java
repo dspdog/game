@@ -9,23 +9,17 @@ import org.lwjgl.opengl.PixelFormat;
 import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
-import shapes.tree;
-import sun.font.TrueTypeFont;
 import utils.SimplexNoise;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL15.*;
 
 import static org.lwjgl.util.glu.GLU.*;
 
@@ -99,18 +93,13 @@ public class gameWorldRender {
         System.exit(1);
     }
 
-    long lastClick=0;
     public void pollInput() {
         if (Mouse.isButtonDown(0)) {
-            if(System.currentTimeMillis() - lastClick < 200){
-                //double click
-                onDoubleClick();
-            }
-            lastClick = System.currentTimeMillis();
+            onMouseDown();
         }
     }
 
-    public void onDoubleClick(){
+    public void onMouseDown(){
 
         //sampling:
 
@@ -121,7 +110,7 @@ public class gameWorldRender {
 
         if(myScene.idsMap.containsKey(ib.get(0)+"")){
             System.out.println("SELECTED " + myScene.idsMap.get(ib.get(0)+"").name );
-            myScene.centerOn(myScene.idsMap.get(ib.get(0)+""));
+            myScene.focusOn(myScene.idsMap.get(ib.get(0) + ""));
         }else{
             System.out.println("SELECTED NONE ");
         }
@@ -158,7 +147,6 @@ public class gameWorldRender {
     }
 
     public void renderGL() {
-        Vector3f centerPt = new Vector3f(50,50,50);
 
         double rotationx = 90f- 180f * Mouse.getY()/myHeight;
         double rotationy = Mouse.getX();
@@ -185,13 +173,13 @@ public class gameWorldRender {
 
         //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
         glLoadIdentity();
-        gluLookAt(500,500,500,centerPt.x,centerPt.y,centerPt.z,0,1,0);
+        gluLookAt(myScene.cameraPos.x,myScene.cameraPos.y,myScene.cameraPos.z,myScene.focalPos.x,myScene.focalPos.y,myScene.focalPos.z,0,1,0);
         glPushMatrix();
             glScalef(zoom, zoom, zoom);
-            glTranslatef(centerPt.x, centerPt.y, centerPt.z);
+            glTranslatef(myScene.focalPos.x, myScene.focalPos.y, myScene.focalPos.z);
         glRotatef((float) rotationy, 0f, 1f, 0f);
             glRotatef((float) rotationx, 1f, 0f, 0f);
-            glTranslatef(-centerPt.x, -centerPt.y, -centerPt.z);
+            glTranslatef(-myScene.focalPos.x, -myScene.focalPos.y, -myScene.focalPos.z);
 
             myScene.drawScene();
 
@@ -202,7 +190,8 @@ public class gameWorldRender {
         private ArrayList<WorldObject> objs;
         public Map<String, WorldObject> idsMap = new HashMap<String, WorldObject>();
 
-        public xyz cameraPos = new xyz(0,0,0);
+        public Vector3f focalPos = new Vector3f(0,0,0);
+        public Vector3f cameraPos = new Vector3f(500,500,500);
 
         public void drawScene(){
             for(WorldObject wo : objs){
@@ -227,8 +216,8 @@ public class gameWorldRender {
             idsMap.put((wo.stencilId+1)+"", wo);
         }
 
-        public void centerOn(WorldObject wo){
-            cameraPos = wo.getCenter();
+        public void focusOn(WorldObject wo){
+            focalPos = wo.getCenter();
         }
     }
 
@@ -267,23 +256,15 @@ public class gameWorldRender {
             triangles = GeometryFactory.gridSize*GeometryFactory.gridSize*2;
         }
 
-        public xyz getCenter(){
+        public Vector3f getCenter(){
             if(isGrid){
-                return new xyz(GeometryFactory.gridSize/2, 0, GeometryFactory.gridSize/2);
+                return new Vector3f(GeometryFactory.gridSize/2, 0, GeometryFactory.gridSize/2);
             }else if(isCSG){
                 Vector3d center = myCSG.getBounds().getCenter();
-                return new xyz(center.x, center.y, center.z);
+                return new Vector3f((float)center.x, (float)center.y, (float)center.z);
             }
-            return new xyz(GeometryFactory.gridSize/2, 0, GeometryFactory.gridSize/2);
+            return new Vector3f(GeometryFactory.gridSize/2, 0, GeometryFactory.gridSize/2);
         }
     }
-
-    public class xyz{
-        public double x,y,z;
-        public xyz(double _x, double _y, double _z){
-            x=_x; _y=y; _z=z;
-        }
-    }
-
 
 }
