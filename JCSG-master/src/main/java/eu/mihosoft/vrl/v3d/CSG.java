@@ -121,16 +121,6 @@ public class CSG {
         return csg;
     }
 
-    public void getTriangles(){ //hacky
-        int tris=0;
-        for(Polygon poly : this.getPolygons()){
-            for(int v=1; v<poly.vertices.size()-1; v++){
-                tris++;
-            }
-        }
-        numTriangles = tris;
-    }
-
     /**
      * Constructs a CSG from the specified {@link Polygon} instances.
      *

@@ -101,23 +101,23 @@ public class GeometryFactory {
         }
     }
 
-    static int[] csgVBOHandles(CSG csg){
+    static int[] csgVBOHandles(CSG csg, int tris){
 
         int vbo_vertex_handle = glGenBuffers();
         glBindBuffer(GL_ARRAY_BUFFER, vbo_vertex_handle);
-        glBufferData(GL_ARRAY_BUFFER, getCSGVertexData(csg), GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, getCSGVertexData(csg, tris), GL_STATIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
         int vbo_color_handle = glGenBuffers();
         glBindBuffer(GL_ARRAY_BUFFER, vbo_color_handle);
-        glBufferData(GL_ARRAY_BUFFER, getCSGColorData(csg), GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, getCSGColorData(csg, tris), GL_STATIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
         return new int[]{vbo_vertex_handle,vbo_color_handle};
     }
 
-    static FloatBuffer getCSGVertexData(CSG csg){
-        final FloatBuffer vertex_data = BufferUtils.createFloatBuffer(csg.numTriangles*9);
+    static FloatBuffer getCSGVertexData(CSG csg, int tris){
+        final FloatBuffer vertex_data = BufferUtils.createFloatBuffer(tris*9);
         for(Polygon poly : csg.getPolygons()){
             for(int v=1; v<poly.vertices.size()-1; v++){
                 vertex_data.put((float)poly.vertices.get(0).pos.x).
@@ -135,8 +135,20 @@ public class GeometryFactory {
         return vertex_data;
     }
 
-    static FloatBuffer getCSGColorData(CSG csg){
-        final FloatBuffer color_data = BufferUtils.createFloatBuffer(csg.numTriangles*9);
+    static int getTriangles(CSG csg){ //hacky
+        int tris=0;
+
+        for(Polygon poly : csg.getPolygons()){
+            for(int v=1; v<poly.vertices.size()-1; v++){
+                tris++;
+            }
+        }
+        return tris;
+    }
+
+
+    static FloatBuffer getCSGColorData(CSG csg, int tris){
+        final FloatBuffer color_data = BufferUtils.createFloatBuffer(tris*9);
         for(Polygon poly : csg.getPolygons()){
             for(int v=1; v<poly.vertices.size()-1; v++){
                 //fill up buffers
@@ -173,13 +185,15 @@ public class GeometryFactory {
         return new int[]{vbo_vertex_handle,vbo_color_handle};
     }
 
+    static int gridSize = 128;
+
     static FloatBuffer functionGridVertexData(gridFunction d){
 
         int step = 1;
-        final FloatBuffer vert_data = BufferUtils.createFloatBuffer((256/step * 256/step)*9*2);
+        final FloatBuffer vert_data = BufferUtils.createFloatBuffer((gridSize/step * gridSize/step)*9*2);
 
-        for(int x=0; x<256; x+=step){
-            for(int z=0; z<256; z+=step){
+        for(int x=0; x<gridSize; x+=step){
+            for(int z=0; z<gridSize; z+=step){
 
                 //glColor3f(d.getValue(x, z)/32f,d.getValue(x+step, z)/32f,d.getValue(x, z+step)/32f); //color as normal
 
@@ -188,7 +202,7 @@ public class GeometryFactory {
                          .put(x).put(d.getValue(x, z+step)).put(z+step)
                          .put(x+step).put(d.getValue(x+step, z)).put(z)
 
-                         .put(x + step).put(d.getValue(x+step, z)).put(z)
+                        .put(x + step).put(d.getValue(x+step, z)).put(z)
                          .put(x).put(d.getValue(x, z+step)).put(z+step)
                          .put(x+step).put(d.getValue(x+step, z+step)).put(z+step);
             }
@@ -201,10 +215,10 @@ public class GeometryFactory {
     static FloatBuffer functionGridColorData(gridFunction d){
 
         int step = 1;
-        final FloatBuffer color_data = BufferUtils.createFloatBuffer((256/step * 256/step)*9*2);
+        final FloatBuffer color_data = BufferUtils.createFloatBuffer((gridSize/step * gridSize/step)*9*2);
 
-        for(int x=0; x<256; x+=step){
-            for(int z=0; z<256; z+=step){
+        for(int x=0; x<gridSize; x+=step){
+            for(int z=0; z<gridSize; z+=step){
 
                 //glColor3f(d.getValue(x, z)/32f,d.getValue(x+step, z)/32f,d.getValue(x, z+step)/32f); //color as normal
 
@@ -221,30 +235,6 @@ public class GeometryFactory {
 
         color_data.flip();
         return color_data;
-    }
-
-
-
-
-
-    static void drawFunctionGrid(gridFunction d){
-        int step = 1;
-        for(int x=0; x<256; x+=step){
-            for(int z=0; z<256; z+=step){
-                glBegin(GL_TRIANGLES);
-                    glColor3f(d.getValue(x, z)/32f,d.getValue(x+step, z)/32f,d.getValue(x, z+step)/32f); //color as normal
-
-                    glVertex3f(x, d.getValue(x, z), z);
-                    glVertex3f(x, d.getValue(x,z+step),z+step);
-                    glVertex3f(x+step, d.getValue(x+step,z),z);
-
-                    glVertex3f(x+step, d.getValue(x+step,z),z);
-                    glVertex3f(x, d.getValue(x,z+step),z+step);
-                    glVertex3f(x+step, d.getValue(x+step,z+step),z+step);
-
-                glEnd();
-            }
-        }
     }
 
     static void drawLinesByVBOHandles(int vertices, int[] handles){

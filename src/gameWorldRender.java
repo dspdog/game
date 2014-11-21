@@ -1,7 +1,4 @@
-import eu.mihosoft.vrl.v3d.CSG;
-import eu.mihosoft.vrl.v3d.Cube;
-import eu.mihosoft.vrl.v3d.Polygon;
-import eu.mihosoft.vrl.v3d.Sphere;
+import eu.mihosoft.vrl.v3d.*;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
@@ -91,6 +88,7 @@ public class gameWorldRender {
         while (!Display.isCloseRequested()) {
             update();
             renderGL();
+            pollInput();
             Display.update();
             //Display.sync(60); // cap fps to 60fps
         }
@@ -99,6 +97,37 @@ public class gameWorldRender {
         myLogic.end();
         Display.destroy();
         System.exit(1);
+    }
+
+    long lastClick=0;
+    public void pollInput() {
+        if (Mouse.isButtonDown(0)) {
+            if(System.currentTimeMillis() - lastClick < 200){
+                //double click
+                onDoubleClick();
+            }
+            lastClick = System.currentTimeMillis();
+        }
+    }
+
+    public void onDoubleClick(){
+
+        //sampling:
+
+        IntBuffer ib = BufferUtils.createIntBuffer(1);
+        //FloatBuffer fb = BufferUtils.createFloatBuffer(1);
+
+        glReadPixels(Mouse.getX(), Mouse.getY(), 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, ib);
+
+        if(myScene.idsMap.containsKey(ib.get(0)+"")){
+            System.out.println("SELECTED " + myScene.idsMap.get(ib.get(0)+"").name );
+            myScene.centerOn(myScene.idsMap.get(ib.get(0)+""));
+        }else{
+            System.out.println("SELECTED NONE ");
+        }
+
+        //glReadPixels(Mouse.getX(), Mouse.getY() - 1, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, fb);
+        //System.out.println("depth?" +fb.get(0));
     }
 
     public void update() {
@@ -167,36 +196,21 @@ public class gameWorldRender {
             myScene.drawScene();
 
         glPopMatrix();
-
-        //sampling:
-
-        IntBuffer ib = BufferUtils.createIntBuffer(1);
-        //FloatBuffer fb = BufferUtils.createFloatBuffer(1);
-
-        glReadPixels(Mouse.getX(), Mouse.getY(), 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, ib);
-
-        if(myScene.idsMap.containsKey(ib.get(0)+"")){
-            System.out.println("SELECTED " + myScene.idsMap.get(ib.get(0)+"").name );
-        }else{
-            System.out.println("SELECTED NONE ");
-        }
-
-        //glReadPixels(Mouse.getX(), Mouse.getY() - 1, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, fb);
-        //System.out.println("depth?" +fb.get(0));
     }
 
     class scene{
         private ArrayList<WorldObject> objs;
         public Map<String, WorldObject> idsMap = new HashMap<String, WorldObject>();
 
+        public xyz cameraPos = new xyz(0,0,0);
+
         public void drawScene(){
             for(WorldObject wo : objs){
                 glStencilFunc(GL_ALWAYS, wo.stencilId + 1, -1);
                 if(wo.isCSG){
-                    GeometryFactory.drawTrisByVBOHandles(wo.myCSG.numTriangles, wo.VBOHandles);
+                    GeometryFactory.drawTrisByVBOHandles(wo.triangles, wo.VBOHandles);
                 }else if(wo.isGrid){
-                    GeometryFactory.drawTrisByVBOHandles(256*256*2, wo.VBOHandles);
-                    //GeometryFactory.drawFunctionGrid(wo.myFunction);
+                    GeometryFactory.drawTrisByVBOHandles(wo.triangles, wo.VBOHandles);
                 }else if (wo.isPlane){
                     GeometryFactory.plane(wo.myTexture);
                 }
@@ -212,6 +226,10 @@ public class gameWorldRender {
             System.out.println("ADDING " + (wo.stencilId+1));
             idsMap.put((wo.stencilId+1)+"", wo);
         }
+
+        public void centerOn(WorldObject wo){
+            cameraPos = wo.getCenter();
+        }
     }
 
     public class WorldObject{ //have this handle all the interactions w/ geometryfactory...
@@ -219,7 +237,7 @@ public class gameWorldRender {
         Texture myTexture;
         GeometryFactory.gridFunction myFunction;
         int[] VBOHandles;
-
+        int triangles = 0;
         String name="";
 
         int stencilId = (int)(System.currentTimeMillis()%255); //for stencil buffer
@@ -231,8 +249,8 @@ public class gameWorldRender {
             name="CSG_" + stencilId;
             isCSG=true;
             myCSG = csg;
-            csg.getTriangles();
-            VBOHandles = GeometryFactory.csgVBOHandles(csg);
+            triangles = GeometryFactory.getTriangles(csg);
+            VBOHandles = GeometryFactory.csgVBOHandles(csg, triangles);
         }
 
         public WorldObject(Texture texture){
@@ -246,6 +264,26 @@ public class gameWorldRender {
             isGrid=true;
             myFunction = d;
             VBOHandles = GeometryFactory.gridVBOHandles(d);
+            triangles = GeometryFactory.gridSize*GeometryFactory.gridSize*2;
+        }
+
+        public xyz getCenter(){
+            if(isGrid){
+                return new xyz(GeometryFactory.gridSize/2, 0, GeometryFactory.gridSize/2);
+            }else if(isCSG){
+                Vector3d center = myCSG.getBounds().getCenter();
+                return new xyz(center.x, center.y, center.z);
+            }
+            return new xyz(GeometryFactory.gridSize/2, 0, GeometryFactory.gridSize/2);
         }
     }
+
+    public class xyz{
+        public double x,y,z;
+        public xyz(double _x, double _y, double _z){
+            x=_x; _y=y; _z=z;
+        }
+    }
+
+
 }
