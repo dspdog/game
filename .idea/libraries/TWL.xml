@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="TWL">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/twl/TWL.jar!/" />
+      <root url="jar://$PROJECT_DIR$/twl/TWLEffects.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

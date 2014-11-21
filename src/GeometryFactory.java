@@ -76,11 +76,11 @@ public class GeometryFactory {
 
         glTexCoord2f(1, 1);
         glColor3f(1, 1, 1);
-        glVertex3f(size, 0, size);
+        glVertex3f(size, size, 0);
 
         glTexCoord2f(0, 1);
         glColor3f(1, 1, 1);
-        glVertex3f(0, 0, size);
+        glVertex3f(0, size, 0);
 
         glEnd();
         glDisable(GL_TEXTURE_2D);

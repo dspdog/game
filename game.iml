@@ -95,5 +95,6 @@
     </orderEntry>
     <orderEntry type="library" name="JCSG-master" level="project" />
     <orderEntry type="library" name="slick-util" level="project" />
+    <orderEntry type="library" name="TWL" level="project" />
   </component>
 </module>

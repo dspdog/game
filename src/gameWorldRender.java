@@ -3,10 +3,8 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.*;
 import org.lwjgl.opengl.DisplayMode;
-import org.lwjgl.opengl.GL12;
-import org.lwjgl.opengl.PixelFormat;
 import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
@@ -18,6 +16,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -250,6 +249,40 @@ public class gameWorldRender {
         glPopMatrix();
     }
 
+    void billboardCheatSphericalBegin() { //scale-ignoring easy billboarding function  //http://www.lighthouse3d.com/opengl/billboarding/index.php?billCheat
+
+        FloatBuffer modelview = BufferUtils.createFloatBuffer(16);
+        int i,j;
+
+        // save the current modelview matrix
+        glPushMatrix();
+
+        // get the current modelview matrix
+        GL11.glGetFloat(GL_MODELVIEW_MATRIX, modelview);
+
+        // undo all rotations
+        // beware all scaling is lost as well
+        for( i=0; i<3; i++ )
+            for( j=0; j<3; j++ ) {
+                if ( i==j )
+                    modelview.put(i*4+j,1.0f);
+                else
+                    modelview.put(i*4+j,0.0f);
+            }
+
+        // set the modelview with no rotations
+        GL11.glLoadMatrix(modelview);
+    }
+
+
+
+    void billboardEnd() {
+
+        // restore the previously
+        // stored modelview matrix
+        glPopMatrix();
+    }
+
     class scene{
         private ArrayList<WorldObject> objs;
         public Map<String, WorldObject> idsMap = new HashMap<String, WorldObject>();
@@ -263,7 +296,9 @@ public class gameWorldRender {
                 if(wo.isCSG || wo.isGrid){
                     GeometryFactory.drawTrisByVBOHandles(wo.triangles, wo.VBOHandles);
                 }else if (wo.isPlane){
+                    billboardCheatSphericalBegin();
                     GeometryFactory.plane(wo.myTextureId);
+                    billboardEnd();
                 }
             }
         }
@@ -316,7 +351,6 @@ public class gameWorldRender {
             isPlane = true;
             myTextureId = textureId;
         }
-
 
         public WorldObject(GeometryFactory.gridFunction d){
             name="GRID_" + stencilId;
