@@ -23,7 +23,9 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
@@ -123,7 +125,7 @@ public class gameWorldRender {
         myScene.addWorldObject(new WorldObject(myTexture));
         myLogic.theTree.updateCSG();
         myScene.addWorldObject(new WorldObject(myLogic.theTree.myCSG));
-        myScene.addWorldObject(new WorldObject((x, y) -> (float)(SimplexNoise.noise(x/20f,y/20f)+1f)*2f));
+        myScene.addWorldObject(new WorldObject((x, y) -> (float)(1f-(SimplexNoise.noise(x/20f,y/20f)+1f)*(SimplexNoise.noise(x/20f,y/20f)+1f))*10f));
     }
 
     public void renderGL() {
@@ -168,18 +170,24 @@ public class gameWorldRender {
 
         //sampling:
 
-        //IntBuffer ib = BufferUtils.createIntBuffer(1);
+        IntBuffer ib = BufferUtils.createIntBuffer(1);
         //FloatBuffer fb = BufferUtils.createFloatBuffer(1);
 
-        //glReadPixels(Mouse.getX(), window_height - Mouse.getY() - 1, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, ib);
-        //System.out.println("index?" +ib.get(0));
+        glReadPixels(Mouse.getX(), Mouse.getY(), 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, ib);
 
-        //glReadPixels(Mouse.getX(), window_height - Mouse.getY() - 1, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, fb);
+        if(myScene.idsMap.containsKey(ib.get(0)+"")){
+            System.out.println("SELECTED " + myScene.idsMap.get(ib.get(0)+"").name );
+        }else{
+            System.out.println("SELECTED NONE ");
+        }
+
+        //glReadPixels(Mouse.getX(), Mouse.getY() - 1, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, fb);
         //System.out.println("depth?" +fb.get(0));
     }
 
     class scene{
         private ArrayList<WorldObject> objs;
+        public Map<String, WorldObject> idsMap = new HashMap<String, WorldObject>();
 
         public void drawScene(){
             for(WorldObject wo : objs){
@@ -187,7 +195,8 @@ public class gameWorldRender {
                 if(wo.isCSG){
                     GeometryFactory.drawTrisByVBOHandles(wo.myCSG.numTriangles, wo.VBOHandles);
                 }else if(wo.isGrid){
-                    GeometryFactory.drawFunctionGrid(wo.myFunction);
+                    GeometryFactory.drawTrisByVBOHandles(256*256*2, wo.VBOHandles);
+                    //GeometryFactory.drawFunctionGrid(wo.myFunction);
                 }else if (wo.isPlane){
                     GeometryFactory.plane(wo.myTexture);
                 }
@@ -200,6 +209,8 @@ public class gameWorldRender {
 
         public void addWorldObject(WorldObject wo){
             objs.add(wo);
+            System.out.println("ADDING " + (wo.stencilId+1));
+            idsMap.put((wo.stencilId+1)+"", wo);
         }
     }
 
@@ -209,28 +220,32 @@ public class gameWorldRender {
         GeometryFactory.gridFunction myFunction;
         int[] VBOHandles;
 
-        int stencilId = (int)(System.currentTimeMillis()%100); //for stencil buffer
+        String name="";
+
+        int stencilId = (int)(System.currentTimeMillis()%255); //for stencil buffer
         boolean isCSG = false;
         boolean isGrid = false;
         boolean isPlane = false;
 
         public WorldObject(CSG csg){
+            name="CSG_" + stencilId;
             isCSG=true;
             myCSG = csg;
             csg.getTriangles();
             VBOHandles = GeometryFactory.csgVBOHandles(csg);
-            //System.out.println("ok! " + csg.numTriangles() + "tris");
         }
 
         public WorldObject(Texture texture){
+            name="TEX_" + stencilId;
             isPlane = true;
             myTexture = texture;
         }
 
         public WorldObject(GeometryFactory.gridFunction d){
+            name="GRID_" + stencilId;
             isGrid=true;
             myFunction = d;
-            //TODO store grid in memory, no re-calc
+            VBOHandles = GeometryFactory.gridVBOHandles(d);
         }
     }
 }

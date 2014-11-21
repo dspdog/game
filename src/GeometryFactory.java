@@ -159,6 +159,74 @@ public class GeometryFactory {
         float getValue(int x, int y);
     }
 
+    static int[] gridVBOHandles(gridFunction d){
+        int vbo_vertex_handle = glGenBuffers();
+        glBindBuffer(GL_ARRAY_BUFFER, vbo_vertex_handle);
+        glBufferData(GL_ARRAY_BUFFER, functionGridVertexData(d), GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        int vbo_color_handle = glGenBuffers();
+        glBindBuffer(GL_ARRAY_BUFFER, vbo_color_handle);
+        glBufferData(GL_ARRAY_BUFFER, functionGridColorData(d), GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        return new int[]{vbo_vertex_handle,vbo_color_handle};
+    }
+
+    static FloatBuffer functionGridVertexData(gridFunction d){
+
+        int step = 1;
+        final FloatBuffer vert_data = BufferUtils.createFloatBuffer((256/step * 256/step)*9*2);
+
+        for(int x=0; x<256; x+=step){
+            for(int z=0; z<256; z+=step){
+
+                //glColor3f(d.getValue(x, z)/32f,d.getValue(x+step, z)/32f,d.getValue(x, z+step)/32f); //color as normal
+
+                //fill up buffers
+                vert_data.put(x).put(d.getValue(x, z)).put(z)
+                         .put(x).put(d.getValue(x, z+step)).put(z+step)
+                         .put(x+step).put(d.getValue(x+step, z)).put(z)
+
+                         .put(x + step).put(d.getValue(x+step, z)).put(z)
+                         .put(x).put(d.getValue(x, z+step)).put(z+step)
+                         .put(x+step).put(d.getValue(x+step, z+step)).put(z+step);
+            }
+        }
+
+        vert_data.flip();
+        return vert_data;
+    }
+
+    static FloatBuffer functionGridColorData(gridFunction d){
+
+        int step = 1;
+        final FloatBuffer color_data = BufferUtils.createFloatBuffer((256/step * 256/step)*9*2);
+
+        for(int x=0; x<256; x+=step){
+            for(int z=0; z<256; z+=step){
+
+                //glColor3f(d.getValue(x, z)/32f,d.getValue(x+step, z)/32f,d.getValue(x, z+step)/32f); //color as normal
+
+                //fill up buffers
+                color_data.put(d.getValue(x, z)/32f).put(d.getValue(x+step, z)/32f).put(d.getValue(x, z+step)/32f);
+                color_data.put(d.getValue(x, z)/32f).put(d.getValue(x+step, z)/32f).put(d.getValue(x, z+step)/32f);
+                color_data.put(d.getValue(x, z)/32f).put(d.getValue(x+step, z)/32f).put(d.getValue(x, z+step)/32f);
+                color_data.put(d.getValue(x, z)/32f).put(d.getValue(x+step, z)/32f).put(d.getValue(x, z+step)/32f);
+                color_data.put(d.getValue(x, z)/32f).put(d.getValue(x+step, z)/32f).put(d.getValue(x, z+step)/32f);
+                color_data.put(d.getValue(x, z)/32f).put(d.getValue(x+step, z)/32f).put(d.getValue(x, z+step)/32f);
+
+            }
+        }
+
+        color_data.flip();
+        return color_data;
+    }
+
+
+
+
+
     static void drawFunctionGrid(gridFunction d){
         int step = 1;
         for(int x=0; x<256; x+=step){
