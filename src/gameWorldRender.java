@@ -157,7 +157,6 @@ public class gameWorldRender {
         int window_height = Display.getHeight();
         int index = 0;
 
-
         if(scroll<0){
             scrollPos*=0.95f;
         }else if(scroll>0){
@@ -225,6 +224,7 @@ public class gameWorldRender {
         CSG myCSG;
         Texture myTexture;
         GeometryFactory.gridFunction myFunction;
+        GeometryFactory.gridFunction3d myFunction3d;
         int[] VBOHandles;
         int triangles = 0;
         String name="";
@@ -239,7 +239,7 @@ public class gameWorldRender {
             isCSG=true;
             myCSG = csg;
             triangles = GeometryFactory.getTriangles(csg);
-            VBOHandles = GeometryFactory.csgVBOHandles(csg, triangles);
+            VBOHandles = GeometryFactory.VBOHandles(GeometryFactory.getCSGVertexData(csg, triangles));
         }
 
         public WorldObject(Texture texture){
@@ -252,7 +252,7 @@ public class gameWorldRender {
             name="GRID_" + stencilId;
             isGrid=true;
             myFunction = d;
-            VBOHandles = GeometryFactory.gridVBOHandles(d);
+            VBOHandles = GeometryFactory.VBOHandles(GeometryFactory.functionGridVertexData(d));
             triangles = GeometryFactory.gridSize*GeometryFactory.gridSize*2;
         }
 
