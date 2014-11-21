@@ -38,7 +38,7 @@ public final class tree implements java.io.Serializable {
     public CSG myCSG = new Cylinder().toCSG();
 
     public void resetShape(){
-        iterations =350;
+        iterations =250;
 
         hasDrawList = false;
         evolutionDisqualified=false;

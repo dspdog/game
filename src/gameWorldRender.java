@@ -5,15 +5,19 @@ import org.lwjgl.Sys;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
+import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.PixelFormat;
 import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 import utils.SimplexNoise;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -126,6 +130,67 @@ public class gameWorldRender {
     Texture myTexture;
     scene myScene;
 
+    public int funcTex(){  //http://www.java-gaming.org/index.php?topic=25516.0
+        //Generate a small test image by drawing to a BufferedImage
+        //It's of course also possible to just load an image using ImageIO.load()
+        BufferedImage test = new BufferedImage(128, 128, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = test.createGraphics();
+
+        g2d.setColor(new Color(1.0f, 1.0f, 1.0f, 0.5f));
+        g2d.fillRect(0, 0, 128, 128); //A transparent white background
+
+        g2d.setColor(Color.red);
+        g2d.drawRect(0, 0, 127, 127); //A red frame around the image
+        g2d.fillRect(10, 10, 10, 10); //A red box
+
+        g2d.setColor(Color.blue);
+        g2d.drawString("Test image", 10, 64); //Some blue text
+
+        return loadTexture(test);
+    }
+
+    private static final int BYTES_PER_PIXEL = 4;
+    public static int loadTexture(BufferedImage image){
+
+        int[] pixels = new int[image.getWidth() * image.getHeight()];
+        image.getRGB(0, 0, image.getWidth(), image.getHeight(), pixels, 0, image.getWidth());
+
+        ByteBuffer buffer = BufferUtils.createByteBuffer(image.getWidth() * image.getHeight() * BYTES_PER_PIXEL); //4 for RGBA, 3 for RGB
+
+        for(int y = 0; y < image.getHeight(); y++){
+            for(int x = 0; x < image.getWidth(); x++){
+                int pixel = pixels[y * image.getWidth() + x];
+                buffer.put((byte) ((pixel >> 16) & 0xFF));     // Red component
+                buffer.put((byte) ((pixel >> 8) & 0xFF));      // Green component
+                buffer.put((byte) (pixel & 0xFF));               // Blue component
+                buffer.put((byte) ((pixel >> 24) & 0xFF));    // Alpha component. Only for RGBA
+            }
+        }
+
+        buffer.flip(); //FOR THE LOVE OF GOD DO NOT FORGET THIS
+
+        // You now have a ByteBuffer filled with the color data of each pixel.
+        // Now just create a texture ID and bind it. Then you can load it using
+        // whatever OpenGL method you want, for example:
+
+        int textureID = glGenTextures(); //Generate texture ID
+        glBindTexture(GL_TEXTURE_2D, textureID); //Bind texture ID
+
+        //Setup wrap mode
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE);
+
+        //Setup texture scaling filtering
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        //Send texel data to OpenGL
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+
+        //Return the texture ID so we can bind it later again
+        return textureID;
+    }
+
     public void initGL() {
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
@@ -140,7 +205,7 @@ public class gameWorldRender {
         }
 
         myScene = new scene();
-        myScene.addWorldObject(new WorldObject(myTexture));
+        myScene.addWorldObject(new WorldObject(funcTex()));
         myLogic.theTree.updateCSG();
         myScene.addWorldObject(new WorldObject(myLogic.theTree.myCSG));
         myScene.addWorldObject(new WorldObject((x, y) -> (float)(1f-(SimplexNoise.noise(x/20f,y/20f)+1f)*(SimplexNoise.noise(x/20f,y/20f)+1f))*10f));
@@ -195,12 +260,10 @@ public class gameWorldRender {
         public void drawScene(){
             for(WorldObject wo : objs){
                 glStencilFunc(GL_ALWAYS, wo.stencilId + 1, -1);
-                if(wo.isCSG){
-                    GeometryFactory.drawTrisByVBOHandles(wo.triangles, wo.VBOHandles);
-                }else if(wo.isGrid){
+                if(wo.isCSG || wo.isGrid){
                     GeometryFactory.drawTrisByVBOHandles(wo.triangles, wo.VBOHandles);
                 }else if (wo.isPlane){
-                    GeometryFactory.plane(wo.myTexture);
+                    GeometryFactory.plane(wo.myTextureId);
                 }
             }
         }
@@ -222,7 +285,7 @@ public class gameWorldRender {
 
     public class WorldObject{ //have this handle all the interactions w/ geometryfactory...
         CSG myCSG;
-        Texture myTexture;
+        int myTextureId;
         GeometryFactory.gridFunction myFunction;
         GeometryFactory.gridFunction3d myFunction3d;
         int[] VBOHandles;
@@ -245,8 +308,15 @@ public class gameWorldRender {
         public WorldObject(Texture texture){
             name="TEX_" + stencilId;
             isPlane = true;
-            myTexture = texture;
+            myTextureId = texture.getTextureID();
         }
+
+        public WorldObject(int textureId){
+            name="TEX_" + stencilId;
+            isPlane = true;
+            myTextureId = textureId;
+        }
+
 
         public WorldObject(GeometryFactory.gridFunction d){
             name="GRID_" + stencilId;
