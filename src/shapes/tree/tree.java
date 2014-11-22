@@ -1,4 +1,4 @@
-package shapes;
+package shapes.tree;
 
 import eu.mihosoft.vrl.v3d.CSG;
 import eu.mihosoft.vrl.v3d.Cylinder;
@@ -7,7 +7,6 @@ import org.lwjgl.BufferUtils;
 
 import java.io.*;
 import java.nio.FloatBuffer;
-import java.util.ArrayList;
 import java.util.Random;
 
 public final class tree implements java.io.Serializable {

@@ -1,5 +1,5 @@
 import org.lwjgl.Sys;
-import shapes.tree;
+import shapes.tree.tree;
 
 public class gameWorldLogic implements Runnable {
 

@@ -5,6 +5,7 @@ import org.lwjgl.Sys;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.*;
 import org.lwjgl.opengl.DisplayMode;
+import shapes.geography.GeographyFactory;
 import utils.SimplexNoise;
 import world.*;
 
@@ -126,7 +127,7 @@ public class gameWorldRender {
         myScene.addWorldObject(new WorldObject(TextureFactory.proceduralTexture()));
         myLogic.theTree.updateCSG();
         myScene.addWorldObject(new WorldObject(myLogic.theTree.myCSG));
-        myScene.addWorldObject(new WorldObject((x, y) -> (float)(1f-(SimplexNoise.noise(x/20f,y/20f)+1f)*(SimplexNoise.noise(x/20f,y/20f)+1f))*10f));
+        myScene.addWorldObject(new WorldObject((x, y) -> GeographyFactory.geographyFunction(x,y)));
     }
 
     public void renderGL() {

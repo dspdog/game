@@ -6,16 +6,8 @@ import org.lwjgl.BufferUtils;
 import org.newdawn.slick.opengl.*;
 import org.lwjgl.opengl.GL11;
 
-import shapes.tree;
-import org.lwjgl.*;
-import org.lwjgl.opengl.*;
-
 import java.nio.FloatBuffer;
-import java.util.List;
-import java.util.function.DoubleBinaryOperator;
 
-import static org.lwjgl.opengl.ARBBufferObject.*;
-import static org.lwjgl.opengl.ARBVertexBufferObject.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
 
