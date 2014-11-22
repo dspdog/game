@@ -204,7 +204,7 @@ public class gameWorldRender {
         }
 
         myScene = new scene();
-        myScene.addWorldObject(new WorldObject(funcTex()));
+        //myScene.addWorldObject(new WorldObject(funcTex()));
         myLogic.theTree.updateCSG();
         myScene.addWorldObject(new WorldObject(myLogic.theTree.myCSG));
         myScene.addWorldObject(new WorldObject((x, y) -> (float)(1f-(SimplexNoise.noise(x/20f,y/20f)+1f)*(SimplexNoise.noise(x/20f,y/20f)+1f))*10f));
@@ -228,7 +228,7 @@ public class gameWorldRender {
         }
 
         float zoom = 5f*scrollPos;
-
+        glClearColor(0.5f,0.5f,0.5f,1f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_STENCIL_TEST);
@@ -238,8 +238,8 @@ public class gameWorldRender {
         glLoadIdentity();
         gluLookAt(myScene.cameraPos.x,myScene.cameraPos.y,myScene.cameraPos.z,myScene.focalPos.x,myScene.focalPos.y,myScene.focalPos.z,0,1,0);
         glPushMatrix();
-            glScalef(zoom, zoom, zoom);
-            glTranslatef(myScene.focalPos.x, myScene.focalPos.y, myScene.focalPos.z);
+
+            glTranslatef(myScene.focalPos.x, myScene.focalPos.y, myScene.focalPos.z);glScalef(zoom, zoom, zoom);
         glRotatef((float) rotationy, 0f, 1f, 0f);
             glRotatef((float) rotationx, 1f, 0f, 0f);
             glTranslatef(-myScene.focalPos.x, -myScene.focalPos.y, -myScene.focalPos.z);

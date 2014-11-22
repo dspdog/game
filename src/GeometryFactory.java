@@ -155,7 +155,7 @@ public class GeometryFactory {
         return new int[]{vbo_vertex_handle,vbo_color_handle};
     }
 
-    static int gridSize = 128;
+    static int gridSize = 512;
 
     static FloatBuffer[] functionGridVertexData(gridFunction d){
         int step = 1;
