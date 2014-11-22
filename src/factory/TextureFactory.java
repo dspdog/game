@@ -1,3 +1,5 @@
+package factory;
+
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL12;
 
@@ -8,6 +10,19 @@ import java.nio.ByteBuffer;
 import static org.lwjgl.opengl.GL11.*;
 
 public class TextureFactory {
+
+    /*
+        //load texture from png
+
+        try {
+            Texture myTexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("./res/myball.png")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        myTexture.release();
+
+     */
 
     static public int proceduralTexture(){  //http://www.java-gaming.org/index.php?topic=25516.0
         //Generate a small test image by drawing to a BufferedImage

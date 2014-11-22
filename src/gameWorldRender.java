@@ -1,26 +1,14 @@
-import eu.mihosoft.vrl.v3d.*;
+import factory.TextureFactory;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.*;
 import org.lwjgl.opengl.DisplayMode;
-import org.lwjgl.util.vector.Vector3f;
-import org.newdawn.slick.opengl.Texture;
-import org.newdawn.slick.opengl.TextureLoader;
 import utils.SimplexNoise;
+import world.*;
 
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -34,8 +22,6 @@ public class gameWorldRender {
     public int myFPS = 0;
     public int myWidth, myHeight;
     public float myFOV;
-
-    long lastVBOUpdate=0;
 
     gameWorldLogic myLogic;
 
@@ -90,7 +76,6 @@ public class gameWorldRender {
             //Display.sync(60); // cap fps to 60fps
         }
 
-        myTexture.release();
         myLogic.end();
         Display.destroy();
         System.exit(1);
@@ -126,7 +111,6 @@ public class gameWorldRender {
         updateFPS();
     }
 
-    Texture myTexture;
     scene myScene;
 
 
@@ -137,11 +121,6 @@ public class gameWorldRender {
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
 
-        try {
-            myTexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("./res/myball.png")));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         myScene = new scene();
         myScene.addWorldObject(new WorldObject(TextureFactory.proceduralTexture()));
@@ -190,92 +169,6 @@ public class gameWorldRender {
     }
 
 
-    class scene{
-        private ArrayList<WorldObject> objs;
-        public Map<String, WorldObject> idsMap = new HashMap<String, WorldObject>();
 
-        public Vector3f focalPos = new Vector3f(0,0,0);
-        public Vector3f cameraPos = new Vector3f(500,500,500);
-
-        public void drawScene(){
-            for(WorldObject wo : objs){
-                glStencilFunc(GL_ALWAYS, wo.stencilId + 1, -1);
-                if(wo.isCSG || wo.isGrid){
-                    GeometryFactory.drawTrisByVBOHandles(wo.triangles, wo.VBOHandles);
-                }else if (wo.isPlane){
-                    GeometryFactory.billboardCheatSphericalBegin();
-                    GeometryFactory.plane(wo.myTextureId);
-                    GeometryFactory.billboardEnd();
-                }
-            }
-        }
-
-        public scene(){
-            objs = new ArrayList<>();
-        }
-
-        public void addWorldObject(WorldObject wo){
-            objs.add(wo);
-            System.out.println("ADDING " + (wo.stencilId+1));
-            idsMap.put((wo.stencilId+1)+"", wo);
-        }
-
-        public void focusOn(WorldObject wo){
-            focalPos = wo.getCenter();
-        }
-    }
-
-    public class WorldObject{ //have this handle all the interactions w/ geometryfactory...
-        CSG myCSG;
-        int myTextureId;
-        GeometryFactory.gridFunction myFunction;
-        GeometryFactory.gridFunction3d myFunction3d;
-        int[] VBOHandles;
-        int triangles = 0;
-        String name="";
-
-        int stencilId = (int)(System.currentTimeMillis()%255); //for stencil buffer
-        boolean isCSG = false;
-        boolean isGrid = false;
-        boolean isPlane = false;
-
-        public WorldObject(CSG csg){
-            name="CSG_" + stencilId;
-            isCSG=true;
-            myCSG = csg;
-            triangles = GeometryFactory.getTriangles(csg);
-            VBOHandles = GeometryFactory.VBOHandles(GeometryFactory.getCSGVertexData(csg, triangles));
-        }
-
-        public WorldObject(Texture texture){
-            name="TEX_" + stencilId;
-            isPlane = true;
-            myTextureId = texture.getTextureID();
-        }
-
-        public WorldObject(int textureId){
-            name="TEX_" + stencilId;
-            isPlane = true;
-            myTextureId = textureId;
-        }
-
-        public WorldObject(GeometryFactory.gridFunction d){
-            name="GRID_" + stencilId;
-            isGrid=true;
-            myFunction = d;
-            VBOHandles = GeometryFactory.VBOHandles(GeometryFactory.functionGridVertexData(d));
-            triangles = GeometryFactory.gridSize*GeometryFactory.gridSize*2;
-        }
-
-        public Vector3f getCenter(){
-            if(isGrid){
-                return new Vector3f(GeometryFactory.gridSize/2, 0, GeometryFactory.gridSize/2);
-            }else if(isCSG){
-                Vector3d center = myCSG.getBounds().getCenter();
-                return new Vector3f((float)center.x, (float)center.y, (float)center.z);
-            }
-            return new Vector3f(GeometryFactory.gridSize/2, 0, GeometryFactory.gridSize/2);
-        }
-    }
 
 }

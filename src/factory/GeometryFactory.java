@@ -1,3 +1,5 @@
+package factory;
+
 import eu.mihosoft.vrl.v3d.CSG;
 import eu.mihosoft.vrl.v3d.Polygon;
 import org.lwjgl.BufferUtils;
@@ -60,7 +62,7 @@ public class GeometryFactory {
         glDisable(GL_TEXTURE_2D);
     }
 
-    static void plane(int texid){
+    public static void plane(int texid){
         glEnable(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, texid);
         int size = 250;
@@ -86,7 +88,7 @@ public class GeometryFactory {
         glDisable(GL_TEXTURE_2D);
     }
 
-    static FloatBuffer[] getCSGVertexData(CSG csg, int tris){
+    public static FloatBuffer[] getCSGVertexData(CSG csg, int tris){
         final FloatBuffer vertex_data = BufferUtils.createFloatBuffer(tris*9);
         final FloatBuffer color_data = BufferUtils.createFloatBuffer(tris*9);
         for(Polygon poly : csg.getPolygons()){
@@ -117,7 +119,7 @@ public class GeometryFactory {
         return new FloatBuffer[]{vertex_data, color_data};
     }
 
-    static int getTriangles(CSG csg){
+    public static int getTriangles(CSG csg){
         int tris=0;
 
         for(Polygon poly : csg.getPolygons()){
@@ -129,16 +131,16 @@ public class GeometryFactory {
     }
 
 
-    interface gridFunction{
+    public interface gridFunction{
         float getValue(int x, int y);
     }
 
-    interface gridFunction3d{
+    public interface gridFunction3d{
         float getValue(int x, int y, int z);
     }
 
 
-    static int[] VBOHandles(FloatBuffer[] fbs ){
+    public static int[] VBOHandles(FloatBuffer[] fbs ){
 
         //FloatBuffer[] fbs = functionGridVertexData(d);
 
@@ -155,9 +157,9 @@ public class GeometryFactory {
         return new int[]{vbo_vertex_handle,vbo_color_handle};
     }
 
-    static int gridSize = 512;
+    public static int gridSize = 512;
 
-    static FloatBuffer[] functionGridVertexData(gridFunction d){
+    public static FloatBuffer[] functionGridVertexData(gridFunction d){
         int step = 1;
         final FloatBuffer vert_data = BufferUtils.createFloatBuffer((gridSize/step * gridSize/step)*9*2);
         final FloatBuffer color_data = BufferUtils.createFloatBuffer((gridSize/step * gridSize/step)*9*2);
@@ -209,7 +211,7 @@ public class GeometryFactory {
         glDisableClientState(GL_VERTEX_ARRAY);
     }
 
-    static void drawTrisByVBOHandles(int triangles, int[] handles){
+    public static void drawTrisByVBOHandles(int triangles, int[] handles){
         int vertex_size = 3; // X, Y, Z,
         int color_size = 3; // R, G, B,
 
@@ -232,7 +234,7 @@ public class GeometryFactory {
     }
 
 
-    static void billboardCheatSphericalBegin() { //scale-ignoring easy billboarding function  //http://www.lighthouse3d.com/opengl/billboarding/index.php?billCheat
+    public static void billboardCheatSphericalBegin() { //scale-ignoring easy billboarding function  //http://www.lighthouse3d.com/opengl/billboarding/index.php?billCheat
         FloatBuffer modelview = BufferUtils.createFloatBuffer(16);
         int i,j;
 
@@ -256,7 +258,7 @@ public class GeometryFactory {
 
 
 
-    static void billboardEnd() {
+    public static void billboardEnd() {
 
         // restore the previously
         // stored modelview matrix
