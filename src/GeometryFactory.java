@@ -230,4 +230,36 @@ public class GeometryFactory {
         glDisableClientState(GL_COLOR_ARRAY);
         glDisableClientState(GL_VERTEX_ARRAY);
     }
+
+
+    static void billboardCheatSphericalBegin() { //scale-ignoring easy billboarding function  //http://www.lighthouse3d.com/opengl/billboarding/index.php?billCheat
+        FloatBuffer modelview = BufferUtils.createFloatBuffer(16);
+        int i,j;
+
+        // save the current modelview matrix
+        glPushMatrix();
+        // get the current modelview matrix
+        GL11.glGetFloat(GL_MODELVIEW_MATRIX, modelview);
+
+        // undo all rotations
+        // beware all scaling is lost as well
+        for( i=0; i<3; i++ )
+            for( j=0; j<3; j++ ) {
+                if ( i==j )
+                    modelview.put(i*4+j,1.0f);
+                else
+                    modelview.put(i*4+j,0.0f);
+            }
+        // set the modelview with no rotations
+        GL11.glLoadMatrix(modelview);
+    }
+
+
+
+    static void billboardEnd() {
+
+        // restore the previously
+        // stored modelview matrix
+        glPopMatrix();
+    }
 }
