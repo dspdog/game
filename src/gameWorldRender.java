@@ -2,11 +2,11 @@ import factory.TextureFactory;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.*;
 import org.lwjgl.opengl.DisplayMode;
 import shapes.geography.GeographyFactory;
-import utils.SimplexNoise;
 import world.*;
 
 import java.nio.IntBuffer;
@@ -86,10 +86,61 @@ public class gameWorldRender {
         System.exit(1);
     }
 
+    boolean W_down = false;
+    boolean A_down = false;
+    boolean S_down = false;
+    boolean D_down = false;
+
+
     public void pollInput() {
         if (Mouse.isButtonDown(0)) {
             onMouseDown();
         }
+        while (Keyboard.next()) {
+            if (Keyboard.getEventKeyState()) {
+                if (Keyboard.getEventKey() == Keyboard.KEY_A) {
+                    A_down=true;
+                }
+                if (Keyboard.getEventKey() == Keyboard.KEY_S) {
+                    S_down=true;
+                }
+                if (Keyboard.getEventKey() == Keyboard.KEY_D) {
+                    D_down=true;
+                }
+                if (Keyboard.getEventKey() == Keyboard.KEY_W) {
+                    W_down=true;
+                }
+            } else {
+                if (Keyboard.getEventKey() == Keyboard.KEY_A) {
+                    A_down=false;
+                }
+                if (Keyboard.getEventKey() == Keyboard.KEY_S) {
+                    S_down=false;
+                }
+                if (Keyboard.getEventKey() == Keyboard.KEY_D) {
+                    D_down=false;
+                }
+                if (Keyboard.getEventKey() == Keyboard.KEY_W) {
+                    W_down=false;
+                }
+            }
+        }
+
+        float step = 0.1f;
+        if(A_down){
+            scene.cameraPosDesired.x+=step;
+        }
+        if(S_down){
+            scene.cameraPosDesired.z+=step;
+        }
+        if(W_down){
+            scene.cameraPosDesired.z-=step;
+        }
+        if(D_down){
+            scene.cameraPosDesired.x-=step;
+        }
+
+
     }
 
     public void onMouseDown(){
@@ -161,13 +212,15 @@ public class gameWorldRender {
 
         //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
         glLoadIdentity();
-        gluLookAt(myScene.cameraPos.x,myScene.cameraPos.y,myScene.cameraPos.z,myScene.focalPos.x,myScene.focalPos.y,myScene.focalPos.z,0,1,0);
+        //gluLookAt(myScene.cameraPosDesired.x,myScene.cameraPosDesired.y,myScene.cameraPosDesired.z,myScene.focalPos.x,myScene.focalPos.y,myScene.focalPos.z,0,1,0);
         glPushMatrix();
-
-            glTranslatef(myScene.focalPos.x, myScene.focalPos.y, myScene.focalPos.z);glScalef(zoom, zoom, zoom);
+        glRotatef((float) rotationx, 1f, 0f, 0f);
         glRotatef((float) rotationy, 0f, 1f, 0f);
-            glRotatef((float) rotationx, 1f, 0f, 0f);
-            glTranslatef(-myScene.focalPos.x, -myScene.focalPos.y, -myScene.focalPos.z);
+            glTranslatef(myScene.cameraPosDesired.x, myScene.cameraPosDesired.y, myScene.cameraPosDesired.z);
+        //glScalef(zoom, zoom, zoom);
+
+
+            //glTranslatef(-myScene.cameraPosDesired.x, -myScene.cameraPosDesired.y, -myScene.cameraPosDesired.z);
 
             myScene.drawScene();
 
