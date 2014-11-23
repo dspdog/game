@@ -149,10 +149,11 @@ public class GeometryFactory {
         return new int[]{vbo_vertex_handle,vbo_color_handle};
     }
 
-    public static int gridSize = 512;
+    public static int gridSize = 256;
+    public static int gridStep = 4;
 
     public static FloatBuffer[] functionGridVertexData(gridFunction d){
-        int step = 1;
+        int step = gridStep;
         final FloatBuffer vert_data = BufferUtils.createFloatBuffer((gridSize/step * gridSize/step)*9*2);
         final FloatBuffer color_data = BufferUtils.createFloatBuffer((gridSize/step * gridSize/step)*9*2);
 
@@ -167,12 +168,13 @@ public class GeometryFactory {
                          .put(x).put(d.getValue(x, z+step)).put(z+step)
                          .put(x+step).put(d.getValue(x+step, z+step)).put(z+step);
 
-                color_data.put(d.getValue(x, z)/32f).put(d.getValue(x+step, z)/32f).put(d.getValue(x, z+step)/32f);
-                color_data.put(d.getValue(x, z)/32f).put(d.getValue(x+step, z)/32f).put(d.getValue(x, z+step)/32f);
-                color_data.put(d.getValue(x, z)/32f).put(d.getValue(x+step, z)/32f).put(d.getValue(x, z+step)/32f);
-                color_data.put(d.getValue(x, z)/32f).put(d.getValue(x+step, z)/32f).put(d.getValue(x, z+step)/32f);
-                color_data.put(d.getValue(x, z)/32f).put(d.getValue(x+step, z)/32f).put(d.getValue(x, z+step)/32f);
-                color_data.put(d.getValue(x, z)/32f).put(d.getValue(x+step, z)/32f).put(d.getValue(x, z+step)/32f);
+                color_data.put(d.getValue(x, z)/32f).put(d.getValue(x, z) / 32f).put(d.getValue(x, z)/32f);
+                color_data.put(d.getValue(x, z+step)/32f).put(d.getValue(x, z+step)/32f).put(d.getValue(x, z+step)/32f);
+                color_data.put(d.getValue(x+step, z)/32f).put(d.getValue(x+step, z) / 32f).put(d.getValue(x+step, z)/32f);
+                color_data.put(d.getValue(x+step, z)/32f).put(d.getValue(x+step, z) / 32f).put(d.getValue(x+step, z)/32f);
+                color_data.put(d.getValue(x, z+step)/32f).put(d.getValue(x, z+step)/32f).put(d.getValue(x, z+step)/32f);
+                color_data.put(d.getValue(x+step, z+step)/32f).put(d.getValue(x+step, z+step)/32f).put(d.getValue(x+step, z+step)/32f);
+
 
             }
         }

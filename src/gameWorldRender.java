@@ -24,6 +24,9 @@ public class gameWorldRender {
     public int myWidth, myHeight;
     public float myFOV;
 
+
+    scene myScene;
+
     gameWorldLogic myLogic;
 
     public float scrollPos = 1.0f;
@@ -35,6 +38,7 @@ public class gameWorldRender {
         myWidth = 1024;
         myHeight = 1024;
         myLogic=gl;
+        myScene=gl.myScene;
         handlesFound=false;
         startTime=getTime();
 
@@ -112,7 +116,6 @@ public class gameWorldRender {
         updateFPS();
     }
 
-    scene myScene;
 
 
     public void initGL() {
@@ -127,7 +130,9 @@ public class gameWorldRender {
         myScene.addWorldObject(new WorldObject(TextureFactory.proceduralTexture()));
         myLogic.theTree.updateCSG();
         myScene.addWorldObject(new WorldObject(myLogic.theTree.myCSG));
-        myScene.addWorldObject(new WorldObject((x, y) -> GeographyFactory.geographyFunction(x,y)));
+
+        float time = (System.currentTimeMillis()%10)/100.0f;
+        myScene.addWorldObject(new WorldObject((x, y) -> GeographyFactory.geographyFunction(x,y, time)));
     }
 
     public void renderGL() {

@@ -1,22 +1,49 @@
+import factory.TextureFactory;
 import org.lwjgl.Sys;
+import org.lwjgl.opengl.Display;
+import shapes.geography.GeographyFactory;
 import shapes.tree.tree;
+import world.WorldObject;
+import world.scene;
 
 public class gameWorldLogic implements Runnable {
 
     boolean running = false;
     long lastGameLogic;
 
+
+    private int fps;
+    private long lastFPS;
+    private long startTime;
+    public int myFPS = 0;
+
     tree theTree;
 
-    public CubeMarcher cm = new CubeMarcher();
-    public gameWorldLogic(){
+    scene myScene;
 
+    public CubeMarcher cm = new CubeMarcher();
+    public gameWorldLogic(scene _myScene){
+        myScene = _myScene;
+        lastFPS = getTime();
     }
+
+    public void updateFPS() {
+        if (getTime() - lastFPS > 1000) {
+            myFPS = fps;
+            System.out.println("logic FPS: " + myFPS);
+            fps = 0;
+            lastFPS += 1000;
+        }
+        fps++;
+    }
+
 
     public void updateGameLogic(){
         //theTree.perturb(false, false, 2.50f);
         //theTree.updateCSG();
         //cm.generateTris(theTree);
+        updateFPS();
+        myScene.sceneLogic();
         lastGameLogic = getTime();
     }
 
@@ -39,7 +66,7 @@ public class gameWorldLogic implements Runnable {
         while(running){
             try {
                 updateGameLogic();
-                Thread.sleep(100);
+                Thread.sleep(1);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

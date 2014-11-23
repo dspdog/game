@@ -6,6 +6,8 @@ import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.opengl.Texture;
 import factory.GeometryFactory;
 
+import java.nio.FloatBuffer;
+
 public class WorldObject{ //have this handle all the interactions w/ geometryfactory...
     CSG myCSG;
     int myTextureId;
@@ -20,12 +22,25 @@ public class WorldObject{ //have this handle all the interactions w/ geometryfac
     boolean isGrid = false;
     boolean isPlane = false;
 
+    boolean hasVBOHandles=false;
+
+    FloatBuffer[] myfb;
+
+    public void drawVBOs(){
+        if(!hasVBOHandles){
+            VBOHandles = GeometryFactory.VBOHandles(myfb);
+            hasVBOHandles=true;
+        }
+
+        GeometryFactory.drawTrisByVBOHandles(triangles, VBOHandles);
+    }
+
     public WorldObject(CSG csg){
         name="CSG_" + stencilId;
         isCSG=true;
         myCSG = csg;
         triangles = GeometryFactory.getTriangles(csg);
-        VBOHandles = GeometryFactory.VBOHandles(GeometryFactory.getCSGVertexData(csg, triangles));
+        myfb = GeometryFactory.getCSGVertexData(csg, triangles);
     }
 
     public WorldObject(Texture texture){
@@ -44,8 +59,8 @@ public class WorldObject{ //have this handle all the interactions w/ geometryfac
         name="GRID_" + stencilId;
         isGrid=true;
         myFunction = d;
-        VBOHandles = GeometryFactory.VBOHandles(GeometryFactory.functionGridVertexData(d));
-        triangles = GeometryFactory.gridSize* GeometryFactory.gridSize*2;
+        myfb = GeometryFactory.functionGridVertexData(d);
+        triangles = (GeometryFactory.gridSize* GeometryFactory.gridSize/GeometryFactory.gridStep/GeometryFactory.gridStep)*2;
     }
 
     public Vector3f getCenter(){
