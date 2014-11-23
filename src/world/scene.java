@@ -47,7 +47,7 @@ public class scene{
                 float time = (System.currentTimeMillis()%1000000)/1000.0f;
                 float offsetX = cameraPosRealtime.x - GeometryFactory.gridSize/2;
                 float offsetY = cameraPosRealtime.z - GeometryFactory.gridSize/2;
-                WorldObject _wo = new WorldObject((x, y) -> GeographyFactory.geographyFunction(x+offsetX, y+offsetY, time));
+                WorldObject _wo = new WorldObject((float x, float y) -> GeographyFactory.geographyFunction(x+offsetX, y+offsetY, time));
                 _wo.setPos(offsetX, 0f,offsetY);
                 objs.set(index, _wo);
             }else if (wo.isPlane){

@@ -124,7 +124,7 @@ public class GeometryFactory {
 
 
     public interface gridFunction{
-        float getValue(int x, int y);
+        float getValue(float x, float y);
     }
 
     public interface gridFunction3d{
@@ -149,31 +149,48 @@ public class GeometryFactory {
         return new int[]{vbo_vertex_handle,vbo_color_handle};
     }
 
-    public static int gridSize = 2*512;
-    public static int gridStep = 4;
+    public static int gridSize = 256;
+    public static int gridStep = 1;
 
     public static FloatBuffer[] functionGridVertexData(gridFunction d){
         int step = gridStep;
         final FloatBuffer vert_data = BufferUtils.createFloatBuffer((gridSize/step * gridSize/step)*9*2);
         final FloatBuffer color_data = BufferUtils.createFloatBuffer((gridSize/step * gridSize/step)*9*2);
 
-        for(int x=0; x<gridSize; x+=step){
-            for(int z=0; z<gridSize; z+=step){
+        for(float _x=0; _x<gridSize; _x+=step){
+            for(float __z=0; __z<gridSize; __z+=step){
+
+                float _z = __z*4;
+                float _zs = (__z+step)*4;
+                //xz
+                float x = (float)Math.cos(Math.PI*2/gridSize*_x)*_z + gridSize/2;
+                float z = (float)Math.sin(Math.PI * 2 / gridSize * _x)*_z + gridSize/2;
+                //xz+
+                float x2 = (float)Math.cos(Math.PI*2/gridSize*_x)*_zs + gridSize/2;
+                float z2 = (float)Math.sin(Math.PI*2/gridSize*_x)*_zs + gridSize/2;
+                //x+z
+                float x3 = (float)Math.cos(Math.PI*2/gridSize*(_x+step))*_z + gridSize/2;
+                float z3 = (float)Math.sin(Math.PI*2/gridSize*(_x+step))*_z + gridSize/2;
+                //x+z+
+                float x4 = (float)Math.cos(Math.PI*2/gridSize*(_x+step))*_zs + gridSize/2;
+                float z4 = (float)Math.sin(Math.PI*2/gridSize*(_x+step))*_zs + gridSize/2;
+
+                //4 xz's, in polar coords
 
                 vert_data.put(x).put(d.getValue(x, z)).put(z)
-                         .put(x).put(d.getValue(x, z+step)).put(z+step)
-                         .put(x+step).put(d.getValue(x+step, z)).put(z)
+                         .put(x2).put(d.getValue(x2, z2)).put(z2)
+                         .put(x3).put(d.getValue(x3, z3)).put(z3)
 
-                        .put(x + step).put(d.getValue(x+step, z)).put(z)
-                         .put(x).put(d.getValue(x, z+step)).put(z+step)
-                         .put(x+step).put(d.getValue(x+step, z+step)).put(z+step);
+                         .put(x3).put(d.getValue(x3, z3)).put(z3)
+                         .put(x2).put(d.getValue(x2, z2)).put(z2)
+                         .put(x4).put(d.getValue(x4, z4)).put(z4);
 
                 color_data.put(d.getValue(x, z)/32f).put(d.getValue(x, z) / 32f).put(d.getValue(x, z)/32f);
-                color_data.put(d.getValue(x, z+step)/32f).put(d.getValue(x, z+step)/32f).put(d.getValue(x, z+step)/32f);
-                color_data.put(d.getValue(x+step, z)/32f).put(d.getValue(x+step, z) / 32f).put(d.getValue(x+step, z)/32f);
-                color_data.put(d.getValue(x+step, z)/32f).put(d.getValue(x+step, z) / 32f).put(d.getValue(x+step, z)/32f);
-                color_data.put(d.getValue(x, z+step)/32f).put(d.getValue(x, z+step)/32f).put(d.getValue(x, z+step)/32f);
-                color_data.put(d.getValue(x+step, z+step)/32f).put(d.getValue(x+step, z+step)/32f).put(d.getValue(x+step, z+step)/32f);
+                color_data.put(d.getValue(x2, z2)/32f).put(d.getValue(x2, z2)/32f).put(d.getValue(x2, z2)/32f);
+                color_data.put(d.getValue(x3, z3)/32f).put(d.getValue(x3, z3) / 32f).put(d.getValue(x3, z3)/32f);
+                color_data.put(d.getValue(x3, z3)/32f).put(d.getValue(x3, z3) / 32f).put(d.getValue(x3, z3)/32f);
+                color_data.put(d.getValue(x2, z2)/32f).put(d.getValue(x2, z2)/32f).put(d.getValue(x2, z2)/32f);
+                color_data.put(d.getValue(x4, z4)/32f).put(d.getValue(x4, z4)/32f).put(d.getValue(x4, z4)/32f);
 
 
             }

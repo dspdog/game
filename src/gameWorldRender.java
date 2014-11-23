@@ -90,7 +90,8 @@ public class gameWorldRender {
     boolean A_down = false;
     boolean S_down = false;
     boolean D_down = false;
-
+    boolean Q_down = false;
+    boolean E_down = false;
 
     public void pollInput() {
         if (Mouse.isButtonDown(0)) {
@@ -110,6 +111,12 @@ public class gameWorldRender {
                 if (Keyboard.getEventKey() == Keyboard.KEY_W) {
                     W_down=true;
                 }
+                if (Keyboard.getEventKey() == Keyboard.KEY_Q) {
+                    Q_down=true;
+                }
+                if (Keyboard.getEventKey() == Keyboard.KEY_E) {
+                    E_down=true;
+                }
             } else {
                 if (Keyboard.getEventKey() == Keyboard.KEY_A) {
                     A_down=false;
@@ -122,6 +129,12 @@ public class gameWorldRender {
                 }
                 if (Keyboard.getEventKey() == Keyboard.KEY_W) {
                     W_down=false;
+                }
+                if (Keyboard.getEventKey() == Keyboard.KEY_Q) {
+                    Q_down=false;
+                }
+                if (Keyboard.getEventKey() == Keyboard.KEY_E) {
+                    E_down=false;
                 }
             }
         }
@@ -139,8 +152,12 @@ public class gameWorldRender {
         if(D_down){
             scene.cameraPosDesired.x-=step;
         }
-
-
+        if(Q_down){
+            scene.cameraPosDesired.y-=step;
+        }
+        if(E_down){
+            scene.cameraPosDesired.y+=step;
+        }
     }
 
     public void onMouseDown(){
@@ -183,7 +200,7 @@ public class gameWorldRender {
         myScene.addWorldObject(new WorldObject(myLogic.theTree.myCSG));
 
         float time = (System.currentTimeMillis()%10)/100.0f;
-        myScene.addWorldObject(new WorldObject((x, y) -> GeographyFactory.geographyFunction(x,y, time)));
+        myScene.addWorldObject(new WorldObject((float x, float y) -> GeographyFactory.geographyFunction(x,y, time)));
     }
 
     public void renderGL() {

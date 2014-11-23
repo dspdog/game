@@ -1,11 +1,13 @@
 package shapes.geography;
 
+import org.lwjgl.util.vector.Vector3f;
 import utils.SimplexNoise;
 
 /**
  * Created by user on 11/22/2014.
  */
 public class GeographyFactory {
+
     public static  float geographyFunction(float x, float y, float time){
         float total = 0;
 
@@ -14,5 +16,9 @@ public class GeographyFactory {
         total+=SimplexNoise.noise(x / 250f + time/10f, y / 350f , time/25f)*10f;
 
         return (total+20f)/2f;
+    }
+
+    public static float distance(float x, float y, float z){
+        return (float)Math.sqrt(x * x + y * y + z * z);
     }
 }
