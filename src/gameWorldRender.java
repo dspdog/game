@@ -199,8 +199,7 @@ public class gameWorldRender {
         myLogic.theTree.updateCSG();
         myScene.addWorldObject(new WorldObject(myLogic.theTree.myCSG));
 
-        float time = (System.currentTimeMillis()%10)/100.0f;
-        myScene.addWorldObject(new WorldObject((float x, float y) -> GeographyFactory.geographyFunction(x,y, time)));
+        myScene.addWorldObject(new WorldObject((float x, float y, float t) -> GeographyFactory.geographyFunction(x,y,t)));
     }
 
     public void renderGL() {

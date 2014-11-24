@@ -61,12 +61,14 @@ public class WorldObject{ //have this handle all the interactions w/ geometryfac
         name="GRID_" + stencilId;
         isGrid=true;
         myFunction = d;
-        myfb = GeometryFactory.functionGridVertexData(d);
+        updateGridFb();
         triangles = (GeometryFactory.gridSize* GeometryFactory.gridSize/GeometryFactory.gridStep/GeometryFactory.gridStep)*2;
-
-        //TODO "radial" mode
     }
-
+    public void updateGridFb(){
+        float time = (System.currentTimeMillis()%1000000)/1000.0f;
+        myfb = GeometryFactory.functionGridVertexData(myFunction, time, myPos.x, myPos.z);
+        hasVBOHandles=false;
+    }
 
     public void setPos(float x, float y, float z){
         myPos = new Vector3f(x,y,z);

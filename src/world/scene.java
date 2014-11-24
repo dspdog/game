@@ -40,19 +40,14 @@ public class scene{
     }
 
     public void sceneLogic(){
-
-        int index=0;
         for(WorldObject wo : objs){
             if(wo.isGrid){
-                float time = (System.currentTimeMillis()%1000000)/1000.0f;
                 float offsetX = cameraPosRealtime.x - GeometryFactory.gridSize/2;
                 float offsetY = cameraPosRealtime.z - GeometryFactory.gridSize/2;
-                WorldObject _wo = new WorldObject((float x, float y) -> GeographyFactory.geographyFunction(x+offsetX, y+offsetY, time));
-                _wo.setPos(offsetX, 0f,offsetY);
-                objs.set(index, _wo);
+                wo.setPos(offsetX, 0f,offsetY);
+                wo.updateGridFb();
             }else if (wo.isPlane){
             }
-            index++;
         }
     }
 
