@@ -7,15 +7,14 @@ import factory.GeometryFactory;
 import shapes.geography.GeographyFactory;
 
 import java.nio.FloatBuffer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL11.GL_MODELVIEW_MATRIX;
 
 public class scene{
-    private static ArrayList<WorldObject> objs;
+    private static CopyOnWriteArrayList<WorldObject> objs;
     public static Map<String, WorldObject> idsMap = new HashMap<String, WorldObject>();
 
     public static Vector3f focalPos = new Vector3f(0,0,0);
@@ -28,9 +27,9 @@ public class scene{
         for(WorldObject wo : objs){
             glStencilFunc(GL_ALWAYS, wo.stencilId + 1, -1);
             if(wo.isGrid){
-                glTranslatef(wo.myPos.x, wo.myPos.y, wo.myPos.z);
+                glTranslatef(wo.myLastDrawnPos.x, wo.myLastDrawnPos.y, wo.myLastDrawnPos.z);
                 wo.drawVBOs();
-                glTranslatef(-wo.myPos.x, -wo.myPos.y, -wo.myPos.z);
+                glTranslatef(-wo.myLastDrawnPos.x, -wo.myLastDrawnPos.y, -wo.myLastDrawnPos.z);
             }else if (wo.isPlane){
                 GeometryFactory.billboardCheatSphericalBegin();
                 GeometryFactory.plane(wo.myTextureId);
@@ -40,12 +39,18 @@ public class scene{
     }
 
     public void sceneLogic(){
-        for(WorldObject wo : objs){
+        Iterator<WorldObject> wi = objs.iterator();
+        while (wi.hasNext()){
+            WorldObject wo=wi.next();
             if(wo.isGrid){
-                float offsetX = cameraPosRealtime.x - GeometryFactory.gridSize/2;
-                float offsetY = cameraPosRealtime.z - GeometryFactory.gridSize/2;
-                wo.setPos(offsetX, 0f,offsetY);
+
+
+                float offsetX = cameraPosRealtime.x;
+                float offsetY = cameraPosRealtime.z;
                 wo.updateGridFb();
+                wo.setPos(offsetX, 0f,offsetY);
+
+
             }else if (wo.isPlane){
             }
         }
@@ -64,12 +69,12 @@ public class scene{
     }
 
     public scene(){
-        objs = new ArrayList<>();
+        objs = new CopyOnWriteArrayList<>();
     }
 
     public void addWorldObject(WorldObject wo){
         objs.add(wo);
-        System.out.println("ADDING " + (wo.stencilId+1));
+        System.out.println("ADDING " + (wo.name));
         idsMap.put((wo.stencilId+1)+"", wo);
     }
 

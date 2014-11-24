@@ -14,12 +14,13 @@ public class WorldObject{ //have this handle all the interactions w/ geometryfac
     GeometryFactory.gridFunction myFunction;
 
     Vector3f myPos = new Vector3f(0,0,0);
+    Vector3f myLastDrawnPos = new Vector3f(0,0,0);
 
     int[] VBOHandles;
     int triangles = 0;
     public String name="";
 
-    int stencilId = (int)(System.currentTimeMillis()%255); //for stencil buffer
+    int stencilId = (int)((Math.random()*100 + System.currentTimeMillis())%255); //for stencil buffer
     boolean isCSG = false;
     boolean isGrid = false;
     boolean isPlane = false;
@@ -67,6 +68,7 @@ public class WorldObject{ //have this handle all the interactions w/ geometryfac
     public void updateGridFb(){
         float time = (System.currentTimeMillis()%1000000)/1000.0f;
         myfb = GeometryFactory.functionGridVertexData(myFunction, time, myPos.x, myPos.z);
+        myLastDrawnPos = new Vector3f(myPos.x, myPos.y, myPos.z);
         hasVBOHandles=false;
     }
 
@@ -76,7 +78,7 @@ public class WorldObject{ //have this handle all the interactions w/ geometryfac
 
     public Vector3f getCenter(){
         if(isGrid){
-            return new Vector3f(GeometryFactory.gridSize/2, 0, GeometryFactory.gridSize/2);
+            return new Vector3f( myPos.x - GeometryFactory.gridSize/2, 0,  myPos.z - GeometryFactory.gridSize/2);
         }else if(isCSG){
             Vector3d center = myCSG.getBounds().getCenter();
             return new Vector3f((float)center.x, (float)center.y, (float)center.z);

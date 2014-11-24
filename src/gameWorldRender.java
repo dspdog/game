@@ -195,11 +195,12 @@ public class gameWorldRender {
 
 
         myScene = new scene();
-        myScene.addWorldObject(new WorldObject(TextureFactory.proceduralTexture()));
-        myLogic.theTree.updateCSG();
-        myScene.addWorldObject(new WorldObject(myLogic.theTree.myCSG));
+        //myScene.addWorldObject(new WorldObject(TextureFactory.proceduralTexture()));
+        //myLogic.theTree.updateCSG();
+        //myScene.addWorldObject(new WorldObject(myLogic.theTree.myCSG));
 
-        myScene.addWorldObject(new WorldObject((float x, float y, float t) -> GeographyFactory.geographyFunction(x,y,t)));
+        myScene.addWorldObject(new WorldObject((float x, float y, float t) -> GeographyFactory.oceanWaves(x, y, t)));
+        myScene.addWorldObject(new WorldObject((float x, float y, float t) -> GeographyFactory.island(x, y, t)));
     }
 
     public void renderGL() {
