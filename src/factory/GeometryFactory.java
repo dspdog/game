@@ -10,6 +10,8 @@ import org.lwjgl.opengl.GL11;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
@@ -131,10 +133,10 @@ public class GeometryFactory {
     }
 
    public static void findUniqueVerts(FloatBuffer triangleSoup){
-       HashMap<Integer, Vector3f> verts = new HashMap<>();
-       HashMap<Integer, ArrayList<Integer>> tris = new HashMap<>();
-       verts.clear();
-       tris.clear();
+       HashMap<Integer, Vector3f> hashedVertList = new HashMap<>();
+       HashMap<Integer, ArrayList<Integer>> orderedTriangleListOfVertHashes = new HashMap<>();
+       hashedVertList.clear();
+       orderedTriangleListOfVertHashes.clear();
        int dataPts = triangleSoup.limit();
        int dups = 0;
        int nondups = 0;
@@ -145,16 +147,41 @@ public class GeometryFactory {
            float z=triangleSoup.get(i+2);
            int hash = vertexHash(x, y, z);
            triangleNo = (int)(i / 3);
-           if(!tris.containsKey(triangleNo)){
-               tris.put(triangleNo, new ArrayList<Integer>());
+           if(!orderedTriangleListOfVertHashes.containsKey(triangleNo)){
+               orderedTriangleListOfVertHashes.put(triangleNo, new ArrayList<Integer>());
            }
-           tris.get(triangleNo).add(hash);
+           orderedTriangleListOfVertHashes.get(triangleNo).add(hash);
 
-           if(verts.containsKey(hash)){
+           if(hashedVertList.containsKey(hash)){
                dups++;
            }else{
                nondups++;
-               verts.put(hash, new Vector3f(x, y, z));
+               hashedVertList.put(hash, new Vector3f(x, y, z));
+           }
+       }
+
+       int index=0;
+       ArrayList<Integer> orderedHashList = new ArrayList<>();
+       ArrayList<Vector3f> orderedVertList = new ArrayList<>(); ////////////////////
+       HashMap<Integer, Integer> indexByHash = new HashMap<>();
+
+       for (Map.Entry<Integer, Vector3f> entry : hashedVertList.entrySet()) {
+           orderedHashList.add(entry.getKey());
+           indexByHash.put(entry.getKey(), index);
+           orderedVertList.add(entry.getValue());
+           index++;
+       }
+
+       ArrayList<Vector3f> triangleListOfVertIndices = new ArrayList<>();
+
+       for (Map.Entry<Integer, ArrayList<Integer>> hashesHolder : orderedTriangleListOfVertHashes.entrySet()) {
+           if(hashesHolder.getValue().size()>2){
+               triangleListOfVertIndices.add(new Vector3f(
+                       hashesHolder.getValue().get(0),
+                       hashesHolder.getValue().get(1),
+                       hashesHolder.getValue().get(2)));
+           }else{
+               //error?
            }
        }
 
