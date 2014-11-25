@@ -150,7 +150,7 @@ public class GeometryFactory {
     }
 
     public static int gridSize = 256;
-    public static int gridStep = 1;
+    public static int gridStep = 2;
 
     public static FloatBuffer[] functionGridVertexData(gridFunction d, float t, float offsetx, float offsetz){
         int step = gridStep;
