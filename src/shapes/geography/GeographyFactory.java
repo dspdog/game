@@ -29,6 +29,18 @@ public class GeographyFactory {
         return total-distance(x,y,0)/24f;
     }
 
+    public static float icebergs(float x, float y, float time){
+        float total = 20f;
+
+        total+=SimplexNoise.noise(x / 20f, y / 20f)*3f;
+        total+=SimplexNoise.noise(x / 70f, y / 70f)*5f;
+        total+=SimplexNoise.noise(x / 150f, y / 150f)*10f;
+        total+=SimplexNoise.noise(x / 250f, y / 250f)*20f;
+
+        return (float)Math.pow(total, 1.3f)-distance(x,y,0)/24f;
+    }
+
+
     public static float distance(float x, float y, float z){
         return (float)Math.sqrt(x * x + y * y + z * z);
     }

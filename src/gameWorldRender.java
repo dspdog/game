@@ -7,6 +7,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.*;
 import org.lwjgl.opengl.DisplayMode;
 import shapes.geography.GeographyFactory;
+import utils.ShaderHelper;
 import world.*;
 
 import java.nio.IntBuffer;
@@ -72,7 +73,7 @@ public class gameWorldRender {
         }
 
         initGL();
-
+        bindShaders();
         while (!Display.isCloseRequested()) {
             update();
             renderGL();
@@ -81,9 +82,21 @@ public class gameWorldRender {
             //Display.sync(60); // cap fps to 60fps
         }
 
+        releaseShaders();
         myLogic.end();
         Display.destroy();
         System.exit(1);
+    }
+
+    private void bindShaders(){
+        ShaderHelper.setupShaders("screen.vert", "screen.frag");
+        if(ShaderHelper.useShader)
+            ARBShaderObjects.glUseProgramObjectARB(ShaderHelper.program);
+    }
+
+    private void releaseShaders(){
+        if(ShaderHelper.useShader)
+            ARBShaderObjects.glUseProgramObjectARB(0);
     }
 
     boolean W_down = false;
@@ -187,6 +200,7 @@ public class gameWorldRender {
 
 
     public void initGL() {
+
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         gluPerspective(myFOV, ((float)myWidth) / ((float)myHeight), 0.01f, 2500f);
