@@ -3,10 +3,13 @@ package factory;
 import eu.mihosoft.vrl.v3d.CSG;
 import eu.mihosoft.vrl.v3d.Polygon;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.opengl.*;
 import org.lwjgl.opengl.GL11;
 
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
@@ -127,12 +130,47 @@ public class GeometryFactory {
         float getValue(float x, float y, float t);
     }
 
-    public interface gridFunction3d{
-        float getValue(int x, int y, int z);
+   public static void findUniqueVerts(FloatBuffer triangleSoup){
+       HashMap<Integer, Vector3f> verts = new HashMap<>();
+       HashMap<Integer, ArrayList<Integer>> tris = new HashMap<>();
+       verts.clear();
+       tris.clear();
+       int dataPts = triangleSoup.limit();
+       int dups = 0;
+       int nondups = 0;
+       int triangleNo =0;
+       for(int i=0 ;i<dataPts-3; i+=3){
+           int hash = vertHash(triangleSoup.get(i), triangleSoup.get(i+1), triangleSoup.get(i+2));
+           triangleNo = (int)(i / 3);
+           if(!tris.containsKey(triangleNo)){
+               tris.put(triangleNo, new ArrayList<Integer>());
+           }
+           tris.get(triangleNo).add(hash);
+
+           if(verts.containsKey(hash)){
+               dups++;
+           }else{
+               nondups++;
+               verts.put(hash, new Vector3f(triangleSoup.get(i), triangleSoup.get(i+1), triangleSoup.get(i+2)));
+           }
+       }
+
+       System.out.println("DUPES " + dups + " unique " + nondups + "tris " + triangleNo);
+   }
+
+    public static int vertHash(float x, float y, float z){
+        //http://www.beosil.com/download/CollisionDetectionHashing_VMV03.pdf
+        // hash(x,y,z) = ( x p1 xor y p2 xor z p3) mod n
+        // where p1, p2, p3 are large prime numbers, in
+        // our case 73856093, 19349663, 83492791
+
+        return (int)(x*73856093)^(int)(y*19349663)^(int)(z*83492791);
     }
 
 
     public static int[] VBOHandles(FloatBuffer[] fbs ){
+
+        findUniqueVerts(fbs[0]);
 
         //FloatBuffer[] fbs = functionGridVertexData(d);
 
@@ -220,6 +258,7 @@ public class GeometryFactory {
         glDisableClientState(GL_COLOR_ARRAY);
         glDisableClientState(GL_VERTEX_ARRAY);
     }
+
 
     public static void drawTrisByVBOHandles(int triangles, int[] handles){
         int vertex_size = 3; // X, Y, Z,

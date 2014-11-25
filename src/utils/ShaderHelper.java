@@ -156,3 +156,27 @@ public class ShaderHelper { //http://wiki.lwjgl.org/index.php?title=GLSL_Shaders
         return source.toString();
     }
 }
+
+/*
+//http://stackoverflow.com/questions/15777757/drawing-normals-in-lwjgl-messes-with-lighting
+//Feel free to use this for whatever you want, no licenses applied or anything.
+
+//p1, p2, p3 - Vertices of triangle
+public Vector3f getNormal(Vector3f p1, Vector3f p2, Vector3f p3) {
+
+    //Create normal vector we are going to output.
+    Vector3f output = new Vector3f();
+
+    //Calculate vectors used for creating normal (these are the edges of the triangle).
+    Vector3f calU = new Vector3f(p2.x-p1.x, p2.y-p1.y, p2.z-p1.z);
+    Vector3f calV = new Vector3f(p3.x-p1.x, p3.y-p1.y, p3.z-p1.z);
+
+    //The output vector is equal to the cross products of the two edges of the triangle
+    output.x = calU.y*calV.z - calU.z*calV.y;
+    output.y = calU.z*calV.x - calU.x*calV.z;
+    output.z = calU.x*calV.y - calU.y*calV.x;
+
+    //Return the resulting vector.
+    return output.normalise();
+}
+ */
