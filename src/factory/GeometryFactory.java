@@ -192,7 +192,6 @@ public class GeometryFactory {
                 color_data.put(d.getValue(x2+offsetx, z2+offsetz,t)/32f).put(d.getValue(x2+offsetx, z2+offsetz,t)/32f).put(d.getValue(x2+offsetx, z2+offsetz,t)/32f);
                 color_data.put(d.getValue(x4+offsetx, z4+offsetz,t)/32f).put(d.getValue(x4+offsetx, z4+offsetz,t)/32f).put(d.getValue(x4+offsetx, z4+offsetz,t)/32f);
 
-
             }
         }
         vert_data.flip();

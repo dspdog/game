@@ -44,13 +44,8 @@ public class scene{
             WorldObject wo=wi.next();
             if(wo.isGrid){
 
-
-                float offsetX = cameraPosRealtime.x;
-                float offsetY = cameraPosRealtime.z;
                 wo.updateGridFb();
-                wo.setPos(offsetX, 0f,offsetY);
-
-
+                wo.setPos(cameraPosRealtime.x, 0f,cameraPosRealtime.z);
             }else if (wo.isPlane){
             }
         }

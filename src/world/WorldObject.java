@@ -15,6 +15,8 @@ public class WorldObject{ //have this handle all the interactions w/ geometryfac
 
     Vector3f myPos = new Vector3f(0,0,0);
     Vector3f myLastDrawnPos = new Vector3f(0,0,0);
+    long lastFunctionUpdate = 0;
+    int functionUpdatePeriod = 0;
 
     int[] VBOHandles;
     int triangles = 0;
@@ -58,18 +60,27 @@ public class WorldObject{ //have this handle all the interactions w/ geometryfac
         myTextureId = textureId;
     }
 
-    public WorldObject(GeometryFactory.gridFunction d){
+    public WorldObject(GeometryFactory.gridFunction d, int interval){
+        functionUpdatePeriod = interval;
         name="GRID_" + stencilId;
         isGrid=true;
         myFunction = d;
         updateGridFb();
         triangles = (GeometryFactory.gridSize* GeometryFactory.gridSize/GeometryFactory.gridStep/GeometryFactory.gridStep)*2;
     }
+
+    public WorldObject(GeometryFactory.gridFunction d){
+        this(d, 500);
+    }
+
     public void updateGridFb(){
-        float time = (System.currentTimeMillis()%1000000)/1000.0f;
-        myfb = GeometryFactory.functionGridVertexData(myFunction, time, myPos.x, myPos.z);
-        myLastDrawnPos = new Vector3f(myPos.x, myPos.y, myPos.z);
-        hasVBOHandles=false;
+        if(System.currentTimeMillis()-lastFunctionUpdate > functionUpdatePeriod){
+            float time = (System.currentTimeMillis()%1000000)/1000.0f;
+            myfb = GeometryFactory.functionGridVertexData(myFunction, time, myPos.x, myPos.z);
+            lastFunctionUpdate = System.currentTimeMillis();
+            myLastDrawnPos = new Vector3f(myPos.x, myPos.y, myPos.z);
+            hasVBOHandles=false;
+        }
     }
 
     public void setPos(float x, float y, float z){
