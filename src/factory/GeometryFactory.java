@@ -140,7 +140,10 @@ public class GeometryFactory {
        int nondups = 0;
        int triangleNo =0;
        for(int i=0 ;i<dataPts-3; i+=3){
-           int hash = vertHash(triangleSoup.get(i), triangleSoup.get(i+1), triangleSoup.get(i+2));
+           float x=triangleSoup.get(i);
+           float y=triangleSoup.get(i+1);
+           float z=triangleSoup.get(i+2);
+           int hash = vertexHash(x, y, z);
            triangleNo = (int)(i / 3);
            if(!tris.containsKey(triangleNo)){
                tris.put(triangleNo, new ArrayList<Integer>());
@@ -151,14 +154,14 @@ public class GeometryFactory {
                dups++;
            }else{
                nondups++;
-               verts.put(hash, new Vector3f(triangleSoup.get(i), triangleSoup.get(i+1), triangleSoup.get(i+2)));
+               verts.put(hash, new Vector3f(x, y, z));
            }
        }
 
-       System.out.println("DUPES " + dups + " unique " + nondups + "tris " + triangleNo);
+       //System.out.println("DUPES " + dups + " unique " + nondups + "tris " + triangleNo);
    }
 
-    public static int vertHash(float x, float y, float z){
+    private static int vertexHash(float x, float y, float z){
         //http://www.beosil.com/download/CollisionDetectionHashing_VMV03.pdf
         // hash(x,y,z) = ( x p1 xor y p2 xor z p3) mod n
         // where p1, p2, p3 are large prime numbers, in
@@ -167,8 +170,7 @@ public class GeometryFactory {
         return (int)(x*73856093)^(int)(y*19349663)^(int)(z*83492791);
     }
 
-
-    public static int[] VBOHandles(FloatBuffer[] fbs ){
+    public static int[] VBOHandles(FloatBuffer[] fbs){
 
         findUniqueVerts(fbs[0]);
 
