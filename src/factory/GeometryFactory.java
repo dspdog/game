@@ -132,66 +132,54 @@ public class GeometryFactory {
         float getValue(float x, float y, float t);
     }
 
-   public static void findUniqueVerts(FloatBuffer[] fbs){
-
-       FloatBuffer posBuffer = fbs[0];
-       FloatBuffer colorBuffer = fbs[1];
-
-       HashMap<Integer, float[]> hashedVertColorList = new HashMap<>();
-       HashMap<Integer, ArrayList<Integer>> orderedTriangleListOfHashes = new HashMap<>();
-       hashedVertColorList.clear();
-       orderedTriangleListOfHashes.clear();
-       int dataPts = fbs[0].limit();
+   public static void findUniqueVerts(FloatBuffer triangleSoup){
+       HashMap<Integer, Vector3f> hashedVertList = new HashMap<>();
+       HashMap<Integer, ArrayList<Integer>> orderedTriangleListOfVertHashes = new HashMap<>();
+       hashedVertList.clear();
+       orderedTriangleListOfVertHashes.clear();
+       int dataPts = triangleSoup.limit();
        int dups = 0;
        int nondups = 0;
        int triangleNo =0;
        for(int i=0 ;i<dataPts-3; i+=3){
-           float x=posBuffer.get(i);
-           float y=posBuffer.get(i + 1);
-           float z=posBuffer.get(i + 2);
-
-           float r=colorBuffer.get(i);
-           float g=colorBuffer.get(i + 1);
-           float b=colorBuffer.get(i + 2);
-
+           float x=triangleSoup.get(i);
+           float y=triangleSoup.get(i+1);
+           float z=triangleSoup.get(i+2);
            int hash = vertexHash(x, y, z);
            triangleNo = (int)(i / 3);
-           if(!orderedTriangleListOfHashes.containsKey(triangleNo)){
-               orderedTriangleListOfHashes.put(triangleNo, new ArrayList<Integer>());
+           if(!orderedTriangleListOfVertHashes.containsKey(triangleNo)){
+               orderedTriangleListOfVertHashes.put(triangleNo, new ArrayList<Integer>());
            }
-           orderedTriangleListOfHashes.get(triangleNo).add(hash);
+           orderedTriangleListOfVertHashes.get(triangleNo).add(hash);
 
-           if(hashedVertColorList.containsKey(hash)){
+           if(hashedVertList.containsKey(hash)){
                dups++;
            }else{
                nondups++;
-               hashedVertColorList.put(hash, new float[]{x,y,z, r,g,b});
+               hashedVertList.put(hash, new Vector3f(x, y, z));
            }
        }
 
-       int reducedIndex=0;
+       int index=0;
        ArrayList<Integer> orderedHashList = new ArrayList<>();
-       ArrayList<Vector3f> orderedVertList = new ArrayList<>(); ///////////////////////////////////////////
-       ArrayList<Vector3f> orderedColorList = new ArrayList<>(); //////////////////////////////////////////
+       ArrayList<Vector3f> orderedVertList = new ArrayList<>(); ////////////////////
+       HashMap<Integer, Integer> indexByHash = new HashMap<>();
 
-       HashMap<Integer, Integer> reduceIndexByHash = new HashMap<>();
-
-       for (Map.Entry<Integer, float[]> entry : hashedVertColorList.entrySet()) {
+       for (Map.Entry<Integer, Vector3f> entry : hashedVertList.entrySet()) {
            orderedHashList.add(entry.getKey());
-           reduceIndexByHash.put(entry.getKey(), reducedIndex);
-           orderedVertList.add(new Vector3f(entry.getValue()[0],entry.getValue()[1],entry.getValue()[2])); //xyz
-           orderedColorList.add(new Vector3f(entry.getValue()[3],entry.getValue()[4],entry.getValue()[5])); //rgb
-           reducedIndex++;
+           indexByHash.put(entry.getKey(), index);
+           orderedVertList.add(entry.getValue());
+           index++;
        }
 
-       ArrayList<Vector3f> triangleListOfVertIndices = new ArrayList<>();//////////////////////////////////
+       ArrayList<Vector3f> triangleListOfVertIndices = new ArrayList<>();
 
-       for (Map.Entry<Integer, ArrayList<Integer>> hashesHolder : orderedTriangleListOfHashes.entrySet()) {
+       for (Map.Entry<Integer, ArrayList<Integer>> hashesHolder : orderedTriangleListOfVertHashes.entrySet()) {
            if(hashesHolder.getValue().size()>2){
                triangleListOfVertIndices.add(new Vector3f(
-                       reduceIndexByHash.get(hashesHolder.getValue().get(0)),
-                       reduceIndexByHash.get(hashesHolder.getValue().get(1)),
-                       reduceIndexByHash.get(hashesHolder.getValue().get(2))));
+                       hashesHolder.getValue().get(0),
+                       hashesHolder.getValue().get(1),
+                       hashesHolder.getValue().get(2)));
            }else{
                //error?
            }
@@ -211,7 +199,7 @@ public class GeometryFactory {
 
     public static int[] VBOHandles(FloatBuffer[] fbs){
 
-        findUniqueVerts(fbs);
+        findUniqueVerts(fbs[0]);
 
         //FloatBuffer[] fbs = functionGridVertexData(d);
 
