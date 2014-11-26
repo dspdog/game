@@ -37,6 +37,8 @@ public class scene{
                 GeometryFactory.billboardCheatSphericalBegin();
                 GeometryFactory.plane(wo.myTextureId);
                 GeometryFactory.billboardEnd();
+            }if(wo.isCSG){
+                wo.drawVBOs();
             }
         }
     }
@@ -83,10 +85,11 @@ public class scene{
         objs = new CopyOnWriteArrayList<>();
     }
 
-    public void addWorldObject(WorldObject wo){
+    public WorldObject addWorldObject(WorldObject wo){
         objs.add(wo);
         System.out.println("ADDING " + (wo.name));
         idsMap.put((wo.stencilId+1)+"", wo);
+        return wo;
     }
 
     public void focusOn(WorldObject wo){

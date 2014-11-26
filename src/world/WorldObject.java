@@ -15,6 +15,8 @@ public class WorldObject{ //have this handle all the interactions w/ geometryfac
 
     Vector3f myPos = new Vector3f(0,0,0);
     Vector3f myLastDrawnPos = new Vector3f(0,0,0);
+    Vector3f myColor = new Vector3f(0.5f, 0.5f, 0.5f);
+
     long lastFunctionUpdate = 0;
     int functionUpdatePeriod = 0;
 
@@ -60,26 +62,38 @@ public class WorldObject{ //have this handle all the interactions w/ geometryfac
         myTextureId = textureId;
     }
 
-    public WorldObject(GeometryFactory.gridFunction d, int interval){
-        functionUpdatePeriod = interval;
+    public WorldObject(GeometryFactory.gridFunction d){
         name="GRID_" + stencilId;
         isGrid=true;
         myFunction = d;
-        updateGridFb();
+        forceUpdateGridFb();
         triangles = (GeometryFactory.gridSize* GeometryFactory.gridSize/GeometryFactory.gridStep/GeometryFactory.gridStep)*2;
     }
 
-    public WorldObject(GeometryFactory.gridFunction d){
-        this(d, 500);
+    public WorldObject setUpdateInterval(int interval){
+        functionUpdatePeriod = interval;
+        return this;
     }
 
+    public WorldObject setColor(float r, float g, float b){
+        myColor = new Vector3f(r, g, b);
+        forceUpdateGridFb();
+        return this;
+    }
+
+    public void forceUpdateGridFb(){
+        float time = (System.currentTimeMillis()%1000000)/1000.0f;
+        myfb = GeometryFactory.functionGridVertexData(myFunction, time, myPos.x, myPos.z, myColor);
+        lastFunctionUpdate = System.currentTimeMillis();
+        myLastDrawnPos = new Vector3f(myPos.x, myPos.y, myPos.z);
+        hasVBOHandles=false;
+    }
+
+
     public void updateGridFb(){
+        if(functionUpdatePeriod > 0)
         if(System.currentTimeMillis()-lastFunctionUpdate > functionUpdatePeriod){
-            float time = (System.currentTimeMillis()%1000000)/1000.0f;
-            myfb = GeometryFactory.functionGridVertexData(myFunction, time, myPos.x, myPos.z);
-            lastFunctionUpdate = System.currentTimeMillis();
-            myLastDrawnPos = new Vector3f(myPos.x, myPos.y, myPos.z);
-            hasVBOHandles=false;
+            forceUpdateGridFb();
         }
     }
 

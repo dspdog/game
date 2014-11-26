@@ -211,7 +211,7 @@ public class GeometryFactory {
 
     public static int[] VBOHandles(FloatBuffer[] fbs){
 
-        findUniqueVerts(fbs);
+        //findUniqueVerts(fbs);
 
         //FloatBuffer[] fbs = functionGridVertexData(d);
 
@@ -231,8 +231,11 @@ public class GeometryFactory {
     public static int gridSize = 256;
     public static int gridStep = 2;
 
-    public static FloatBuffer[] functionGridVertexData(gridFunction d, float t, float offsetx, float offsetz){
+    public static FloatBuffer[] functionGridVertexData(gridFunction d, float t, float offsetx, float offsetz, Vector3f color){
         int step = gridStep;
+        float r = color.x/32f;
+        float g = color.y/32f;
+        float b = color.z/32f;
         final FloatBuffer vert_data = BufferUtils.createFloatBuffer((gridSize/step * gridSize/step)*9*2);
         final FloatBuffer color_data = BufferUtils.createFloatBuffer((gridSize/step * gridSize/step)*9*2);
 
@@ -264,12 +267,14 @@ public class GeometryFactory {
                          .put(x2).put(d.getValue(x2+offsetx, z2+offsetz,t)).put(z2)
                          .put(x4).put(d.getValue(x4+offsetx, z4+offsetz,t)).put(z4);
 
-                color_data.put(d.getValue(x+offsetx, z+offsetz,t)/32f).put(d.getValue(x+offsetx, z+offsetz,t) / 32f).put(d.getValue(x+offsetx, z+offsetz,t)/32f);
-                color_data.put(d.getValue(x2+offsetx, z2+offsetz,t)/32f).put(d.getValue(x2+offsetx, z2+offsetz,t)/32f).put(d.getValue(x2+offsetx, z2+offsetz,t)/32f);
-                color_data.put(d.getValue(x3+offsetx, z3+offsetz,t)/32f).put(d.getValue(x3+offsetx, z3+offsetz,t) / 32f).put(d.getValue(x3+offsetx, z3+offsetz,t)/32f);
-                color_data.put(d.getValue(x3+offsetx, z3+offsetz,t)/32f).put(d.getValue(x3+offsetx, z3+offsetz,t) / 32f).put(d.getValue(x3+offsetx, z3+offsetz,t)/32f);
-                color_data.put(d.getValue(x2+offsetx, z2+offsetz,t)/32f).put(d.getValue(x2+offsetx, z2+offsetz,t)/32f).put(d.getValue(x2+offsetx, z2+offsetz,t)/32f);
-                color_data.put(d.getValue(x4+offsetx, z4+offsetz,t)/32f).put(d.getValue(x4+offsetx, z4+offsetz,t)/32f).put(d.getValue(x4+offsetx, z4+offsetz,t)/32f);
+
+
+                color_data.put(d.getValue(x+offsetx, z+offsetz,t)* r).put(d.getValue(x+offsetx, z+offsetz,t)* g).put(d.getValue(x+offsetx, z+offsetz,t)* b);
+                color_data.put(d.getValue(x2+offsetx, z2+offsetz,t)* r).put(d.getValue(x2+offsetx, z2+offsetz,t)* g).put(d.getValue(x2+offsetx, z2+offsetz,t)* b);
+                color_data.put(d.getValue(x3+offsetx, z3+offsetz,t)* r).put(d.getValue(x3+offsetx, z3+offsetz,t)* g).put(d.getValue(x3+offsetx, z3+offsetz,t)* b);
+                color_data.put(d.getValue(x3+offsetx, z3+offsetz,t)* r).put(d.getValue(x3+offsetx, z3+offsetz,t)* g).put(d.getValue(x3+offsetx, z3+offsetz,t)* b);
+                color_data.put(d.getValue(x2+offsetx, z2+offsetz,t)* r).put(d.getValue(x2+offsetx, z2+offsetz,t)* g).put(d.getValue(x2+offsetx, z2+offsetz,t)* b);
+                color_data.put(d.getValue(x4+offsetx, z4+offsetz,t)* r).put(d.getValue(x4+offsetx, z4+offsetz,t)* g).put(d.getValue(x4+offsetx, z4+offsetz,t)* b);
 
             }
         }

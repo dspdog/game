@@ -25,7 +25,7 @@ public class gameWorldRender {
     public int myFPS = 0;
     public int myWidth, myHeight;
     public float myFOV;
-
+    public gameInputs myInput;
 
     scene myScene;
 
@@ -41,6 +41,7 @@ public class gameWorldRender {
         myHeight = 1024;
         myLogic=gl;
         myScene=gl.myScene;
+        myInput = new gameInputs(myScene);
         handlesFound=false;
         startTime=getTime();
 
@@ -78,7 +79,7 @@ public class gameWorldRender {
         while (!Display.isCloseRequested()) {
             update();
             renderGL();
-            pollInput();
+            myInput.pollInput();
             Display.update();
             //Display.sync(60); // cap fps to 60fps
         }
@@ -100,117 +101,6 @@ public class gameWorldRender {
             ARBShaderObjects.glUseProgramObjectARB(0);
     }
 
-    boolean W_down = false;
-    boolean A_down = false;
-    boolean S_down = false;
-    boolean D_down = false;
-    boolean Q_down = false;
-    boolean E_down = false;
-
-    long lastPollTime = System.currentTimeMillis();
-
-    public void pollInput() {
-
-        if (Mouse.isButtonDown(0)) {
-            onMouseDown();
-        }
-        while (Keyboard.next()) {
-            if (Keyboard.getEventKeyState()) {
-                if (Keyboard.getEventKey() == Keyboard.KEY_A) {
-                    A_down=true;
-                }
-                if (Keyboard.getEventKey() == Keyboard.KEY_S) {
-                    S_down=true;
-                }
-                if (Keyboard.getEventKey() == Keyboard.KEY_D) {
-                    D_down=true;
-                }
-                if (Keyboard.getEventKey() == Keyboard.KEY_W) {
-                    W_down=true;
-                }
-                if (Keyboard.getEventKey() == Keyboard.KEY_Q) {
-                    Q_down=true;
-                }
-                if (Keyboard.getEventKey() == Keyboard.KEY_E) {
-                    E_down=true;
-                }
-            } else {
-                if (Keyboard.getEventKey() == Keyboard.KEY_A) {
-                    A_down=false;
-                }
-                if (Keyboard.getEventKey() == Keyboard.KEY_S) {
-                    S_down=false;
-                }
-                if (Keyboard.getEventKey() == Keyboard.KEY_D) {
-                    D_down=false;
-                }
-                if (Keyboard.getEventKey() == Keyboard.KEY_W) {
-                    W_down=false;
-                }
-                if (Keyboard.getEventKey() == Keyboard.KEY_Q) {
-                    Q_down=false;
-                }
-                if (Keyboard.getEventKey() == Keyboard.KEY_E) {
-                    E_down=false;
-                }
-            }
-        }
-
-        float step = 0.1f* (System.currentTimeMillis()-lastPollTime);
-        if(A_down){
-            scene.cameraPosDesired.x+=scene.cameraXVector.x*step;
-            scene.cameraPosDesired.y+=scene.cameraXVector.y*step;
-            scene.cameraPosDesired.z+=scene.cameraXVector.z*step;
-        }
-        if(S_down){
-            scene.cameraPosDesired.x-=scene.cameraZVector.x*step;
-            scene.cameraPosDesired.y-=scene.cameraZVector.y*step;
-            scene.cameraPosDesired.z-=scene.cameraZVector.z*step;
-        }
-        if(W_down){
-            scene.cameraPosDesired.x+=scene.cameraZVector.x*step;
-            scene.cameraPosDesired.y+=scene.cameraZVector.y*step;
-            scene.cameraPosDesired.z+=scene.cameraZVector.z*step;
-        }
-        if(D_down){
-            scene.cameraPosDesired.x-=scene.cameraXVector.x*step;
-            scene.cameraPosDesired.y-=scene.cameraXVector.y*step;
-            scene.cameraPosDesired.z-=scene.cameraXVector.z*step;
-        }
-        if(Q_down){
-            scene.cameraPosDesired.x+=scene.cameraYVector.x*step;
-            scene.cameraPosDesired.y+=scene.cameraYVector.y*step;
-            scene.cameraPosDesired.z+=scene.cameraYVector.z*step;
-        }
-        if(E_down){
-            scene.cameraPosDesired.x-=scene.cameraYVector.x*step;
-            scene.cameraPosDesired.y-=scene.cameraYVector.y*step;
-            scene.cameraPosDesired.z-=scene.cameraYVector.z*step;
-        }
-
-        lastPollTime=System.currentTimeMillis();
-    }
-
-    public void onMouseDown(){
-
-        //sampling:
-
-        IntBuffer ib = BufferUtils.createIntBuffer(1);
-        //FloatBuffer fb = BufferUtils.createFloatBuffer(1);
-
-        glReadPixels(Mouse.getX(), Mouse.getY(), 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, ib);
-
-        if(myScene.idsMap.containsKey(ib.get(0)+"")){
-            System.out.println("SELECTED " + myScene.idsMap.get(ib.get(0)+"").name );
-            myScene.focusOn(myScene.idsMap.get(ib.get(0) + ""));
-        }else{
-            System.out.println("SELECTED NONE ");
-        }
-
-        //glReadPixels(Mouse.getX(), Mouse.getY() - 1, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, fb);
-        //System.out.println("depth?" +fb.get(0));
-    }
-
     public void update() {
         updateFPS();
     }
@@ -228,11 +118,11 @@ public class gameWorldRender {
 
         myScene = new scene();
         //myScene.addWorldObject(new WorldObject(TextureFactory.proceduralTexture()));
-        //myLogic.theTree.updateCSG();
-        //myScene.addWorldObject(new WorldObject(myLogic.theTree.myCSG));
+        myLogic.theTree.updateCSG();
+        myScene.addWorldObject(new WorldObject(myLogic.theTree.myCSG));
 
-        myScene.addWorldObject(new WorldObject((float x, float y, float t) -> GeographyFactory.oceanWaves(x, y, t), 1));
-        myScene.addWorldObject(new WorldObject((float x, float y, float t) -> GeographyFactory.island(x, y, t), 1000));
+        myScene.addWorldObject(new WorldObject((float x, float y, float t) -> GeographyFactory.oceanWaves(x, y, t))).setUpdateInterval(10).setColor(0,0,1.0f);
+        myScene.addWorldObject(new WorldObject((float x, float y, float t) -> GeographyFactory.island(x, y, t))).setColor(0,1.0f,0);
     }
 
     public void renderGL() {
@@ -253,7 +143,8 @@ public class gameWorldRender {
         }
 
         float zoom = 5f*scrollPos;
-        glClearColor(0.5f,0.5f,0.5f,1f);
+        glClearColor(0.5f,0.5f,0.75f,1f);
+
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_STENCIL_TEST);
