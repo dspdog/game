@@ -19,6 +19,9 @@ public class scene{
 
     public static Vector3f focalPos = new Vector3f(0,0,0);
     public static Vector3f cameraPosDesired = new Vector3f(0,-30,0);
+    public static Vector3f cameraXVector = new Vector3f(0,0,0);
+    public static Vector3f cameraYVector = new Vector3f(0,0,0);
+    public static Vector3f cameraZVector = new Vector3f(0,0,0);
 
     private static Vector3f cameraPosRealtime = new Vector3f(0,-30,0);
 
@@ -52,6 +55,7 @@ public class scene{
     }
 
     public Vector3f getCamPos(){//http://www.gamedev.net/topic/397751-how-to-get-camera-position/
+        getCamVecs();
         FloatBuffer mdl = BufferUtils.createFloatBuffer(16);
         // save the current modelview matrix
         //glPushMatrix();
@@ -61,6 +65,18 @@ public class scene{
         return new Vector3f(-(mdl.get(0) * mdl.get(12) + mdl.get(1) * mdl.get(13) + mdl.get(2) * mdl.get(14)),
                             -(mdl.get(4) * mdl.get(12) + mdl.get(5) * mdl.get(13) + mdl.get(6) * mdl.get(14)),
                             -(mdl.get(8) * mdl.get(12) + mdl.get(9) * mdl.get(13) + mdl.get(10) * mdl.get(14)));
+    }
+
+    public void getCamVecs(){//http://www.gamedev.net/topic/397751-how-to-get-camera-position/
+        FloatBuffer mdl = BufferUtils.createFloatBuffer(16);
+        // save the current modelview matrix
+        //glPushMatrix();
+        // get the current modelview matrix
+        GL11.glGetFloat(GL_MODELVIEW_MATRIX, mdl);
+
+        cameraXVector = new Vector3f(mdl.get(0),mdl.get(4),mdl.get(8));
+        cameraYVector = new Vector3f(mdl.get(1),mdl.get(5),mdl.get(9));
+        cameraZVector = new Vector3f(mdl.get(2),mdl.get(6),mdl.get(10));
     }
 
     public scene(){

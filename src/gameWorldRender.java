@@ -10,6 +10,7 @@ import shapes.geography.GeographyFactory;
 import utils.ShaderHelper;
 import world.*;
 
+import javax.vecmath.Vector4f;
 import java.nio.IntBuffer;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -106,7 +107,10 @@ public class gameWorldRender {
     boolean Q_down = false;
     boolean E_down = false;
 
+    long lastPollTime = System.currentTimeMillis();
+
     public void pollInput() {
+
         if (Mouse.isButtonDown(0)) {
             onMouseDown();
         }
@@ -152,25 +156,39 @@ public class gameWorldRender {
             }
         }
 
-        float step = 0.1f;
+        float step = 0.1f* (System.currentTimeMillis()-lastPollTime);
         if(A_down){
-            scene.cameraPosDesired.x+=step;
+            scene.cameraPosDesired.x+=scene.cameraXVector.x*step;
+            scene.cameraPosDesired.y+=scene.cameraXVector.y*step;
+            scene.cameraPosDesired.z+=scene.cameraXVector.z*step;
         }
         if(S_down){
-            scene.cameraPosDesired.z+=step;
+            scene.cameraPosDesired.x-=scene.cameraZVector.x*step;
+            scene.cameraPosDesired.y-=scene.cameraZVector.y*step;
+            scene.cameraPosDesired.z-=scene.cameraZVector.z*step;
         }
         if(W_down){
-            scene.cameraPosDesired.z-=step;
+            scene.cameraPosDesired.x+=scene.cameraZVector.x*step;
+            scene.cameraPosDesired.y+=scene.cameraZVector.y*step;
+            scene.cameraPosDesired.z+=scene.cameraZVector.z*step;
         }
         if(D_down){
-            scene.cameraPosDesired.x-=step;
+            scene.cameraPosDesired.x-=scene.cameraXVector.x*step;
+            scene.cameraPosDesired.y-=scene.cameraXVector.y*step;
+            scene.cameraPosDesired.z-=scene.cameraXVector.z*step;
         }
         if(Q_down){
-            scene.cameraPosDesired.y-=step;
+            scene.cameraPosDesired.x+=scene.cameraYVector.x*step;
+            scene.cameraPosDesired.y+=scene.cameraYVector.y*step;
+            scene.cameraPosDesired.z+=scene.cameraYVector.z*step;
         }
         if(E_down){
-            scene.cameraPosDesired.y+=step;
+            scene.cameraPosDesired.x-=scene.cameraYVector.x*step;
+            scene.cameraPosDesired.y-=scene.cameraYVector.y*step;
+            scene.cameraPosDesired.z-=scene.cameraYVector.z*step;
         }
+
+        lastPollTime=System.currentTimeMillis();
     }
 
     public void onMouseDown(){
