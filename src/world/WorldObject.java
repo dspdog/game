@@ -5,6 +5,7 @@ import eu.mihosoft.vrl.v3d.Vector3d;
 import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.opengl.Texture;
 import factory.GeometryFactory;
+import shapes.cloud.sphCloud;
 
 import java.nio.FloatBuffer;
 
@@ -12,6 +13,7 @@ public class WorldObject{ //have this handle all the interactions w/ geometryfac
     CSG myCSG;
     int myTextureId;
     GeometryFactory.gridFunction myFunction;
+    sphCloud myCloud;
 
     Vector3f myPos = new Vector3f(0,0,0);
     Vector3f myLastDrawnPos = new Vector3f(0,0,0);
@@ -28,6 +30,7 @@ public class WorldObject{ //have this handle all the interactions w/ geometryfac
     boolean isCSG = false;
     boolean isGrid = false;
     boolean isPlane = false;
+    boolean isCloud = false;
 
     boolean hasVBOHandles=false;
 
@@ -68,6 +71,13 @@ public class WorldObject{ //have this handle all the interactions w/ geometryfac
         myFunction = d;
         forceUpdateGridFb();
         triangles = (GeometryFactory.gridSize* GeometryFactory.gridSize/GeometryFactory.gridStep/GeometryFactory.gridStep)*2;
+    }
+
+    public WorldObject(int numParticles, WorldObject collisionObject){
+        name="PARTICLES_" + stencilId;
+        isCloud = true;
+        myCloud = new sphCloud(numParticles, collisionObject);
+       // myfb = GeometryFactory.getCSGVertexData(csg, triangles);
     }
 
     public WorldObject setUpdateInterval(int interval){

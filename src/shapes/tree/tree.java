@@ -73,8 +73,9 @@ public final class tree implements java.io.Serializable {
         }
     }
 
-    public void updateCSG(){
+    public CSG getUpdatedCSG(){
         myCSG = this.toCSG();
+        return myCSG;
     }
 
     private CSG toCSG(){

@@ -75,7 +75,7 @@ public class gameInputs {
             }
         }
 
-        float step = 1.1f* (System.currentTimeMillis()-lastPollTime);
+        float step = 0.3f* (System.currentTimeMillis()-lastPollTime);
         if(A_down){
             scene.cameraPosDesired.x+=scene.cameraXVector.x*step;
             scene.cameraPosDesired.y+=scene.cameraXVector.y*step;

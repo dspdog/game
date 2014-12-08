@@ -29,6 +29,10 @@ public class GeographyFactory {
         return total-distance(x,y,0)/24f;
     }
 
+    public static float bowl(float x, float y, float time){
+        return (float)Math.cos(Math.max(Math.PI, distance(x,y,0)/20f))* 10f+10f;
+    }
+
     public static float icebergs(float x, float y, float time){
         float total = 20f;
 

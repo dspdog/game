@@ -6,6 +6,9 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.opengl.*;
 import org.lwjgl.opengl.GL11;
+import shapes.cloud.particle;
+import shapes.cloud.sphCloud;
+import world.scene;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
@@ -30,6 +33,26 @@ public class GeometryFactory {
         glVertex3f(size, 0, size);
         glColor3f(0, 0, 1);
         glVertex3f(0, 0, size);
+        glEnd();
+    }
+
+    public static void cloud(sphCloud cloud){
+
+        //draw the particles in cloud as sprites using camera vectors in scene
+
+        glBegin(GL11.GL_TRIANGLES);
+
+        for(particle p : cloud.theParticles){
+            glColor3f(p.position.x, p.position.y, p.position.z);
+            glVertex3f(p.position.x, p.position.y, p.position.z);
+
+            glColor3f(p.position.x+scene.cameraXVector.x, p.position.y+scene.cameraXVector.y, p.position.z+scene.cameraXVector.z);
+            glVertex3f(p.position.x+scene.cameraXVector.x, p.position.y+scene.cameraXVector.y, p.position.z+scene.cameraXVector.z);
+
+            glColor3f(p.position.x+scene.cameraYVector.x, p.position.y+scene.cameraYVector.y, p.position.z+scene.cameraYVector.z);
+            glVertex3f(p.position.x+scene.cameraYVector.x, p.position.y+scene.cameraYVector.y, p.position.z+scene.cameraYVector.z);
+        }
+
         glEnd();
     }
 

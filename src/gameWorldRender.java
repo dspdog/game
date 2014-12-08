@@ -1,17 +1,11 @@
-import factory.TextureFactory;
-import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.*;
 import org.lwjgl.opengl.DisplayMode;
 import shapes.geography.GeographyFactory;
 import utils.ShaderHelper;
 import world.*;
-
-import javax.vecmath.Vector4f;
-import java.nio.IntBuffer;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -115,14 +109,19 @@ public class gameWorldRender {
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
 
-
         myScene = new scene();
         //myScene.addWorldObject(new WorldObject(TextureFactory.proceduralTexture()));
-        myLogic.theTree.updateCSG();
-        myScene.addWorldObject(new WorldObject(myLogic.theTree.myCSG));
 
-        myScene.addWorldObject(new WorldObject((float x, float y, float t) -> GeographyFactory.oceanWaves(x, y, t))).setUpdateInterval(10).setColor(0,0,1.0f);
-        myScene.addWorldObject(new WorldObject((float x, float y, float t) -> GeographyFactory.island(x, y, t))).setColor(0,1.0f,0);
+        WorldObject theGround = new WorldObject((float x, float y, float t) -> GeographyFactory.bowl(x, y, t)).setColor(0,1.0f,0);
+        WorldObject theWaves = new WorldObject((float x, float y, float t) -> GeographyFactory.oceanWaves(x, y, t)).setUpdateInterval(10).setColor(0,0,1.0f);
+
+        WorldObject theParticles = new WorldObject(1000, theGround);
+
+        myScene.addWorldObject(new WorldObject(myLogic.theTree.getUpdatedCSG()));
+
+        //myScene.addWorldObject(theWaves);
+        myScene.addWorldObject(theGround);
+        myScene.addWorldObject(theParticles);
     }
 
     public void renderGL() {

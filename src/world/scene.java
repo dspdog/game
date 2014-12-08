@@ -37,8 +37,10 @@ public class scene{
                 GeometryFactory.billboardCheatSphericalBegin();
                 GeometryFactory.plane(wo.myTextureId);
                 GeometryFactory.billboardEnd();
-            }if(wo.isCSG){
+            }else if(wo.isCSG){
                 wo.drawVBOs();
+            }else if(wo.isCloud){
+               GeometryFactory.cloud(wo.myCloud);
             }
         }
     }
