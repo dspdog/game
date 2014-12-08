@@ -3,6 +3,7 @@ package shapes.cloud;
 import org.lwjgl.util.vector.Vector3f;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class particle {
     public Vector3f velocity;
@@ -13,7 +14,7 @@ public class particle {
     public float density;
     public float pressure;
 
-    public ArrayList<particle> myNeighbors;
+    public LinkedList<particle> myNeighbors;
 
     public int myIndex;
 
@@ -31,12 +32,11 @@ public class particle {
                 (float)Math.random()*(upperCorner.z - lowerCorner.z)+lowerCorner.z);
     }
 
-    public synchronized  int findNeighbors(float cutoff){
+    public int findNeighbors(float cutoff){
         float dist;
-        myNeighbors = new ArrayList<>();
-        ArrayList<Integer> nearbyParticles = sphCloud.particlesNear(this.position);
-        for(Integer particleIndex : nearbyParticles) {
-            particle otherParticle = sphCloud.theParticles.get(particleIndex);
+        myNeighbors = new LinkedList<>();
+        LinkedList<particle> nearbyParticles = sphCloud.particlesNear(this.position);
+        for(particle otherParticle : nearbyParticles) {
             dist = this.distanceTo(otherParticle);
             if (dist < cutoff) {
                 myNeighbors.add(otherParticle);
