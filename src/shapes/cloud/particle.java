@@ -2,6 +2,7 @@ package shapes.cloud;
 
 import org.lwjgl.util.vector.Vector3f;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -35,7 +36,7 @@ public class particle {
     public int findNeighbors(float cutoff){
         float dist;
         myNeighbors = new LinkedList<>();
-        LinkedList<particle> nearbyParticles = sphCloud.particlesNear(this.position);
+        ArrayDeque<particle> nearbyParticles = sphCloud.particlesNear(this.position);
         for(particle otherParticle : nearbyParticles) {
             dist = this.distanceTo(otherParticle);
             if (dist < cutoff) {

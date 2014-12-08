@@ -2,6 +2,7 @@ package shapes.cloud;
 import org.lwjgl.util.vector.Vector3f;
 import world.WorldObject;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -10,9 +11,9 @@ import java.util.LinkedList;
  */
 public class sphCloud {
     public static int numParticles=0;
-    public static ArrayList<particle> theParticles = new ArrayList<>();
-    public static ArrayList<particle>[][][] particleGrid;
-    public static float gridSize=32f;
+    public static final ArrayList<particle> theParticles = new ArrayList<>();
+    public static ArrayDeque<particle>[][][] particleGrid;
+    public static final float gridSize=32f;
 
     //corners of the box bounding the cloud
     public static Vector3f lowerCorner;
@@ -42,11 +43,11 @@ public class sphCloud {
         int L=(int)((upperCorner.y-lowerCorner.y)/gridSize);
         int x,y,z;
 
-        particleGrid = new ArrayList[w+2][h+2][L+2];
+        particleGrid = new ArrayDeque[w+2][h+2][L+2];
         for(x=-1; x<w+1;x++){
             for(y=-1; y<h+1;y++){
                 for(z=-1; z<L+1;z++){
-                    particleGrid[x+1][y+1][z+1]=new ArrayList<>();
+                    particleGrid[x+1][y+1][z+1]=new ArrayDeque<>(32);
                 }
             }
         }
@@ -82,7 +83,7 @@ public class sphCloud {
         //}
     }
 
-    public static LinkedList<particle> particlesNear(Vector3f position){
+    public static ArrayDeque<particle> particlesNear(Vector3f position){
         float gridX = ((position.x-lowerCorner.x)/gridSize) + 1;
         float gridY = ((position.z-lowerCorner.z)/gridSize) + 1;
         float gridZ = ((position.y-lowerCorner.y)/gridSize) + 1;
@@ -91,7 +92,7 @@ public class sphCloud {
         float gridYd = gridY - (int)gridY;
         float gridZd = gridZ - (int)gridZ;
 
-        LinkedList<particle> result = new LinkedList();
+        ArrayDeque<particle> result = new ArrayDeque(8);
         result.addAll(particleGrid[(int)gridX][(int)gridY][(int)gridZ]);
 
         if(gridZd>0.5){//upper half
