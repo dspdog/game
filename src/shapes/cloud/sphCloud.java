@@ -11,7 +11,7 @@ import java.util.LinkedList;
 public class sphCloud {
     public static int numParticles=0;
     public static ArrayList<particle> theParticles = new ArrayList<>();
-    public static LinkedList<particle>[][][] particleGrid;
+    public static ArrayList<particle>[][][] particleGrid;
     public static float gridSize=32f;
 
     //corners of the box bounding the cloud
@@ -42,11 +42,11 @@ public class sphCloud {
         int L=(int)((upperCorner.y-lowerCorner.y)/gridSize);
         int x,y,z;
 
-        particleGrid = new LinkedList[w+2][h+2][L+2];
+        particleGrid = new ArrayList[w+2][h+2][L+2];
         for(x=-1; x<w+1;x++){
             for(y=-1; y<h+1;y++){
                 for(z=-1; z<L+1;z++){
-                    particleGrid[x+1][y+1][z+1]=new LinkedList<>();
+                    particleGrid[x+1][y+1][z+1]=new ArrayList<>();
                 }
             }
         }

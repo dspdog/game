@@ -12,6 +12,8 @@ public class gameWorldWater implements Runnable {
 
     scene myScene;
 
+    long lastNeighborUpdate=0;
+
     public CubeMarcher cm = new CubeMarcher();
     public gameWorldWater(scene _myScene){
         myScene = _myScene;
@@ -26,8 +28,11 @@ public class gameWorldWater implements Runnable {
         running=true;
         while(running){
             try {
-                sphCloud.findNeighbors();
-                Thread.sleep(1000);
+                if(getTime()-lastNeighborUpdate>100) {
+                    sphCloud.findNeighbors();
+                    lastNeighborUpdate = getTime();
+                }
+                Thread.sleep(1);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
