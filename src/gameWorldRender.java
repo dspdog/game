@@ -115,7 +115,7 @@ public class gameWorldRender {
         WorldObject theGround = new WorldObject((float x, float y, float t) -> GeographyFactory.bowl(x, y, t)).setColor(0,1.0f,0);
         WorldObject theWaves = new WorldObject((float x, float y, float t) -> GeographyFactory.oceanWaves(x, y, t)).setUpdateInterval(10).setColor(0,0,1.0f);
 
-        WorldObject theParticles = new WorldObject(10000, theGround);
+        WorldObject theParticles = new WorldObject(50000, theGround);
 
         myScene.addWorldObject(new WorldObject(myLogic.theTree.getUpdatedCSG()));
 

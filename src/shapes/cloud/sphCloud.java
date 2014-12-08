@@ -11,8 +11,8 @@ public class sphCloud {
     public int numParticles=0;
     public ArrayList<particle> theParticles = new ArrayList<>();
 
-    public ArrayList<particle>[][] particleGrid;
-    public final float gridSize=4f;
+    public ArrayList<Integer>[][][] particleGrid;
+    public final float gridSize=1f;
 
     //corners of the box bounding the cloud
     public Vector3f lowerCorner;
@@ -21,7 +21,7 @@ public class sphCloud {
     public sphCloud(int total, WorldObject collisionObject){
 
         lowerCorner = new Vector3f(0,0,0);
-        upperCorner = new Vector3f(20,20,20);
+        upperCorner = new Vector3f(gridSize*8,gridSize*8,gridSize*8);
 
         numParticles=total;
         initParticleGrid();
@@ -30,7 +30,7 @@ public class sphCloud {
 
     private void getRandomParticles(){
         for(int i=0; i<numParticles; i++){
-            addParticle(new particle(lowerCorner, upperCorner));
+            addParticle(new particle(lowerCorner, upperCorner, i));
         }
 
         findNeighbors();
@@ -39,15 +39,18 @@ public class sphCloud {
     private void initParticleGrid(){
         int w=(int)((upperCorner.x-lowerCorner.x)/gridSize);
         int h=(int)((upperCorner.z-lowerCorner.z)/gridSize);
-        int x,y;
+        int L=(int)((upperCorner.y-lowerCorner.y)/gridSize);
+        int x,y,z;
 
-        particleGrid = new ArrayList[w+2][h+2];
+        particleGrid = new ArrayList[w+2][h+2][L+2];
         for(x=-1; x<w+1;x++){
             for(y=-1; y<h+1;y++){
-                particleGrid[x+1][y+1]=new ArrayList<>();
+                for(z=-1; z<L+1;z++){
+                    particleGrid[x+1][y+1][z+1]=new ArrayList<>();
+                }
             }
         }
-        System.out.println("GRID size " + w + " " + h);
+        System.out.println("GRID size " + w + " " + h + " " + L);
     }
 
     public void findNeighbors(){
@@ -56,7 +59,7 @@ public class sphCloud {
         for(particle p : theParticles){
             numNeighbors += p.findNeighbors(this, gridSize/2f);
         }
-        System.out.println("found "+numNeighbors+" neighbors in " + (System.currentTimeMillis() - time1) + "ms");
+        System.out.println("found "+numNeighbors+" neighbors in " + (System.currentTimeMillis() - time1) + "ms -- average " + numNeighbors/numParticles);
     }
 
     public boolean withinBounds(particle p){
@@ -66,43 +69,106 @@ public class sphCloud {
     }
 
     public void addParticle(particle p){
-        if(withinBounds(p)){
+        //if(withinBounds(p)){
             float gridX = ((p.position.x-lowerCorner.x)/gridSize) + 1;
             float gridY = ((p.position.z-lowerCorner.z)/gridSize) + 1;
-            particleGrid[(int)gridX][(int)gridY].add(p);
+            float gridZ = ((p.position.y-lowerCorner.y)/gridSize) + 1;
+            particleGrid[(int)gridX][(int)gridY][(int)gridZ].add(p.myIndex);
             theParticles.add(p);
-        }
+        //}
     }
 
-    public ArrayList<particle> particlesNear(Vector3f position){
+    public ArrayList<Integer> particlesNear(Vector3f position){
         float gridX = ((position.x-lowerCorner.x)/gridSize) + 1;
         float gridY = ((position.z-lowerCorner.z)/gridSize) + 1;
+        float gridZ = ((position.y-lowerCorner.y)/gridSize) + 1;
 
         float gridXd = gridX - (int)gridX;
         float gridYd = gridY - (int)gridY;
+        float gridZd = gridZ - (int)gridZ;
 
-        ArrayList<particle> result = new ArrayList();
-        result.addAll(particleGrid[(int)gridX][(int)gridY]);
+        ArrayList<Integer> result = new ArrayList();
+        result.addAll(particleGrid[(int)gridX][(int)gridY][(int)gridZ]);
 
-        if(gridXd>0.5){ //E
-            if(gridYd>0.5){//SE
-                result.addAll(particleGrid[(int)gridX+1][(int)gridY]);
-                result.addAll(particleGrid[(int)gridX][(int)gridY+1]);
-                result.addAll(particleGrid[(int)gridX+1][(int)gridY+1]);
-            }else{//NE
-                result.addAll(particleGrid[(int)gridX+1][(int)gridY]);
-                result.addAll(particleGrid[(int)gridX][(int)gridY-1]);
-                result.addAll(particleGrid[(int)gridX+1][(int)gridY-1]);
+        if(gridZd>0.5){
+            result.addAll(particleGrid[(int)gridX][(int)gridY][(int)gridZ+1]);
+            if(gridXd>0.5){ //E
+                if(gridYd>0.5){//SE
+                    result.addAll(particleGrid[(int)gridX+1][(int)gridY][(int)gridZ]);
+                    result.addAll(particleGrid[(int)gridX][(int)gridY+1][(int)gridZ]);
+                    result.addAll(particleGrid[(int)gridX+1][(int)gridY+1][(int)gridZ]);
+
+                    result.addAll(particleGrid[(int)gridX+1][(int)gridY][(int)gridZ+1]);
+                    result.addAll(particleGrid[(int)gridX][(int)gridY+1][(int)gridZ+1]);
+                    result.addAll(particleGrid[(int)gridX+1][(int)gridY+1][(int)gridZ+1]);
+
+                }else{//NE
+                    result.addAll(particleGrid[(int)gridX+1][(int)gridY][(int)gridZ]);
+                    result.addAll(particleGrid[(int)gridX][(int)gridY-1][(int)gridZ]);
+                    result.addAll(particleGrid[(int)gridX+1][(int)gridY-1][(int)gridZ]);
+
+                    result.addAll(particleGrid[(int)gridX+1][(int)gridY][(int)gridZ+1]);
+                    result.addAll(particleGrid[(int)gridX][(int)gridY-1][(int)gridZ+1]);
+                    result.addAll(particleGrid[(int)gridX+1][(int)gridY-1][(int)gridZ+1]);
+                }
+            }else{ //W
+                if(gridYd>0.5){//SW
+                    result.addAll(particleGrid[(int)gridX-1][(int)gridY][(int)gridZ]);
+                    result.addAll(particleGrid[(int)gridX][(int)gridY+1][(int)gridZ]);
+                    result.addAll(particleGrid[(int)gridX-1][(int)gridY+1][(int)gridZ]);
+
+                    result.addAll(particleGrid[(int)gridX-1][(int)gridY][(int)gridZ+1]);
+                    result.addAll(particleGrid[(int)gridX][(int)gridY+1][(int)gridZ+1]);
+                    result.addAll(particleGrid[(int)gridX-1][(int)gridY+1][(int)gridZ+1]);
+                }else{//NW
+                    result.addAll(particleGrid[(int)gridX-1][(int)gridY][(int)gridZ]);
+                    result.addAll(particleGrid[(int)gridX][(int)gridY-1][(int)gridZ]);
+                    result.addAll(particleGrid[(int)gridX-1][(int)gridY-1][(int)gridZ]);
+
+                    result.addAll(particleGrid[(int)gridX-1][(int)gridY][(int)gridZ+1]);
+                    result.addAll(particleGrid[(int)gridX][(int)gridY-1][(int)gridZ+1]);
+                    result.addAll(particleGrid[(int)gridX-1][(int)gridY-1][(int)gridZ+1]);
+                }
             }
-        }else{ //W
-            if(gridYd>0.5){//SW
-                result.addAll(particleGrid[(int)gridX-1][(int)gridY]);
-                result.addAll(particleGrid[(int)gridX][(int)gridY+1]);
-                result.addAll(particleGrid[(int)gridX-1][(int)gridY+1]);
-            }else{//NW
-                result.addAll(particleGrid[(int)gridX-1][(int)gridY]);
-                result.addAll(particleGrid[(int)gridX][(int)gridY-1]);
-                result.addAll(particleGrid[(int)gridX-1][(int)gridY-1]);
+        }else{
+            result.addAll(particleGrid[(int)gridX][(int)gridY][(int)gridZ-1]);
+            if(gridXd>0.5){ //E
+                if(gridYd>0.5){//SE
+                    result.addAll(particleGrid[(int)gridX+1][(int)gridY][(int)gridZ]);
+                    result.addAll(particleGrid[(int)gridX][(int)gridY+1][(int)gridZ]);
+                    result.addAll(particleGrid[(int)gridX+1][(int)gridY+1][(int)gridZ]);
+
+                    result.addAll(particleGrid[(int)gridX+1][(int)gridY][(int)gridZ-1]);
+                    result.addAll(particleGrid[(int)gridX][(int)gridY+1][(int)gridZ-1]);
+                    result.addAll(particleGrid[(int)gridX+1][(int)gridY+1][(int)gridZ-1]);
+
+                }else{//NE
+                    result.addAll(particleGrid[(int)gridX+1][(int)gridY][(int)gridZ]);
+                    result.addAll(particleGrid[(int)gridX][(int)gridY-1][(int)gridZ]);
+                    result.addAll(particleGrid[(int)gridX+1][(int)gridY-1][(int)gridZ]);
+
+                    result.addAll(particleGrid[(int)gridX+1][(int)gridY][(int)gridZ-1]);
+                    result.addAll(particleGrid[(int)gridX][(int)gridY-1][(int)gridZ-1]);
+                    result.addAll(particleGrid[(int)gridX+1][(int)gridY-1][(int)gridZ-1]);
+                }
+            }else{ //W
+                if(gridYd>0.5){//SW
+                    result.addAll(particleGrid[(int)gridX-1][(int)gridY][(int)gridZ]);
+                    result.addAll(particleGrid[(int)gridX][(int)gridY+1][(int)gridZ]);
+                    result.addAll(particleGrid[(int)gridX-1][(int)gridY+1][(int)gridZ]);
+
+                    result.addAll(particleGrid[(int)gridX-1][(int)gridY][(int)gridZ-1]);
+                    result.addAll(particleGrid[(int)gridX][(int)gridY+1][(int)gridZ-1]);
+                    result.addAll(particleGrid[(int)gridX-1][(int)gridY+1][(int)gridZ-1]);
+                }else{//NW
+                    result.addAll(particleGrid[(int)gridX-1][(int)gridY][(int)gridZ]);
+                    result.addAll(particleGrid[(int)gridX][(int)gridY-1][(int)gridZ]);
+                    result.addAll(particleGrid[(int)gridX-1][(int)gridY-1][(int)gridZ]);
+
+                    result.addAll(particleGrid[(int)gridX-1][(int)gridY][(int)gridZ-1]);
+                    result.addAll(particleGrid[(int)gridX][(int)gridY-1][(int)gridZ-1]);
+                    result.addAll(particleGrid[(int)gridX-1][(int)gridY-1][(int)gridZ-1]);
+                }
             }
         }
 
