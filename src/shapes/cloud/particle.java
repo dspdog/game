@@ -16,15 +16,17 @@ public class particle {
     boolean neighborsFound = false;
     public ArrayList<particle> myNeighbors;
 
-    public particle(){
+    public particle(Vector3f lowerCorner, Vector3f upperCorner){
 
         neighborsFound=false;
         mass = 1f;
         density = 1f;
         pressure = 1f;
 
-        float scale = 200f;
-        position = new Vector3f((float)Math.random()*scale, (float)Math.random()*scale, (float)Math.random()*scale);
+        position = new Vector3f(
+                (float)Math.random()*(upperCorner.x - lowerCorner.x)+lowerCorner.x,
+                (float)Math.random()*(upperCorner.y - lowerCorner.y)+lowerCorner.y,
+                (float)Math.random()*(upperCorner.z - lowerCorner.z)+lowerCorner.z);
     }
 
     public int findNeighbors(sphCloud cloud, float cutoff){
