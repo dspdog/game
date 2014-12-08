@@ -13,7 +13,7 @@ public class particle {
     public float density;
     public float pressure;
 
-    public ArrayList<Integer> myNeighbors;
+    public ArrayList<particle> myNeighbors;
 
     public int myIndex;
 
@@ -31,14 +31,15 @@ public class particle {
                 (float)Math.random()*(upperCorner.z - lowerCorner.z)+lowerCorner.z);
     }
 
-    public int findNeighbors(sphCloud cloud, float cutoff){
+    public synchronized  int findNeighbors(float cutoff){
         float dist;
         myNeighbors = new ArrayList<>();
-        ArrayList<Integer> nearbyParticles = cloud.particlesNear(this.position);
+        ArrayList<Integer> nearbyParticles = sphCloud.particlesNear(this.position);
         for(Integer particleIndex : nearbyParticles) {
-            dist = this.distanceTo(cloud.theParticles.get(particleIndex));
+            particle otherParticle = sphCloud.theParticles.get(particleIndex);
+            dist = this.distanceTo(otherParticle);
             if (dist < cutoff) {
-                myNeighbors.add(particleIndex);
+                myNeighbors.add(otherParticle);
             }
         }
         return myNeighbors.size();

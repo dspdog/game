@@ -8,20 +8,21 @@ import java.util.ArrayList;
  * Created by user on 12/8/2014.
  */
 public class sphCloud {
-    public int numParticles=0;
-    public ArrayList<particle> theParticles = new ArrayList<>();
-
-    public ArrayList<Integer>[][][] particleGrid;
-    public final float gridSize=1f;
+    public static int numParticles=0;
+    public static ArrayList<particle> theParticles = new ArrayList<>();
+    public static ArrayList<Integer>[][][] particleGrid;
+    public static float gridSize=1f;
 
     //corners of the box bounding the cloud
-    public Vector3f lowerCorner;
-    public Vector3f upperCorner;
+    public static Vector3f lowerCorner;
+    public static Vector3f upperCorner;
+
+    public static boolean neighborsFound = true;
 
     public sphCloud(int total, WorldObject collisionObject){
 
         lowerCorner = new Vector3f(0,0,0);
-        upperCorner = new Vector3f(gridSize*8,gridSize*8,gridSize*8);
+        upperCorner = new Vector3f(gridSize*32,gridSize*32,gridSize*32);
 
         numParticles=total;
         initParticleGrid();
@@ -32,8 +33,6 @@ public class sphCloud {
         for(int i=0; i<numParticles; i++){
             addParticle(new particle(lowerCorner, upperCorner, i));
         }
-
-        findNeighbors();
     }
 
     private void initParticleGrid(){
@@ -53,13 +52,17 @@ public class sphCloud {
         System.out.println("GRID size " + w + " " + h + " " + L);
     }
 
-    public void findNeighbors(){
-        int numNeighbors=0;
-        long time1 = System.currentTimeMillis();
-        for(particle p : theParticles){
-            numNeighbors += p.findNeighbors(this, gridSize/2f);
+    public static synchronized void findNeighbors(){
+        neighborsFound=false;
+        if(numParticles>0){
+            int numNeighbors=0;
+            long time1 = System.currentTimeMillis();
+            for(particle p : theParticles){
+                numNeighbors += p.findNeighbors(gridSize/2f);
+            }
+            System.out.println("found "+numNeighbors+" neighbors in " + (System.currentTimeMillis() - time1) + "ms -- average " + numNeighbors/numParticles);
         }
-        System.out.println("found "+numNeighbors+" neighbors in " + (System.currentTimeMillis() - time1) + "ms -- average " + numNeighbors/numParticles);
+        neighborsFound=true;
     }
 
     public boolean withinBounds(particle p){
@@ -78,7 +81,7 @@ public class sphCloud {
         //}
     }
 
-    public ArrayList<Integer> particlesNear(Vector3f position){
+    public static ArrayList<Integer> particlesNear(Vector3f position){
         float gridX = ((position.x-lowerCorner.x)/gridSize) + 1;
         float gridY = ((position.z-lowerCorner.z)/gridSize) + 1;
         float gridZ = ((position.y-lowerCorner.y)/gridSize) + 1;
