@@ -27,7 +27,7 @@ public class gameWorldWater implements Runnable {
         while(running){
             try {
                 sphCloud.findNeighbors();
-                Thread.sleep(20);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

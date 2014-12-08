@@ -11,7 +11,7 @@ public class sphCloud {
     public static int numParticles=0;
     public static ArrayList<particle> theParticles = new ArrayList<>();
     public static ArrayList<Integer>[][][] particleGrid;
-    public static float gridSize=1f;
+    public static float gridSize=32f;
 
     //corners of the box bounding the cloud
     public static Vector3f lowerCorner;
@@ -22,7 +22,7 @@ public class sphCloud {
     public sphCloud(int total, WorldObject collisionObject){
 
         lowerCorner = new Vector3f(0,0,0);
-        upperCorner = new Vector3f(gridSize*32,gridSize*32,gridSize*32);
+        upperCorner = new Vector3f(gridSize*8,gridSize*8,gridSize*8);
 
         numParticles=total;
         initParticleGrid();
@@ -52,7 +52,7 @@ public class sphCloud {
         System.out.println("GRID size " + w + " " + h + " " + L);
     }
 
-    public static synchronized void findNeighbors(){
+    public static void findNeighbors(){
         neighborsFound=false;
         if(numParticles>0){
             int numNeighbors=0;
@@ -93,7 +93,7 @@ public class sphCloud {
         ArrayList<Integer> result = new ArrayList();
         result.addAll(particleGrid[(int)gridX][(int)gridY][(int)gridZ]);
 
-        if(gridZd>0.5){
+        if(gridZd>0.5){//upper half
             result.addAll(particleGrid[(int)gridX][(int)gridY][(int)gridZ+1]);
             if(gridXd>0.5){ //E
                 if(gridYd>0.5){//SE
@@ -133,7 +133,7 @@ public class sphCloud {
                     result.addAll(particleGrid[(int)gridX-1][(int)gridY-1][(int)gridZ+1]);
                 }
             }
-        }else{
+        }else{ //lower half
             result.addAll(particleGrid[(int)gridX][(int)gridY][(int)gridZ-1]);
             if(gridXd>0.5){ //E
                 if(gridYd>0.5){//SE
