@@ -1,4 +1,5 @@
 package shapes.cloud;
+import org.lwjgl.util.vector.Vector3f;
 import world.WorldObject;
 
 import java.util.ArrayList;
@@ -17,7 +18,22 @@ public class sphCloud {
 
     private void getRandomParticles(){
         for(int i=0; i<numParticles; i++){
-            theParticles.add(new particle());
+            addParticle(new particle());
         }
+
+        findNeighbors();
+    }
+
+    public void findNeighbors(){
+        int numNeighbors=0;
+        long time1 = System.currentTimeMillis();
+        for(particle p : theParticles){
+            numNeighbors += p.findNeighbors(this, 200f);
+        }
+        System.out.println("found "+numNeighbors+" neighbors in " + (System.currentTimeMillis() - time1) + "ms");
+    }
+
+    public void addParticle(particle p){
+        theParticles.add(p);
     }
 }
