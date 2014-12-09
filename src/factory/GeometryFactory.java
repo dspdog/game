@@ -49,9 +49,11 @@ public class GeometryFactory {
         int segs = 16;
         float scale = 4f;
         for(int i=0; i<segs; i++){
-            glVertex3f(p.position.x+(scene.cameraYVector.x*(float)(Math.sin(i * 2 * Math.PI / segs))+scene.cameraXVector.x*(float)(Math.cos(i*2*Math.PI/segs)))*scale,
-                    p.position.y+(scene.cameraYVector.y*(float)(Math.sin(i * 2 * Math.PI / segs))+scene.cameraXVector.y*(float)(Math.cos(i*2*Math.PI/segs)))*scale,
-                    p.position.z+(scene.cameraYVector.z*(float)(Math.sin(i * 2 * Math.PI / segs))+scene.cameraXVector.z*(float)(Math.cos(i*2*Math.PI/segs)))*scale);
+            float sin = (float)(Math.sin(i * 2 * Math.PI / segs));
+            float cos = (float)(Math.cos(i * 2 * Math.PI / segs));
+            glVertex3f(p.position.x+(scene.cameraYVector.x*sin+scene.cameraXVector.x*cos)*scale,
+                       p.position.y+(scene.cameraYVector.y*sin+scene.cameraXVector.y*cos)*scale,
+                       p.position.z+(scene.cameraYVector.z*sin+scene.cameraXVector.z*cos)*scale);
         }
         glEnd();
     }
