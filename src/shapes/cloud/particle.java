@@ -30,6 +30,8 @@ public class particle {
     public static long lastTime=0;
     public static float dt=0;
 
+    public static float speedlimit = 0.1f;
+
     public particle(Vector3f lowerCorner, Vector3f upperCorner, int index){
 
         myIndex=index;
@@ -54,24 +56,32 @@ public class particle {
     public static void updateTime(){
         lastTime=time;
         time = getTime();
-        dt=(time-lastTime)*0.01f;
+        dt=(time-lastTime)*0.1f;
     }
 
     private static long getTime() {
         return (Sys.getTime() * 1000) / Sys.getTimerResolution();
     }
 
-    public void move(){
-        //float dt = 0.1f; //seconds since last frame
-        position.set(position.x+velocity.x*dt,position.y+velocity.y*dt,position.z+velocity.z*dt);
-    }
+    public void move(Vector3f lower, Vector3f upper){
 
-    public void bounds(Vector3f lower, Vector3f upper){
-       /* position.set(
+        if(velocity.lengthSquared()>speedlimit){velocity.normalise().scale(speedlimit);} //speed limiter
+
+        if((position.x+velocity.x*dt > upper.x) || (position.x+velocity.x*dt < lower.x))
+            velocity.x*=-1f;
+
+        if((position.y+velocity.y*dt > upper.y) || (position.y+velocity.y*dt < lower.y))
+            velocity.y*=-1f;
+
+        if((position.x+velocity.z*dt > upper.z) || (position.z+velocity.z*dt < lower.z))
+            velocity.z*=-1f;
+        position.set(position.x+velocity.x*dt,position.y+velocity.y*dt,position.z+velocity.z*dt);
+
+        position.set(
                 Math.min(Math.max(lower.x, position.x), upper.x),
                 Math.min(Math.max(lower.y, position.y), upper.y),
                 Math.min(Math.max(lower.z, position.z), upper.z)
-        );*/
+        );
     }
 
     public void findDensity(){/////////////////////////////////

@@ -29,8 +29,8 @@ public class sphCloud {
         upperCorner = new Vector3f(gridSize*4,gridSize*4,gridSize*4);
         center = new Vector3f(0,0,0);
 
-        lowerCorner.translate(0,gridSize*4,0f);
-        upperCorner.translate(0,gridSize*4,0f);
+        lowerCorner.translate(0,gridSize*6,0f);
+        upperCorner.translate(0,gridSize*6,0f);
         center.translate(0,gridSize*4,0f);
 
         numParticles=total;
@@ -109,8 +109,9 @@ public class sphCloud {
 
 
             Vector3f accInteractive = new Vector3f(0,0,0);
-            Vector3f accGravity = new Vector3f(p.position.x-center.x,p.position.y-center.y,p.position.z-center.z); //suction source at origin
-            accGravity.normalise(accGravity).scale(0.01f);
+            //Vector3f accGravity = new Vector3f(p.position.x-center.x,p.position.y-center.y,p.position.z-center.z); //suction source at origin
+            Vector3f accGravity = new Vector3f(0,1f,0); //suction source at origin
+            accGravity.normalise(accGravity).scale(5f);
 
             p.velocity.translate(
                     accPressure.x+accVisc.x+accInteractive.x-accGravity.x,
@@ -143,8 +144,7 @@ public class sphCloud {
                         _gridX = (int)(((p.position.x-lowerCorner.x)/gridSize) + 1);
                         _gridY = (int)(((p.position.z-lowerCorner.z)/gridSize) + 1);
                         _gridZ = (int)(((p.position.y-lowerCorner.y)/gridSize) + 1);
-                        p.move();
-                        //p.bounds(lowerCornerMini, upperCornerMini);
+                        p.move(lowerCorner, upperCorner);
                         gridX = (int)(((p.position.x-lowerCorner.x)/gridSize) + 1);
                         gridY = (int)(((p.position.z-lowerCorner.z)/gridSize) + 1);
                         gridZ = (int)(((p.position.y-lowerCorner.y)/gridSize) + 1);

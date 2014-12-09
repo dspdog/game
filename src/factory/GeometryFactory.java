@@ -38,7 +38,8 @@ public class GeometryFactory {
 
     public static void cloud(sphCloud cloud, int texId){
         for(particle p : cloud.theParticles){
-            glColor3f(p.velocity.x, p.velocity.y, p.velocity.z);
+            float scale = 0.01f;
+            glColor3f((p.position.x*scale), (p.position.y*scale), (p.position.z*scale));
             drawCircle(p);
         }
     }
