@@ -12,7 +12,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class sphCloud {
     public static int numParticles=0;
-    public static final ArrayList<particle> theParticles = new ArrayList<>();
+    public static final CopyOnWriteArrayList<particle> theParticles = new CopyOnWriteArrayList<>();
     public static CopyOnWriteArrayList<particle>[][][] particleGrid;
     public static final float gridSize=32f;
     public static boolean gridInited=false;
@@ -20,13 +20,18 @@ public class sphCloud {
     //corners of the box bounding the cloud
     public static Vector3f lowerCorner = new Vector3f(0,0,0);
     public static Vector3f upperCorner = new Vector3f(10,10,10);
-
+    public static Vector3f center = new Vector3f(5f,5f,5f);
     public static boolean neighborsFound = true;
 
     public sphCloud(int total, WorldObject collisionObject){
 
-        lowerCorner = new Vector3f(0,0,0);
-        upperCorner = new Vector3f(gridSize*8,gridSize*8,gridSize*8);
+        lowerCorner = new Vector3f(gridSize*-4,gridSize*-4,gridSize*-4);
+        upperCorner = new Vector3f(gridSize*4,gridSize*4,gridSize*4);
+        center = new Vector3f(0,0,0);
+
+        lowerCorner.translate(0,gridSize*4,0f);
+        upperCorner.translate(0,gridSize*4,0f);
+        center.translate(0,gridSize*4,0f);
 
         numParticles=total;
         initParticleGrid();
@@ -58,7 +63,6 @@ public class sphCloud {
     }
 
     public static void findNeighbors(){
-        neighborsFound=false;
         if(numParticles>0){
             int numNeighbors=0;
             long time1 = System.currentTimeMillis();
@@ -67,26 +71,67 @@ public class sphCloud {
             }
             System.out.println("found "+numNeighbors+" neighbors in " + (System.currentTimeMillis() - time1) + "ms -- average " + numNeighbors/numParticles);
         }
-        neighborsFound=true;
+    }
+
+    public static void updateParticleVelocities(){
+        for(particle p : theParticles){
+            p.findDensity();
+            p.findPressure();
+        }
+
+        for(particle p : theParticles){
+
+            Vector3f accPressure = new Vector3f(0,0,0);
+            Vector3f accVisc = new Vector3f(0,0,0);
+            float accPressScale=0;
+            float accViscScale=0;
+
+            for(particle n : p.myNeighbors){
+
+                float kernalVal = n.kernal(n.distanceTo(p));
+
+                accPressScale = -1.0f*n.mass*(p.pressure/(p.density*p.density) + n.pressure/(n.density*n.density)) * kernalVal;
+                accViscScale = p.mu * n.mass / n.density / p.density * kernalVal; //second gradient?
+
+                accVisc.translate(
+                        accViscScale*(n.velocity.x-p.velocity.x),
+                        accViscScale*(n.velocity.y-p.velocity.y),
+                        accViscScale*(n.velocity.z-p.velocity.z)
+                );
+
+                accPressure.translate(
+                        accPressScale*(n.position.x-p.position.x),
+                        accPressScale*(n.position.y-p.position.y),
+                        accPressScale*(n.position.z-p.position.z)
+                );
+            }
+
+
+
+            Vector3f accInteractive = new Vector3f(0,0,0);
+            Vector3f accGravity = new Vector3f(p.position.x-center.x,p.position.y-center.y,p.position.z-center.z);
+            accGravity.normalise(accGravity).scale(0.01f);
+
+            p.velocity.translate(
+                    accPressure.x+accVisc.x+accInteractive.x-accGravity.x,
+                    accPressure.y+accVisc.y+accInteractive.y-accGravity.y,
+                    accPressure.z+accVisc.z+accInteractive.z-accGravity.z);
+        }
     }
 
     public static void updateParticlePositions(){
-        /*particle.updateTime();
-        for(particle p : theParticles){
-            p.move();
-            float gridX = ((p.position.x-lowerCorner.x)/gridSize) + 1;
-            float gridY = ((p.position.z-lowerCorner.z)/gridSize) + 1;
-            float gridZ = ((p.position.y-lowerCorner.y)/gridSize) + 1;
-            particleGrid[(int)gridX][(int)gridY][(int)gridZ].r(p);
-        }*/
-
-        particle.updateTime();
-
         int w=(int)((upperCorner.x-lowerCorner.x)/gridSize);
         int h=(int)((upperCorner.z-lowerCorner.z)/gridSize);
         int L=(int)((upperCorner.y-lowerCorner.y)/gridSize);
         int x,y,z;
         //particleGrid = new ArrayDeque[w+2][h+2][L+2];
+
+        int _gridX, _gridY, _gridZ, gridX, gridY, gridZ;
+
+        float scale = 0.8f;
+        //Vector3f lowerCornerMini = new Vector3f(lowerCorner.x*scale, lowerCorner.y*scale, lowerCorner.z*scale);
+        //Vector3f upperCornerMini = new Vector3f(upperCorner.x*scale, upperCorner.y*scale, upperCorner.z*scale);
+
         if(gridInited)
         for(x=0; x<w+2;x++){
             for(y=0; y<h+2;y++){
@@ -95,23 +140,26 @@ public class sphCloud {
                     //if(particleGrid[x][y][z] != null)
                     for(particle p:particleGrid[x][y][z]){
 
-                        int _gridX = (int)(((p.position.x-lowerCorner.x)/gridSize) + 1);
-                        int _gridY = (int)(((p.position.z-lowerCorner.z)/gridSize) + 1);
-                        int _gridZ = (int)(((p.position.y-lowerCorner.y)/gridSize) + 1);
+                        _gridX = (int)(((p.position.x-lowerCorner.x)/gridSize) + 1);
+                        _gridY = (int)(((p.position.z-lowerCorner.z)/gridSize) + 1);
+                        _gridZ = (int)(((p.position.y-lowerCorner.y)/gridSize) + 1);
                         p.move();
-                        int gridX = (int)(((p.position.x-lowerCorner.x)/gridSize) + 1);
-                        int gridY = (int)(((p.position.z-lowerCorner.z)/gridSize) + 1);
-                        int gridZ = (int)(((p.position.y-lowerCorner.y)/gridSize) + 1);
-
-                        _gridX = Math.max(1, Math.min(w - 1, _gridX));
-                        _gridY = Math.max(1, Math.min(h - 1, _gridY));
-                        _gridZ = Math.max(1, Math.min(L - 1, _gridZ));
-
-                        gridX = Math.max(1, Math.min(w - 1, gridX));
-                        gridY = Math.max(1, Math.min(h - 1, gridY));
-                        gridZ = Math.max(1, Math.min(L - 1, gridZ));
+                        //p.bounds(lowerCornerMini, upperCornerMini);
+                        gridX = (int)(((p.position.x-lowerCorner.x)/gridSize) + 1);
+                        gridY = (int)(((p.position.z-lowerCorner.z)/gridSize) + 1);
+                        gridZ = (int)(((p.position.y-lowerCorner.y)/gridSize) + 1);
 
                         if(gridX!=_gridX || gridY!=_gridY || gridZ!=_gridZ){
+
+                            _gridX = Math.max(1, Math.min(w - 1, _gridX));
+                            _gridY = Math.max(1, Math.min(h - 1, _gridY));
+                            _gridZ = Math.max(1, Math.min(L - 1, _gridZ));
+
+                            gridX = Math.max(1, Math.min(w - 1, gridX));
+                            gridY = Math.max(1, Math.min(h - 1, gridY));
+                            gridZ = Math.max(1, Math.min(L - 1, gridZ));
+
+
                             particleGrid[_gridX][_gridY][_gridZ].remove(p);
                             particleGrid[gridX][gridY][gridZ].add(p);
                         }
@@ -153,15 +201,15 @@ public class sphCloud {
         int h=(int)((upperCorner.z-lowerCorner.z)/gridSize);
         int L=(int)((upperCorner.y-lowerCorner.y)/gridSize);
 
-        gridX = Math.max(1, Math.min(w - 1, gridX));
-        gridY = Math.max(1, Math.min(h - 1, gridY));
-        gridZ = Math.max(1, Math.min(L - 1, gridZ));
-
         float gridXd = gridX - (int)gridX;
         float gridYd = gridY - (int)gridY;
         float gridZd = gridZ - (int)gridZ;
 
-        ArrayDeque<particle> result = new ArrayDeque(8);
+        gridX = (int)Math.max(1, Math.min(w - 1, (int)gridX));
+        gridY = (int)Math.max(1, Math.min(h - 1, (int)gridY));
+        gridZ = (int)Math.max(1, Math.min(L - 1, (int)gridZ));
+
+        ArrayDeque<particle> result = new ArrayDeque(8*20);
         result.addAll(particleGrid[(int)gridX][(int)gridY][(int)gridZ]);
 
         if(gridZd>0.5){//upper half

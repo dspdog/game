@@ -17,10 +17,12 @@ public class particle {
     public float pressure;
 
     public float densREF = 1000; // kg/m^3
-    public float mu = 0.001f; // kg/ms
-    public float c = 3; // m/s
+    public float mu = 0.01f; // kg/ms
+    public float c = 1f; // m/s
 
-    public LinkedList<particle> myNeighbors;
+    public float radius=0f;
+
+    public LinkedList<particle> myNeighbors = new LinkedList<>();
 
     public int myIndex;
 
@@ -41,7 +43,7 @@ public class particle {
                 (float)Math.random()-0.5f,
                 (float)Math.random()-0.5f);
 
-        velocity.scale(10f);
+        velocity.scale(1f);
 
         position = new Vector3f(
                 (float)Math.random()*(upperCorner.x - lowerCorner.x)+lowerCorner.x,
@@ -52,10 +54,7 @@ public class particle {
     public static void updateTime(){
         lastTime=time;
         time = getTime();
-
-        float turbo = 3f;
-
-        dt=(time-lastTime)*0.001f * turbo;
+        dt=(time-lastTime)*0.001f;
     }
 
     private static long getTime() {
@@ -67,13 +66,40 @@ public class particle {
         position.set(position.x+velocity.x*dt,position.y+velocity.y*dt,position.z+velocity.z*dt);
     }
 
+    public void bounds(Vector3f lower, Vector3f upper){
+       /* position.set(
+                Math.min(Math.max(lower.x, position.x), upper.x),
+                Math.min(Math.max(lower.y, position.y), upper.y),
+                Math.min(Math.max(lower.z, position.z), upper.z)
+        );*/
+    }
+
+    public void findDensity(){/////////////////////////////////
+        density=0f;
+        if(myNeighbors.size()>0)
+        for(particle neighbor : myNeighbors){
+            density+=neighbor.mass*kernal(this.distanceTo(neighbor));
+        }
+    }
+
+    public void findPressure(){
+        pressure = c*c*(density-densREF);
+    }
+
+    public float kernal(float x){
+        if(x>radius)return 0;
+        return 1.0f - x*x;
+    }
+
     public int findNeighbors(float cutoff){
         float dist;
+        radius=cutoff;
         myNeighbors = new LinkedList<>();
         ArrayDeque<particle> nearbyParticles = sphCloud.particlesNear(this.position);
         for(particle otherParticle : nearbyParticles) {
             dist = this.distanceTo(otherParticle);
             if (dist < cutoff) {
+                //otherParticle._tempDist = dist;
                 myNeighbors.add(otherParticle);
             }
         }

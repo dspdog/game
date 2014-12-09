@@ -1,11 +1,6 @@
-import factory.TextureFactory;
 import org.lwjgl.Sys;
-import org.lwjgl.opengl.Display;
 import shapes.cloud.particle;
 import shapes.cloud.sphCloud;
-import shapes.geography.GeographyFactory;
-import shapes.tree.tree;
-import world.WorldObject;
 import world.scene;
 
 public class gameWorldWater implements Runnable {
@@ -35,7 +30,9 @@ public class gameWorldWater implements Runnable {
                 }
 
                 if(getTime()-lastPosUpdate>100) {
+                    sphCloud.updateParticleVelocities();
                     sphCloud.updateParticlePositions();
+                    particle.updateTime();
                     lastPosUpdate = getTime();
                 }
 
