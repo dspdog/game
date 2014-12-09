@@ -24,12 +24,12 @@ public class gameWorldWater implements Runnable {
         running=true;
         while(running){
             try {
-                if(getTime()-lastNeighborUpdate>100) {
+                if(getTime()-lastNeighborUpdate>10) {
                     sphCloud.findNeighbors();
                     lastNeighborUpdate = getTime();
                 }
 
-                if(getTime()-lastPosUpdate>100) {
+                if(getTime()-lastPosUpdate>10) {
                     sphCloud.updateParticleVelocities();
                     sphCloud.updateParticlePositions();
                     particle.updateTime();

@@ -73,11 +73,11 @@ public class WorldObject{ //have this handle all the interactions w/ geometryfac
         triangles = (GeometryFactory.gridSize* GeometryFactory.gridSize/GeometryFactory.gridStep/GeometryFactory.gridStep)*2;
     }
 
-    public WorldObject(int numParticles, WorldObject collisionObject){
+    public WorldObject(int numParticles, WorldObject collisionObject, int texId){
+        myTextureId = texId;
         name="PARTICLES_" + stencilId;
         isCloud = true;
         myCloud = new sphCloud(numParticles, collisionObject);
-       // myfb = GeometryFactory.getCSGVertexData(csg, triangles);
     }
 
     public WorldObject setUpdateInterval(int interval){

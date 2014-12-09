@@ -2,27 +2,37 @@ package factory;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL12;
+import org.newdawn.slick.opengl.Texture;
+import org.newdawn.slick.opengl.TextureLoader;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import static org.lwjgl.opengl.GL11.*;
 
 public class TextureFactory {
 
-    /*
-        //load texture from png
 
+
+
+
+
+    static public int ballTexture(){
+        //load texture from png
+        Texture myTexture;
         try {
-            Texture myTexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("./res/myball.png")));
+             myTexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("./res/myball.png")));
+            return myTexture.getTextureID();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        myTexture.release();
-
-     */
+        return 0;
+        //myTexture.release();
+    }
 
     static public int proceduralTexture(){  //http://www.java-gaming.org/index.php?topic=25516.0
         //Generate a small test image by drawing to a BufferedImage
@@ -30,7 +40,7 @@ public class TextureFactory {
         BufferedImage test = new BufferedImage(128, 128, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = test.createGraphics();
 
-        g2d.setColor(new Color(1.0f, 1.0f, 1.0f, 0.5f));
+        g2d.setColor(new Color(0.5f, 1.0f, 1.0f, 0.5f));
         g2d.fillRect(0, 0, 128, 128); //A transparent white background
 
         g2d.setColor(Color.red);

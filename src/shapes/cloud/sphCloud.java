@@ -109,7 +109,7 @@ public class sphCloud {
 
 
             Vector3f accInteractive = new Vector3f(0,0,0);
-            Vector3f accGravity = new Vector3f(p.position.x-center.x,p.position.y-center.y,p.position.z-center.z);
+            Vector3f accGravity = new Vector3f(p.position.x-center.x,p.position.y-center.y,p.position.z-center.z); //suction source at origin
             accGravity.normalise(accGravity).scale(0.01f);
 
             p.velocity.translate(

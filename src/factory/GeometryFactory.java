@@ -36,24 +36,23 @@ public class GeometryFactory {
         glEnd();
     }
 
-    public static void cloud(sphCloud cloud){
-
-        //draw the particles in cloud as sprites using camera vectors in scene
-
-        glBegin(GL11.GL_TRIANGLES);
-
+    public static void cloud(sphCloud cloud, int texId){
         for(particle p : cloud.theParticles){
-            float scale = 4f;
-            glColor3f(p.position.x, p.position.y, p.position.z);
-            glVertex3f(p.position.x, p.position.y, p.position.z);
-
-            glColor3f(p.position.x+scene.cameraXVector.x, p.position.y+scene.cameraXVector.y, p.position.z+scene.cameraXVector.z);
-            glVertex3f(p.position.x+scene.cameraXVector.x*scale, p.position.y+scene.cameraXVector.y*scale, p.position.z+scene.cameraXVector.z*scale);
-
-            glColor3f(p.position.x+scene.cameraYVector.x, p.position.y+scene.cameraYVector.y, p.position.z+scene.cameraYVector.z);
-            glVertex3f(p.position.x+scene.cameraYVector.x*scale, p.position.y+scene.cameraYVector.y*scale, p.position.z+scene.cameraYVector.z*scale);
+            glColor3f(p.velocity.x, p.velocity.y, p.velocity.z);
+            drawCircle(p);
         }
+    }
 
+    static void drawCircle(particle p){
+        glVertex3f(p.position.x, p.position.y, p.position.z);
+        glBegin(GL11.GL_TRIANGLE_FAN);
+        int segs = 16;
+        float scale = 4f;
+        for(int i=0; i<segs; i++){
+            glVertex3f(p.position.x+(scene.cameraYVector.x*(float)(Math.sin(i * 2 * Math.PI / segs))+scene.cameraXVector.x*(float)(Math.cos(i*2*Math.PI/segs)))*scale,
+                    p.position.y+(scene.cameraYVector.y*(float)(Math.sin(i * 2 * Math.PI / segs))+scene.cameraXVector.y*(float)(Math.cos(i*2*Math.PI/segs)))*scale,
+                    p.position.z+(scene.cameraYVector.z*(float)(Math.sin(i * 2 * Math.PI / segs))+scene.cameraXVector.z*(float)(Math.cos(i*2*Math.PI/segs)))*scale);
+        }
         glEnd();
     }
 

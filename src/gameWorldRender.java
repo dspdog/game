@@ -1,3 +1,4 @@
+import factory.TextureFactory;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
 import org.lwjgl.input.Mouse;
@@ -69,7 +70,7 @@ public class gameWorldRender {
         }
 
         initGL();
-        bindShaders();
+        //bindShaders();
         while (!Display.isCloseRequested()) {
             update();
             renderGL();
@@ -115,7 +116,7 @@ public class gameWorldRender {
         WorldObject theGround = new WorldObject((float x, float y, float t) -> GeographyFactory.bowl(x, y, t)).setColor(0,1.0f,0);
         WorldObject theWaves = new WorldObject((float x, float y, float t) -> GeographyFactory.oceanWaves(x, y, t)).setUpdateInterval(10).setColor(0,0,1.0f);
 
-        WorldObject theParticles = new WorldObject(5000, theGround);
+        WorldObject theParticles = new WorldObject(4000, theGround, TextureFactory.ballTexture());
 
         myScene.addWorldObject(new WorldObject(myLogic.theTree.getUpdatedCSG()));
 

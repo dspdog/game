@@ -40,7 +40,7 @@ public class scene{
             }else if(wo.isCSG){
                 wo.drawVBOs();
             }else if(wo.isCloud){
-               GeometryFactory.cloud(wo.myCloud);
+               GeometryFactory.cloud(wo.myCloud, wo.myTextureId);
             }
         }
     }
