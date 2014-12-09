@@ -1,6 +1,7 @@
 import factory.TextureFactory;
 import org.lwjgl.Sys;
 import org.lwjgl.opengl.Display;
+import shapes.cloud.particle;
 import shapes.cloud.sphCloud;
 import shapes.geography.GeographyFactory;
 import shapes.tree.tree;
@@ -13,8 +14,8 @@ public class gameWorldWater implements Runnable {
     scene myScene;
 
     long lastNeighborUpdate=0;
+    long lastPosUpdate=0;
 
-    public CubeMarcher cm = new CubeMarcher();
     public gameWorldWater(scene _myScene){
         myScene = _myScene;
     }
@@ -32,7 +33,13 @@ public class gameWorldWater implements Runnable {
                     sphCloud.findNeighbors();
                     lastNeighborUpdate = getTime();
                 }
-                Thread.sleep(1);
+
+                if(getTime()-lastPosUpdate>100) {
+                    sphCloud.updateParticlePositions();
+                    lastPosUpdate = getTime();
+                }
+
+                Thread.sleep(10);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

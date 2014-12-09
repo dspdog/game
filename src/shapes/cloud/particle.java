@@ -1,5 +1,6 @@
 package shapes.cloud;
 
+import org.lwjgl.Sys;
 import org.lwjgl.util.vector.Vector3f;
 
 import java.util.ArrayDeque;
@@ -15,22 +16,55 @@ public class particle {
     public float density;
     public float pressure;
 
+    public float densREF = 1000; // kg/m^3
+    public float mu = 0.001f; // kg/ms
+    public float c = 3; // m/s
+
     public LinkedList<particle> myNeighbors;
 
     public int myIndex;
+
+    public static long time=0;
+    public static long lastTime=0;
+    public static float dt=0;
 
     public particle(Vector3f lowerCorner, Vector3f upperCorner, int index){
 
         myIndex=index;
 
-        mass = 1f;
+        mass = 0.01f; //kg
         density = 1f;
         pressure = 1f;
+
+        velocity = new Vector3f(
+                (float)Math.random()-0.5f,
+                (float)Math.random()-0.5f,
+                (float)Math.random()-0.5f);
+
+        velocity.scale(10f);
 
         position = new Vector3f(
                 (float)Math.random()*(upperCorner.x - lowerCorner.x)+lowerCorner.x,
                 (float)Math.random()*(upperCorner.y - lowerCorner.y)+lowerCorner.y,
                 (float)Math.random()*(upperCorner.z - lowerCorner.z)+lowerCorner.z);
+    }
+
+    public static void updateTime(){
+        lastTime=time;
+        time = getTime();
+
+        float turbo = 3f;
+
+        dt=(time-lastTime)*0.001f * turbo;
+    }
+
+    private static long getTime() {
+        return (Sys.getTime() * 1000) / Sys.getTimerResolution();
+    }
+
+    public void move(){
+        //float dt = 0.1f; //seconds since last frame
+        position.set(position.x+velocity.x*dt,position.y+velocity.y*dt,position.z+velocity.z*dt);
     }
 
     public int findNeighbors(float cutoff){
