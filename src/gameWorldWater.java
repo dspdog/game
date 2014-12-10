@@ -24,19 +24,19 @@ public class gameWorldWater implements Runnable {
         running=true;
         while(running){
             try {
-                if(getTime()-lastNeighborUpdate>10) {
+                if(getTime()-lastNeighborUpdate>1) {
                     sphCloud.findNeighbors();
                     lastNeighborUpdate = getTime();
                 }
 
-                if(getTime()-lastPosUpdate>10) {
+                if(getTime()-lastPosUpdate>1) {
                     sphCloud.updateParticleVelocities();
                     sphCloud.updateParticlePositions();
                     particle.updateTime();
                     lastPosUpdate = getTime();
                 }
 
-                Thread.sleep(10);
+                Thread.sleep(1);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

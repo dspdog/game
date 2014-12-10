@@ -17,8 +17,8 @@ public class particle {
     public float pressure;
 
     public float densREF = 1000; // kg/m^3
-    public float mu = 0.01f; // kg/ms
-    public float c = 1f; // m/s
+    public float mu = 1f; // kg/ms (viscosity))
+    public float c = 5f; // m/s speed of sound
 
     public float radius=0f;
 
@@ -56,7 +56,7 @@ public class particle {
     public static void updateTime(){
         lastTime=time;
         time = getTime();
-        dt=(time-lastTime)*0.1f;
+        dt=(time-lastTime)*0.4f;
     }
 
     private static long getTime() {

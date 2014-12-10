@@ -106,7 +106,7 @@ public class gameWorldRender {
 
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        gluPerspective(myFOV, ((float)myWidth) / ((float)myHeight), 0.01f, 2500f);
+        gluPerspective(myFOV, ((float)myWidth) / ((float)myHeight), 2.01f, 25000f);
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
 
@@ -116,12 +116,12 @@ public class gameWorldRender {
         WorldObject theGround = new WorldObject((float x, float y, float t) -> GeographyFactory.bowl(x, y, t)).setColor(0,1.0f,0);
         WorldObject theWaves = new WorldObject((float x, float y, float t) -> GeographyFactory.oceanWaves(x, y, t)).setUpdateInterval(10).setColor(0,0,1.0f);
 
-        WorldObject theParticles = new WorldObject(1000, theGround, TextureFactory.ballTexture());
+        WorldObject theParticles = new WorldObject(3000, theGround, TextureFactory.ballTexture());
 
-        myScene.addWorldObject(new WorldObject(myLogic.theTree.getUpdatedCSG()));
+        //myScene.addWorldObject(new WorldObject(myLogic.theTree.getUpdatedCSG()));
 
         //myScene.addWorldObject(theWaves);
-        myScene.addWorldObject(theGround);
+        //myScene.addWorldObject(theGround);
         myScene.addWorldObject(theParticles);
     }
 

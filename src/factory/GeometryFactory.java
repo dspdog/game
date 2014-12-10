@@ -39,24 +39,74 @@ public class GeometryFactory {
     public static void cloud(sphCloud cloud, int texId){
         for(particle p : cloud.theParticles){
             float scale = 0.01f;
-            glColor3f((p.position.x*scale), (p.position.y*scale), (p.position.z*scale));
-            drawCircle(p);
+            float r = (p.position.x-sphCloud.lowerCorner.x)/(sphCloud.upperCorner.x - sphCloud.lowerCorner.x);
+            float g = (p.position.y-sphCloud.lowerCorner.y)/(sphCloud.upperCorner.y - sphCloud.lowerCorner.y);
+            float b = (p.position.z-sphCloud.lowerCorner.z)/(sphCloud.upperCorner.z - sphCloud.lowerCorner.z);
+            glColor3f(r, g, b);
+            drawCircle(p, true);
         }
+
+        drawCloudBox();
     }
 
-    static void drawCircle(particle p){
+    static void drawCloudBox(){
+        glBegin(GL11.GL_LINES);
+        glVertex3f(sphCloud.lowerCorner.x, sphCloud.lowerCorner.y, sphCloud.lowerCorner.z);
+        glVertex3f(sphCloud.upperCorner.x, sphCloud.lowerCorner.y, sphCloud.lowerCorner.z);
+        glVertex3f(sphCloud.upperCorner.x, sphCloud.lowerCorner.y, sphCloud.lowerCorner.z);
+        glVertex3f(sphCloud.upperCorner.x, sphCloud.upperCorner.y, sphCloud.lowerCorner.z);
+        glVertex3f(sphCloud.lowerCorner.x, sphCloud.lowerCorner.y, sphCloud.lowerCorner.z);
+        glVertex3f(sphCloud.lowerCorner.x, sphCloud.upperCorner.y, sphCloud.lowerCorner.z);
+        glVertex3f(sphCloud.lowerCorner.x, sphCloud.upperCorner.y, sphCloud.lowerCorner.z);
+        glVertex3f(sphCloud.lowerCorner.x, sphCloud.upperCorner.y, sphCloud.upperCorner.z);
+        glVertex3f(sphCloud.lowerCorner.x, sphCloud.lowerCorner.y, sphCloud.lowerCorner.z);
+        glVertex3f(sphCloud.lowerCorner.x, sphCloud.lowerCorner.y, sphCloud.upperCorner.z);
+        glVertex3f(sphCloud.lowerCorner.x, sphCloud.lowerCorner.y, sphCloud.upperCorner.z);
+        glVertex3f(sphCloud.upperCorner.x, sphCloud.lowerCorner.y, sphCloud.upperCorner.z);
+        glVertex3f(sphCloud.upperCorner.x, sphCloud.upperCorner.y, sphCloud.upperCorner.z);
+        glVertex3f(sphCloud.lowerCorner.x, sphCloud.upperCorner.y, sphCloud.upperCorner.z);
+        glVertex3f(sphCloud.lowerCorner.x, sphCloud.upperCorner.y, sphCloud.upperCorner.z);
+        glVertex3f(sphCloud.lowerCorner.x, sphCloud.lowerCorner.y, sphCloud.upperCorner.z);
+        glVertex3f(sphCloud.upperCorner.x, sphCloud.upperCorner.y, sphCloud.upperCorner.z);
+        glVertex3f(sphCloud.upperCorner.x, sphCloud.lowerCorner.y, sphCloud.upperCorner.z);
+        glVertex3f(sphCloud.upperCorner.x, sphCloud.lowerCorner.y, sphCloud.upperCorner.z);
+        glVertex3f(sphCloud.upperCorner.x, sphCloud.lowerCorner.y, sphCloud.lowerCorner.z);
+        glVertex3f(sphCloud.upperCorner.x, sphCloud.upperCorner.y, sphCloud.upperCorner.z);
+        glVertex3f(sphCloud.upperCorner.x, sphCloud.upperCorner.y, sphCloud.lowerCorner.z);
+        glVertex3f(sphCloud.upperCorner.x, sphCloud.upperCorner.y, sphCloud.lowerCorner.z);
+        glVertex3f(sphCloud.lowerCorner.x, sphCloud.upperCorner.y, sphCloud.lowerCorner.z);
+        glEnd();
+    }
+
+    static void drawCircle(particle p, boolean cartoonMode){
         glVertex3f(p.position.x, p.position.y, p.position.z);
         glBegin(GL11.GL_TRIANGLE_FAN);
-        int segs = 16;
-        float scale = 4f;
+        int segs = 9;
+        float scale = sphCloud.gridSize/4f;
         for(int i=0; i<segs; i++){
-            float sin = (float)(Math.sin(i * 2 * Math.PI / segs));
-            float cos = (float)(Math.cos(i * 2 * Math.PI / segs));
-            glVertex3f(p.position.x+(scene.cameraYVector.x*sin+scene.cameraXVector.x*cos)*scale,
-                       p.position.y+(scene.cameraYVector.y*sin+scene.cameraXVector.y*cos)*scale,
-                       p.position.z+(scene.cameraYVector.z*sin+scene.cameraXVector.z*cos)*scale);
+            float sin = (float)(Math.sin(i * 2 * Math.PI / segs))*scale;
+            float cos = (float)(Math.cos(i * 2 * Math.PI / segs))*scale;
+            glVertex3f(p.position.x+(scene.cameraYVector.x*sin+scene.cameraXVector.x*cos),
+                       p.position.y+(scene.cameraYVector.y*sin+scene.cameraXVector.y*cos),
+                       p.position.z+(scene.cameraYVector.z*sin+scene.cameraXVector.z*cos));
         }
         glEnd();
+
+        if(cartoonMode){
+            scale = sphCloud.gridSize/4f*1.1f;
+            float s = -0.25f;
+            glColor3f(0, 0, 0);
+            glVertex3f(p.position.x+scene.cameraZVector.x*s, p.position.y+scene.cameraZVector.y*s, p.position.z+scene.cameraZVector.z*s);
+            glBegin(GL11.GL_TRIANGLE_FAN);
+            for(int i=0; i<segs; i++){
+                float sin = (float)(Math.sin(i * 2 * Math.PI / segs))*scale;
+                float cos = (float)(Math.cos(i * 2 * Math.PI / segs))*scale;
+                glVertex3f(p.position.x+(scene.cameraYVector.x*sin+scene.cameraXVector.x*cos)+scene.cameraZVector.x*s,
+                        p.position.y+(scene.cameraYVector.y*sin+scene.cameraXVector.y*cos)+scene.cameraZVector.y*s,
+                        p.position.z+(scene.cameraYVector.z*sin+scene.cameraXVector.z*cos)+scene.cameraZVector.z*s);
+            }
+            glEnd();
+        }
     }
 
     static void plane(Texture tex){

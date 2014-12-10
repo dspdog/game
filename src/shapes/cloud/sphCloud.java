@@ -25,12 +25,12 @@ public class sphCloud {
 
     public sphCloud(int total, WorldObject collisionObject){
 
-        lowerCorner = new Vector3f(gridSize*-4,gridSize*-4,gridSize*-4);
-        upperCorner = new Vector3f(gridSize*4,gridSize*4,gridSize*4);
+        lowerCorner = new Vector3f(gridSize*-8,gridSize*-8,gridSize*-8);
+        upperCorner = new Vector3f(gridSize*8,gridSize*8,gridSize*8);
         center = new Vector3f(0,0,0);
 
-        lowerCorner.translate(0,gridSize*6,0f);
-        upperCorner.translate(0,gridSize*6,0f);
+        lowerCorner.translate(0,gridSize*10,0f);
+        upperCorner.translate(0,gridSize*10,0f);
         center.translate(0,gridSize*4,0f);
 
         numParticles=total;
@@ -62,6 +62,7 @@ public class sphCloud {
         System.out.println("GRID size " + w + " " + h + " " + L);
     }
 
+    static long lastOutput = 0;
     public static void findNeighbors(){
         if(numParticles>0){
             int numNeighbors=0;
@@ -69,7 +70,13 @@ public class sphCloud {
             for(particle p : theParticles){
                 numNeighbors += p.findNeighbors(gridSize/2f);
             }
-            System.out.println("found "+numNeighbors+" neighbors in " + (System.currentTimeMillis() - time1) + "ms -- average " + numNeighbors/numParticles);
+
+
+            if(System.currentTimeMillis()-lastOutput>1000){
+                System.out.println("found "+numNeighbors+" neighbors in " + (System.currentTimeMillis() - time1) + "ms -- average " + numNeighbors/numParticles);
+                lastOutput=System.currentTimeMillis();
+            }
+
         }
     }
 
@@ -109,9 +116,9 @@ public class sphCloud {
 
 
             Vector3f accInteractive = new Vector3f(0,0,0);
-            //Vector3f accGravity = new Vector3f(p.position.x-center.x,p.position.y-center.y,p.position.z-center.z); //suction source at origin
-            Vector3f accGravity = new Vector3f(0,1f,0); //suction source at origin
-            accGravity.normalise(accGravity).scale(5f);
+            Vector3f accGravity = new Vector3f(p.position.x-center.x,p.position.y-center.y,p.position.z-center.z); //suction source at origin
+            //Vector3f accGravity = new Vector3f(0,1f,0); //suction source at origin
+            accGravity.normalise().scale(5f);
 
             p.velocity.translate(
                     accPressure.x+accVisc.x+accInteractive.x-accGravity.x,
