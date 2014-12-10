@@ -20,6 +20,8 @@ public class sphCloud {
     //corners of the box bounding the cloud
     public static Vector3f lowerCorner = new Vector3f(0,0,0);
     public static Vector3f upperCorner = new Vector3f(10,10,10);
+    public static Vector3f lowerBoundsCorner = new Vector3f(0,0,0);
+    public static Vector3f upperBoundsCorner = new Vector3f(10,10,10);
     public static Vector3f center = new Vector3f(5f,5f,5f);
     public static boolean neighborsFound = true;
 
@@ -85,6 +87,7 @@ public class sphCloud {
     }
 
     public static void updateParticleVelocities(){
+
         for(particle p : theParticles){
             p.findDensity();
             p.findPressure();
@@ -148,6 +151,10 @@ public class sphCloud {
         //Vector3f lowerCornerMini = new Vector3f(lowerCorner.x*scale, lowerCorner.y*scale, lowerCorner.z*scale);
         //Vector3f upperCornerMini = new Vector3f(upperCorner.x*scale, upperCorner.y*scale, upperCorner.z*scale);
 
+
+        lowerBoundsCorner = new Vector3f(1000f,1000f,1000f);
+        upperBoundsCorner = new Vector3f(-1000f,-1000f,-1000f);
+
         if(gridInited)
         for(x=0; x<w+2;x++){
             for(y=0; y<h+2;y++){
@@ -159,7 +166,17 @@ public class sphCloud {
                         _gridX = (int)(((p.position.x-lowerCorner.x)/gridSize) + 1);
                         _gridY = (int)(((p.position.z-lowerCorner.z)/gridSize) + 1);
                         _gridZ = (int)(((p.position.y-lowerCorner.y)/gridSize) + 1);
-                        p.move(lowerCorner, upperCorner);
+                        p.move();
+
+
+                        lowerBoundsCorner.x=Math.min(p.position.x*0.01f,lowerBoundsCorner.x);
+                        lowerBoundsCorner.y=Math.min(p.position.y*0.01f,lowerBoundsCorner.y);
+                        lowerBoundsCorner.z=Math.min(p.position.z*0.01f,lowerBoundsCorner.z);
+
+                        upperBoundsCorner.x=Math.max(p.position.x*0.01f, upperBoundsCorner.x);
+                        upperBoundsCorner.y=Math.max(p.position.y*0.01f, upperBoundsCorner.y);
+                        upperBoundsCorner.z=Math.max(p.position.z*0.01f, upperBoundsCorner.z);
+
                         gridX = (int)(((p.position.x-lowerCorner.x)/gridSize) + 1);
                         gridY = (int)(((p.position.z-lowerCorner.z)/gridSize) + 1);
                         gridZ = (int)(((p.position.y-lowerCorner.y)/gridSize) + 1);

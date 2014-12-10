@@ -38,17 +38,50 @@ public class GeometryFactory {
 
     public static void cloud(sphCloud cloud, int texId){
         long time = System.currentTimeMillis();
+        float r,g,b;
         for(particle p : cloud.theParticles){
-            float scale = 0.01f;
-            float r = (p.position.x-sphCloud.lowerCorner.x)/(sphCloud.upperCorner.x - sphCloud.lowerCorner.x);
-            float g = (p.position.y-sphCloud.lowerCorner.y)/(sphCloud.upperCorner.y - sphCloud.lowerCorner.y);
-            float b = (p.position.z-sphCloud.lowerCorner.z)/(sphCloud.upperCorner.z - sphCloud.lowerCorner.z);
+
+            r = (p.position.x-sphCloud.lowerCorner.x)/(sphCloud.upperCorner.x - sphCloud.lowerCorner.x);
+            g = (p.position.y-sphCloud.lowerCorner.y)/(sphCloud.upperCorner.y - sphCloud.lowerCorner.y);
+            b = (p.position.z-sphCloud.lowerCorner.z)/(sphCloud.upperCorner.z - sphCloud.lowerCorner.z);
 
             glColor3f(r, g, b);
             drawCircle(p, true);
         }
-
+        glColor3f(0f, 0f, 0f);
         drawCloudBox();
+
+        glColor3f(0f, 0f, 0f);
+        drawCloudBoundsBox();
+    }
+
+    static void drawCloudBoundsBox(){
+        glBegin(GL11.GL_LINES);
+        glVertex3f(sphCloud.lowerBoundsCorner.x, sphCloud.lowerBoundsCorner.y, sphCloud.lowerBoundsCorner.z);
+        glVertex3f(sphCloud.upperBoundsCorner.x, sphCloud.lowerBoundsCorner.y, sphCloud.lowerBoundsCorner.z);
+        glVertex3f(sphCloud.upperBoundsCorner.x, sphCloud.lowerBoundsCorner.y, sphCloud.lowerBoundsCorner.z);
+        glVertex3f(sphCloud.upperBoundsCorner.x, sphCloud.upperBoundsCorner.y, sphCloud.lowerBoundsCorner.z);
+        glVertex3f(sphCloud.lowerBoundsCorner.x, sphCloud.lowerBoundsCorner.y, sphCloud.lowerBoundsCorner.z);
+        glVertex3f(sphCloud.lowerBoundsCorner.x, sphCloud.upperBoundsCorner.y, sphCloud.lowerBoundsCorner.z);
+        glVertex3f(sphCloud.lowerBoundsCorner.x, sphCloud.upperBoundsCorner.y, sphCloud.lowerBoundsCorner.z);
+        glVertex3f(sphCloud.lowerBoundsCorner.x, sphCloud.upperBoundsCorner.y, sphCloud.upperBoundsCorner.z);
+        glVertex3f(sphCloud.lowerBoundsCorner.x, sphCloud.lowerBoundsCorner.y, sphCloud.lowerBoundsCorner.z);
+        glVertex3f(sphCloud.lowerBoundsCorner.x, sphCloud.lowerBoundsCorner.y, sphCloud.upperBoundsCorner.z);
+        glVertex3f(sphCloud.lowerBoundsCorner.x, sphCloud.lowerBoundsCorner.y, sphCloud.upperBoundsCorner.z);
+        glVertex3f(sphCloud.upperBoundsCorner.x, sphCloud.lowerBoundsCorner.y, sphCloud.upperBoundsCorner.z);
+        glVertex3f(sphCloud.upperBoundsCorner.x, sphCloud.upperBoundsCorner.y, sphCloud.upperBoundsCorner.z);
+        glVertex3f(sphCloud.lowerBoundsCorner.x, sphCloud.upperBoundsCorner.y, sphCloud.upperBoundsCorner.z);
+        glVertex3f(sphCloud.lowerBoundsCorner.x, sphCloud.upperBoundsCorner.y, sphCloud.upperBoundsCorner.z);
+        glVertex3f(sphCloud.lowerBoundsCorner.x, sphCloud.lowerBoundsCorner.y, sphCloud.upperBoundsCorner.z);
+        glVertex3f(sphCloud.upperBoundsCorner.x, sphCloud.upperBoundsCorner.y, sphCloud.upperBoundsCorner.z);
+        glVertex3f(sphCloud.upperBoundsCorner.x, sphCloud.lowerBoundsCorner.y, sphCloud.upperBoundsCorner.z);
+        glVertex3f(sphCloud.upperBoundsCorner.x, sphCloud.lowerBoundsCorner.y, sphCloud.upperBoundsCorner.z);
+        glVertex3f(sphCloud.upperBoundsCorner.x, sphCloud.lowerBoundsCorner.y, sphCloud.lowerBoundsCorner.z);
+        glVertex3f(sphCloud.upperBoundsCorner.x, sphCloud.upperBoundsCorner.y, sphCloud.upperBoundsCorner.z);
+        glVertex3f(sphCloud.upperBoundsCorner.x, sphCloud.upperBoundsCorner.y, sphCloud.lowerBoundsCorner.z);
+        glVertex3f(sphCloud.upperBoundsCorner.x, sphCloud.upperBoundsCorner.y, sphCloud.lowerBoundsCorner.z);
+        glVertex3f(sphCloud.lowerBoundsCorner.x, sphCloud.upperBoundsCorner.y, sphCloud.lowerBoundsCorner.z);
+        glEnd();
     }
 
     static void drawCloudBox(){
@@ -81,10 +114,13 @@ public class GeometryFactory {
     }
 
     static void drawCircle(particle p, boolean cartoonMode){
+
+        float fatness = 1.25f;
+
         glVertex3f(p.position.x, p.position.y, p.position.z);
         glBegin(GL11.GL_TRIANGLE_FAN);
         int segs = 9;
-        float scale = sphCloud.gridSize/4f;
+        float scale = sphCloud.gridSize/4f*fatness;
         for(int i=0; i<segs; i++){
             float sin = (float)(Math.sin(i * 2 * Math.PI / segs))*scale;
             float cos = (float)(Math.cos(i * 2 * Math.PI / segs))*scale;
@@ -95,7 +131,7 @@ public class GeometryFactory {
         glEnd();
 
         if(cartoonMode){
-            scale = sphCloud.gridSize/4f*1.1f;
+            scale = sphCloud.gridSize/4f*1.1f*fatness;
             float s = -0.25f;
             glColor3f(0, 0, 0);
             glVertex3f(p.position.x+scene.cameraZVector.x*s, p.position.y+scene.cameraZVector.y*s, p.position.z+scene.cameraZVector.z*s);

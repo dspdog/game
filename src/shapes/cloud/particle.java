@@ -14,7 +14,7 @@ public class particle {
 
     public float mass;
     public float density;
-    public float myNeighborsDensity;
+    //public float myNeighborsDensity;
     public float pressure;
 
     public float densREF = 1000; // kg/m^3
@@ -31,7 +31,7 @@ public class particle {
     public static long lastTime=0;
     public static float dt=0;
 
-    public static float speedlimit = 0.9f;
+    public static float speedlimit = 0.5f;
 
     public particle(Vector3f lowerCorner, Vector3f upperCorner, int index){
 
@@ -64,7 +64,9 @@ public class particle {
         return (Sys.getTime() * 1000) / Sys.getTimerResolution();
     }
 
-    public void move(Vector3f lower, Vector3f upper){
+    public void move(){
+        Vector3f lower = sphCloud.lowerCorner;
+        Vector3f upper = sphCloud.upperCorner;
 
         if(velocity.lengthSquared()>speedlimit){velocity.normalise().scale(speedlimit);} //speed limiter
 
@@ -104,7 +106,7 @@ public class particle {
 
     public int findNeighbors(float cutoff){
         float dist;
-        myNeighborsDensity=0f;
+        //myNeighborsDensity=0f;
         radius=cutoff;
         myNeighbors = new LinkedList<>();
         ArrayDeque<particle> nearbyParticles = sphCloud.particlesNear(this.position);
@@ -113,14 +115,14 @@ public class particle {
             if (dist < cutoff) {
                 //otherParticle._tempDist = dist;
                 myNeighbors.add(otherParticle);
-                myNeighborsDensity+=otherParticle.density;
+                //myNeighborsDensity+=otherParticle.density;
             }
         }
 
         int size = myNeighbors.size();
 
-        myNeighborsDensity/=(size*1f);
-        if(myNeighborsDensity==0)myNeighborsDensity=density;
+        //myNeighborsDensity/=(size*1f);
+        //if(myNeighborsDensity==0)myNeighborsDensity=density;
 
         myNeighbors.add(this);
 
