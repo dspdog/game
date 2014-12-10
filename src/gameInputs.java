@@ -1,6 +1,7 @@
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import shapes.cloud.sphCloud;
 import world.scene;
 
 import java.nio.IntBuffer;
@@ -28,6 +29,7 @@ public class gameInputs {
     boolean D_down = false;
     boolean Q_down = false;
     boolean E_down = false;
+    boolean SPACE_down = false;
 
     public void pollInput() {
         if (Mouse.isButtonDown(0)) {
@@ -53,6 +55,10 @@ public class gameInputs {
                 if (Keyboard.getEventKey() == Keyboard.KEY_E) {
                     E_down=true;
                 }
+                if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
+                    SPACE_down=true;
+                    sphCloud.gravityDown = !sphCloud.gravityDown;
+                }
             } else {
                 if (Keyboard.getEventKey() == Keyboard.KEY_A) {
                     A_down=false;
@@ -71,6 +77,9 @@ public class gameInputs {
                 }
                 if (Keyboard.getEventKey() == Keyboard.KEY_E) {
                     E_down=false;
+                }
+                if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
+                    SPACE_down=false;
                 }
             }
         }

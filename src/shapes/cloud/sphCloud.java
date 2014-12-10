@@ -23,6 +23,8 @@ public class sphCloud {
     public static Vector3f center = new Vector3f(5f,5f,5f);
     public static boolean neighborsFound = true;
 
+    public static boolean gravityDown = false;
+
     public sphCloud(int total, WorldObject collisionObject){
 
         lowerCorner = new Vector3f(gridSize*-8,gridSize*-8,gridSize*-8);
@@ -117,7 +119,11 @@ public class sphCloud {
 
             Vector3f accInteractive = new Vector3f(0,0,0);
             Vector3f accGravity = new Vector3f(p.position.x-center.x,p.position.y-center.y,p.position.z-center.z); //suction source at origin
-            //Vector3f accGravity = new Vector3f(0,1f,0); //suction source at origin
+
+            if(gravityDown){
+                accGravity = new Vector3f(0,1f,0);
+            }
+
             accGravity.normalise().scale(5f);
 
             p.velocity.translate(

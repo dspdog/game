@@ -62,8 +62,9 @@ public class gameWorldRender {
 
         try {
             Display.setDisplayMode(new DisplayMode(myWidth, myHeight));
-            //Display.create(new PixelFormat(0, 16, 8, 16)); //anti aliasing 16x max
+
             Display.create(new PixelFormat(0, 16, 8));
+            //Display.create(new PixelFormat(0, 16, 8, 16)); //anti aliasing 16x max
         } catch (LWJGLException e) {
             e.printStackTrace();
             System.exit(0);
