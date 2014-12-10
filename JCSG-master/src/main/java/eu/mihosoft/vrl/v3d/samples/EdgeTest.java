@@ -111,7 +111,7 @@ public class EdgeTest {
                 double angle = nOuter.angle(nInner);
 
 //                System.out.println("angle: " + angle + " between " + pOuterI+" -> " + pInnerI);
-                if (angle < 0.01 /*&& abs(pOuter.plane.dist - pInner.plane.dist) < 0.1*/) {
+                if (angle < 0.01 /*&& abs(pOuter.plane.distSquared - pInner.plane.distSquared) < 0.1*/) {
                     otherPolysInPlane.add(pInner);
                     used[pInnerI] = true;
                     System.out.println("used: " + pOuterI + " -> " + pInnerI);

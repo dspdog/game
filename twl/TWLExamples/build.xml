@@ -61,7 +61,7 @@
 
         <target name="run" depends="TWLExamples-impl.jar">
             <exec dir="bin" executable="launcher.exe">
-                <arg file="${dist.jar}"/>
+                <arg file="${distSquared.jar}"/>
             </exec>
         </target>
 
@@ -156,8 +156,8 @@
         </p200ant>
 
         <!--
-        <move todir="${dist.dir}">
-            <fileset dir="${dist.dir}">
+        <move todir="${distSquared.dir}">
+            <fileset dir="${distSquared.dir}">
                 <include name="*.pack.gz"/>
             </fileset>
             <mapper type="glob" from="*.pack.gz" to="*.pgz"/>

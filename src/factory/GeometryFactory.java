@@ -51,37 +51,8 @@ public class GeometryFactory {
         glColor3f(0f, 0f, 0f);
         drawCloudBox();
 
-        glColor3f(0f, 0f, 0f);
-        drawCloudBoundsBox();
-    }
-
-    static void drawCloudBoundsBox(){
-        glBegin(GL11.GL_LINES);
-        glVertex3f(sphCloud.lowerBoundsCorner.x, sphCloud.lowerBoundsCorner.y, sphCloud.lowerBoundsCorner.z);
-        glVertex3f(sphCloud.upperBoundsCorner.x, sphCloud.lowerBoundsCorner.y, sphCloud.lowerBoundsCorner.z);
-        glVertex3f(sphCloud.upperBoundsCorner.x, sphCloud.lowerBoundsCorner.y, sphCloud.lowerBoundsCorner.z);
-        glVertex3f(sphCloud.upperBoundsCorner.x, sphCloud.upperBoundsCorner.y, sphCloud.lowerBoundsCorner.z);
-        glVertex3f(sphCloud.lowerBoundsCorner.x, sphCloud.lowerBoundsCorner.y, sphCloud.lowerBoundsCorner.z);
-        glVertex3f(sphCloud.lowerBoundsCorner.x, sphCloud.upperBoundsCorner.y, sphCloud.lowerBoundsCorner.z);
-        glVertex3f(sphCloud.lowerBoundsCorner.x, sphCloud.upperBoundsCorner.y, sphCloud.lowerBoundsCorner.z);
-        glVertex3f(sphCloud.lowerBoundsCorner.x, sphCloud.upperBoundsCorner.y, sphCloud.upperBoundsCorner.z);
-        glVertex3f(sphCloud.lowerBoundsCorner.x, sphCloud.lowerBoundsCorner.y, sphCloud.lowerBoundsCorner.z);
-        glVertex3f(sphCloud.lowerBoundsCorner.x, sphCloud.lowerBoundsCorner.y, sphCloud.upperBoundsCorner.z);
-        glVertex3f(sphCloud.lowerBoundsCorner.x, sphCloud.lowerBoundsCorner.y, sphCloud.upperBoundsCorner.z);
-        glVertex3f(sphCloud.upperBoundsCorner.x, sphCloud.lowerBoundsCorner.y, sphCloud.upperBoundsCorner.z);
-        glVertex3f(sphCloud.upperBoundsCorner.x, sphCloud.upperBoundsCorner.y, sphCloud.upperBoundsCorner.z);
-        glVertex3f(sphCloud.lowerBoundsCorner.x, sphCloud.upperBoundsCorner.y, sphCloud.upperBoundsCorner.z);
-        glVertex3f(sphCloud.lowerBoundsCorner.x, sphCloud.upperBoundsCorner.y, sphCloud.upperBoundsCorner.z);
-        glVertex3f(sphCloud.lowerBoundsCorner.x, sphCloud.lowerBoundsCorner.y, sphCloud.upperBoundsCorner.z);
-        glVertex3f(sphCloud.upperBoundsCorner.x, sphCloud.upperBoundsCorner.y, sphCloud.upperBoundsCorner.z);
-        glVertex3f(sphCloud.upperBoundsCorner.x, sphCloud.lowerBoundsCorner.y, sphCloud.upperBoundsCorner.z);
-        glVertex3f(sphCloud.upperBoundsCorner.x, sphCloud.lowerBoundsCorner.y, sphCloud.upperBoundsCorner.z);
-        glVertex3f(sphCloud.upperBoundsCorner.x, sphCloud.lowerBoundsCorner.y, sphCloud.lowerBoundsCorner.z);
-        glVertex3f(sphCloud.upperBoundsCorner.x, sphCloud.upperBoundsCorner.y, sphCloud.upperBoundsCorner.z);
-        glVertex3f(sphCloud.upperBoundsCorner.x, sphCloud.upperBoundsCorner.y, sphCloud.lowerBoundsCorner.z);
-        glVertex3f(sphCloud.upperBoundsCorner.x, sphCloud.upperBoundsCorner.y, sphCloud.lowerBoundsCorner.z);
-        glVertex3f(sphCloud.lowerBoundsCorner.x, sphCloud.upperBoundsCorner.y, sphCloud.lowerBoundsCorner.z);
-        glEnd();
+       // glColor3f(0f, 0f, 0f);
+       // drawCloudBoundsBox();
     }
 
     static void drawCloudBox(){
@@ -119,7 +90,7 @@ public class GeometryFactory {
 
         glVertex3f(p.position.x, p.position.y, p.position.z);
         glBegin(GL11.GL_TRIANGLE_FAN);
-        int segs = 9;
+        int segs = 6;
         float scale = sphCloud.gridSize/4f*fatness;
         for(int i=0; i<segs; i++){
             float sin = (float)(Math.sin(i * 2 * Math.PI / segs))*scale;

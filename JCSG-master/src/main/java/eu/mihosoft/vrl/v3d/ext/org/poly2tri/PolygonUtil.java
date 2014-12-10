@@ -56,7 +56,7 @@ public class PolygonUtil {
 
 //        Plane plane = concave.plane.clone();
 //
-//        boolean cw = plane.dist > 0;
+//        boolean cw = plane.distSquared > 0;
         
         boolean cw = !Extrude.isCCW(concave);
 

@@ -450,7 +450,7 @@ public final class tree implements java.io.Serializable {
                    put(Math.max(odp.y*scale, 0)).
                    put(odp.z * scale);
 
-        //lineDI[lineIndex]=(((short)(dist))<<16) + ((short)_iterations);
+        //lineDI[lineIndex]=(((short)(distSquared))<<16) + ((short)_iterations);
         //lineXY1[lineIndex]=(((short)(dpt.x))<<16) + ((short)Math.max(dpt.y, 0));
         //lineZS1[lineIndex]=(((short)(dpt.z))<<16) + ((short)(256f *_cumulativeScale*thePt.scale/centerPt.scale));
         //lineXY2[lineIndex]=(((short)(odp.x))<<16) + ((short)Math.max(odp.y,0));
