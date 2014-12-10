@@ -104,6 +104,11 @@ public class particle {
         return 1.0f - x*x;
     }
 
+    public float kernald(float x){ //deriv of kernal
+        if(x>radius)return 0;
+        return -2f*x;
+    }
+
     public int findNeighbors(float cutoff){
         float dist;
         //myNeighborsDensity=0f;
@@ -130,11 +135,11 @@ public class particle {
     }
 
     public float distanceTo(particle p){
-        return dist(p.position.x-this.position.x, p.position.y-this.position.y, p.position.z-this.position.z);
+        return dist(p.position.x - this.position.x, p.position.y - this.position.y, p.position.z - this.position.z);
     }
 
     public float distanceTo(Vector3f position){
-        return dist(position.x-this.position.x, position.y-this.position.y, position.z-this.position.z);
+        return dist(position.x - this.position.x, position.y - this.position.y, position.z - this.position.z);
     }
 
     public static float dist(float x, float y, float z){

@@ -37,9 +37,7 @@ public class sphCloud {
         upperCorner.translate(0,gridSize*10,0f);
         center.translate(0,gridSize*10,0f);
 
-        //numParticles=total;
         initParticleGrid();
-
         getRandomParticles();
 
         gridInited=true;
@@ -108,9 +106,10 @@ public class sphCloud {
 
                 for(particle n : p.myNeighbors){
                     float kernalVal = n.kernal(n.distanceTo(p));
+                    float kernalVald = n.kernald(n.distanceTo(p));
 
                     accPressScale = -1.0f*n.mass*(p.pressure/(p.density*p.density) + n.pressure/(n.density*n.density)) * kernalVal;
-                    accViscScale = p.mu * n.mass / n.density / p.density * kernalVal; //second gradient?
+                    accViscScale = p.mu * n.mass / n.density / p.density * kernalVald;
 
                     accVisc.translate(
                             accViscScale*(n.velocity.x-p.velocity.x),
@@ -132,7 +131,7 @@ public class sphCloud {
                     accGravity = new Vector3f(0,1f,0);
                 }
 
-                accGravity.normalise().scale(5f);
+                accGravity.normalise().scale(9f);
 
                 p.velocity.translate(
                         accPressure.x+accVisc.x+accInteractive.x-accGravity.x,
