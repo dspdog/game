@@ -652,7 +652,7 @@ public class CubeMarcher implements Runnable{
     }
 
     /*
-       Linearly interpolate the position where an isosurface cuts
+       Linearly interpolate the pos where an isosurface cuts
        an edge between two vertices, each with their own scalar value
     */
     private xyz VertexInterp(double isolevel, xyz p1, xyz p2, double valp1, double valp2)

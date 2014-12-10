@@ -57,8 +57,8 @@ public class DraggableButton extends Button {
         /**
          * The mouse was moved
          *
-         * @param deltaX the delta mouse X position since the drag was started
-         * @param deltaY the delta mouse Y position since the drag was started
+         * @param deltaX the delta mouse X pos since the drag was started
+         * @param deltaY the delta mouse Y pos since the drag was started
          */
         public void dragged(int deltaX, int deltaY);
 

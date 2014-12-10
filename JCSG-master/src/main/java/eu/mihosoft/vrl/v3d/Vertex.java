@@ -43,7 +43,7 @@ import java.util.Objects;
 public class Vertex {
 
     /**
-     * Vertex position.
+     * Vertex pos.
      */
     public Vector3d pos;
 
@@ -57,7 +57,7 @@ public class Vertex {
     /**
      * Constructor. Creates a vertex.
      *
-     * @param pos position
+     * @param pos pos
      * @param normal normal
      */
     public Vertex(Vector3d pos, Vector3d normal) {
@@ -69,7 +69,7 @@ public class Vertex {
         /**
      * Constructor. Creates a vertex.
      *
-     * @param pos position
+     * @param pos pos
      * @param normal normal
      * @param weight weight
      */

@@ -209,7 +209,7 @@ public class LWJGLRenderer implements Renderer, LineRenderer {
     }
 
     /**
-     * <p>Queries the current view port size & position and updates all related
+     * <p>Queries the current view port size & pos and updates all related
      * internal state.</p>
      *
      * <p>It is important that the internal state matches the OpenGL viewport or
@@ -231,12 +231,12 @@ public class LWJGLRenderer implements Renderer, LineRenderer {
     }
     
     /**
-     * Sets the viewport size & position.
+     * Sets the viewport size & pos.
      * <p>This method is preferred over {@link #syncViewportSize() } as it avoids
      * calling {@link GL11#glGetInteger(int, java.nio.IntBuffer) }.</p>
      * 
-     * @param x the X position (GL_VIEWPORT index 0)
-     * @param y the Y position (GL_VIEWPORT index 1)
+     * @param x the X pos (GL_VIEWPORT index 0)
+     * @param y the Y pos (GL_VIEWPORT index 1)
      * @param width the width (GL_VIEWPORT index 2)
      * @param height the height (GL_VIEWPORT index 3)
      */
@@ -337,16 +337,16 @@ public class LWJGLRenderer implements Renderer, LineRenderer {
     }
     
     /**
-     * Retrieves the X position of the OpenGL viewport (index 0 of GL_VIEWPORT)
-     * @return the X position of the OpenGL viewport
+     * Retrieves the X pos of the OpenGL viewport (index 0 of GL_VIEWPORT)
+     * @return the X pos of the OpenGL viewport
      */
     public int getViewportX() {
         return viewportX;
     }
     
     /**
-     * Retrieves the Y position of the OpenGL viewport (index 1 of GL_VIEWPORT)
-     * @return the Y position of the OpenGL viewport
+     * Retrieves the Y pos of the OpenGL viewport (index 1 of GL_VIEWPORT)
+     * @return the Y pos of the OpenGL viewport
      */
     public int getViewportY() {
         return viewportBottom - height;

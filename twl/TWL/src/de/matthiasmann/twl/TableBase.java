@@ -149,7 +149,7 @@ public abstract class TableBase extends Widget implements ScrollPane.Scrollable,
         public boolean isActive();
 
         /**
-         * Called when the table position ot size has changed.
+         * Called when the table pos ot size has changed.
          */
         public void updateInfoWindowPosition();
     }

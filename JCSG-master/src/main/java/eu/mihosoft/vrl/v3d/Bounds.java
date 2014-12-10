@@ -49,9 +49,9 @@ public class Bounds {
     }
 
     /**
-     * Returns the position of the center.
+     * Returns the pos of the center.
      *
-     * @return the center position
+     * @return the center pos
      */
     public Vector3d getCenter() {
         return center;

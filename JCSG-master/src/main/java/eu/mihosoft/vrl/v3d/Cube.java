@@ -105,7 +105,7 @@ public class Cube implements Primitive {
     public List<Polygon> toPolygons() {
 
         int[][][] a = {
-            // position     // normal
+            // pos     // normal
             {{0, 4, 6, 2}, {-1, 0, 0}},
             {{1, 3, 7, 5}, {+1, 0, 0}},
             {{0, 1, 5, 4}, {0, -1, 0}},

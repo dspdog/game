@@ -61,7 +61,7 @@ public enum Alignment {
     }
 
     /**
-     * Returns the horizontal position for this alignment.
+     * Returns the horizontal pos for this alignment.
      * @return 0 for left, 1 for center and 2 for right
      */
     public int getHPosition() {
@@ -69,7 +69,7 @@ public enum Alignment {
     }
 
     /**
-     * Returns the vertical position for this alignment.
+     * Returns the vertical pos for this alignment.
      * @return 0 for top, 1 for center and 2 for bottom
      */
     public int getVPosition() {

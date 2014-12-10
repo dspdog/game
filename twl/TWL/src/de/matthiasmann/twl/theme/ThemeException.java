@@ -78,7 +78,7 @@ public class ThemeException extends IOException {
     }
     
     /**
-     * Describes a position in an XML file
+     * Describes a pos in an XML file
      */
     public static final class Source {
         protected final URL url;

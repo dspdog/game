@@ -89,8 +89,8 @@ public class ScrollPane extends Widget {
          * {@link ScrollPane#setScrollPositionY(int) } or
          * through one of the scrollbars.
          *
-         * @param scrollPosX the new horizontal scroll position. Always &gt;= 0.
-         * @param scrollPosY the new vertical scroll position. Always &gt;= 0.
+         * @param scrollPosX the new horizontal scroll pos. Always &gt;= 0.
+         * @param scrollPosY the new vertical scroll pos. Always &gt;= 0.
          */
         public void setScrollPosition(int scrollPosX, int scrollPosY);
     }
@@ -258,7 +258,7 @@ public class ScrollPane extends Widget {
      * scroll bars.
      * 
      * This method should be called after changes to the content which might
-     * affect it's size and before computing a new scroll position.
+     * affect it's size and before computing a new scroll pos.
      *
      * @see #scrollToAreaX(int, int, int)
      * @see #scrollToAreaY(int, int, int)
@@ -284,7 +284,7 @@ public class ScrollPane extends Widget {
      * Tries to make the specified horizontal area completely visible. If it is
      * larger then the horizontal page size then it scrolls to the start of the area.
      *
-     * @param start the position of the area
+     * @param start the pos of the area
      * @param size size of the area
      * @param extra the extra space which should be visible around the area
      * @see Scrollbar#scrollToArea(int, int, int)
@@ -309,7 +309,7 @@ public class ScrollPane extends Widget {
      * Tries to make the specified vertical area completely visible. If it is
      * larger then the vertical page size then it scrolls to the start of the area.
      *
-     * @param start the position of the area
+     * @param start the pos of the area
      * @param size size of the area
      * @param extra the extra space which should be visible around the area
      * @see Scrollbar#scrollToArea(int, int, int)

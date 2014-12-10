@@ -26,13 +26,11 @@ public class gameWorldWater implements Runnable {
 
             try {
                 if(getTime()-lastNeighborUpdate>1) {
-                    if(sphCloud.gridInited)
                     sphCloud.findNeighbors();
                     lastNeighborUpdate = getTime();
                 }
 
                 if(getTime()-lastPosUpdate>1) {
-
                     sphCloud.updateParticleVelocities();
                     sphCloud.updateParticlePositions();
                     particle.updateTime();

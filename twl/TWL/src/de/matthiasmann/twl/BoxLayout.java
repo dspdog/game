@@ -226,7 +226,7 @@ public class BoxLayout extends Widget {
             }
         }
 
-        // 2: position children
+        // 2: pos children
         for(int idx=0 ; idx<numChildren ; idx++) {
             Widget child = container.getChild(idx);
             int childWidth = getPrefChildWidth(child);
@@ -252,7 +252,7 @@ public class BoxLayout extends Widget {
             }
         }
 
-        // 2: position children
+        // 2: pos children
         for(int idx=0 ; idx<numChildren ; idx++) {
             Widget child = container.getChild(idx);
             int childWidth = (alignment == Alignment.FILL) ? width : getPrefChildWidth(child);

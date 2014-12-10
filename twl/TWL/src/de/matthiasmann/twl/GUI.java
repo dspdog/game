@@ -263,7 +263,7 @@ public final class GUI extends Widget {
         return new MouseSensitiveRectangle() {
             @Override
             public boolean isMouseOver() {
-                // use last event's mouse position
+                // use last event's mouse pos
                 return isInside(event.mouseX, event.mouseY);
             }
         };
@@ -435,7 +435,7 @@ public final class GUI extends Widget {
     }
 
     /**
-     * Sets the offset from the mouse position to display the tooltip
+     * Sets the offset from the mouse pos to display the tooltip
      * @param tooltipOffsetX the X offset
      * @param tooltipOffsetY the Y offset
      */

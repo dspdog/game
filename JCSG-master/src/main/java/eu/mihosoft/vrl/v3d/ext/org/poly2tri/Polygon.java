@@ -106,7 +106,7 @@ class Polygon implements Triangulatable
      */
     public Polygon( List<PolygonPoint> points )
     {
-        // Lets do one sanity check that first and last point hasn't got same position
+        // Lets do one sanity check that first and last point hasn't got same pos
         // Its something that often happen when importing polygon data from other formats
         if( points.get(0).equals( points.get(points.size()-1) ) )
         {

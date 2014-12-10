@@ -456,7 +456,7 @@ public class TextArea extends Widget {
 
                     box.finish();
 
-                    // set position & size of all widget elements
+                    // set pos & size of all widget elements
                     layoutRoot.adjustWidget(getInnerX(), getInnerY());
                     layoutRoot.collectBGImages(0, 0, allBGImages);
                 }

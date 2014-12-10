@@ -216,10 +216,10 @@ public interface Renderer {
     public void setCursor(MouseCursor cursor);
 
     /**
-     * Sets the mouse position for SW mouse cursor rendering
+     * Sets the mouse pos for SW mouse cursor rendering
      * 
-     * @param mouseX X mouse position
-     * @param mouseY Y mouse position
+     * @param mouseX X mouse pos
+     * @param mouseY Y mouse pos
      */
     public void setMousePosition(int mouseX, int mouseY);
 

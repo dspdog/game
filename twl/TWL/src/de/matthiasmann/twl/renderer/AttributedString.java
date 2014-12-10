@@ -37,21 +37,21 @@ package de.matthiasmann.twl.renderer;
 public interface AttributedString extends CharSequence, AnimationState {
 
     /**
-     * Returns the current position of the attribute iterator
-     * @return the current position
+     * Returns the current pos of the attribute iterator
+     * @return the current pos
      */
     public int getPosition();
 
     /**
-     * Changes the current position.
-     * @param pos the new position
+     * Changes the current pos.
+     * @param pos the new pos
      * @throws IllegalArgumentException when {@code pos} is &lt; 0 or &gt; length()
      */
     public void setPosition(int pos);
 
     /**
-     * Moves the current position forward to the next segment.
-     * @return the new position
+     * Moves the current pos forward to the next segment.
+     * @return the new pos
      */
     public int advance();
 }

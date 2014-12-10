@@ -127,7 +127,7 @@ public class PopupWindow extends Container {
     }
     
     /**
-     * Opens the pop-up window with it's current size and position.
+     * Opens the pop-up window with it's current size and pos.
      * In order for this to work the owner must be part of the GUI tree.
      *
      * When a pop-up window is shown it is always visible and enabled.

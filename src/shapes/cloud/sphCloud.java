@@ -9,7 +9,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * Created by user on 12/8/2014.
  */
 public class sphCloud {
-    public static final int numParticles=4000;
+    public static final int numParticles=8000;
     public static final particle[] theParticles = new particle[numParticles];
     public static CopyOnWriteArrayList<particle>[][][] particleGrid;
     public static final float gridSize=32f;
@@ -18,6 +18,8 @@ public class sphCloud {
     //corners of the box bounding the cloud
     public static Vector3f lowerCorner = new Vector3f(0,0,0);
     public static Vector3f upperCorner = new Vector3f(10,10,10);
+    public static Vector3f lowerCornerBounds = new Vector3f(0,0,0);
+    public static Vector3f upperCornerBounds = new Vector3f(10,10,10);
 
     public static Vector3f center = new Vector3f(5f,5f,5f);
     public static boolean neighborsFound = true;
@@ -31,10 +33,14 @@ public class sphCloud {
 
         lowerCorner = new Vector3f(gridSize*-size,gridSize*-size,gridSize*-size);
         upperCorner = new Vector3f(gridSize*size,gridSize*size,gridSize*size);
+        lowerCornerBounds = new Vector3f(gridSize*-size/2,gridSize*-size/2,gridSize*-size/2);
+        upperCornerBounds = new Vector3f(gridSize*size/2,gridSize*size/2,gridSize*size/2);
         center = new Vector3f(0,0,0);
 
         lowerCorner.translate(0,gridSize*10,0f);
         upperCorner.translate(0,gridSize*10,0f);
+        lowerCornerBounds.translate(0,gridSize*10,0f);
+        upperCornerBounds.translate(0,gridSize*10,0f);
         center.translate(0,gridSize*10,0f);
 
         initParticleGrid();
@@ -47,7 +53,10 @@ public class sphCloud {
         particle p;
         for(int i=0; i<numParticles; i++){
             p = new particle(lowerCorner, upperCorner, i);
-            addParticle(p);
+            float gridX = ((p.pos.x-lowerCorner.x)/gridSize) + 1;
+            float gridY = ((p.pos.z-lowerCorner.z)/gridSize) + 1;
+            float gridZ = ((p.pos.y-lowerCorner.y)/gridSize) + 1;
+            particleGrid[(int)gridX][(int)gridY][(int)gridZ].add(p);
             theParticles[i] = p;
         }
     }
@@ -71,75 +80,69 @@ public class sphCloud {
 
     static long lastOutput = 0;
     public static void findNeighbors(){
-        if(numParticles>0 && gridInited){
-            int numNeighbors=0;
-            long time1 = System.currentTimeMillis();
-            for(particle p : theParticles){
-                if(p!=null)
-                numNeighbors += p.findNeighbors(gridSize/2f);
-            }
+        int numNeighbors=0;
+        long time1 = System.currentTimeMillis();
+        for(particle p : theParticles){
+            if(p!=null)
+            numNeighbors += p.findNeighbors(gridSize/2f);
+        }
 
-
-            if(System.currentTimeMillis()-lastOutput>1000){
-                System.out.println("found "+numNeighbors+" neighbors in " + (System.currentTimeMillis() - time1) + "ms -- average " + numNeighbors/numParticles);
-                lastOutput=System.currentTimeMillis();
-            }
-
+        if(System.currentTimeMillis()-lastOutput>1000){
+            System.out.println("found "+numNeighbors+" neighbors in " + (System.currentTimeMillis() - time1) + "ms -- average " + numNeighbors/numParticles);
+            lastOutput=System.currentTimeMillis();
         }
     }
 
     public static void updateParticleVelocities(){
-        if(gridInited){
-            for(particle p : theParticles){
-                if(p!=null){
-                    p.findDensity();
-                    p.findPressure();
-                }
-
+        for(particle p : theParticles){
+            if(p!=null){
+                p.findDensity();
+                p.findPressure();
             }
 
-            for(particle p : theParticles){if(p!=null){
-                Vector3f accPressure = new Vector3f(0,0,0);
-                Vector3f accVisc = new Vector3f(0,0,0);
-                float accPressScale=0;
-                float accViscScale=0;
-
-                for(particle n : p.myNeighbors){
-                    float kernalVal = n.kernal(n.distanceTo(p));
-                    float kernalVald = n.kernald(n.distanceTo(p));
-
-                    accPressScale = -1.0f*n.mass*(p.pressure/(p.density*p.density) + n.pressure/(n.density*n.density)) * kernalVal;
-                    accViscScale = p.mu * n.mass / n.density / p.density * kernalVald;
-
-                    accVisc.translate(
-                            accViscScale*(n.velocity.x-p.velocity.x),
-                            accViscScale*(n.velocity.y-p.velocity.y),
-                            accViscScale*(n.velocity.z-p.velocity.z)
-                    );
-
-                    accPressure.translate(
-                            accPressScale*(n.position.x-p.position.x),
-                            accPressScale*(n.position.y-p.position.y),
-                            accPressScale*(n.position.z-p.position.z)
-                    );
-                }
-
-                Vector3f accInteractive = new Vector3f(0,0,0);
-                Vector3f accGravity = new Vector3f(p.position.x-center.x,p.position.y-center.y,p.position.z-center.z); //suction source at origin
-
-                if(gravityDown){
-                    accGravity = new Vector3f(0,1f,0);
-                }
-
-                accGravity.normalise().scale(9f);
-
-                p.velocity.translate(
-                        accPressure.x+accVisc.x+accInteractive.x-accGravity.x,
-                        accPressure.y+accVisc.y+accInteractive.y-accGravity.y,
-                        accPressure.z+accVisc.z+accInteractive.z-accGravity.z);
-
-            }}
         }
+
+        for(particle p : theParticles){if(p!=null){
+            Vector3f accPressure = new Vector3f(0,0,0);
+            Vector3f accVisc = new Vector3f(0,0,0);
+            float accPressScale=0;
+            float accViscScale=0;
+
+            for(particle n : p.myNeighbors){
+                float kernalVal = n.kernal(n.distanceTo(p));
+                float kernalVald = n.kernald(n.distanceTo(p));
+
+                accPressScale = -1.0f*n.mass*(p.pressure/(p.density*p.density) + n.pressure/(n.density*n.density)) * kernalVal;
+                accViscScale = p.mu * n.mass / n.density / p.density * kernalVald ;
+
+                accVisc.translate(
+                        accViscScale*(n.vel.x-p.vel.x),
+                        accViscScale*(n.vel.y-p.vel.y),
+                        accViscScale*(n.vel.z-p.vel.z)
+                );
+
+                accPressure.translate(
+                        accPressScale*(n.pos.x-p.pos.x),
+                        accPressScale*(n.pos.y-p.pos.y),
+                        accPressScale*(n.pos.z-p.pos.z)
+                );
+            }
+
+            Vector3f accInteractive = new Vector3f(0,0,0);
+            Vector3f accGravity = new Vector3f(p.pos.x-center.x,p.pos.y-center.y,p.pos.z-center.z); //suction source at origin
+
+            if(gravityDown){
+                accGravity = new Vector3f(0,1f,0);
+            }
+
+            accGravity.normalise().scale(9f);
+
+            p.vel.translate(
+                    accPressure.x+accVisc.x+accInteractive.x-accGravity.x,
+                    accPressure.y+accVisc.y+accInteractive.y-accGravity.y,
+                    accPressure.z+accVisc.z+accInteractive.z-accGravity.z);
+
+        }}
     }
 
     public static void updateParticlePositions(){
@@ -154,7 +157,8 @@ public class sphCloud {
         float scale = 0.8f;
         //Vector3f lowerCornerMini = new Vector3f(lowerCorner.x*scale, lowerCorner.y*scale, lowerCorner.z*scale);
         //Vector3f upperCornerMini = new Vector3f(upperCorner.x*scale, upperCorner.y*scale, upperCorner.z*scale);
-
+        lowerCornerBounds.set(upperCorner.x,upperCorner.y,upperCorner.z);
+        upperCornerBounds.set(lowerCorner.x,lowerCorner.y,lowerCorner.z);
         if(gridInited)
         for(x=0; x<w+2;x++){
             for(y=0; y<h+2;y++){
@@ -163,13 +167,24 @@ public class sphCloud {
                     //if(particleGrid[x][y][z] != null)
                     for(particle p:particleGrid[x][y][z]){
 
-                        _gridX = (int)(((p.position.x-lowerCorner.x)/gridSize) + 1);
-                        _gridY = (int)(((p.position.z-lowerCorner.z)/gridSize) + 1);
-                        _gridZ = (int)(((p.position.y-lowerCorner.y)/gridSize) + 1);
+                        _gridX = (int)(((p.pos.x-lowerCorner.x)/gridSize) + 1);
+                        _gridY = (int)(((p.pos.z-lowerCorner.z)/gridSize) + 1);
+                        _gridZ = (int)(((p.pos.y-lowerCorner.y)/gridSize) + 1);
                         p.move();
-                        gridX = (int)(((p.position.x-lowerCorner.x)/gridSize) + 1);
-                        gridY = (int)(((p.position.z-lowerCorner.z)/gridSize) + 1);
-                        gridZ = (int)(((p.position.y-lowerCorner.y)/gridSize) + 1);
+
+                        lowerCornerBounds.set(
+                                Math.min(lowerCornerBounds.x, p.pos.x),
+                                Math.min(lowerCornerBounds.y, p.pos.y),
+                                Math.min(lowerCornerBounds.z, p.pos.z));
+
+                        upperCornerBounds.set(
+                                Math.max(upperCornerBounds.x, p.pos.x),
+                                Math.max(upperCornerBounds.y, p.pos.y),
+                                Math.max(upperCornerBounds.z, p.pos.z));
+
+                        gridX = (int)(((p.pos.x-lowerCorner.x)/gridSize) + 1);
+                        gridY = (int)(((p.pos.z-lowerCorner.z)/gridSize) + 1);
+                        gridZ = (int)(((p.pos.y-lowerCorner.y)/gridSize) + 1);
 
                         if(gridX!=_gridX || gridY!=_gridY || gridZ!=_gridZ){
 
@@ -199,19 +214,9 @@ public class sphCloud {
     }
 
     public boolean withinBounds(particle p){
-        return p.position.x>lowerCorner.x+2 && p.position.x<upperCorner.x-2 &&
-                p.position.y>lowerCorner.y+2 && p.position.y<upperCorner.y-2 &&
-                 p.position.z>lowerCorner.z+2 && p.position.z<upperCorner.z-2;
-    }
-
-    public static void addParticle(particle p){
-        //if(withinBounds(p)){
-            float gridX = ((p.position.x-lowerCorner.x)/gridSize) + 1;
-            float gridY = ((p.position.z-lowerCorner.z)/gridSize) + 1;
-            float gridZ = ((p.position.y-lowerCorner.y)/gridSize) + 1;
-            particleGrid[(int)gridX][(int)gridY][(int)gridZ].add(p);
-            //theParticles.add(p);
-        //}
+        return p.pos.x>lowerCorner.x+2 && p.pos.x<upperCorner.x-2 &&
+                p.pos.y>lowerCorner.y+2 && p.pos.y<upperCorner.y-2 &&
+                 p.pos.z>lowerCorner.z+2 && p.pos.z<upperCorner.z-2;
     }
 
     public static float densityAt(Vector3f position){

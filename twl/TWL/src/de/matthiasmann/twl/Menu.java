@@ -300,7 +300,7 @@ public class Menu extends MenuElement implements Iterable<MenuElement> {
     }
 
     /**
-     * Creates a popup menu from this menu at the specified position.
+     * Creates a popup menu from this menu at the specified pos.
      *
      * @param parent the parent widget for the popup.
      * @param x the absolute X coordinate for the popup

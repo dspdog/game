@@ -127,7 +127,7 @@ public class TableDemoDialog1 extends FadeFrame {
     }
 
     /**
-     * A CellWidgetCreator instance is used to create and position the ComboBox
+     * A CellWidgetCreator instance is used to create and pos the ComboBox
      * widget inside the table cell. This class is also responsible to connect
      * all listeners so that updates to/from the combobox can happen.
      *
@@ -170,7 +170,7 @@ public class TableDemoDialog1 extends FadeFrame {
         }
 
         public void positionWidget(Widget widget, int x, int y, int w, int h) {
-            // this method will size and position the ComboBox
+            // this method will size and pos the ComboBox
             // If the widget should be centered (like a check box) then this
             // would be done here
             widget.setPosition(x, y);

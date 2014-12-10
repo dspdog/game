@@ -354,10 +354,10 @@ public class FloatArrayList extends AbstractList<Float>
     }
 
     /**
-     * Returns the element at the specified position in this list.
+     * Returns the element at the specified pos in this list.
      *
      * @param index index of the element to return
-     * @return the element at the specified position in this list
+     * @return the element at the specified pos in this list
      * @throws IndexOutOfBoundsException {@inheritDoc}
      */
     @Override public Float get(int index) {
@@ -367,11 +367,11 @@ public class FloatArrayList extends AbstractList<Float>
     }
 
     /**
-     * Replaces the element at the specified position in this list with the specified element.
+     * Replaces the element at the specified pos in this list with the specified element.
      *
      * @param index   index of the element to replace
-     * @param element element to be stored at the specified position
-     * @return the element previously at the specified position
+     * @param element element to be stored at the specified pos
+     * @return the element previously at the specified pos
      * @throws IndexOutOfBoundsException {@inheritDoc}
      */
     @Override public Float set(int index, Float element) {
@@ -395,8 +395,8 @@ public class FloatArrayList extends AbstractList<Float>
     }
 
     /**
-     * Inserts the specified element at the specified position in this list. Shifts the element currently at that
-     * position (if any) and any subsequent elements to the right (adds one to their indices).
+     * Inserts the specified element at the specified pos in this list. Shifts the element currently at that
+     * pos (if any) and any subsequent elements to the right (adds one to their indices).
      *
      * @param index   index at which the specified element is to be inserted
      * @param element element to be inserted
@@ -414,7 +414,7 @@ public class FloatArrayList extends AbstractList<Float>
     }
 
     /**
-     * Removes the element at the specified position in this list. Shifts any subsequent elements to the left (subtracts
+     * Removes the element at the specified pos in this list. Shifts any subsequent elements to the left (subtracts
      * one from their indices).
      *
      * @param index the index of the element to be removed
@@ -503,8 +503,8 @@ public class FloatArrayList extends AbstractList<Float>
     }
 
     /**
-     * Inserts all of the elements in the specified collection into this list, starting at the specified position.
-     * Shifts the element currently at that position (if any) and any subsequent elements to the right (increases their
+     * Inserts all of the elements in the specified collection into this list, starting at the specified pos.
+     * Shifts the element currently at that pos (if any) and any subsequent elements to the right (increases their
      * indices).  The new elements will appear in the list in the order that they are returned by the specified
      * collection's iterator.
      *
@@ -680,7 +680,7 @@ public class FloatArrayList extends AbstractList<Float>
     }
 
     /**
-     * Returns a list iterator over the elements in this list (in proper sequence), starting at the specified position
+     * Returns a list iterator over the elements in this list (in proper sequence), starting at the specified pos
      * in the list. The specified index indicates the first element that would be returned by an initial call to {@link
      * ListIterator#next next}. An initial call to {@link ListIterator#previous previous} would return the element with
      * the specified index minus one.

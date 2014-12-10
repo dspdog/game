@@ -56,8 +56,8 @@ public class PropertySheet extends TreeTable {
         public void setSelected(boolean selected);
         
         /**
-         * Can be used to position the widget in a cell.
-         * <p>If this method returns false, the table will position the widget itself.</p>
+         * Can be used to pos the widget in a cell.
+         * <p>If this method returns false, the table will pos the widget itself.</p>
          *
          * <p>This method is responsible to call setPosition and setSize on the
          * widget or return false.</p>
@@ -67,7 +67,7 @@ public class PropertySheet extends TreeTable {
          * @param width the width of the cell
          * @param height the height of the cell
          * 
-         * @return true if the position was changed by this method.
+         * @return true if the pos was changed by this method.
          */
         public boolean positionWidget(int x, int y, int width, int height);
     }

@@ -50,7 +50,7 @@ import java.util.concurrent.ExecutorService;
  * syntax highlighting and info boxes.</p>
  * 
  * <p>The single line editing (default mode) uses internal scrolling using
- * the cursor position.</p>
+ * the cursor pos.</p>
  * 
  * <p>The multi line version uses internal horizontal scrolling, but for
  * vertical scrolling it should be wrapped into a {@see ScrollPane}.</p>

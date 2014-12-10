@@ -40,7 +40,7 @@ public abstract class AutoCompletionResult {
 
     /**
      * Return value for {@link #getCursorPosForResult} to use EditField's
-     * default cursor position for {@link EditField#setText(java.lang.String)}
+     * default cursor pos for {@link EditField#setText(java.lang.String)}
      */
     public static final int DEFAULT_CURSOR_POS = -1;
 
@@ -86,12 +86,12 @@ public abstract class AutoCompletionResult {
     public abstract String getResult(int idx);
 
     /**
-     * Returns the desired cursor position for the given result entry.
+     * Returns the desired cursor pos for the given result entry.
      * 
      * The default implementation returns {@link #DEFAULT_CURSOR_POS}
      * 
      * @param idx the index of the desired result entry
-     * @return the cursor position
+     * @return the cursor pos
      * @see #getNumResults()
      * @see #getResult(int)
      * @see #DEFAULT_CURSOR_POS
@@ -108,7 +108,7 @@ public abstract class AutoCompletionResult {
      * is returned.
      *
      * @param text The new text
-     * @param cursorPos The new cursor position
+     * @param cursorPos The new cursor pos
      * @return the new refined AutoCompletionResult or null if refining was not possible
      */
     public AutoCompletionResult refine(String text, int cursorPos) {

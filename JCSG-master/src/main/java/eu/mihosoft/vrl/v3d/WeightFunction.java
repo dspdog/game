@@ -17,7 +17,7 @@ public interface WeightFunction {
      * Evaluates the function at the specified location.
      * @param v location
      * @param csg csg
-     * @return the weight of the specified position
+     * @return the weight of the specified pos
      */
     public double eval(Vector3d v, CSG csg);
 }

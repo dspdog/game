@@ -205,7 +205,7 @@ public class Scrollbar extends Widget {
      * Tries to make the specified area completely visible. If it is larger
      * then the page size then it scrolls to the start of the area.
      * 
-     * @param start the position of the area
+     * @param start the pos of the area
      * @param size size of the area
      * @param extra the extra space which should be visible around the area
      */

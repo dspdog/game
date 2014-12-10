@@ -29,7 +29,7 @@ public class FractalStructure {
     static ArrayList<Double> thicknessList = null;
 
     // decides who many connections there should be in the next level between
-    // two subFractalStructures (position parent edge and center)
+    // two subFractalStructures (pos parent edge and center)
     int crossConnectionsRate = 25; //percent
     // maxAngleForCrossConections dominates crossConnectionsRate
     int maxAngleForCrossConections = 45;//degree
@@ -438,7 +438,7 @@ public class FractalStructure {
             // create multiple cross connections from ONE edge subStructure to the center subStructure
             for (double j = 0; j < connectionLineVector.magnitude(); j += stepSizeOnConnectionLine) {
 
-                //from bottom left to top right beginning at the ground point position
+                //from bottom left to top right beginning at the ground point pos
                 //hEP0,2,4,....
                 helpEdgePoint = connectionLineVectorNormalized.times(j).plus(tmpGroundPoint).plus(correctionInRotationAxisDirection);
                 //hCP0,1,2,....
@@ -460,7 +460,7 @@ public class FractalStructure {
                                     connectionLineVectorNormalized, secondOrthoVec));
                 }
 
-                //from top left to bottom right beginning at the ground point position
+                //from top left to bottom right beginning at the ground point pos
                 //hEP1,3,5,....
                 helpEdgePoint = connectionLineVectorNormalized.times(j + stepSizeOnConnectionLine).plus(tmpGroundPoint).plus(correctionInRotationAxisDirection);
 

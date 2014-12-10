@@ -475,7 +475,7 @@ public class Widget {
     }
 
     /**
-     * The inner X position takes the left border into account
+     * The inner X pos takes the left border into account
      * @return getX() + getBorderLeft()
      */
     public final int getInnerX() {
@@ -483,7 +483,7 @@ public class Widget {
     }
 
     /**
-     * The inner Y position takes the top border into account
+     * The inner Y pos takes the top border into account
      * @return getY() + getBorderTop()
      */
     public final int getInnerY() {
@@ -534,9 +534,9 @@ public class Widget {
     }
 
     /**
-     * Changes the position of this widget.
+     * Changes the pos of this widget.
      * 
-     * <p>When the position has changed then<ul>
+     * <p>When the pos has changed then<ul>
      * <li>The positions of all children are updated</li>
      * <li>{@link #positionChanged()} is called</li>
      * <li>{@link PropertyChangeEvent} are fired for "x" and "y"</li>
@@ -544,13 +544,13 @@ public class Widget {
      *
      * <p>This method should only be called from within the layout() method of the
      * parent. Otherwise it could lead to bad interaction with theming and result
-     * in a wrong position after the theme has been applied.</p>
+     * in a wrong pos after the theme has been applied.</p>
      *
      * <p>NOTE: Position is absolute in the widget's tree.</p>
      *
-     * @param x The new x position, can be negative
-     * @param y The new y position, can be negative
-     * @return true if the position was changed, false if new position == old position
+     * @param x The new x pos, can be negative
+     * @param y The new y pos, can be negative
+     * @return true if the pos was changed, false if new pos == old pos
      * @see #layout()
      */
     public boolean setPosition(int x, int y) {
@@ -660,7 +660,7 @@ public class Widget {
             this.borderRight = (short)right;
             this.borderBottom = (short)bottom;
             
-            // first adjust child position
+            // first adjust child pos
             if(children != null && (deltaLeft != 0 || deltaTop != 0)) {
                 for(int i=0,n=children.size() ; i<n ; i++) {
                     adjustChildPosition(children.get(i), deltaLeft, deltaTop);
@@ -810,7 +810,7 @@ public class Widget {
     /**
      * Computes the preferred inner width (the size of the widget without the border)
      *
-     * The default implementation uses the current position of the children.
+     * The default implementation uses the current pos of the children.
      *
      * It is highly recommended to override this method as the default implementation
      * lead to unstable layouts.
@@ -851,7 +851,7 @@ public class Widget {
     /**
      * Computes the preferred inner height (the size of the widget without the border)
      *
-     * The default implementation uses the current position of the children.
+     * The default implementation uses the current pos of the children.
      *
      * It is highly recommended to override this method as the default implementation
      * lead to unstable layouts.
@@ -1224,7 +1224,7 @@ public class Widget {
     
     /**
      * Inserts a new child into this widget.
-     * The position of the child is treated as relative to this widget and adjusted.
+     * The pos of the child is treated as relative to this widget and adjusted.
      * If a theme was applied to this widget then this theme is also applied to the new child.
      * 
      * @param child the child that should be inserted
@@ -1307,8 +1307,8 @@ public class Widget {
 
     /**
      * Removes the specified child from this widget.
-     * The position of the removed child is changed to the relative
-     * position to this widget.
+     * The pos of the removed child is changed to the relative
+     * pos to this widget.
      * Calls invalidateLayout after removing the child.
      * 
      * @param index the index of the child
@@ -1334,8 +1334,8 @@ public class Widget {
 
     /**
      * Removes all children of this widget.
-     * The position of the all removed children is changed to the relative
-     * position to this widget.
+     * The pos of the all removed children is changed to the relative
+     * pos to this widget.
      * Calls allChildrenRemoved after removing all children.
      * 
      * @see #allChildrenRemoved()
@@ -1676,7 +1676,7 @@ public class Widget {
      *
      * This method is not called if the tooltip is already open and the mouse is
      * moved but does not leave this widget. If the tooltip depends on the mouse
-     * position then {@code updateTooltip} must be called from {@code handleEvent}.
+     * pos then {@code updateTooltip} must be called from {@code handleEvent}.
      *
      * @param mouseX the mouse X coordinate
      * @param mouseY the mouse Y coordinate
@@ -1805,7 +1805,7 @@ public class Widget {
     }
     
     /**
-     * Moves the child at index from to index to. This will shift the position
+     * Moves the child at index from to index to. This will shift the pos
      * of all children in between.
      * 
      * @param from the index of the child that should be moved
@@ -1914,7 +1914,7 @@ public class Widget {
     }
 
     /**
-     * Called when the position of this widget was changed.
+     * Called when the pos of this widget was changed.
      * The default implementation does nothing.
      * 
      * Child positions are already updated to retain the absolute
@@ -2134,11 +2134,11 @@ public class Widget {
 
     /**
      * Called after all other widgets have been rendered when a drag operation is in progress.
-     * The mouse position can be outsife of this widget
+     * The mouse pos can be outsife of this widget
      * 
      * @param gui the GUI object
-     * @param mouseX the current mouse X position
-     * @param mouseY the current mouse Y position
+     * @param mouseX the current mouse X pos
+     * @param mouseY the current mouse Y pos
      * @param modifier the current active modifiers - see {@link Event#getModifiers() }
      */
     protected void paintDragOverlay(GUI gui, int mouseX, int mouseY, int modifier) {
@@ -2163,7 +2163,7 @@ public class Widget {
     }
 
     /**
-     * Sets size and position of a child widget so that it consumes the complete
+     * Sets size and pos of a child widget so that it consumes the complete
      * inner area.
      *
      * @param child A child widget
@@ -2177,7 +2177,7 @@ public class Widget {
     }
 
     /**
-     * Sets size and position of all child widgets so that they all consumes the
+     * Sets size and pos of all child widgets so that they all consumes the
      * complete inner area. If there is more then one child then they will overlap.
      */
     protected void layoutChildrenFullInnerArea() {

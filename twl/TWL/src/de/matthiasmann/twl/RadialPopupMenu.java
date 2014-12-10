@@ -167,7 +167,7 @@ public class RadialPopupMenu extends PopupWindow {
     }
 
     /**
-     * Opens the radial popup menu around the current mouse position
+     * Opens the radial popup menu around the current mouse pos
      * and uses the event's mouse button as button activator.
      *
      * @param evt the {@link Event.Type#MOUSE_BTNDOWN} event

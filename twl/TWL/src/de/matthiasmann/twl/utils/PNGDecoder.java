@@ -251,14 +251,14 @@ public class PNGDecoder {
 
     /**
      * Decodes the image into the specified buffer. The first line is placed at
-     * the current position. After decode the buffer position is at the end of
+     * the current pos. After decode the buffer pos is at the end of
      * the last line.
      *
      * @param buffer the buffer
      * @param stride the stride in bytes from start of a line to start of the next line, can be negative.
      * @param fmt the target format into which the image should be decoded.
      * @throws IOException if a read or data error occurred
-     * @throws IllegalArgumentException if the start position of a line falls outside the buffer
+     * @throws IllegalArgumentException if the start pos of a line falls outside the buffer
      * @throws UnsupportedOperationException if the image can't be decoded into the desired format
      */
     public void decode(ByteBuffer buffer, int stride, Format fmt) throws IOException {
@@ -338,14 +338,14 @@ public class PNGDecoder {
 
     /**
      * Decodes the image into the specified buffer. The last line is placed at
-     * the current position. After decode the buffer position is at the end of
+     * the current pos. After decode the buffer pos is at the end of
      * the first line.
      *
      * @param buffer the buffer
      * @param stride the stride in bytes from start of a line to start of the next line, must be positive.
      * @param fmt the target format into which the image should be decoded.
      * @throws IOException if a read or data error occurred
-     * @throws IllegalArgumentException if the start position of a line falls outside the buffer
+     * @throws IllegalArgumentException if the start pos of a line falls outside the buffer
      * @throws UnsupportedOperationException if the image can't be decoded into the desired format
      */
     public void decodeFlipped(ByteBuffer buffer, int stride, Format fmt) throws IOException {

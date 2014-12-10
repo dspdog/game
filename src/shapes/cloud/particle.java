@@ -4,12 +4,11 @@ import org.lwjgl.Sys;
 import org.lwjgl.util.vector.Vector3f;
 
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class particle {
-    public Vector3f velocity;
-    public Vector3f position;
+    public Vector3f vel;
+    public Vector3f pos;
     public Vector3f force;
 
     public float mass;
@@ -17,9 +16,9 @@ public class particle {
     //public float myNeighborsDensity;
     public float pressure;
 
-    public float densREF = 1000; // kg/m^3
-    public float mu = 1f; // kg/ms (viscosity))
-    public float c = 0.9f; // m/s speed of sound
+    public static final float densREF = 1000; // kg/m^3
+    public static final float mu = 0.001f; // kg/ms (dynamical viscosity))
+    public static final float c = 1.9f; // m/s speed of sound
 
     public float radius=0f;
 
@@ -41,14 +40,14 @@ public class particle {
         density = 1f;
         pressure = 1f;
 
-        velocity = new Vector3f(
+        vel = new Vector3f(
                 (float)Math.random()-0.5f,
                 (float)Math.random()-0.5f,
                 (float)Math.random()-0.5f);
 
-        velocity.scale(1f);
+        vel.scale(0.1f);
 
-        position = new Vector3f(
+        pos = new Vector3f(
                 (float)Math.random()*(upperCorner.x - lowerCorner.x)+lowerCorner.x,
                 (float)Math.random()*(upperCorner.y - lowerCorner.y)+lowerCorner.y,
                 (float)Math.random()*(upperCorner.z - lowerCorner.z)+lowerCorner.z);
@@ -57,7 +56,7 @@ public class particle {
     public static void updateTime(){
         lastTime=time;
         time = getTime();
-        dt=(time-lastTime)*0.4f;
+        dt=(time-lastTime)*0.5f;
     }
 
     private static long getTime() {
@@ -68,22 +67,21 @@ public class particle {
         Vector3f lower = sphCloud.lowerCorner;
         Vector3f upper = sphCloud.upperCorner;
 
-        if(velocity.lengthSquared()>speedlimit){velocity.normalise().scale(speedlimit);} //speed limiter
+        if(vel.lengthSquared()>speedlimit){
+            vel.normalise().scale(speedlimit);} //speed limiter
 
-        if((position.x+velocity.x*dt > upper.x) || (position.x+velocity.x*dt < lower.x))
-            velocity.x*=-1f;
+        if((pos.x+ vel.x*dt > upper.x) || (pos.x+ vel.x*dt < lower.x))
+            vel.x*=-1f;
+        if((pos.y+ vel.y*dt > upper.y) || (pos.y+ vel.y*dt < lower.y))
+            vel.y*=-1f;
+        if((pos.x+ vel.z*dt > upper.z) || (pos.z+ vel.z*dt < lower.z))
+            vel.z*=-1f;
+        pos.set(pos.x+ vel.x*dt, pos.y+ vel.y*dt, pos.z+ vel.z*dt);
 
-        if((position.y+velocity.y*dt > upper.y) || (position.y+velocity.y*dt < lower.y))
-            velocity.y*=-1f;
-
-        if((position.x+velocity.z*dt > upper.z) || (position.z+velocity.z*dt < lower.z))
-            velocity.z*=-1f;
-        position.set(position.x+velocity.x*dt,position.y+velocity.y*dt,position.z+velocity.z*dt);
-
-        position.set(
-                Math.min(Math.max(lower.x, position.x), upper.x),
-                Math.min(Math.max(lower.y, position.y), upper.y),
-                Math.min(Math.max(lower.z, position.z), upper.z)
+        pos.set(
+                Math.min(Math.max(lower.x, pos.x), upper.x),
+                Math.min(Math.max(lower.y, pos.y), upper.y),
+                Math.min(Math.max(lower.z, pos.z), upper.z)
         );
     }
 
@@ -101,7 +99,7 @@ public class particle {
 
     public float kernal(float x){
         if(x>radius)return 0;
-        return 1.0f - x*x;
+        return (1.0f - x*x)*1f;
     }
 
     public float kernald(float x){ //deriv of kernal
@@ -109,25 +107,19 @@ public class particle {
         return -2f*x;
     }
 
-    public int findNeighbors(float cutoff){
+    public int findNeighbors(float _radius){
         float dist;
-        //myNeighborsDensity=0f;
-        radius=cutoff;
+        radius=_radius;
         myNeighbors = new LinkedList<>();
-        ArrayDeque<particle> nearbyParticles = sphCloud.particlesNear(this.position);
+        ArrayDeque<particle> nearbyParticles = sphCloud.particlesNear(this.pos);
         for(particle otherParticle : nearbyParticles) {
             dist = this.distanceTo(otherParticle);
-            if (dist < cutoff) {
-                //otherParticle._tempDist = dist;
+            if (dist < radius) {
                 myNeighbors.add(otherParticle);
-                //myNeighborsDensity+=otherParticle.density;
             }
         }
 
         int size = myNeighbors.size();
-
-        //myNeighborsDensity/=(size*1f);
-        //if(myNeighborsDensity==0)myNeighborsDensity=density;
 
         myNeighbors.add(this);
 
@@ -135,11 +127,11 @@ public class particle {
     }
 
     public float distanceTo(particle p){
-        return dist(p.position.x - this.position.x, p.position.y - this.position.y, p.position.z - this.position.z);
+        return dist(p.pos.x - this.pos.x, p.pos.y - this.pos.y, p.pos.z - this.pos.z);
     }
 
     public float distanceTo(Vector3f position){
-        return dist(position.x - this.position.x, position.y - this.position.y, position.z - this.position.z);
+        return dist(position.x - this.pos.x, position.y - this.pos.y, position.z - this.pos.z);
     }
 
     public static float dist(float x, float y, float z){

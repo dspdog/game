@@ -215,7 +215,7 @@ class Parser {
   /** the textposition at the last accepting state */
   private int zzMarkedPos;
 
-  /** the current text position in the buffer */
+  /** the current text pos in the buffer */
   private int zzCurrentPos;
 
   /** startRead marks the beginning of the yytext() string in the buffer */
@@ -512,7 +512,7 @@ class Parser {
         }
       }
 
-      // store back cached position
+      // store back cached pos
       zzMarkedPos = zzMarkedPosL;
 
       switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {

@@ -151,7 +151,7 @@ public class DialogLayout extends Widget {
     }
 
     /**
-     * The horizontal group controls the position and size of all child
+     * The horizontal group controls the pos and size of all child
      * widgets along the X axis.
      *
      * Every widget must be part of both horizontal and vertical group.
@@ -182,7 +182,7 @@ public class DialogLayout extends Widget {
     }
 
     /**
-     * The vertical group controls the position and size of all child
+     * The vertical group controls the pos and size of all child
      * widgets along the Y axis.
      *
      * Every widget must be part of both horizontal and vertical group.
@@ -458,7 +458,7 @@ public class DialogLayout extends Widget {
 
     /**
      * Creates a new parallel group.
-     * All children in a parallel group share the same position and size of it's axis.
+     * All children in a parallel group share the same pos and size of it's axis.
      *
      * @return the new parallel Group.
      */
@@ -976,7 +976,7 @@ public class DialogLayout extends Widget {
 
         /**
          * Adds several widgets to this group, inserting the specified gap in between.
-         * Each widget also gets an animation state set depending on it's position.
+         * Each widget also gets an animation state set depending on it's pos.
          *
          * The state gapName+"NotFirst" is set to false for widgets[0] and true for all others
          * The state gapName+"NotLast" is set to false for widgets[n-1] and true for all others
