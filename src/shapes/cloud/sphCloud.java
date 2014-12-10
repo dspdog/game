@@ -9,8 +9,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * Created by user on 12/8/2014.
  */
 public class sphCloud {
-    public static int numParticles=0;
-    public static final CopyOnWriteArrayList<particle> theParticles = new CopyOnWriteArrayList<>();
+    public static final int numParticles=5000;
+    public static final particle[] theParticles = new particle[numParticles];
     public static CopyOnWriteArrayList<particle>[][][] particleGrid;
     public static final float gridSize=32f;
     public static boolean gridInited=false;
@@ -26,6 +26,7 @@ public class sphCloud {
 
     public sphCloud(int total, WorldObject collisionObject){
 
+        gridInited=false;
         int size = 16;
 
         lowerCorner = new Vector3f(gridSize*-size,gridSize*-size,gridSize*-size);
@@ -36,15 +37,20 @@ public class sphCloud {
         upperCorner.translate(0,gridSize*10,0f);
         center.translate(0,gridSize*10,0f);
 
-        numParticles=total;
+        //numParticles=total;
         initParticleGrid();
-        gridInited=true;
+
         getRandomParticles();
+
+        gridInited=true;
     }
 
     private void getRandomParticles(){
+        particle p;
         for(int i=0; i<numParticles; i++){
-            addParticle(new particle(lowerCorner, upperCorner, i));
+            p = new particle(lowerCorner, upperCorner, i);
+            addParticle(p);
+            theParticles[i] = p;
         }
     }
 
@@ -67,10 +73,11 @@ public class sphCloud {
 
     static long lastOutput = 0;
     public static void findNeighbors(){
-        if(numParticles>0){
+        if(numParticles>0 && gridInited){
             int numNeighbors=0;
             long time1 = System.currentTimeMillis();
             for(particle p : theParticles){
+                if(p!=null)
                 numNeighbors += p.findNeighbors(gridSize/2f);
             }
 
@@ -84,54 +91,61 @@ public class sphCloud {
     }
 
     public static void updateParticleVelocities(){
+        if(gridInited){
+            for(particle p : theParticles){
+                if(p!=null){
+                    p.findDensity();
+                    p.findPressure();
+                }
 
-        for(particle p : theParticles){
-            p.findDensity();
-            p.findPressure();
-        }
-
-        for(particle p : theParticles){
-
-            Vector3f accPressure = new Vector3f(0,0,0);
-            Vector3f accVisc = new Vector3f(0,0,0);
-            float accPressScale=0;
-            float accViscScale=0;
-
-            for(particle n : p.myNeighbors){
-
-                float kernalVal = n.kernal(n.distanceTo(p));
-
-                accPressScale = -1.0f*n.mass*(p.pressure/(p.density*p.density) + n.pressure/(n.density*n.density)) * kernalVal;
-                accViscScale = p.mu * n.mass / n.density / p.density * kernalVal; //second gradient?
-
-                accVisc.translate(
-                        accViscScale*(n.velocity.x-p.velocity.x),
-                        accViscScale*(n.velocity.y-p.velocity.y),
-                        accViscScale*(n.velocity.z-p.velocity.z)
-                );
-
-                accPressure.translate(
-                        accPressScale*(n.position.x-p.position.x),
-                        accPressScale*(n.position.y-p.position.y),
-                        accPressScale*(n.position.z-p.position.z)
-                );
             }
 
+            for(particle p : theParticles){
+
+                Vector3f accPressure = new Vector3f(0,0,0);
+                Vector3f accVisc = new Vector3f(0,0,0);
+                float accPressScale=0;
+                float accViscScale=0;
+                if(p!=null){
+                    for(particle n : p.myNeighbors){
+                        if(n!=null){
+                            float kernalVal = n.kernal(n.distanceTo(p));
+
+                            accPressScale = -1.0f*n.mass*(p.pressure/(p.density*p.density) + n.pressure/(n.density*n.density)) * kernalVal;
+                            accViscScale = p.mu * n.mass / n.density / p.density * kernalVal; //second gradient?
+
+                            accVisc.translate(
+                                    accViscScale*(n.velocity.x-p.velocity.x),
+                                    accViscScale*(n.velocity.y-p.velocity.y),
+                                    accViscScale*(n.velocity.z-p.velocity.z)
+                            );
+
+                            accPressure.translate(
+                                    accPressScale*(n.position.x-p.position.x),
+                                    accPressScale*(n.position.y-p.position.y),
+                                    accPressScale*(n.position.z-p.position.z)
+                            );
+                        }
+
+                    }
 
 
-            Vector3f accInteractive = new Vector3f(0,0,0);
-            Vector3f accGravity = new Vector3f(p.position.x-center.x,p.position.y-center.y,p.position.z-center.z); //suction source at origin
 
-            if(gravityDown){
-                accGravity = new Vector3f(0,1f,0);
+                    Vector3f accInteractive = new Vector3f(0,0,0);
+                    Vector3f accGravity = new Vector3f(p.position.x-center.x,p.position.y-center.y,p.position.z-center.z); //suction source at origin
+
+                    if(gravityDown){
+                        accGravity = new Vector3f(0,1f,0);
+                    }
+
+                    accGravity.normalise().scale(5f);
+
+                    p.velocity.translate(
+                            accPressure.x+accVisc.x+accInteractive.x-accGravity.x,
+                            accPressure.y+accVisc.y+accInteractive.y-accGravity.y,
+                            accPressure.z+accVisc.z+accInteractive.z-accGravity.z);
+                }
             }
-
-            accGravity.normalise().scale(5f);
-
-            p.velocity.translate(
-                    accPressure.x+accVisc.x+accInteractive.x-accGravity.x,
-                    accPressure.y+accVisc.y+accInteractive.y-accGravity.y,
-                    accPressure.z+accVisc.z+accInteractive.z-accGravity.z);
         }
     }
 
@@ -203,7 +217,7 @@ public class sphCloud {
             float gridY = ((p.position.z-lowerCorner.z)/gridSize) + 1;
             float gridZ = ((p.position.y-lowerCorner.y)/gridSize) + 1;
             particleGrid[(int)gridX][(int)gridY][(int)gridZ].add(p);
-            theParticles.add(p);
+            //theParticles.add(p);
         //}
     }
 

@@ -39,14 +39,16 @@ public class GeometryFactory {
     public static void cloud(sphCloud cloud, int texId){
         long time = System.currentTimeMillis();
         float r,g,b;
+        if(sphCloud.gridInited)
         for(particle p : cloud.theParticles){
+            if(p!=null){
+                r = (p.position.x-sphCloud.lowerCorner.x)/(sphCloud.upperCorner.x - sphCloud.lowerCorner.x);
+                g = (p.position.y-sphCloud.lowerCorner.y)/(sphCloud.upperCorner.y - sphCloud.lowerCorner.y);
+                b = (p.position.z-sphCloud.lowerCorner.z)/(sphCloud.upperCorner.z - sphCloud.lowerCorner.z);
 
-            r = (p.position.x-sphCloud.lowerCorner.x)/(sphCloud.upperCorner.x - sphCloud.lowerCorner.x);
-            g = (p.position.y-sphCloud.lowerCorner.y)/(sphCloud.upperCorner.y - sphCloud.lowerCorner.y);
-            b = (p.position.z-sphCloud.lowerCorner.z)/(sphCloud.upperCorner.z - sphCloud.lowerCorner.z);
-
-            glColor3f(r, g, b);
-            drawCircle(p, true);
+                glColor3f(r, g, b);
+                drawCircle(p, true);
+            }
         }
         glColor3f(0f, 0f, 0f);
         drawCloudBox();
