@@ -44,6 +44,9 @@ public class GeometryFactory {
                 r = (p.pos.x-sphCloud.lowerCorner.x)/(sphCloud.upperCorner.x - sphCloud.lowerCorner.x);
                 g = (p.pos.y-sphCloud.lowerCorner.y)/(sphCloud.upperCorner.y - sphCloud.lowerCorner.y);
                 b = (p.pos.z-sphCloud.lowerCorner.z)/(sphCloud.upperCorner.z - sphCloud.lowerCorner.z);
+               // float d = p.myNeighbors.size()/12f;
+
+
 
                 glColor3f(r, g, b);
                 drawCircle(p, true);

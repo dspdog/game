@@ -1,7 +1,9 @@
 package shapes.cloud;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.util.vector.Vector3f;
 import world.WorldObject;
 
+import java.nio.FloatBuffer;
 import java.util.ArrayDeque;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -9,7 +11,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * Created by user on 12/8/2014.
  */
 public class sphCloud {
-    public static final int numParticles=8000;
+    public static final int numParticles=10000;
     public static final particle[] theParticles = new particle[numParticles];
     public static CopyOnWriteArrayList<particle>[][][] particleGrid;
     public static final float gridSize=32f;
@@ -27,6 +29,13 @@ public class sphCloud {
     public static boolean neighborsFound = true;
 
     public static boolean gravityDown = false;
+
+    int vertex_size = 3;
+
+    final int NUM_LINES= 1024*1024; //MAX LINES
+    public final FloatBuffer vertex_data = BufferUtils.createFloatBuffer(NUM_LINES * vertex_size * 2); //XYZ1 XYZ2
+    public final FloatBuffer color_data = BufferUtils.createFloatBuffer(NUM_LINES * vertex_size * 2); //RGB1 RGB2
+
 
     public sphCloud(int total, WorldObject collisionObject){
 
@@ -249,6 +258,7 @@ public class sphCloud {
         gridZ = (int)Math.max(1, Math.min(L - 1, (int)gridZ));
 
         ArrayDeque<particle> result = new ArrayDeque(8*20);
+
         result.addAll(particleGrid[(int)gridX][(int)gridY][(int)gridZ]);
 
         if(gridZd>0.5){//upper half

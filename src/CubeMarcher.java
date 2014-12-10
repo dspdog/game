@@ -1,4 +1,5 @@
 import org.lwjgl.BufferUtils;
+import shapes.cloud.sphCloud;
 import shapes.tree.tree;
 
 import java.nio.FloatBuffer;
@@ -470,98 +471,20 @@ public class CubeMarcher implements Runnable{
     public FloatBuffer color_data = BufferUtils.createFloatBuffer(NUM_TRIS * vertex_size * 3); //RGB1 RGB2
 
 
-    public void generateTris(tree _tree){
-        final tree theTree =  _tree;
+    public void generateTris(analyzer p, float iso){
 
         vertex_data = BufferUtils.createFloatBuffer(NUM_TRIS * vertex_size * 3); //XYZ1 XYZ2
         color_data = BufferUtils.createFloatBuffer(NUM_TRIS * vertex_size * 3); //RGB1 RGB2
 
-        //System.out.println(vertex_data.limit());
         theTriangles.clear();
-
-        analyzer p = new analyzer() {
-            @Override
-            public double getStep() {
-                return 2f;
-            }
-            @Override
-            public double potential(double x, double y, double z) {
-
-                double maxPot = 0f;
-                double dist;
-                for(int i=0; i<theTree.vertices; i++){
-                    float x1 = theTree.vertex_data.get(i*6);
-                    float y1 = theTree.vertex_data.get(i*6+1);
-                    float z1 = theTree.vertex_data.get(i*6+2);
-                    float x2 = theTree.vertex_data.get(i*6+3);
-                    float y2 = theTree.vertex_data.get(i*6+4);
-                    float z2 = theTree.vertex_data.get(i*6+5);
-                    maxPot = Math.max(maxPot, 50f*singlePotential(x,y,z,x1,y1,z1,1f,x2,y2,z2,1f));
-                }
-
-                return maxPot;
-            }
-
-            public double singlePotential(double x, double y, double z, double X1,double  Y1, double Z1, double S1, double X2,double  Y2, double Z2, double S2){
-                return 1.0/(distSq_Point_to_Segment(x, y, z, X1, Y1, Z1, S1, X2, Y2, Z2, S2));
-            }
-
-            double distSq_Point_to_Segment(double px, double py, double pz, double s0x, double s0y, double s0z, double s0s, double s1x, double s1y, double s1z, double s1s)//todo update name as this also scales
-            {
-                if(s0x<1)return 1000000d;
-                // distSq_Point_to_Segment(): get the distance of a point to a segment
-                //     Input:  a Point P and a Segment S (in any dimension)
-                //     Return: the shortest distance from P to S
-                //P --> px, etc
-                //S --> s0x, s1x
-                //Vector v = S.P1 - S.P0;
-                double vx = s1x - s0x;
-                double vy = s1y - s0y;
-                double vz = s1z - s0z;
-                double vs = s1s - s0s;
-
-                //Vector w = P - S.P0;
-                double wx = px - s0x;
-                double wy = py - s0y;
-                double wz = pz - s0z;
-
-                double c1 = dot_product(wx, wy, wz, vx, vy, vz);
-                if ( c1 <= 0 )
-                    return scaleDist(distance3d_squared(px, py, pz, s0x, s0y, s0z), s0s);
-
-                double c2 = dot_product(vx, vy, vz, vx, vy, vz);
-                if ( c2 <= c1 )
-                    return scaleDist(distance3d_squared(px, py, pz, s1x, s1y, s1z), s1s);
-
-                double b = c1 / c2;
-
-                //Point Pb = S.P0 + b * v;
-                double pbx = s0x + b*vx;
-                double pby = s0y + b*vy;
-                double pbz = s0z + b*vz;
-                double pbs = s0s + b*vs;
-
-                return scaleDist(distance3d_squared(px, py, pz, pbx, pby, pbz), pbs);
-            }
-
-            double dot_product(double x0, double y0, double z0, double x1, double y1, double z1){
-                return x0*x1 + y0*y1 + z0*z1;
-            }
-            private double distance3d_squared(double X1, double Y1, double Z1, double X2, double Y2, double Z2){ //SQUARED DISTANCE
-                return (X2-X1)*(X2-X1)+(Y2-Y1)*(Y2-Y1)+(Z2-Z1)*(Z2-Z1);
-            }
-            double scaleDist(double dist, double scale){
-                return dist/scale;
-            }
-        };
 
         double step = p.getStep();
         int num_tri=0;
 
-        for(float x=0; x<100; x+=step){
-            for(float y=0; y<100; y+=step){
-                for(float z=0; z<100; z+=step){
-                    int new_tris = Polygonise(x,y,z,15d,p);
+        for(float x= sphCloud.lowerCornerBoundsFinal.x; x<sphCloud.upperCornerBoundsFinal.x; x+=step){
+            for(float y= sphCloud.lowerCornerBoundsFinal.y; x<sphCloud.upperCornerBoundsFinal.y; y+=step){
+                for(float z= sphCloud.lowerCornerBoundsFinal.z; x<sphCloud.upperCornerBoundsFinal.z; z+=step){
+                    int new_tris = Polygonise(x,y,z,iso,p);
                     num_tri += new_tris;
                     for(int t=0; t<new_tris; t++){
                         theTriangles.add(new Triangle(temp_triangles[t]));

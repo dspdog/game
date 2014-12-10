@@ -357,7 +357,6 @@ public final class tree implements java.io.Serializable {
 
 
 
-    final int NUM_LINES= 1024*1024; //MAX LINES
     private int lineIndex=0;
     public int vertices=0;
     long lastIndex = System.currentTimeMillis();
@@ -373,6 +372,8 @@ public final class tree implements java.io.Serializable {
     //final int[] lineZS2= new int[NUM_LINES];
 
     int vertex_size = 3;
+
+    final int NUM_LINES= 1024*1024; //MAX LINES
     public final FloatBuffer vertex_data = BufferUtils.createFloatBuffer(NUM_LINES * vertex_size * 2); //XYZ1 XYZ2
     public final FloatBuffer color_data = BufferUtils.createFloatBuffer(NUM_LINES * vertex_size * 2); //RGB1 RGB2
 
