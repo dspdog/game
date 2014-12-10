@@ -27,8 +27,10 @@ public class sphCloud {
 
     public sphCloud(int total, WorldObject collisionObject){
 
-        lowerCorner = new Vector3f(gridSize*-8,gridSize*-8,gridSize*-8);
-        upperCorner = new Vector3f(gridSize*8,gridSize*8,gridSize*8);
+        int size = 16;
+
+        lowerCorner = new Vector3f(gridSize*-size,gridSize*-size,gridSize*-size);
+        upperCorner = new Vector3f(gridSize*size,gridSize*size,gridSize*size);
         center = new Vector3f(0,0,0);
 
         lowerCorner.translate(0,gridSize*10,0f);
@@ -203,6 +205,15 @@ public class sphCloud {
             particleGrid[(int)gridX][(int)gridY][(int)gridZ].add(p);
             theParticles.add(p);
         //}
+    }
+
+    public static float densityAt(Vector3f position){
+        ArrayDeque<particle> nearbyParticles = particlesNear(position);
+        float d = 0;
+        for(particle otherParticle : nearbyParticles) {
+            d+=otherParticle.kernal(otherParticle.distanceTo(position));
+        }
+        return d;
     }
 
     public static ArrayDeque<particle> particlesNear(Vector3f position){

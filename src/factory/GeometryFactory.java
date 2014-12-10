@@ -37,11 +37,13 @@ public class GeometryFactory {
     }
 
     public static void cloud(sphCloud cloud, int texId){
+        long time = System.currentTimeMillis();
         for(particle p : cloud.theParticles){
             float scale = 0.01f;
             float r = (p.position.x-sphCloud.lowerCorner.x)/(sphCloud.upperCorner.x - sphCloud.lowerCorner.x);
             float g = (p.position.y-sphCloud.lowerCorner.y)/(sphCloud.upperCorner.y - sphCloud.lowerCorner.y);
             float b = (p.position.z-sphCloud.lowerCorner.z)/(sphCloud.upperCorner.z - sphCloud.lowerCorner.z);
+
             glColor3f(r, g, b);
             drawCircle(p, true);
         }

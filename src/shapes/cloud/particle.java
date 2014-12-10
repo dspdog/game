@@ -14,11 +14,12 @@ public class particle {
 
     public float mass;
     public float density;
+    public float myNeighborsDensity;
     public float pressure;
 
     public float densREF = 1000; // kg/m^3
     public float mu = 1f; // kg/ms (viscosity))
-    public float c = 5f; // m/s speed of sound
+    public float c = 0.9f; // m/s speed of sound
 
     public float radius=0f;
 
@@ -30,7 +31,7 @@ public class particle {
     public static long lastTime=0;
     public static float dt=0;
 
-    public static float speedlimit = 0.2f;
+    public static float speedlimit = 0.9f;
 
     public particle(Vector3f lowerCorner, Vector3f upperCorner, int index){
 
@@ -103,6 +104,7 @@ public class particle {
 
     public int findNeighbors(float cutoff){
         float dist;
+        myNeighborsDensity=0f;
         radius=cutoff;
         myNeighbors = new LinkedList<>();
         ArrayDeque<particle> nearbyParticles = sphCloud.particlesNear(this.position);
@@ -111,14 +113,26 @@ public class particle {
             if (dist < cutoff) {
                 //otherParticle._tempDist = dist;
                 myNeighbors.add(otherParticle);
+                myNeighborsDensity+=otherParticle.density;
             }
         }
+
+        int size = myNeighbors.size();
+
+        myNeighborsDensity/=(size*1f);
+        if(myNeighborsDensity==0)myNeighborsDensity=density;
+
         myNeighbors.add(this);
-        return myNeighbors.size();
+
+        return (size+1);
     }
 
     public float distanceTo(particle p){
         return dist(p.position.x-this.position.x, p.position.y-this.position.y, p.position.z-this.position.z);
+    }
+
+    public float distanceTo(Vector3f position){
+        return dist(position.x-this.position.x, position.y-this.position.y, position.z-this.position.z);
     }
 
     public static float dist(float x, float y, float z){

@@ -470,7 +470,6 @@ public class CubeMarcher implements Runnable{
     public FloatBuffer color_data = BufferUtils.createFloatBuffer(NUM_TRIS * vertex_size * 3); //RGB1 RGB2
 
 
-
     public void generateTris(tree _tree){
         final tree theTree =  _tree;
 
