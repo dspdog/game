@@ -18,8 +18,10 @@ public class sphCloud {
     //corners of the box bounding the cloud
     public static Vector3f lowerCorner = new Vector3f(0,0,0);
     public static Vector3f upperCorner = new Vector3f(10,10,10);
-    public static Vector3f lowerCornerBounds = new Vector3f(0,0,0);
-    public static Vector3f upperCornerBounds = new Vector3f(10,10,10);
+    private static Vector3f lowerCornerBounds = new Vector3f(0,0,0);
+    private static Vector3f upperCornerBounds = new Vector3f(10,10,10);
+    public static Vector3f lowerCornerBoundsFinal = new Vector3f(0,0,0);
+    public static Vector3f upperCornerBoundsFinal = new Vector3f(10,10,10);
 
     public static Vector3f center = new Vector3f(5f,5f,5f);
     public static boolean neighborsFound = true;
@@ -210,7 +212,8 @@ public class sphCloud {
                 }
             }
         }
-
+        lowerCornerBoundsFinal.set(upperCornerBounds.x,upperCornerBounds.y,upperCornerBounds.z);
+        upperCornerBoundsFinal.set(lowerCornerBounds.x,lowerCornerBounds.y,lowerCornerBounds.z);
     }
 
     public boolean withinBounds(particle p){

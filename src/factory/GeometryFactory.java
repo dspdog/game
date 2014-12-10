@@ -52,7 +52,7 @@ public class GeometryFactory {
         glColor3f(0f, 0f, 0f);
         drawBox(sphCloud.lowerCorner, sphCloud.upperCorner);
         glColor3f(0.5f, 0f, 0f);
-        drawBox(sphCloud.lowerCornerBounds, sphCloud.upperCornerBounds);
+        drawBox(sphCloud.lowerCornerBoundsFinal, sphCloud.upperCornerBoundsFinal);
        // glColor3f(0f, 0f, 0f);
        // drawCloudBoundsBox();
     }

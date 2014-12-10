@@ -56,7 +56,7 @@ public class particle {
     public static void updateTime(){
         lastTime=time;
         time = getTime();
-        dt=(time-lastTime)*0.5f;
+        dt=(time-lastTime)*0.4f;
     }
 
     private static long getTime() {
