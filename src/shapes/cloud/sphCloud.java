@@ -9,7 +9,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * Created by user on 12/8/2014.
  */
 public class sphCloud {
-    public static final int numParticles=5000;
+    public static final int numParticles=4000;
     public static final particle[] theParticles = new particle[numParticles];
     public static CopyOnWriteArrayList<particle>[][][] particleGrid;
     public static final float gridSize=32f;
@@ -100,52 +100,46 @@ public class sphCloud {
 
             }
 
-            for(particle p : theParticles){
-
+            for(particle p : theParticles){if(p!=null){
                 Vector3f accPressure = new Vector3f(0,0,0);
                 Vector3f accVisc = new Vector3f(0,0,0);
                 float accPressScale=0;
                 float accViscScale=0;
-                if(p!=null){
-                    for(particle n : p.myNeighbors){
-                        if(n!=null){
-                            float kernalVal = n.kernal(n.distanceTo(p));
 
-                            accPressScale = -1.0f*n.mass*(p.pressure/(p.density*p.density) + n.pressure/(n.density*n.density)) * kernalVal;
-                            accViscScale = p.mu * n.mass / n.density / p.density * kernalVal; //second gradient?
+                for(particle n : p.myNeighbors){
+                    float kernalVal = n.kernal(n.distanceTo(p));
 
-                            accVisc.translate(
-                                    accViscScale*(n.velocity.x-p.velocity.x),
-                                    accViscScale*(n.velocity.y-p.velocity.y),
-                                    accViscScale*(n.velocity.z-p.velocity.z)
-                            );
+                    accPressScale = -1.0f*n.mass*(p.pressure/(p.density*p.density) + n.pressure/(n.density*n.density)) * kernalVal;
+                    accViscScale = p.mu * n.mass / n.density / p.density * kernalVal; //second gradient?
 
-                            accPressure.translate(
-                                    accPressScale*(n.position.x-p.position.x),
-                                    accPressScale*(n.position.y-p.position.y),
-                                    accPressScale*(n.position.z-p.position.z)
-                            );
-                        }
+                    accVisc.translate(
+                            accViscScale*(n.velocity.x-p.velocity.x),
+                            accViscScale*(n.velocity.y-p.velocity.y),
+                            accViscScale*(n.velocity.z-p.velocity.z)
+                    );
 
-                    }
-
-
-
-                    Vector3f accInteractive = new Vector3f(0,0,0);
-                    Vector3f accGravity = new Vector3f(p.position.x-center.x,p.position.y-center.y,p.position.z-center.z); //suction source at origin
-
-                    if(gravityDown){
-                        accGravity = new Vector3f(0,1f,0);
-                    }
-
-                    accGravity.normalise().scale(5f);
-
-                    p.velocity.translate(
-                            accPressure.x+accVisc.x+accInteractive.x-accGravity.x,
-                            accPressure.y+accVisc.y+accInteractive.y-accGravity.y,
-                            accPressure.z+accVisc.z+accInteractive.z-accGravity.z);
+                    accPressure.translate(
+                            accPressScale*(n.position.x-p.position.x),
+                            accPressScale*(n.position.y-p.position.y),
+                            accPressScale*(n.position.z-p.position.z)
+                    );
                 }
-            }
+
+                Vector3f accInteractive = new Vector3f(0,0,0);
+                Vector3f accGravity = new Vector3f(p.position.x-center.x,p.position.y-center.y,p.position.z-center.z); //suction source at origin
+
+                if(gravityDown){
+                    accGravity = new Vector3f(0,1f,0);
+                }
+
+                accGravity.normalise().scale(5f);
+
+                p.velocity.translate(
+                        accPressure.x+accVisc.x+accInteractive.x-accGravity.x,
+                        accPressure.y+accVisc.y+accInteractive.y-accGravity.y,
+                        accPressure.z+accVisc.z+accInteractive.z-accGravity.z);
+
+            }}
         }
     }
 
