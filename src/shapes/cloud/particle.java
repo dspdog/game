@@ -113,6 +113,7 @@ public class particle {
                 myNeighbors.add(otherParticle);
             }
         }
+        myNeighbors.add(this);
         return myNeighbors.size();
     }
 
