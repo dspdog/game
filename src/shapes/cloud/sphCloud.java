@@ -31,7 +31,7 @@ public class sphCloud {
 
         lowerCorner.translate(0,gridSize*10,0f);
         upperCorner.translate(0,gridSize*10,0f);
-        center.translate(0,gridSize*4,0f);
+        center.translate(0,gridSize*10,0f);
 
         numParticles=total;
         initParticleGrid();
