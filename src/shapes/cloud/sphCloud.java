@@ -30,11 +30,11 @@ public class sphCloud {
 
     public static boolean gravityDown = false;
 
-    int vertex_size = 3;
+    static final int vertex_size = 3;
 
-    final int NUM_LINES= 1024*1024; //MAX LINES
-    public final FloatBuffer vertex_data = BufferUtils.createFloatBuffer(NUM_LINES * vertex_size * 2); //XYZ1 XYZ2
-    public final FloatBuffer color_data = BufferUtils.createFloatBuffer(NUM_LINES * vertex_size * 2); //RGB1 RGB2
+    static final int NUM_LINES= 1024*1024; //MAX LINES
+    public static final FloatBuffer vertex_data = BufferUtils.createFloatBuffer(NUM_LINES * vertex_size * 2); //XYZ1 XYZ2
+    public static final FloatBuffer color_data = BufferUtils.createFloatBuffer(NUM_LINES * vertex_size * 2); //RGB1 RGB2
 
 
     public sphCloud(int total, WorldObject collisionObject){

@@ -336,6 +336,10 @@ public class CubeMarcher implements Runnable{
             p2x=0; p2y=0; p2z=0;
         }
 
+        public Triangle copy(Triangle tri){
+            return new Triangle(tri);
+        }
+
         public float[] asFloatArray(){
             return new float[]{p0x, p0y, p0z, p1x, p1y, p1z, p2x, p2y, p2z};
         }

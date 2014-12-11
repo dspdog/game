@@ -4,6 +4,8 @@ import shapes.cloud.particle;
 import shapes.cloud.sphCloud;
 import world.scene;
 
+import java.util.ArrayList;
+
 public class gameWorldWater implements Runnable {
     boolean running = false;
 
@@ -40,10 +42,8 @@ public class gameWorldWater implements Runnable {
                 }
 
                 if(getTime()-lastSurfaceUpdate>100) {
-                    //sphCloud.updateParticleVelocities();
-                    //sphCloud.updateParticlePositions();
-                    //particle.updateTime();
                     getSurface();
+
                     lastSurfaceUpdate = getTime();
                 }
 
@@ -53,8 +53,8 @@ public class gameWorldWater implements Runnable {
             }
         }
     }
-
-    public void getSurface(){
+    public static final CubeMarcher.Triangle[] temp_triangles = new CubeMarcher.Triangle[12];
+    public static void getSurface(){
         CubeMarcher.analyzer a= new CubeMarcher.analyzer() {
             @Override
             public double getStep() {
@@ -69,17 +69,27 @@ public class gameWorldWater implements Runnable {
             }
         };
         CubeMarcher cm = new CubeMarcher();
-
-
+        ArrayList<CubeMarcher.Triangle> theTriangles = new ArrayList<>();
+        int num_tri=0;
+        long time1 = System.currentTimeMillis();
         float step = (float)a.getStep();
+        int i=0;
         for(float x=sphCloud.lowerCornerBoundsFinal.x; x<sphCloud.upperCornerBoundsFinal.x; x+=step){
             for(float y=sphCloud.lowerCornerBoundsFinal.y; y<sphCloud.upperCornerBoundsFinal.y; y+=step){
                 for(float z=sphCloud.lowerCornerBoundsFinal.z; z<sphCloud.upperCornerBoundsFinal.z; z+=step){
-                    cm.Polygonise(x,y,z, 0.5, a);
+                    int new_tris = cm.Polygonise(x,y,z, 0.5, a);
+
+                    num_tri += new_tris;
+                    for(int t=0; t<new_tris; t++){
+                        theTriangles.add(temp_triangles[t].copy());
+                        sphCloud.vertex_data.put(temp_triangles[t].asFloatArray());
+                        sphCloud.color_data.put(temp_triangles[t].asFloatArray(0.005f));
+                    }
+
                 }
             }
         }
-
+        System.out.println("got surface " + (System.currentTimeMillis()-time1)+"ms " + num_tri + " tri");
     }
 
     public long getTime() {
