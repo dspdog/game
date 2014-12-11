@@ -98,11 +98,13 @@ public class particle {
     }
 
     public float kernal(float x){
+        x*=1f; //TODO make this a param
         if(x>radius)return 0;
         return (1.0f - x*x)*1f;
     }
 
     public float kernald(float x){ //deriv of kernal
+        x*=1f; //TODO make this a param
         if(x>radius)return 0;
         return -2f*x;
     }
