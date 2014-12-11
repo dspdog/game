@@ -16,11 +16,6 @@ import static org.lwjgl.opengl.GL11.*;
 
 public class TextureFactory {
 
-
-
-
-
-
     static public int ballTexture(){
         //load texture from png
         Texture myTexture;

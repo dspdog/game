@@ -52,7 +52,7 @@ public class sphCloud {
         upperCorner.translate(0,gridSize*10,0f);
         lowerCornerBounds.translate(0,gridSize*10,0f);
         upperCornerBounds.translate(0,gridSize*10,0f);
-        center.translate(0,gridSize*10,0f);
+        center.set((lowerCorner.x+upperCorner.x)/2f,(lowerCorner.y+upperCorner.y)/2f,(lowerCorner.z+upperCorner.z)/2f);
 
         initParticleGrid();
         getRandomParticles();
@@ -60,14 +60,18 @@ public class sphCloud {
         gridInited=true;
     }
 
+    private void addToParticleGrid(particle p){
+        float gridX = ((p.pos.x-lowerCorner.x)/gridSize) + 1;
+        float gridY = ((p.pos.z-lowerCorner.z)/gridSize) + 1;
+        float gridZ = ((p.pos.y-lowerCorner.y)/gridSize) + 1;
+        particleGrid[(int)gridX][(int)gridY][(int)gridZ].add(p);
+    }
+
     private void getRandomParticles(){
         particle p;
         for(int i=0; i<numParticles; i++){
             p = new particle(lowerCorner, upperCorner, i);
-            float gridX = ((p.pos.x-lowerCorner.x)/gridSize) + 1;
-            float gridY = ((p.pos.z-lowerCorner.z)/gridSize) + 1;
-            float gridZ = ((p.pos.y-lowerCorner.y)/gridSize) + 1;
-            particleGrid[(int)gridX][(int)gridY][(int)gridZ].add(p);
+            addToParticleGrid(p);
             theParticles[i] = p;
         }
     }
@@ -176,8 +180,12 @@ public class sphCloud {
                 for(z=0; z<L+2;z++){
                     int index=0;
                     //if(particleGrid[x][y][z] != null)
-                    for(particle p:particleGrid[x][y][z]){
 
+                    particle[] particles = particleGrid[x][y][z].toArray(new particle[0]);
+                    int numP = particles.length;
+
+                    for(int i=0; i<numP; i++){
+                        particle p = particles[i];
                         _gridX = (int)(((p.pos.x-lowerCorner.x)/gridSize) + 1);
                         _gridY = (int)(((p.pos.z-lowerCorner.z)/gridSize) + 1);
                         _gridZ = (int)(((p.pos.y-lowerCorner.y)/gridSize) + 1);
@@ -198,7 +206,6 @@ public class sphCloud {
                         gridZ = (int)(((p.pos.y-lowerCorner.y)/gridSize) + 1);
 
                         if(gridX!=_gridX || gridY!=_gridY || gridZ!=_gridZ){
-
                             _gridX = Math.max(1, Math.min(w - 1, _gridX));
                             _gridY = Math.max(1, Math.min(h - 1, _gridY));
                             _gridZ = Math.max(1, Math.min(L - 1, _gridZ));
@@ -207,22 +214,23 @@ public class sphCloud {
                             gridY = Math.max(1, Math.min(h - 1, gridY));
                             gridZ = Math.max(1, Math.min(L - 1, gridZ));
 
-
-                            particleGrid[_gridX][_gridY][_gridZ].remove(p);
-                            particleGrid[gridX][gridY][gridZ].add(p);
+                            removeParticleFromGrid(_gridX,_gridY,_gridZ, p);
+                            addParticleToGrid(gridX,gridY,gridZ, p);
                         }
-
                         index++;
                     }
-
-
-                    //particleGrid[x][y][z]=new ArrayDeque<>(32);
-
                 }
             }
         }
-        lowerCornerBoundsFinal.set(upperCornerBounds.x,upperCornerBounds.y,upperCornerBounds.z);
-        upperCornerBoundsFinal.set(lowerCornerBounds.x,lowerCornerBounds.y,lowerCornerBounds.z);
+        lowerCornerBoundsFinal.set(lowerCornerBounds.x,lowerCornerBounds.y,lowerCornerBounds.z);
+        upperCornerBoundsFinal.set(upperCornerBounds.x,upperCornerBounds.y,upperCornerBounds.z);
+    }
+
+    private static void addParticleToGrid(int _gridX, int _gridY, int _gridZ, particle p){
+        particleGrid[_gridX][_gridY][_gridZ].add(p);
+    }
+    private static void removeParticleFromGrid(int _gridX, int _gridY, int _gridZ, particle p){
+        particleGrid[_gridX][_gridY][_gridZ].remove(p);
     }
 
     public boolean withinBounds(particle p){
@@ -235,7 +243,7 @@ public class sphCloud {
         ArrayDeque<particle> nearbyParticles = particlesNear(position);
         float d = 0;
         for(particle otherParticle : nearbyParticles) {
-            d+=otherParticle.kernal(otherParticle.distanceTo(position));
+            d+=otherParticle.density * otherParticle.kernal(otherParticle.distanceTo(position));
         }
         return d;
     }
@@ -258,7 +266,7 @@ public class sphCloud {
         gridZ = (int)Math.max(1, Math.min(L - 1, (int)gridZ));
 
         ArrayDeque<particle> result = new ArrayDeque(8*20);
-
+        if(particleGrid[(int)gridX][(int)gridY][(int)gridZ]!=null)
         result.addAll(particleGrid[(int)gridX][(int)gridY][(int)gridZ]);
 
         if(gridZd>0.5){//upper half

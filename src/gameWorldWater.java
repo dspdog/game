@@ -42,7 +42,7 @@ public class gameWorldWater implements Runnable {
                 }
 
                 if(getTime()-lastSurfaceUpdate>100) {
-                    getSurface();
+                    //getSurface();
 
                     lastSurfaceUpdate = getTime();
                 }
@@ -53,21 +53,37 @@ public class gameWorldWater implements Runnable {
             }
         }
     }
-    public static final CubeMarcher.Triangle[] temp_triangles = new CubeMarcher.Triangle[12];
+
+
+    public static float minDens;
+    public static float maxDens;
+
     public static void getSurface(){
+
         CubeMarcher.analyzer a= new CubeMarcher.analyzer() {
             @Override
             public double getStep() {
-                return 16f;
+                return 32f;
             }
 
             @Override
             public double potential(double x, double y, double z) {
-                if(sphCloud.particleGrid!=null)
-                return sphCloud.densityAt(new Vector3f((float)x,(float)y,(float)z));
+
+                if(sphCloud.particleGrid!=null){
+                    double dens = sphCloud.densityAt(new Vector3f((float)x,(float)y,(float)z));
+                    minDens=Math.min(minDens,(float)dens);
+                    maxDens=Math.max(maxDens, (float) dens);
+                    //System.out.println("pot!");
+                    return dens;
+                }
+
                 return 0.0;
             }
         };
+
+        minDens=100f;
+        maxDens=-100f;
+
         CubeMarcher cm = new CubeMarcher();
         ArrayList<CubeMarcher.Triangle> theTriangles = new ArrayList<>();
         int num_tri=0;
@@ -77,19 +93,24 @@ public class gameWorldWater implements Runnable {
         for(float x=sphCloud.lowerCornerBoundsFinal.x; x<sphCloud.upperCornerBoundsFinal.x; x+=step){
             for(float y=sphCloud.lowerCornerBoundsFinal.y; y<sphCloud.upperCornerBoundsFinal.y; y+=step){
                 for(float z=sphCloud.lowerCornerBoundsFinal.z; z<sphCloud.upperCornerBoundsFinal.z; z+=step){
+                    //System.out.println("OK?");
+                    i++;
                     int new_tris = cm.Polygonise(x,y,z, 0.5, a);
 
                     num_tri += new_tris;
                     for(int t=0; t<new_tris; t++){
-                        theTriangles.add(temp_triangles[t].copy());
-                        sphCloud.vertex_data.put(temp_triangles[t].asFloatArray());
-                        sphCloud.color_data.put(temp_triangles[t].asFloatArray(0.005f));
+                        theTriangles.add(cm.temp_triangles[t].copy());
+                        sphCloud.vertex_data.put(cm.temp_triangles[t].asFloatArray());
+                        sphCloud.color_data.put(cm.temp_triangles[t].asFloatArray(0.005f));
                     }
 
                 }
             }
         }
-        System.out.println("got surface " + (System.currentTimeMillis()-time1)+"ms " + num_tri + " tri");
+        System.out.println("got surface " + (System.currentTimeMillis()-time1)+"ms " + num_tri + " tri min" +minDens + " max" + maxDens + " steps " + i);
+        System.out.println((sphCloud.upperCornerBoundsFinal.x-sphCloud.lowerCornerBoundsFinal.x) + "x" +
+                            (sphCloud.upperCornerBoundsFinal.y-sphCloud.lowerCornerBoundsFinal.y) + "x" +
+                            (sphCloud.upperCornerBoundsFinal.z-sphCloud.lowerCornerBoundsFinal.z));
     }
 
     public long getTime() {
