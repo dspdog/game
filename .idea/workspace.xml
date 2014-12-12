@@ -147,12 +147,12 @@
       <file leaf-file-name="sphCloud.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/shapes/cloud/sphCloud.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="1.7582734" vertical-offset="3895" max-vertical-offset="6528">
-              <caret line="301" column="32" selection-start-line="301" selection-start-column="32" selection-end-line="301" selection-end-column="32" />
+            <state vertical-scroll-proportion="0.88057554" vertical-offset="714" max-vertical-offset="6477">
+              <caret line="78" column="0" selection-start-line="78" selection-start-column="0" selection-end-line="78" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#10414#10415#0" expanded="true" />
-                <element signature="e#10450#10451#0" expanded="true" />
+                <element signature="e#10336#10337#0" expanded="true" />
+                <element signature="e#10372#10373#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -1117,12 +1117,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/shapes/cloud/sphCloud.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.7582734" vertical-offset="3895" max-vertical-offset="6528">
-          <caret line="301" column="32" selection-start-line="301" selection-start-column="32" selection-end-line="301" selection-end-column="32" />
+        <state vertical-scroll-proportion="0.88057554" vertical-offset="714" max-vertical-offset="6477">
+          <caret line="78" column="0" selection-start-line="78" selection-start-column="0" selection-end-line="78" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#10414#10415#0" expanded="true" />
-            <element signature="e#10450#10451#0" expanded="true" />
+            <element signature="e#10336#10337#0" expanded="true" />
+            <element signature="e#10372#10373#0" expanded="true" />
           </folding>
         </state>
       </provider>

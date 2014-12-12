@@ -60,18 +60,16 @@ public class sphCloud {
         gridInited=true;
     }
 
-    private void addToParticleGrid(particle p){
-        float gridX = ((p.pos.x-lowerCorner.x)/gridSize) + 1;
-        float gridY = ((p.pos.z-lowerCorner.z)/gridSize) + 1;
-        float gridZ = ((p.pos.y-lowerCorner.y)/gridSize) + 1;
-        particleGrid[(int)gridX][(int)gridY][(int)gridZ].add(p.myIndex);
-    }
-
     private void getRandomParticles(){
         particle p;
         for(int i=0; i<numParticles; i++){
             p = new particle(lowerCorner, upperCorner, i);
-            addToParticleGrid(p);
+
+            float gridX = ((p.pos.x-lowerCorner.x)/gridSize) + 1;
+            float gridY = ((p.pos.z-lowerCorner.z)/gridSize) + 1;
+            float gridZ = ((p.pos.y-lowerCorner.y)/gridSize) + 1;
+
+            addParticleToGrid((int)gridX, (int)gridY, (int) gridZ, p);
             theParticles[i] = p;
         }
     }
@@ -81,7 +79,6 @@ public class sphCloud {
         int h=(int)((upperCorner.z-lowerCorner.z)/gridSize);
         int L=(int)((upperCorner.y-lowerCorner.y)/gridSize);
         int x,y,z;
-
         particleGrid = new CopyOnWriteArrayList[w+2][h+2][L+2];
         for(x=-1; x<w+1;x++){
             for(y=-1; y<h+1;y++){
