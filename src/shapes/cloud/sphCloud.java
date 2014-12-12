@@ -115,7 +115,7 @@ public class sphCloud {
             float accPressScale=0;
             float accViscScale=0;
 
-            for(particle n : p.myNeighbors){
+            for(particle n : p.myNeighbors.getParticles()){
                 float kernalVal = n.kernal(n.distanceTo(p));
                 float kernalVald = n.kernald(n.distanceTo(p));
 
@@ -255,10 +255,12 @@ public class sphCloud {
         final int pPerBrick = 20;
         final int TOTAL = pPerBrick*8+2;
         public int ints[] = new int[TOTAL];
+        public int size = 0;
 
         public limitedArray(){
             setLen(TOTAL-2);
             setFZ(0);
+            size=0;
             int len = getLen();
             for(int i=0; i<len; i++){
                 ints[i]=0;
@@ -280,6 +282,7 @@ public class sphCloud {
         public void add(int x){
             int fz = getFZ();
             ints[fz] = x;
+            size++;
             int len = getLen();
             for(int i=fz+1; i<len; i++){
                 if(ints[i]==0){
@@ -295,6 +298,7 @@ public class sphCloud {
             for(int i=0; i<len; i++){
                 if(ints[i]==x){
                     ints[i]=0;
+                    size--;
                     //if(!fzSet){ //comment break if there are duplicates...
                         setFZ(i);
                         //fzSet=true;
@@ -305,6 +309,7 @@ public class sphCloud {
                 }
             }
         }
+        public int size(){return size;}
         private int getLen(){return ints[TOTAL-1];}
         private int setLen(int len){return ints[TOTAL-1] = len;}
         private int getFZ(){return ints[TOTAL-2];}

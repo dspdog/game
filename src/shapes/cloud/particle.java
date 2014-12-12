@@ -24,7 +24,7 @@ public class particle {
 
     public float radius=0f;
 
-    public LinkedList<particle> myNeighbors = new LinkedList<>();
+    public sphCloud.limitedArray myNeighbors = new sphCloud.limitedArray();
 
     public Integer myIndex;
 
@@ -124,7 +124,7 @@ public class particle {
     public void findDensity(){/////////////////////////////////
         density=0f;
         if(myNeighbors.size()>0)
-        for(particle neighbor : myNeighbors){
+        for(particle neighbor : myNeighbors.getParticles()){
             density+=neighbor.mass*kernal(this.distanceTo(neighbor));
         }
     }
@@ -149,19 +149,19 @@ public class particle {
         float dist;
         radius=_radius;
 
-        myNeighbors = new LinkedList<>();
+        myNeighbors = new sphCloud.limitedArray();
         ArrayDeque<particle> nearbyParticles = sphCloud.particlesNear(this).getParticles();
 
         for(particle otherParticle : nearbyParticles) {
             dist = this.distanceTo(otherParticle);
             if (dist < radius) {
-                myNeighbors.add(otherParticle);
+                myNeighbors.add(otherParticle.myIndex);
             }
         }
 
         int size = myNeighbors.size();
 
-        myNeighbors.add(this);
+        myNeighbors.add(this.myIndex);
 
         return (size+1);
     }
