@@ -64,12 +64,7 @@ public class sphCloud {
         particle p;
         for(int i=0; i<numParticles; i++){
             p = new particle(lowerCorner, upperCorner, i);
-
-            float gridX = ((p.pos.x-lowerCorner.x)/gridSize) + 1;
-            float gridY = ((p.pos.z-lowerCorner.z)/gridSize) + 1;
-            float gridZ = ((p.pos.y-lowerCorner.y)/gridSize) + 1;
-
-            addParticleToGrid((int)gridX, (int)gridY, (int) gridZ, p);
+            addParticleToGrid((int)p.gridPos.x, (int)p.gridPos.y, (int)p.gridPos.z, p);
             theParticles[i] = p;
         }
     }
@@ -183,9 +178,10 @@ public class sphCloud {
 
                     for(int i=0; i<numP; i++){
                         particle p = particles[i];
-                        _gridX = (int)(((p.pos.x-lowerCorner.x)/gridSize) + 1);
-                        _gridY = (int)(((p.pos.z-lowerCorner.z)/gridSize) + 1);
-                        _gridZ = (int)(((p.pos.y-lowerCorner.y)/gridSize) + 1);
+
+                        _gridX = (int)p.gridPos.x;
+                        _gridY = (int)p.gridPos.y;
+                        _gridZ = (int)p.gridPos.z;
                         p.move();
 
                         lowerCornerBounds.set(
@@ -198,9 +194,9 @@ public class sphCloud {
                                 Math.max(upperCornerBounds.y, p.pos.y),
                                 Math.max(upperCornerBounds.z, p.pos.z));
 
-                        gridX = (int)(((p.pos.x-lowerCorner.x)/gridSize) + 1);
-                        gridY = (int)(((p.pos.z-lowerCorner.z)/gridSize) + 1);
-                        gridZ = (int)(((p.pos.y-lowerCorner.y)/gridSize) + 1);
+                        gridX = (int)p.gridPos.x;
+                        gridY = (int)p.gridPos.y;
+                        gridZ = (int)p.gridPos.z;
 
                         if(gridX!=_gridX || gridY!=_gridY || gridZ!=_gridZ){
                             _gridX = Math.max(1, Math.min(w - 1, _gridX));
@@ -236,23 +232,89 @@ public class sphCloud {
                  p.pos.z>lowerCorner.z+2 && p.pos.z<upperCorner.z-2;
     }
 
-    public static float densityAt(Vector3f position){
+    /*public static float densityAt(Vector3f position){
         ArrayDeque<particle> nearbyParticles = particlesNear(position);
         float d = 0;
         for(particle otherParticle : nearbyParticles) {
             d+=otherParticle.density * otherParticle.kernal(otherParticle.distanceTo(position));
         }
         return d;
-    }
+    }*/
 
     public static void addToArray( ArrayDeque<particle> result, CopyOnWriteArrayList parts){
         result.addAll(parts);
     }
 
-    public static ArrayDeque<particle> particlesNear(Vector3f position){
-        float gridX = ((position.x-lowerCorner.x)/gridSize) + 1;
-        float gridY = ((position.z-lowerCorner.z)/gridSize) + 1;
-        float gridZ = ((position.y-lowerCorner.y)/gridSize) + 1;
+    public static void addToArray( limitedArray result, CopyOnWriteArrayList parts){
+        for(Object part : parts){
+            result.add(((particle)part).myIndex);
+        }
+    }
+
+    public static class limitedArray{
+        final int pPerBrick = 20;
+        final int TOTAL = pPerBrick*8+2;
+        public int ints[] = new int[TOTAL];
+
+        public limitedArray(){
+            setLen(TOTAL-2);
+            setFZ(0);
+            int len = getLen();
+            for(int i=0; i<len; i++){
+                ints[i]=0;
+            }
+
+        }
+
+        public ArrayDeque<particle> getParticles(){
+            ArrayDeque<particle> ad = new ArrayDeque<>();
+            int len = getLen();
+            for(int i=0; i<len; i++){
+                if(ints[i]!=0){
+                    ad.add(theParticles[ints[i]]);
+                }
+            }
+            return ad;
+        }
+
+        public void add(int x){
+            int fz = getFZ();
+            ints[fz] = x;
+            int len = getLen();
+            for(int i=fz+1; i<len; i++){
+                if(ints[i]==0){
+                    setFZ(i);
+                    break;
+                }
+            }
+        }
+
+        public void remove(int x){
+            int len = getLen();
+            //boolean fzSet = true;
+            for(int i=0; i<len; i++){
+                if(ints[i]==x){
+                    ints[i]=0;
+                    //if(!fzSet){ //comment break if there are duplicates...
+                        setFZ(i);
+                        //fzSet=true;
+                    //}else{
+                    //   System.out.println("duplicate found?");
+                    //}
+                    break;
+                }
+            }
+        }
+        private int getLen(){return ints[TOTAL-1];}
+        private int setLen(int len){return ints[TOTAL-1] = len;}
+        private int getFZ(){return ints[TOTAL-2];}
+        private int setFZ(int fz){return ints[TOTAL-2] = fz;}
+    }
+
+    public static limitedArray particlesNear(particle p){
+        float gridX = p.gridPos.x;
+        float gridY = p.gridPos.y;
+        float gridZ = p.gridPos.z;
 
         int w=(int)((upperCorner.x-lowerCorner.x)/gridSize);
         int h=(int)((upperCorner.z-lowerCorner.z)/gridSize);
@@ -262,12 +324,12 @@ public class sphCloud {
         float gridYd = gridY - (int)gridY;
         float gridZd = gridZ - (int)gridZ;
 
-        gridX = (int)Math.max(1, Math.min(w - 1, (int)gridX));
-        gridY = (int)Math.max(1, Math.min(h - 1, (int)gridY));
-        gridZ = (int)Math.max(1, Math.min(L - 1, (int)gridZ));
+        gridX = Math.max(1, Math.min(w - 1, (int)gridX));
+        gridY = Math.max(1, Math.min(h - 1, (int)gridY));
+        gridZ = Math.max(1, Math.min(L - 1, (int)gridZ));
 
-        ArrayDeque<particle> result = new ArrayDeque(8*20);
-
+        //ArrayDeque<particle> result1 = new ArrayDeque(8*20);
+        limitedArray result = new limitedArray();
 
         if(particleGrid[(int)gridX][(int)gridY][(int)gridZ]!=null)
             addToArray(result, particlesFromIndex(particleGrid[(int) gridX][(int) gridY][(int) gridZ]));

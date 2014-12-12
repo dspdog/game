@@ -11,6 +11,8 @@ public class particle {
     public Vector3f pos;
     public Vector3f force;
 
+    public Vector3f gridPos = new Vector3f(0,0,0);
+
     public float mass;
     public float density;
     //public float myNeighborsDensity;
@@ -51,6 +53,8 @@ public class particle {
                 (float)Math.random()*(upperCorner.x - lowerCorner.x)+lowerCorner.x,
                 (float)Math.random()*(upperCorner.y - lowerCorner.y)+lowerCorner.y,
                 (float)Math.random()*(upperCorner.z - lowerCorner.z)+lowerCorner.z);
+
+        updateGridPos();
     }
 
     public particle(particle p){
@@ -78,7 +82,7 @@ public class particle {
     public static void updateTime(){
         lastTime=time;
         time = getTime();
-        dt=(time-lastTime)*0.4f;
+        dt=(time-lastTime)*0.2f;
     }
 
     private static long getTime() {
@@ -105,6 +109,16 @@ public class particle {
                 Math.min(Math.max(lower.y, pos.y), upper.y),
                 Math.min(Math.max(lower.z, pos.z), upper.z)
         );
+
+        updateGridPos();
+    }
+
+    public void updateGridPos(){
+        gridPos.set( 1f*((pos.x-sphCloud.lowerCorner.x)/sphCloud.gridSize) + 1
+                    ,1f*((pos.z-sphCloud.lowerCorner.z)/sphCloud.gridSize) + 1
+                    ,1f*((pos.y-sphCloud.lowerCorner.y)/sphCloud.gridSize) + 1);
+
+
     }
 
     public void findDensity(){/////////////////////////////////
@@ -134,8 +148,10 @@ public class particle {
     public int findNeighbors(float _radius){
         float dist;
         radius=_radius;
+
         myNeighbors = new LinkedList<>();
-        ArrayDeque<particle> nearbyParticles = sphCloud.particlesNear(this.pos);
+        ArrayDeque<particle> nearbyParticles = sphCloud.particlesNear(this).getParticles();
+
         for(particle otherParticle : nearbyParticles) {
             dist = this.distanceTo(otherParticle);
             if (dist < radius) {

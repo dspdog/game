@@ -57,7 +57,7 @@ public class gameWorldWater implements Runnable {
 
     public static float minDens;
     public static float maxDens;
-
+/*
     public static void getSurface(){
 
         CubeMarcher.analyzer a= new CubeMarcher.analyzer() {
@@ -112,7 +112,7 @@ public class gameWorldWater implements Runnable {
                             (sphCloud.upperCornerBoundsFinal.y-sphCloud.lowerCornerBoundsFinal.y) + "x" +
                             (sphCloud.upperCornerBoundsFinal.z-sphCloud.lowerCornerBoundsFinal.z));
     }
-
+*/
     public long getTime() {
         return (Sys.getTime() * 1000) / Sys.getTimerResolution();
     }
