@@ -24,7 +24,7 @@ public class particle {
 
     public LinkedList<particle> myNeighbors = new LinkedList<>();
 
-    public int myIndex;
+    public Integer myIndex;
 
     public static long time=0;
     public static long lastTime=0;
@@ -51,6 +51,28 @@ public class particle {
                 (float)Math.random()*(upperCorner.x - lowerCorner.x)+lowerCorner.x,
                 (float)Math.random()*(upperCorner.y - lowerCorner.y)+lowerCorner.y,
                 (float)Math.random()*(upperCorner.z - lowerCorner.z)+lowerCorner.z);
+    }
+
+    public particle(particle p){
+        myIndex=p.myIndex;
+
+        mass = p.mass; //kg
+        density = p.density;
+        pressure = p.pressure;
+
+        vel = new Vector3f(p.vel.x,p.vel.y,p.vel.z);
+        pos = new Vector3f(p.pos.x,p.pos.y,p.pos.z);
+    }
+
+    public particle(boolean isnull){
+        myIndex=-1;
+
+        mass = 0; //kg
+        density = 0;
+        pressure = 0;
+
+        vel = new Vector3f(0,0,0);
+        pos = new Vector3f(0,0,0);
     }
 
     public static void updateTime(){
