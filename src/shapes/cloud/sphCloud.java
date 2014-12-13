@@ -255,14 +255,16 @@ public class sphCloud {
         final int pPerBrick = 20;
         final int TOTAL = pPerBrick*8+2;
         public int ints[] = new int[TOTAL];
+
+        public int start = 0;
+        public int end = 1;
         public int size = 0;
 
         public limitedArray(){
             setLen(TOTAL-2);
             setFZ(0);
-            size=0;
             int len = getLen();
-            for(int i=0; i<len; i++){
+            for(int i=0; i<TOTAL-2; i++){
                 ints[i]=0;
             }
 
@@ -280,36 +282,57 @@ public class sphCloud {
         }
 
         public void add(int x){
-            int fz = getFZ();
-            ints[fz] = x;
-            size++;
-            int len = getLen();
-            for(int i=fz+1; i<len; i++){
-                if(ints[i]==0){
-                    setFZ(i);
-                    break;
+            if(!alreadyHere(x)){
+                int fz = getFZ();
+                ints[fz] = x;
+                int len = getLen();
+                for(int i=fz+1; i<len; i++){
+                    if(ints[i]==0){
+                        setFZ(i);
+                        break;
+                    }
                 }
             }
         }
 
+        public boolean alreadyHere(int x){
+            int len = getLen();
+
+            boolean foundStart = false;
+            boolean found = false;
+            size=0;
+
+            for(int i=0; i<len; i++){
+                if(ints[i]!=0){
+                    size++;
+                    if(!foundStart){
+                        foundStart=true;
+                        start=i;
+                    }else{
+                        end=i;
+                    }
+                }
+
+                if(ints[i]==x){
+                    found=true;
+                }
+            }
+            return found;
+        }
+
         public void remove(int x){
             int len = getLen();
-            //boolean fzSet = true;
+            boolean fzSet=false;
             for(int i=0; i<len; i++){
                 if(ints[i]==x){
                     ints[i]=0;
-                    size--;
-                    //if(!fzSet){ //comment break if there are duplicates...
-                        setFZ(i);
-                        //fzSet=true;
-                    //}else{
-                    //   System.out.println("duplicate found?");
-                    //}
-                    break;
+                    if(!fzSet){
+                        setFZ(i); fzSet =true;
+                    }
                 }
             }
         }
-        public int size(){return size;}
+        public int size(){return end;}
         private int getLen(){return ints[TOTAL-1];}
         private int setLen(int len){return ints[TOTAL-1] = len;}
         private int getFZ(){return ints[TOTAL-2];}
