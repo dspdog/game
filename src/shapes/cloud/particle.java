@@ -32,7 +32,7 @@ public class particle {
     public static long lastTime=0;
     public static float dt=0;
 
-    public static float speedlimit = 0.05f;
+    public static float speedlimit = c/4f;
 
     public particle(Vector3f lowerCorner, Vector3f upperCorner, int index){
 

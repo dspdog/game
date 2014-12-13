@@ -11,7 +11,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * Created by user on 12/8/2014.
  */
 public class sphCloud {
-    public static final int numParticles=10000;
+    public static final int numParticles=1000;
     public static final particle[] theParticles = new particle[numParticles];
     public static CopyOnWriteArrayList<Integer>[][][] particleGrid;
     public static final float gridSize=32f;
@@ -252,7 +252,7 @@ public class sphCloud {
     }
 
     public static class limitedArray{
-        final int pPerBrick = 20;
+        final int pPerBrick = 5;
         final int TOTAL = pPerBrick*8+2;
         public int ints[] = new int[TOTAL];
 
@@ -261,7 +261,7 @@ public class sphCloud {
         public int size = 0;
 
         public limitedArray(){
-            setLen(TOTAL-2);
+            setLen(TOTAL-5);
             setFZ(0);
             int len = getLen();
             for(int i=0; i<TOTAL-2; i++){
@@ -285,6 +285,7 @@ public class sphCloud {
             if(!alreadyHere(x)){
                 int fz = getFZ();
                 ints[fz] = x;
+
                 int len = getLen();
                 for(int i=fz+1; i<len; i++){
                     if(ints[i]==0){
@@ -309,7 +310,7 @@ public class sphCloud {
                         foundStart=true;
                         start=i;
                     }else{
-                        end=i;
+                        end=i+1;
                     }
                 }
 
