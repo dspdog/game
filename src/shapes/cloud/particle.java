@@ -57,6 +57,18 @@ public class particle {
         updateGridPos();
     }
 
+    public particle emptyParticle(){
+        myIndex=0;
+
+        mass = 0.0f; //kg
+        density = 0f;
+        pressure = 0f;
+
+        vel = new Vector3f(0,0,0);
+        pos = new Vector3f(-10000f,-10000f,-10000f);
+        return this;
+    }
+
     public particle(particle p){
         myIndex=p.myIndex;
 
@@ -123,7 +135,7 @@ public class particle {
 
     public void findDensity(){/////////////////////////////////
         density=0f;
-        if(myNeighbors.size()>0)
+        if(myNeighbors.getEnd()>0)
         for(particle neighbor : myNeighbors.getParticles()){
             density+=neighbor.mass*kernal(this.distanceTo(neighbor));
         }
@@ -153,13 +165,14 @@ public class particle {
         ArrayDeque<particle> nearbyParticles = sphCloud.particlesNear(this).getParticles();
 
         for(particle otherParticle : nearbyParticles) {
+
             dist = this.distanceTo(otherParticle);
             if (dist < radius) {
                 myNeighbors.add(otherParticle.myIndex);
             }
         }
 
-        int size = myNeighbors.size();
+        int size = myNeighbors.getEnd();
 
         myNeighbors.add(this.myIndex);
 
