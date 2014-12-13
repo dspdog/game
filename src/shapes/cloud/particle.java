@@ -4,7 +4,7 @@ import org.lwjgl.Sys;
 import org.lwjgl.util.vector.Vector3f;
 
 import java.util.ArrayDeque;
-import java.util.LinkedList;
+
 
 public class particle {
     public Vector3f vel;
@@ -19,7 +19,7 @@ public class particle {
     public float pressure;
 
     public static final float densREF = 1000; // kg/m^3
-    public static final float mu = 0.001f; // kg/ms (dynamical viscosity))
+    public static final float mu = 0.01f; // kg/ms (dynamical viscosity))
     public static final float c = 1.9f; // m/s speed of sound
 
     public float radius=0f;
@@ -32,7 +32,7 @@ public class particle {
     public static long lastTime=0;
     public static float dt=0;
 
-    public static float speedlimit = c/4f;
+    public static float speedlimit = c/2f;
 
     public particle(Vector3f lowerCorner, Vector3f upperCorner, int index){
 
@@ -80,21 +80,10 @@ public class particle {
         pos = new Vector3f(p.pos.x,p.pos.y,p.pos.z);
     }
 
-    public particle(boolean isnull){
-        myIndex=-1;
-
-        mass = 0; //kg
-        density = 0;
-        pressure = 0;
-
-        vel = new Vector3f(0,0,0);
-        pos = new Vector3f(0,0,0);
-    }
-
     public static void updateTime(){
         lastTime=time;
         time = getTime();
-        dt=(time-lastTime)*1f;
+        dt=(time-lastTime)*0.1f;
     }
 
     private static long getTime() {
@@ -135,9 +124,12 @@ public class particle {
 
     public void findDensity(){/////////////////////////////////
         density=0f;
-        if(myNeighbors.getEnd()>0)
-        for(particle neighbor : myNeighbors.getParticles()){
-            density+=neighbor.mass*kernal(this.distanceTo(neighbor));
+        int len = myNeighbors.getEnd();
+        for(int i=0; i<len; i++){
+            if(myNeighbors.ints[i]!=0){
+                particle neighbor = sphCloud.theParticles[myNeighbors.ints[i]];
+                density+=neighbor.mass*kernal(this.distanceTo(neighbor));
+            }
         }
     }
 
@@ -162,13 +154,17 @@ public class particle {
         radius=_radius;
 
         myNeighbors = new sphCloud.limitedArray();
-        ArrayDeque<particle> nearbyParticles = sphCloud.particlesNear(this).getParticles();
+        sphCloud.limitedArray nearbyParticles = sphCloud.particlesNear(this);
 
-        for(particle otherParticle : nearbyParticles) {
+        int len = nearbyParticles.getEnd();
 
-            dist = this.distanceTo(otherParticle);
-            if (dist < radius) {
-                myNeighbors.add(otherParticle.myIndex);
+        for(int i=0; i<len; i++) {
+            if(nearbyParticles.ints[i]!=0){
+                particle otherParticle = sphCloud.theParticles[nearbyParticles.ints[i]];
+                dist = this.distanceTo(otherParticle);
+                if (dist < radius) {
+                    myNeighbors.add(otherParticle.myIndex);
+                }
             }
         }
 

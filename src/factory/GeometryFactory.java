@@ -40,7 +40,7 @@ public class GeometryFactory {
         float r,g,b;
         if(sphCloud.gridInited)
         for(particle p : cloud.theParticles){
-            if(p!=null){
+            if(p!=null && p.myIndex !=0){
                 r = (p.pos.x-sphCloud.lowerCorner.x)/(sphCloud.upperCorner.x - sphCloud.lowerCorner.x);
                 g = (p.pos.y-sphCloud.lowerCorner.y)/(sphCloud.upperCorner.y - sphCloud.lowerCorner.y);
                 b = (p.pos.z-sphCloud.lowerCorner.z)/(sphCloud.upperCorner.z - sphCloud.lowerCorner.z);

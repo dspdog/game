@@ -4,16 +4,13 @@ import org.lwjgl.util.vector.Vector3f;
 import world.WorldObject;
 
 import java.nio.FloatBuffer;
-import java.util.ArrayDeque;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 /**
  * Created by user on 12/8/2014.
  */
 public class sphCloud {
     public static final int numParticles=1000;
     public static final particle[] theParticles = new particle[numParticles];
-    public static CopyOnWriteArrayList<Integer>[][][] particleGrid;
+    public static limitedArray[][][] particleGrid;
     public static final float gridSize=32f;
     public static boolean gridInited=false;
 
@@ -74,11 +71,11 @@ public class sphCloud {
         int h=(int)((upperCorner.z-lowerCorner.z)/gridSize);
         int L=(int)((upperCorner.y-lowerCorner.y)/gridSize);
         int x,y,z;
-        particleGrid = new CopyOnWriteArrayList[w+2][h+2][L+2];
+        particleGrid = new limitedArray[w+2][h+2][L+2];
         for(x=-1; x<w+1;x++){
             for(y=-1; y<h+1;y++){
                 for(z=-1; z<L+1;z++){
-                    particleGrid[x+1][y+1][z+1]=new CopyOnWriteArrayList<Integer>();
+                    particleGrid[x+1][y+1][z+1]=new limitedArray();
                 }
             }
         }
@@ -114,24 +111,29 @@ public class sphCloud {
             float accPressScale=0;
             float accViscScale=0;
 
-            for(particle n : p.myNeighbors.getParticles()){
-                float kernalVal = n.kernal(n.distanceTo(p));
-                float kernalVald = n.kernald(n.distanceTo(p));
+            int len = p.myNeighbors.getEnd();
 
-                accPressScale = -1.0f*n.mass*(p.pressure/(p.density*p.density) + n.pressure/(n.density*n.density)) * kernalVal;
-                accViscScale = p.mu * n.mass / n.density / p.density * kernalVald ;
+            for(int i=0; i<len; i++){
+                if(p.myNeighbors.ints[i]!=0) {
+                    particle n = theParticles[p.myNeighbors.ints[i]];
+                    float kernalVal = n.kernal(n.distanceTo(p));
+                    float kernalVald = n.kernald(n.distanceTo(p));
 
-                accVisc.translate(
-                        accViscScale*(n.vel.x-p.vel.x),
-                        accViscScale*(n.vel.y-p.vel.y),
-                        accViscScale*(n.vel.z-p.vel.z)
-                );
+                    accPressScale = -1.0f * n.mass * (p.pressure / (p.density * p.density) + n.pressure / (n.density * n.density)) * kernalVal;
+                    accViscScale = p.mu * n.mass / n.density / p.density * kernalVald;
 
-                accPressure.translate(
-                        accPressScale*(n.pos.x-p.pos.x),
-                        accPressScale*(n.pos.y-p.pos.y),
-                        accPressScale*(n.pos.z-p.pos.z)
-                );
+                    accVisc.translate(
+                            accViscScale * (n.vel.x - p.vel.x),
+                            accViscScale * (n.vel.y - p.vel.y),
+                            accViscScale * (n.vel.z - p.vel.z)
+                    );
+
+                    accPressure.translate(
+                            accPressScale * (n.pos.x - p.pos.x),
+                            accPressScale * (n.pos.y - p.pos.y),
+                            accPressScale * (n.pos.z - p.pos.z)
+                    );
+                }
             }
 
             Vector3f accInteractive = new Vector3f(0,0,0);
@@ -156,7 +158,6 @@ public class sphCloud {
         int h=(int)((upperCorner.z-lowerCorner.z)/gridSize);
         int L=(int)((upperCorner.y-lowerCorner.y)/gridSize);
         int x,y,z;
-        //particleGrid = new ArrayDeque[w+2][h+2][L+2];
 
         int _gridX, _gridY, _gridZ, gridX, gridY, gridZ;
 
@@ -169,47 +170,45 @@ public class sphCloud {
             for(x=0; x<w+2;x++){
                 for(y=0; y<h+2;y++){
                     for(z=0; z<L+2;z++){
-                        int index=0;
-                        //if(particleGrid[x][y][z] != null)
-
-                        particle[] particles = particlesArrayFromIndex(particleGrid[x][y][z]);
-                        int numP = particles.length;
+                       // particle[] particles = particlesArrayFromIndex(particleGrid[x][y][z]);
+                        int numP = particleGrid[x][y][z].getEnd();
 
                         for(int i=0; i<numP; i++){
-                            particle p = particles[i];
+                            if(particleGrid[x][y][z].ints[i]!=0){
+                                particle p = theParticles[particleGrid[x][y][z].ints[i]];
 
-                            _gridX = (int)p.gridPos.x;
-                            _gridY = (int)p.gridPos.y;
-                            _gridZ = (int)p.gridPos.z;
-                            p.move();
+                                _gridX = (int)p.gridPos.x;
+                                _gridY = (int)p.gridPos.y;
+                                _gridZ = (int)p.gridPos.z;
+                                p.move();
 
-                            lowerCornerBounds.set(
-                                    Math.min(lowerCornerBounds.x, p.pos.x),
-                                    Math.min(lowerCornerBounds.y, p.pos.y),
-                                    Math.min(lowerCornerBounds.z, p.pos.z));
+                                lowerCornerBounds.set(
+                                        Math.min(lowerCornerBounds.x, p.pos.x),
+                                        Math.min(lowerCornerBounds.y, p.pos.y),
+                                        Math.min(lowerCornerBounds.z, p.pos.z));
 
-                            upperCornerBounds.set(
-                                    Math.max(upperCornerBounds.x, p.pos.x),
-                                    Math.max(upperCornerBounds.y, p.pos.y),
-                                    Math.max(upperCornerBounds.z, p.pos.z));
+                                upperCornerBounds.set(
+                                        Math.max(upperCornerBounds.x, p.pos.x),
+                                        Math.max(upperCornerBounds.y, p.pos.y),
+                                        Math.max(upperCornerBounds.z, p.pos.z));
 
-                            gridX = (int)p.gridPos.x;
-                            gridY = (int)p.gridPos.y;
-                            gridZ = (int)p.gridPos.z;
+                                gridX = (int)p.gridPos.x;
+                                gridY = (int)p.gridPos.y;
+                                gridZ = (int)p.gridPos.z;
 
-                            if(gridX!=_gridX || gridY!=_gridY || gridZ!=_gridZ){
-                                _gridX = Math.max(1, Math.min(w - 1, _gridX));
-                                _gridY = Math.max(1, Math.min(h - 1, _gridY));
-                                _gridZ = Math.max(1, Math.min(L - 1, _gridZ));
+                                if(gridX!=_gridX || gridY!=_gridY || gridZ!=_gridZ){
+                                    _gridX = Math.max(1, Math.min(w - 1, _gridX));
+                                    _gridY = Math.max(1, Math.min(h - 1, _gridY));
+                                    _gridZ = Math.max(1, Math.min(L - 1, _gridZ));
 
-                                gridX = Math.max(1, Math.min(w - 1, gridX));
-                                gridY = Math.max(1, Math.min(h - 1, gridY));
-                                gridZ = Math.max(1, Math.min(L - 1, gridZ));
+                                    gridX = Math.max(1, Math.min(w - 1, gridX));
+                                    gridY = Math.max(1, Math.min(h - 1, gridY));
+                                    gridZ = Math.max(1, Math.min(L - 1, gridZ));
 
-                                removeParticleFromGrid(_gridX,_gridY,_gridZ, p);
-                                addParticleToGrid(gridX,gridY,gridZ, p);
+                                    removeParticleFromGrid(_gridX,_gridY,_gridZ, p);
+                                    addParticleToGrid(gridX,gridY,gridZ, p);
+                                }
                             }
-                            index++;
                         }
                     }
                 }
@@ -336,29 +335,20 @@ public class sphCloud {
         return result;
     }
 
-    public static CopyOnWriteArrayList<particle> particlesFromIndex(CopyOnWriteArrayList<Integer> arr){
-        CopyOnWriteArrayList<particle> res = new CopyOnWriteArrayList<>();
-        for(Integer i : arr){
-            res.add(theParticles[i]);
+    public static limitedArray particlesFromIndex(limitedArray arr){
+        limitedArray res = new limitedArray();
+        int len = res.getLen();
+        //CopyOnWriteArrayList<particle> res = new CopyOnWriteArrayList<>();
+        for(int i=0; i<len; i++){
+            res.add(arr.ints[i]);
         }
         return res;
     }
 
-    public static particle[] particlesArrayFromIndex(CopyOnWriteArrayList<Integer> arr){
-        CopyOnWriteArrayList<particle> res = new CopyOnWriteArrayList<>();
-        for(Integer i : arr){
-            res.add(theParticles[i]);
-        }
-        return res.toArray(new particle[0]);
-    }
-
-    public static void addToArray( ArrayDeque<particle> result, CopyOnWriteArrayList parts){
-        result.addAll(parts);
-    }
-
-    public static void addToArray( limitedArray result, CopyOnWriteArrayList parts){
-        for(Object part : parts){
-            result.add(((particle)part).myIndex);
+    public static void addToArray( limitedArray result, limitedArray parts){
+        int len = parts.getEnd();
+        for(int i=0; i<len; i++){
+            result.add(parts.ints[i]);
         }
     }
 
@@ -374,17 +364,6 @@ public class sphCloud {
             }
             setLen(TOTAL-5);
             setFZ(0);
-        }
-
-        public ArrayDeque<particle> getParticles(){
-            ArrayDeque<particle> ad = new ArrayDeque<>();
-            int len = getEnd();
-            for(int i=0; i<len; i++){
-                if(ints[i]!=0){
-                    ad.add(theParticles[ints[i]]);
-                }
-            }
-            return ad;
         }
 
         public void add(int x){
