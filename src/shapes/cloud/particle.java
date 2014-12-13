@@ -85,30 +85,36 @@ public class particle {
     }
 
     public void move(){
-        Vector3f lower = sphCloud.lowerCorner;
-        Vector3f upper = sphCloud.upperCorner;
+        if(myIndex!=0){
+            Vector3f lower = sphCloud.lowerCorner;
+            Vector3f upper = sphCloud.upperCorner;
 
-        if(vel.lengthSquared()>speedlimit){
-            vel.normalise().scale(speedlimit);} //speed limiter
+            if(vel.lengthSquared()>speedlimit){
+                vel.normalise().scale(speedlimit);} //speed limiter
 
-        if((pos.x+ vel.x*dt > upper.x) || (pos.x+ vel.x*dt < lower.x))
-            vel.x*=-1f;
-        if((pos.y+ vel.y*dt > upper.y) || (pos.y+ vel.y*dt < lower.y))
-            vel.y*=-1f;
-        if((pos.x+ vel.z*dt > upper.z) || (pos.z+ vel.z*dt < lower.z))
-            vel.z*=-1f;
-        pos.set(pos.x+ vel.x*dt, pos.y+ vel.y*dt, pos.z+ vel.z*dt);
+            if((pos.x+ vel.x*dt > upper.x) || (pos.x+ vel.x*dt < lower.x))
+                vel.x*=-1f;
+            if((pos.y+ vel.y*dt > upper.y) || (pos.y+ vel.y*dt < lower.y))
+                vel.y*=-1f;
+            if((pos.x+ vel.z*dt > upper.z) || (pos.z+ vel.z*dt < lower.z))
+                vel.z*=-1f;
+            pos.set(pos.x+ vel.x*dt, pos.y+ vel.y*dt, pos.z+ vel.z*dt);
 
-        pos.set(
-                Math.min(Math.max(lower.x, pos.x), upper.x),
-                Math.min(Math.max(lower.y, pos.y), upper.y),
-                Math.min(Math.max(lower.z, pos.z), upper.z)
-        );
+            pos.set(
+                    Math.min(Math.max(lower.x, pos.x), upper.x),
+                    Math.min(Math.max(lower.y, pos.y), upper.y),
+                    Math.min(Math.max(lower.z, pos.z), upper.z)
+            );
+
+        }
 
         updateGridPos();
     }
 
     public void updateGridPos(){
+
+
+
         gridPos.set( 1f*((pos.x-sphCloud.lowerCorner.x)/sphCloud.gridSize) + 1
                     ,1f*((pos.z-sphCloud.lowerCorner.z)/sphCloud.gridSize) + 1
                     ,1f*((pos.y-sphCloud.lowerCorner.y)/sphCloud.gridSize) + 1);

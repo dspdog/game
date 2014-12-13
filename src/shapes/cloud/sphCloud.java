@@ -17,8 +17,8 @@ public class sphCloud {
     //corners of the box bounding the cloud
     public static Vector3f lowerCorner = new Vector3f(0,0,0);
     public static Vector3f upperCorner = new Vector3f(10,10,10);
-    private static Vector3f lowerCornerBounds = new Vector3f(0,0,0);
-    private static Vector3f upperCornerBounds = new Vector3f(10,10,10);
+    public static Vector3f lowerCornerBounds = new Vector3f(0,0,0);
+    public static Vector3f upperCornerBounds = new Vector3f(10,10,10);
     public static Vector3f lowerCornerBoundsFinal = new Vector3f(0,0,0);
     public static Vector3f upperCornerBoundsFinal = new Vector3f(10,10,10);
 
@@ -170,27 +170,17 @@ public class sphCloud {
             for(x=0; x<w+2;x++){
                 for(y=0; y<h+2;y++){
                     for(z=0; z<L+2;z++){
-                        int numP = particleGrid[x][y][z].getEnd();
+                        limitedArray grid = gridAt(x,y,z);
+                        int numP = grid.getEnd();
 
                         for(int i=0; i<numP; i++){
-                            if(particleGrid[x][y][z].ints[i]!=0){
-                                particle p = theParticles[particleGrid[x][y][z].ints[i]];
-
+                            if(grid.ints[i]!=0){
+                                particle p = theParticles[grid.ints[i]];
                                 _gridX = (int)p.gridPos.x;
                                 _gridY = (int)p.gridPos.y;
                                 _gridZ = (int)p.gridPos.z;
                                 p.move();
-
-                                lowerCornerBounds.set(
-                                        Math.min(lowerCornerBounds.x, p.pos.x),
-                                        Math.min(lowerCornerBounds.y, p.pos.y),
-                                        Math.min(lowerCornerBounds.z, p.pos.z));
-
-                                upperCornerBounds.set(
-                                        Math.max(upperCornerBounds.x, p.pos.x),
-                                        Math.max(upperCornerBounds.y, p.pos.y),
-                                        Math.max(upperCornerBounds.z, p.pos.z));
-
+                                updateCloudBounds(p);
                                 gridX = (int)p.gridPos.x;
                                 gridY = (int)p.gridPos.y;
                                 gridZ = (int)p.gridPos.z;
@@ -216,11 +206,15 @@ public class sphCloud {
         upperCornerBoundsFinal.set(upperCornerBounds.x,upperCornerBounds.y,upperCornerBounds.z);
     }
 
+    private static limitedArray gridAt(int _gridX, int _gridY, int _gridZ){
+        return particleGrid[_gridX][_gridY][_gridZ];
+    }
+
     private static void addParticleToGrid(int _gridX, int _gridY, int _gridZ, particle p){
-        particleGrid[_gridX][_gridY][_gridZ].add(p.myIndex);
+        gridAt(_gridX, _gridY, _gridZ).add(p.myIndex);
     }
     private static void removeParticleFromGrid(int _gridX, int _gridY, int _gridZ, particle p){
-        particleGrid[_gridX][_gridY][_gridZ].remove(p.myIndex); //we are removing the Integer, not at the index represented by the Integer
+        gridAt(_gridX, _gridY, _gridZ).remove(p.myIndex); //we are removing the Integer, not at the index represented by the Integer
     }
 
     public boolean withinBounds(particle p){
@@ -229,7 +223,17 @@ public class sphCloud {
                 p.pos.z>lowerCorner.z+2 && p.pos.z<upperCorner.z-2;
     }
 
+    public static void updateCloudBounds(particle p){
+        sphCloud.lowerCornerBounds.set(
+                Math.min(sphCloud.lowerCornerBounds.x, p.pos.x),
+                Math.min(sphCloud.lowerCornerBounds.y, p.pos.y),
+                Math.min(sphCloud.lowerCornerBounds.z, p.pos.z));
 
+        sphCloud.upperCornerBounds.set(
+                Math.max(sphCloud.upperCornerBounds.x, p.pos.x),
+                Math.max(sphCloud.upperCornerBounds.y, p.pos.y),
+                Math.max(sphCloud.upperCornerBounds.z, p.pos.z));
+    }
 
     public static limitedArray particlesNear(particle p){
         float gridX = p.gridPos.x;
@@ -248,85 +252,87 @@ public class sphCloud {
         gridY = Math.max(1, Math.min(h - 1, (int)gridY));
         gridZ = Math.max(1, Math.min(L - 1, (int)gridZ));
 
+        int gx = (int)gridX; int gy= (int)gridY; int gz = (int)gridZ;
+
         limitedArray result = new limitedArray();
 
-        addToArray(result, particlesFromIndex(particleGrid[(int) gridX][(int) gridY][(int) gridZ]));
+        addToArray(result, particlesFromIndex(gridAt(gx,gy,gz)));
         if(gridZd>0.5){//upper half
-            addToArray(result, particlesFromIndex(particleGrid[(int)gridX][(int)gridY][(int)gridZ+1]));
+            addToArray(result, particlesFromIndex(gridAt(gx,gy,gz+1)));
             if(gridXd>0.5){ //E
                 if(gridYd>0.5){//SE
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX + 1][(int) gridY][(int) gridZ]));
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX][(int) gridY + 1][(int) gridZ]));
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX + 1][(int) gridY + 1][(int) gridZ]));
+                    addToArray(result, particlesFromIndex(gridAt(gx+1,gy,gz)));
+                    addToArray(result, particlesFromIndex(gridAt(gx,gy+1,gz)));
+                    addToArray(result, particlesFromIndex(gridAt(gx+1,gy+1,gz)));
 
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX + 1][(int) gridY][(int) gridZ + 1]));
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX][(int) gridY + 1][(int) gridZ + 1]));
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX + 1][(int) gridY + 1][(int) gridZ + 1]));
+                    addToArray(result, particlesFromIndex(gridAt(gx+1,gy,gz+1)));
+                    addToArray(result, particlesFromIndex(gridAt(gx,gy+1,gz+1)));
+                    addToArray(result, particlesFromIndex(gridAt(gx+1,gy+1,gz+1)));
                 }else{//NE
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX + 1][(int) gridY][(int) gridZ]));
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX][(int) gridY - 1][(int) gridZ]));
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX + 1][(int) gridY - 1][(int) gridZ]));
+                    addToArray(result, particlesFromIndex(gridAt(gx+1,gy,gz)));
+                    addToArray(result, particlesFromIndex(gridAt(gx,gy-1,gz)));
+                    addToArray(result, particlesFromIndex(gridAt(gx+1,gy-1,gz)));
 
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX + 1][(int) gridY][(int) gridZ + 1]));
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX][(int) gridY - 1][(int) gridZ + 1]));
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX + 1][(int) gridY - 1][(int) gridZ + 1]));
+                    addToArray(result, particlesFromIndex(gridAt(gx+1,gy,gz+1)));
+                    addToArray(result, particlesFromIndex(gridAt(gx,gy-1,gz+1)));
+                    addToArray(result, particlesFromIndex(gridAt(gx+1,gy-1,gz+1)));
                 }
             }else{ //W
                 if(gridYd>0.5){//SW
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX - 1][(int) gridY][(int) gridZ]));
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX][(int) gridY + 1][(int) gridZ]));
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX - 1][(int) gridY + 1][(int) gridZ]));
+                    addToArray(result, particlesFromIndex(gridAt(gx-1,gy,gz)));
+                    addToArray(result, particlesFromIndex(gridAt(gx,gy+1,gz)));
+                    addToArray(result, particlesFromIndex(gridAt(gx-1,gy+1,gz)));
 
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX - 1][(int) gridY][(int) gridZ + 1]));
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX][(int) gridY + 1][(int) gridZ + 1]));
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX - 1][(int) gridY + 1][(int) gridZ + 1]));
+                    addToArray(result, particlesFromIndex(gridAt(gx-1,gy,gz+1)));
+                    addToArray(result, particlesFromIndex(gridAt(gx,gy+1,gz+1)));
+                    addToArray(result, particlesFromIndex(gridAt(gx-1,gy+1,gz+1)));
                 }else{//NW
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX - 1][(int) gridY][(int) gridZ]));
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX][(int) gridY - 1][(int) gridZ]));
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX - 1][(int) gridY - 1][(int) gridZ]));
+                    addToArray(result, particlesFromIndex(gridAt(gx-1,gy,gz)));
+                    addToArray(result, particlesFromIndex(gridAt(gx,gy-1,gz)));
+                    addToArray(result, particlesFromIndex(gridAt(gx-1,gy-1,gz)));
 
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX - 1][(int) gridY][(int) gridZ + 1]));
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX][(int) gridY - 1][(int) gridZ + 1]));
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX - 1][(int) gridY - 1][(int) gridZ + 1]));
+                    addToArray(result, particlesFromIndex(gridAt(gx-1,gy,gz+1)));
+                    addToArray(result, particlesFromIndex(gridAt(gx,gy-1,gz+1)));
+                    addToArray(result, particlesFromIndex(gridAt(gx-1,gy-1,gz+1)));
                 }
             }
         }else{ //lower half
-            addToArray(result, particlesFromIndex(particleGrid[(int)gridX][(int)gridY][(int)gridZ-1]));
+            addToArray(result, particlesFromIndex(gridAt(gx,gy,gz-1)));
             if(gridXd>0.5){ //E
                 if(gridYd>0.5){//SE
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX + 1][(int) gridY][(int) gridZ]));
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX][(int) gridY + 1][(int) gridZ]));
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX + 1][(int) gridY + 1][(int) gridZ]));
+                    addToArray(result, particlesFromIndex(gridAt(gx+1,gy,gz)));
+                    addToArray(result, particlesFromIndex(gridAt(gx,gy+1,gz)));
+                    addToArray(result, particlesFromIndex(gridAt(gx+1,gy+1,gz)));
 
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX + 1][(int) gridY][(int) gridZ-1]));
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX][(int) gridY + 1][(int) gridZ-1]));
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX + 1][(int) gridY + 1][(int) gridZ-1]));
+                    addToArray(result, particlesFromIndex(gridAt(gx+1,gy,gz-1)));
+                    addToArray(result, particlesFromIndex(gridAt(gx,gy+1,gz-1)));
+                    addToArray(result, particlesFromIndex(gridAt(gx+1,gy+1,gz-1)));
                 }else{//NE
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX + 1][(int) gridY][(int) gridZ]));
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX][(int) gridY - 1][(int) gridZ]));
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX + 1][(int) gridY - 1][(int) gridZ]));
+                    addToArray(result, particlesFromIndex(gridAt(gx+1,gy,gz)));
+                    addToArray(result, particlesFromIndex(gridAt(gx,gy-1,gz)));
+                    addToArray(result, particlesFromIndex(gridAt(gx+1,gy-1,gz)));
 
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX + 1][(int) gridY][(int) gridZ-1]));
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX][(int) gridY - 1][(int) gridZ-1]));
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX + 1][(int) gridY - 1][(int) gridZ-1]));
+                    addToArray(result, particlesFromIndex(gridAt(gx+1,gy,gz-1)));
+                    addToArray(result, particlesFromIndex(gridAt(gx,gy-1,gz-1)));
+                    addToArray(result, particlesFromIndex(gridAt(gx+1,gy-1,gz-1)));
                 }
             }else{ //W
                 if(gridYd>0.5){//SW
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX - 1][(int) gridY][(int) gridZ]));
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX][(int) gridY + 1][(int) gridZ]));
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX - 1][(int) gridY + 1][(int) gridZ]));
+                    addToArray(result, particlesFromIndex(gridAt(gx-1,gy,gz)));
+                    addToArray(result, particlesFromIndex(gridAt(gx,gy+1,gz)));
+                    addToArray(result, particlesFromIndex(gridAt(gx-1,gy+1,gz)));
 
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX - 1][(int) gridY][(int) gridZ-1]));
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX][(int) gridY + 1][(int) gridZ-1]));
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX - 1][(int) gridY + 1][(int) gridZ-1]));
+                    addToArray(result, particlesFromIndex(gridAt(gx-1,gy,gz-1)));
+                    addToArray(result, particlesFromIndex(gridAt(gx,gy+1,gz-1)));
+                    addToArray(result, particlesFromIndex(gridAt(gx-1,gy+1,gz-1)));
                 }else{//NW
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX - 1][(int) gridY][(int) gridZ]));
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX][(int) gridY - 1][(int) gridZ]));
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX - 1][(int) gridY - 1][(int) gridZ]));
+                    addToArray(result, particlesFromIndex(gridAt(gx-1,gy,gz)));
+                    addToArray(result, particlesFromIndex(gridAt(gx,gy-1,gz)));
+                    addToArray(result, particlesFromIndex(gridAt(gx-1,gy-1,gz)));
 
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX - 1][(int) gridY][(int) gridZ-1]));
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX][(int) gridY - 1][(int) gridZ-1]));
-                    addToArray(result, particlesFromIndex(particleGrid[(int) gridX - 1][(int) gridY - 1][(int) gridZ-1]));
+                    addToArray(result, particlesFromIndex(gridAt(gx-1,gy,gz-1)));
+                    addToArray(result, particlesFromIndex(gridAt(gx,gy-1,gz-1)));
+                    addToArray(result, particlesFromIndex(gridAt(gx-1,gy-1,gz-1)));
                 }
             }
         }

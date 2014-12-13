@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="BookmarkManager">
+    <bookmark url="file://$PROJECT_DIR$/src/shapes/cloud/sphCloud.java" line="254" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="ac323d9d-474a-40c0-b6a6-354244e190bf" name="Default" comment="" />
     <ignored path="game.iws" />
@@ -166,8 +169,8 @@
       <file leaf-file-name="sphCloud.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/shapes/cloud/sphCloud.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="4.2071943" vertical-offset="0" max-vertical-offset="7344">
-              <caret line="172" column="0" selection-start-line="172" selection-start-column="0" selection-end-line="172" selection-end-column="0" />
+            <state vertical-scroll-proportion="-1.9079137" vertical-offset="1530" max-vertical-offset="7446">
+              <caret line="12" column="49" selection-start-line="12" selection-start-column="37" selection-end-line="12" selection-end-column="49" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -178,16 +181,16 @@
       <file leaf-file-name="particle.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/shapes/cloud/particle.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="467" max-vertical-offset="3230">
-              <caret line="43" column="34" selection-start-line="43" selection-start-column="34" selection-end-line="43" selection-end-column="34" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3332">
+              <caret line="17" column="38" selection-start-line="17" selection-start-column="38" selection-end-line="17" selection-end-column="38" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#2046#2047#0" expanded="true" />
                 <element signature="e#2118#2119#0" expanded="true" />
-                <element signature="e#3640#3641#0" expanded="true" />
-                <element signature="e#3688#3689#0" expanded="true" />
-                <element signature="e#5069#5070#0" expanded="true" />
-                <element signature="e#5131#5132#0" expanded="true" />
+                <element signature="e#3742#3743#0" expanded="true" />
+                <element signature="e#3790#3791#0" expanded="true" />
+                <element signature="e#5171#5172#0" expanded="true" />
+                <element signature="e#5233#5234#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -1119,24 +1122,24 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/shapes/cloud/particle.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="467" max-vertical-offset="3230">
-          <caret line="43" column="34" selection-start-line="43" selection-start-column="34" selection-end-line="43" selection-end-column="34" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3332">
+          <caret line="17" column="38" selection-start-line="17" selection-start-column="38" selection-end-line="17" selection-end-column="38" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#2046#2047#0" expanded="true" />
             <element signature="e#2118#2119#0" expanded="true" />
-            <element signature="e#3640#3641#0" expanded="true" />
-            <element signature="e#3688#3689#0" expanded="true" />
-            <element signature="e#5069#5070#0" expanded="true" />
-            <element signature="e#5131#5132#0" expanded="true" />
+            <element signature="e#3742#3743#0" expanded="true" />
+            <element signature="e#3790#3791#0" expanded="true" />
+            <element signature="e#5171#5172#0" expanded="true" />
+            <element signature="e#5233#5234#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/shapes/cloud/sphCloud.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="4.2071943" vertical-offset="0" max-vertical-offset="7344">
-          <caret line="172" column="0" selection-start-line="172" selection-start-column="0" selection-end-line="172" selection-end-column="0" />
+        <state vertical-scroll-proportion="-1.9079137" vertical-offset="1530" max-vertical-offset="7446">
+          <caret line="12" column="49" selection-start-line="12" selection-start-column="37" selection-end-line="12" selection-end-column="49" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
