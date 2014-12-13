@@ -170,7 +170,6 @@ public class sphCloud {
             for(x=0; x<w+2;x++){
                 for(y=0; y<h+2;y++){
                     for(z=0; z<L+2;z++){
-                       // particle[] particles = particlesArrayFromIndex(particleGrid[x][y][z]);
                         int numP = particleGrid[x][y][z].getEnd();
 
                         for(int i=0; i<numP; i++){
@@ -338,7 +337,6 @@ public class sphCloud {
     public static limitedArray particlesFromIndex(limitedArray arr){
         limitedArray res = new limitedArray();
         int len = res.getLen();
-        //CopyOnWriteArrayList<particle> res = new CopyOnWriteArrayList<>();
         for(int i=0; i<len; i++){
             res.add(arr.ints[i]);
         }
@@ -353,7 +351,7 @@ public class sphCloud {
     }
 
     public static class limitedArray{
-        final int pPerBrick = 25;
+        final int pPerBrick = 32;
         final int TOTAL = pPerBrick*8+2;
         public int ints[] = new int[TOTAL];
         boolean changed = false;

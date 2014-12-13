@@ -35,19 +35,13 @@ public class particle {
     public static float speedlimit = c/2f;
 
     public particle(Vector3f lowerCorner, Vector3f upperCorner, int index){
-
         myIndex=index;
 
         mass = 0.01f; //kg
         density = 1f;
         pressure = 1f;
 
-        vel = new Vector3f(
-                (float)Math.random()-0.5f,
-                (float)Math.random()-0.5f,
-                (float)Math.random()-0.5f);
-
-        vel.scale(0.1f);
+        vel = new Vector3f(0,0,0);
 
         pos = new Vector3f(
                 (float)Math.random()*(upperCorner.x - lowerCorner.x)+lowerCorner.x,
