@@ -6,6 +6,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.opengl.*;
 import org.lwjgl.opengl.GL11;
+import shapes.cloud.kParticleCloud;
 import shapes.cloud.particle;
 import shapes.cloud.sphCloud;
 import world.scene;
@@ -58,6 +59,31 @@ public class GeometryFactory {
         drawBox(sphCloud.lowerCornerBoundsFinal, sphCloud.upperCornerBoundsFinal);
        // glColor3f(0f, 0f, 0f);
        // drawCloudBoundsBox();
+    }
+
+    public static void kcloud(kParticleCloud cloud){
+        long time = System.currentTimeMillis();
+
+        /*float r,g,b;
+        if(sphCloud.gridInited)
+            for(particle p : cloud.theParticles){
+                if(p!=null && p.myIndex !=0){
+                    r = (p.pos.x-sphCloud.lowerCorner.x)/(sphCloud.upperCorner.x - sphCloud.lowerCorner.x);
+                    g = (p.pos.y-sphCloud.lowerCorner.y)/(sphCloud.upperCorner.y - sphCloud.lowerCorner.y);
+                    b = (p.pos.z-sphCloud.lowerCorner.z)/(sphCloud.upperCorner.z - sphCloud.lowerCorner.z);
+                    // float d = p.myNeighbors.size()/12f;
+
+
+
+                    glColor3f(r, g, b);
+                    drawCircle(p, true);
+                }
+            }
+        glColor3f(0f, 0f, 0f);
+        drawBox(sphCloud.lowerCorner, sphCloud.upperCorner);
+        glColor3f(0.5f, 0f, 0f);
+        drawBox(sphCloud.lowerCornerBoundsFinal, sphCloud.upperCornerBoundsFinal);
+        */
     }
 
     static void drawBox(Vector3f upperCorner, Vector3f lowerCorner){

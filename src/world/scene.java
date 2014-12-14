@@ -4,6 +4,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector3f;
 import factory.GeometryFactory;
+import shapes.cloud.kParticleCloud;
 import shapes.geography.GeographyFactory;
 
 import java.nio.FloatBuffer;
@@ -25,6 +26,8 @@ public class scene{
 
     private static Vector3f cameraPosRealtime = new Vector3f(0,-30,0);
 
+    public static kParticleCloud myKCloud = new kParticleCloud(10);
+
     public void drawScene(){
         cameraPosRealtime = getCamPos();
         for(WorldObject wo : objs){
@@ -41,6 +44,8 @@ public class scene{
                 wo.drawVBOs();
             }else if(wo.isCloud){
                GeometryFactory.cloud(wo.myCloud, wo.myTextureId);
+            }else if(wo.isKCloud){
+                GeometryFactory.kcloud(wo.myKCloud);
             }
         }
     }

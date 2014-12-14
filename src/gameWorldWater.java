@@ -1,5 +1,6 @@
 import org.lwjgl.Sys;
 import org.lwjgl.util.vector.Vector3f;
+import shapes.cloud.kParticleCloud;
 import shapes.cloud.particle;
 import shapes.cloud.sphCloud;
 import world.scene;
@@ -35,6 +36,9 @@ public class gameWorldWater implements Runnable {
                 }
 
                 if(getTime()-lastPosUpdate>1) {
+
+                    scene.myKCloud.update();
+
                     sphCloud.updateParticleVelocities();
                     sphCloud.updateParticlePositions();
                     particle.updateTime();

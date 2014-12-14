@@ -5,6 +5,7 @@ import eu.mihosoft.vrl.v3d.Vector3d;
 import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.opengl.Texture;
 import factory.GeometryFactory;
+import shapes.cloud.kParticleCloud;
 import shapes.cloud.sphCloud;
 
 import java.nio.FloatBuffer;
@@ -14,7 +15,7 @@ public class WorldObject{ //have this handle all the interactions w/ geometryfac
     int myTextureId;
     GeometryFactory.gridFunction myFunction;
     sphCloud myCloud;
-
+    public kParticleCloud myKCloud;
     Vector3f myPos = new Vector3f(0,0,0);
     Vector3f myLastDrawnPos = new Vector3f(0,0,0);
     Vector3f myColor = new Vector3f(0.5f, 0.5f, 0.5f);
@@ -31,6 +32,7 @@ public class WorldObject{ //have this handle all the interactions w/ geometryfac
     boolean isGrid = false;
     boolean isPlane = false;
     boolean isCloud = false;
+    boolean isKCloud = false;
 
     boolean hasVBOHandles=false;
 
@@ -59,11 +61,11 @@ public class WorldObject{ //have this handle all the interactions w/ geometryfac
         myTextureId = texture.getTextureID();
     }
 
-    public WorldObject(int textureId){
+   /* public WorldObject(int textureId){
         name="TEX_" + stencilId;
         isPlane = true;
         myTextureId = textureId;
-    }
+    }*/
 
     public WorldObject(GeometryFactory.gridFunction d){
         name="GRID_" + stencilId;
@@ -78,6 +80,12 @@ public class WorldObject{ //have this handle all the interactions w/ geometryfac
         name="PARTICLES_" + stencilId;
         isCloud = true;
         myCloud = new sphCloud(numParticles, collisionObject);
+    }
+
+    public WorldObject(int numParticles){
+        name="KPARTICLES_" + stencilId;
+        isKCloud = true;
+        myKCloud = new kParticleCloud(numParticles);
     }
 
     public WorldObject setUpdateInterval(int interval){

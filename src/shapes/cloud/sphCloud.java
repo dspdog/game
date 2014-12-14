@@ -10,7 +10,7 @@ import java.nio.FloatBuffer;
 public class sphCloud {
     public static final int numParticles=1000;
     public static final particle[] theParticles = new particle[numParticles];
-    public static limitedArray[][][] particleGrid;
+    public static limitedArray[] particleGrid;
     public static final float gridSize=32f;
     public static boolean gridInited=false;
 
@@ -71,11 +71,11 @@ public class sphCloud {
         int h=(int)((upperCorner.z-lowerCorner.z)/gridSize);
         int L=(int)((upperCorner.y-lowerCorner.y)/gridSize);
         int x,y,z;
-        particleGrid = new limitedArray[w+2][h+2][L+2];
+        particleGrid = new limitedArray[(w+2)*(h+2)*(L+2)];
         for(x=-1; x<w+1;x++){
             for(y=-1; y<h+1;y++){
                 for(z=-1; z<L+1;z++){
-                    particleGrid[x+1][y+1][z+1]=new limitedArray();
+                    particleGrid[(x+1)+(y+1)*(w)+(z+1)*(w*L)]=new limitedArray();
                 }
             }
         }
@@ -207,7 +207,11 @@ public class sphCloud {
     }
 
     private static limitedArray gridAt(int _gridX, int _gridY, int _gridZ){
-        return particleGrid[_gridX][_gridY][_gridZ];
+
+        int w=(int)((upperCorner.x-lowerCorner.x)/gridSize);
+        int h=(int)((upperCorner.z-lowerCorner.z)/gridSize);
+        int L=(int)((upperCorner.y-lowerCorner.y)/gridSize);
+        return particleGrid[_gridX+_gridY*(w)+_gridZ*(w*L)];
     }
 
     private static void addParticleToGrid(int _gridX, int _gridY, int _gridZ, particle p){
