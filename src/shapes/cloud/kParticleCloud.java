@@ -7,8 +7,15 @@ import org.lwjgl.Sys;
  * Created by user on 12/13/2014.
  */
 public class kParticleCloud extends Kernel {
-    static final int PARTICLES_MAX = 100000;
+    //CLOUD PARAMS
+
+    final int PARTICLES_MAX = 100000;
     int numParticles=0;
+
+    final float neighborDistance = 1.0f;
+    final float densREF = 1000; // kg/m^3
+    final float mu = 0.01f; // kg/ms (dynamical viscosity))
+    final float c = 1.9f; // m/s speed of sound
 
     //PARTICLE PARAMS
 
@@ -24,8 +31,6 @@ public class kParticleCloud extends Kernel {
     final int MAX_NEIGHBORS = 20;
     final int[] pn = new int[PARTICLES_MAX*MAX_NEIGHBORS]; //neighbors by index
     final int[] pnn = new int[PARTICLES_MAX]; //neighbors totals by index
-
-    final float neighborDistance = 1.0f;
 
     public kParticleCloud(int _numParticles){
         numParticles=min(_numParticles, PARTICLES_MAX);
@@ -150,10 +155,6 @@ public class kParticleCloud extends Kernel {
             }
         }
     }
-
-    public final float densREF = 1000; // kg/m^3
-    public final float mu = 0.01f; // kg/ms (dynamical viscosity))
-    public final float c = 1.9f; // m/s speed of sound
 
     public void updatePosition(int particle){
         /*
