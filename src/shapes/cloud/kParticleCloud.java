@@ -1,6 +1,8 @@
 package shapes.cloud;
 import com.amd.aparapi.Kernel;
 import com.amd.aparapi.Range;
+import org.lwjgl.Sys;
+
 /**
  * Created by user on 12/13/2014.
  */
@@ -9,13 +11,11 @@ public class kParticleCloud extends Kernel {
     int numParticles=0;
 
     //PARTICLE PARAMS
-    final float[] vx = new float[PARTICLES_MAX]; //velocity_x
-    final float[] vy = new float[PARTICLES_MAX]; //velocity_y
-    final float[] vz = new float[PARTICLES_MAX]; //velocity_z
 
-    final float[] px = new float[PARTICLES_MAX]; //position_x
-    final float[] py = new float[PARTICLES_MAX]; //position_y
-    final float[] pz = new float[PARTICLES_MAX]; //position_z
+    //velocity                                    //position
+    final float[] vx = new float[PARTICLES_MAX];  final float[] px = new float[PARTICLES_MAX];
+    final float[] vy = new float[PARTICLES_MAX];  final float[] py = new float[PARTICLES_MAX];
+    final float[] vz = new float[PARTICLES_MAX];  final float[] pz = new float[PARTICLES_MAX];
 
     final float[] pd = new float[PARTICLES_MAX]; //density
     final float[] pm = new float[PARTICLES_MAX]; //mass
@@ -47,16 +47,16 @@ public class kParticleCloud extends Kernel {
         setPressure(particle,1f);
     }
 
-    public void setVelocity(int i, float x, float y, float z){vx[i]=x; vy[i]=y; vz[i]=z;}
-    public void setPosition(int i, float x, float y, float z){px[i]=x; py[i]=y; pz[i]=z;}
-    public void setMass(int i, float x){pm[i]=x;}
-    public void setDensity(int i, float x){pd[i]=x;}
-    public void setPressure(int i, float x){pp[i]=x;}
+    public void setVelocity(int particle, float x, float y, float z){vx[particle]=x; vy[particle]=y; vz[particle]=z;}
+    public void setPosition(int particle, float x, float y, float z){px[particle]=x; py[particle]=y; pz[particle]=z;}
+    public void setMass(int particle, float value){pm[particle]=value;}
+    public void setDensity(int particle, float value){pd[particle]=value;}
+    public void setPressure(int particle, float value){pp[particle]=value;}
 
-    public float getMass(int i){return pm[i];}
-    public float getDensity(int i){return pd[i];}
-    public float getPressure(int i){return pp[i];}
-    public int getNumberOfNeighbors(int i){return pnn[i];}
+    public float getMass(int particle){return pm[particle];}
+    public float getDensity(int particle){return pd[particle];}
+    public float getPressure(int particle){return pp[particle];}
+    public int getNumberOfNeighbors(int particle){return pnn[particle];}
 
     public void resetNeighbors(int i){
         pnn[i]=0;
@@ -93,10 +93,24 @@ public class kParticleCloud extends Kernel {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    public void updateTime(){
+        lastTime=time;
+        time = getTime();
+        dt=(time-lastTime)*0.001f;
+    }
+
+    public float dt;
+    public long time;
+    public long lastTime;
+
+    private static long getTime() {
+        return (Sys.getTime() * 1000) / Sys.getTimerResolution();
+    }
+
     public void update(){
+        updateTime();
 
         long time1=System.currentTimeMillis();
-
         this.setExplicit(true);
 
         //update data w/:
@@ -108,8 +122,7 @@ public class kParticleCloud extends Kernel {
         this.execute(range, 4);
         //this.get(pixels);
 
-        System.out.println(this.getExecutionMode() + " " + this.getExecutionTime());
-        System.out.println("ran in " + (System.currentTimeMillis()-time1)+"ms " + numParticles);
+        System.out.println(this.getExecutionMode() + " dt " + (dt*1000)+"ms parts" + numParticles + " exec" + (System.currentTimeMillis()-time1));
     }
 
     @Override
@@ -168,16 +181,18 @@ public class kParticleCloud extends Kernel {
     }
 
     public void updateVelocity(int particle){
-        /*for(particle p : theParticles){if(p!=null){
-            Vector3f accPressure = new Vector3f(0,0,0);
-            Vector3f accVisc = new Vector3f(0,0,0);
-            float accPressScale=0;
-            float accViscScale=0;
+        float accPressureX=0f;   float accViscX=0f;   float accInteractiveX=0f;   float accGravX=0f;// new Vector3f(p.pos.x-center.x,p.pos.y-center.y,p.pos.z-center.z); //suction source at origin
+        float accPressureY=0f;   float accViscY=0f;   float accInteractiveY=0f;   float accGravY=0f;
+        float accPressureZ=0f;   float accViscZ=0f;   float accInteractiveZ=0f;   float accGravZ=0f;
 
-            int len = p.myNeighbors.getEnd();
+        float accPressScale=0;
+        float accViscScale=0;
 
-            for(int i=0; i<len; i++){
-                if(p.myNeighbors.ints[i]!=0) {
+        int len = getNumberOfNeighbors(particle);
+
+        for(int i=0; i<len; i++){
+            /*
+              if(p.myNeighbors.ints[i]!=0) {
                     particle n = theParticles[p.myNeighbors.ints[i]];
                     float kernalVal = n.kernal(n.distanceTo(p));
                     float kernalVald = n.kernald(n.distanceTo(p));
@@ -197,11 +212,10 @@ public class kParticleCloud extends Kernel {
                             accPressScale * (n.pos.z - p.pos.z)
                     );
                 }
-            }
+             */
+        }
 
-            Vector3f accInteractive = new Vector3f(0,0,0);
-            Vector3f accGravity = new Vector3f(p.pos.x-center.x,p.pos.y-center.y,p.pos.z-center.z); //suction source at origin
-
+        /*
             if(gravityDown){
                 accGravity = new Vector3f(0,1f,0);
             }
@@ -212,8 +226,7 @@ public class kParticleCloud extends Kernel {
                     accPressure.x+accVisc.x+accInteractive.x-accGravity.x,
                     accPressure.y+accVisc.y+accInteractive.y-accGravity.y,
                     accPressure.z+accVisc.z+accInteractive.z-accGravity.z);
-
-        }}*/
+            */
     }
 
     public void updateDensity(int particle){/////////////////////////////////
