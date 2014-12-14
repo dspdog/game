@@ -21,6 +21,9 @@ public class kParticleCloud extends Kernel {
     static final float[] pm = new float[PARTICLES_MAX]; //mass
     static final float[] pp = new float[PARTICLES_MAX]; //pressure
 
+    static final int MAX_NEIGHBORS = 20;
+    static final int[] pn = new int[PARTICLES_MAX*MAX_NEIGHBORS]; //neighbors
+
     static final float neighborDistance = 1.0f;
 
     public kParticleCloud(int _numParticles){
@@ -31,6 +34,7 @@ public class kParticleCloud extends Kernel {
     public void generateParticles(){
         for(int i=0; i<numParticles; i++){
             initParticle(i);
+            resetNeighbors(i);
         }
     }
 
@@ -47,6 +51,17 @@ public class kParticleCloud extends Kernel {
     public void setMass(int i, float x){pm[i]=x;}
     public void setDensity(int i, float x){pd[i]=x;}
     public void setPressure(int i, float x){pp[i]=x;}
+
+    public void resetNeighbors(int i){
+        for(int n=0; n<MAX_NEIGHBORS; n++){
+            pn[i*MAX_NEIGHBORS+n]=0;
+        }
+    }
+
+    public void addNeighbor(int i, int n){
+
+    }
+
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public void update(){
