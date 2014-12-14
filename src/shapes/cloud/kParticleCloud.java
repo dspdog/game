@@ -190,31 +190,32 @@ public class kParticleCloud extends Kernel {
         float accViscScale=0;
 
         int len = getNumberOfNeighbors(particle);
+        int neighbor=0;
+        float weightVal=0;
+        float weightVal_d=0;
 
-        for(int i=0; i<len; i++){
-            /*
-              if(p.myNeighbors.ints[i]!=0) {
-                    particle n = theParticles[p.myNeighbors.ints[i]];
-                    float kernalVal = n.kernal(n.distanceTo(p));
-                    float kernalVald = n.kernald(n.distanceTo(p));
-
-                    accPressScale = -1.0f * n.mass * (p.pressure / (p.density * p.density) + n.pressure / (n.density * n.density)) * kernalVal;
-                    accViscScale = p.mu * n.mass / n.density / p.density * kernalVald;
-
-                    accVisc.translate(
-                            accViscScale * (n.vel.x - p.vel.x),
-                            accViscScale * (n.vel.y - p.vel.y),
-                            accViscScale * (n.vel.z - p.vel.z)
-                    );
-
-                    accPressure.translate(
-                            accPressScale * (n.pos.x - p.pos.x),
-                            accPressScale * (n.pos.y - p.pos.y),
-                            accPressScale * (n.pos.z - p.pos.z)
-                    );
-                }
-             */
+        for(int neighborNo=0; neighborNo<len; neighborNo++){
+            neighbor = getNeighbor(particle, neighborNo);
+            weightVal=weight(distance(particle,neighbor));
+            weightVal_d=weight_deriv(distance(particle, neighbor));
         }
+
+            /*
+            accPressScale = -1.0f * n.mass * (p.pressure / (p.density * p.density) + n.pressure / (n.density * n.density)) * kernalVal;
+            accViscScale = p.mu * n.mass / n.density / p.density * kernalVald;
+
+            accVisc.translate(
+                    accViscScale * (n.vel.x - p.vel.x),
+                    accViscScale * (n.vel.y - p.vel.y),
+                    accViscScale * (n.vel.z - p.vel.z)
+            );
+
+            accPressure.translate(
+                    accPressScale * (n.pos.x - p.pos.x),
+                    accPressScale * (n.pos.y - p.pos.y),
+                    accPressScale * (n.pos.z - p.pos.z)
+            );
+             */
 
         /*
             if(gravityDown){
