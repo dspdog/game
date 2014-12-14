@@ -22,7 +22,7 @@ public class kParticleCloud extends Kernel {
     static final float[] pp = new float[PARTICLES_MAX]; //pressure
 
     static final int MAX_NEIGHBORS = 20;
-    static final int[] pn = new int[PARTICLES_MAX*MAX_NEIGHBORS]; //neighbors
+    static final int[] pn = new int[PARTICLES_MAX*MAX_NEIGHBORS]; //neighbors by index
 
     static final float neighborDistance = 1.0f;
 
@@ -60,6 +60,22 @@ public class kParticleCloud extends Kernel {
 
     public void addNeighbor(int i, int n){
 
+    }
+
+    public void findNeighbors(int i){
+        resetNeighbors(i);
+        for(int o=0; o<numParticles; o++){
+            if(distance(o,i)<neighborDistance){
+                addNeighbor(i,o);
+            }
+        }
+    }
+
+    public float distance(int i, int o){
+        float x = px[i]-px[o];
+        float y = py[i]-py[o];
+        float z = pz[i]-pz[o];
+        return sqrt(x*x+y*y+z*z);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
