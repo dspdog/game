@@ -30,10 +30,23 @@ public class kParticleCloud extends Kernel {
 
     public void generateParticles(){
         for(int i=0; i<numParticles; i++){
-            //theParticles[i] = new particle();
+            initParticle(i);
         }
     }
 
+    public void initParticle(int i){
+        setVelocity(i,0,0,0);
+        setPosition(i,0,0,0);
+        setMass(i,1f);
+        setDensity(i,1f);
+        setPressure(i,1f);
+    }
+
+    public void setVelocity(int i, float x, float y, float z){vx[i]=x; vy[i]=y; vz[i]=z;}
+    public void setPosition(int i, float x, float y, float z){px[i]=x; py[i]=y; pz[i]=z;}
+    public void setMass(int i, float x){pm[i]=x;}
+    public void setDensity(int i, float x){pd[i]=x;}
+    public void setPressure(int i, float x){pp[i]=x;}
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public void update(){
@@ -60,12 +73,7 @@ public class kParticleCloud extends Kernel {
         //findNeighbors
         //updateParticleVelocities();
         //updateParticlePositions();
-
         int i = getGlobalId(0);
         int pass = getPassId();
-
-
-        //particle theParticle = theParticles[i];
-
     }
 }
