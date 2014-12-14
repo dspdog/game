@@ -110,6 +110,7 @@ public class kParticleCloud extends Kernel {
         if(pass==0){
             findNeighbors(i);
         }else if(pass==1){
+            int k=0;
             //updateParticleVelocities(i);
             //updateParticlePositions();
         }
