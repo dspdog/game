@@ -39,12 +39,12 @@ public class kParticleCloud extends Kernel {
         }
     }
 
-    public void initParticle(int i){
-        setVelocity(i,0,0,0);
-        setPosition(i,0,0,0);
-        setMass(i,1f);
-        setDensity(i,1f);
-        setPressure(i,1f);
+    public void initParticle(int particle){
+        setVelocity(particle,0,0,0);
+        setPosition(particle,0,0,0);
+        setMass(particle,1f);
+        setDensity(particle,1f);
+        setPressure(particle,1f);
     }
 
     public void setVelocity(int i, float x, float y, float z){vx[i]=x; vy[i]=y; vz[i]=z;}
@@ -53,6 +53,11 @@ public class kParticleCloud extends Kernel {
     public void setDensity(int i, float x){pd[i]=x;}
     public void setPressure(int i, float x){pp[i]=x;}
 
+    public float getMass(int i){return pm[i];}
+    public float getDensity(int i){return pd[i];}
+    public float getPressure(int i){return pp[i];}
+    public int getNumberOfNeighbors(int i){return pnn[i];}
+
     public void resetNeighbors(int i){
         pnn[i]=0;
         for(int n=0; n<MAX_NEIGHBORS; n++){
@@ -60,16 +65,21 @@ public class kParticleCloud extends Kernel {
         }
     }
 
-    public void addNeighbor(int i, int n){
-        if(pnn[i] < MAX_NEIGHBORS && !alreadyNeighbors(i,n)){
-            pnn[i]++;
-            pn[i*MAX_NEIGHBORS+pnn[i]]=n;
+    public void addNeighbor(int particle, int neighbor){
+        if(pnn[particle] < MAX_NEIGHBORS && !alreadyNeighbors(particle,neighbor)){
+            pnn[particle]++;
+            pn[particle*MAX_NEIGHBORS+pnn[particle]]=neighbor;
         }
     }
 
-    public boolean alreadyNeighbors(int i, int n){
-        for(int j=0; j<pnn[i]; j++){
-            if(pn[i*MAX_NEIGHBORS+j]==n)return true;
+    public int getNeighbor(int particle, int neighborNo){
+            return pn[particle*MAX_NEIGHBORS+neighborNo];
+    }
+
+    public boolean alreadyNeighbors(int particle, int neighbor){
+        int len = getNumberOfNeighbors(particle);
+        for(int neighborNo=0; neighborNo<len; neighborNo++){
+            if(getNeighbor(particle,neighborNo)==neighbor)return true;
         }
         return false;
     }
@@ -95,7 +105,7 @@ public class kParticleCloud extends Kernel {
 
         Range range = Range.create(numParticles);
 
-        this.execute(range, 3);
+        this.execute(range, 4);
         //this.get(pixels);
 
         System.out.println(this.getExecutionMode() + " " + this.getExecutionTime());
@@ -104,26 +114,132 @@ public class kParticleCloud extends Kernel {
 
     @Override
     public void run() {
-        int i = getGlobalId(0);
+        int particle = getGlobalId(0);
         int pass = getPassId();
 
         if(pass==0){
-            findNeighbors(i);
+            findNeighbors(particle);
         }else if(pass==1){
-            int k=0;
-            //updateParticleVelocities(i);
-            //updateParticlePositions();
+            updateDensity(particle);
+            updatePressure(particle);
+        }else if(pass==2){
+            updateVelocity(particle);
+        }else if(pass==3){
+            updatePosition(particle);
         }
     }
 
-
-    public void findNeighbors(int i){
-        resetNeighbors(i);
+    public void findNeighbors(int particle){
+        resetNeighbors(particle);
         for(int o=0; o<numParticles; o++){
-            if(distance(o,i)<neighborDistance){
-                addNeighbor(i,o);
+            if(distance(o,particle)<neighborDistance){
+                addNeighbor(particle,o);
             }
         }
     }
+
+    public final float densREF = 1000; // kg/m^3
+    public final float mu = 0.01f; // kg/ms (dynamical viscosity))
+    public final float c = 1.9f; // m/s speed of sound
+
+    public void updatePosition(int particle){
+        /*
+            Vector3f lower = sphCloud.lowerCorner;
+            Vector3f upper = sphCloud.upperCorner;
+
+            if(vel.lengthSquared()>speedlimit){
+                vel.normalise().scale(speedlimit);} //speed limiter
+
+            if((pos.x+ vel.x*dt > upper.x) || (pos.x+ vel.x*dt < lower.x))
+                vel.x*=-1f;
+            if((pos.y+ vel.y*dt > upper.y) || (pos.y+ vel.y*dt < lower.y))
+                vel.y*=-1f;
+            if((pos.x+ vel.z*dt > upper.z) || (pos.z+ vel.z*dt < lower.z))
+                vel.z*=-1f;
+            pos.set(pos.x+ vel.x*dt, pos.y+ vel.y*dt, pos.z+ vel.z*dt);
+
+            pos.set(
+                    Math.min(Math.max(lower.x, pos.x), upper.x),
+                    Math.min(Math.max(lower.y, pos.y), upper.y),
+                    Math.min(Math.max(lower.z, pos.z), upper.z)
+            );
+
+         */
+    }
+
+    public void updateVelocity(int particle){
+        /*for(particle p : theParticles){if(p!=null){
+            Vector3f accPressure = new Vector3f(0,0,0);
+            Vector3f accVisc = new Vector3f(0,0,0);
+            float accPressScale=0;
+            float accViscScale=0;
+
+            int len = p.myNeighbors.getEnd();
+
+            for(int i=0; i<len; i++){
+                if(p.myNeighbors.ints[i]!=0) {
+                    particle n = theParticles[p.myNeighbors.ints[i]];
+                    float kernalVal = n.kernal(n.distanceTo(p));
+                    float kernalVald = n.kernald(n.distanceTo(p));
+
+                    accPressScale = -1.0f * n.mass * (p.pressure / (p.density * p.density) + n.pressure / (n.density * n.density)) * kernalVal;
+                    accViscScale = p.mu * n.mass / n.density / p.density * kernalVald;
+
+                    accVisc.translate(
+                            accViscScale * (n.vel.x - p.vel.x),
+                            accViscScale * (n.vel.y - p.vel.y),
+                            accViscScale * (n.vel.z - p.vel.z)
+                    );
+
+                    accPressure.translate(
+                            accPressScale * (n.pos.x - p.pos.x),
+                            accPressScale * (n.pos.y - p.pos.y),
+                            accPressScale * (n.pos.z - p.pos.z)
+                    );
+                }
+            }
+
+            Vector3f accInteractive = new Vector3f(0,0,0);
+            Vector3f accGravity = new Vector3f(p.pos.x-center.x,p.pos.y-center.y,p.pos.z-center.z); //suction source at origin
+
+            if(gravityDown){
+                accGravity = new Vector3f(0,1f,0);
+            }
+
+            accGravity.normalise().scale(9f);
+
+            p.vel.translate(
+                    accPressure.x+accVisc.x+accInteractive.x-accGravity.x,
+                    accPressure.y+accVisc.y+accInteractive.y-accGravity.y,
+                    accPressure.z+accVisc.z+accInteractive.z-accGravity.z);
+
+        }}*/
+    }
+
+    public void updateDensity(int particle){/////////////////////////////////
+        float density=0f;
+        int len = getNumberOfNeighbors(particle);
+        for(int neighborNo=0; neighborNo<len; neighborNo++){
+            int neighborParticle = getNeighbor(particle,neighborNo);
+            density+=getMass(neighborParticle)*weight(distance(particle,neighborParticle));
+        }
+
+        setDensity(particle,density);
+    }
+
+    public void updatePressure(int particle){
+        float pressure = c*c*(getDensity(particle)-densREF);
+        setPressure(particle, pressure);
+    }
+
+    public float weight(float x){
+        //x*=1f;
+        return max(0,(1.0f - x*x)*1f);
+    }
+
+    public float weight_deriv(float x){
+        return -2f*x;
+    }
+
 
 }
