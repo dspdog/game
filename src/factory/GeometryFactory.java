@@ -118,7 +118,7 @@ public class GeometryFactory {
 
         glVertex3f(p.pos.x, p.pos.y, p.pos.z);
         glBegin(GL11.GL_TRIANGLE_FAN);
-        int segs = 6;
+        int segs = 5;
         float scale = sphCloud.gridSize/4f*fatness;
         for(int i=0; i<segs; i++){
             float sin = (float)(Math.sin(i * 2 * Math.PI / segs))*scale;
@@ -201,6 +201,7 @@ public class GeometryFactory {
     public static FloatBuffer[] getCSGVertexData(CSG csg, int tris){
         final FloatBuffer vertex_data = BufferUtils.createFloatBuffer(tris*9);
         final FloatBuffer color_data = BufferUtils.createFloatBuffer(tris*9);
+
         for(Polygon poly : csg.getPolygons()){
             for(int v=1; v<poly.vertices.size()-1; v++){
                 vertex_data.put((float)poly.vertices.get(0).pos.x).
@@ -338,7 +339,12 @@ public class GeometryFactory {
         glBufferData(GL_ARRAY_BUFFER, fbs[1], GL_STATIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-        return new int[]{vbo_vertex_handle,vbo_color_handle};
+        int vbo_texture_coords_handle = glGenBuffers();
+        glBindBuffer(GL_ARRAY_BUFFER, vbo_texture_coords_handle);
+        glBufferData(GL_ARRAY_BUFFER, fbs[2], GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        return new int[]{vbo_vertex_handle,vbo_color_handle, vbo_texture_coords_handle};
     }
 
     public static int gridSize = 256;
@@ -351,6 +357,7 @@ public class GeometryFactory {
         float b = color.z/32f;
         final FloatBuffer vert_data = BufferUtils.createFloatBuffer((gridSize/step * gridSize/step)*9*2);
         final FloatBuffer color_data = BufferUtils.createFloatBuffer((gridSize/step * gridSize/step)*9*2);
+        final FloatBuffer tex_data = BufferUtils.createFloatBuffer((gridSize/step * gridSize/step)*9*2);
 
         for(float _x=0; _x<gridSize; _x+=step){
             for(float __z=0; __z<gridSize; __z+=step){
@@ -380,7 +387,13 @@ public class GeometryFactory {
                          .put(x2).put(d.getValue(x2+offsetx, z2+offsetz,t)).put(z2)
                          .put(x4).put(d.getValue(x4+offsetx, z4+offsetz,t)).put(z4);
 
+                tex_data.put(x).put(z)
+                        .put(x2).put(z2)
+                        .put(x3).put(z3)
 
+                        .put(x3).put(z3)
+                        .put(x2).put(z2)
+                        .put(x4).put(z4);
 
                 color_data.put(d.getValue(x+offsetx, z+offsetz,t)* r).put(d.getValue(x+offsetx, z+offsetz,t)* g).put(d.getValue(x+offsetx, z+offsetz,t)* b);
                 color_data.put(d.getValue(x2+offsetx, z2+offsetz,t)* r).put(d.getValue(x2+offsetx, z2+offsetz,t)* g).put(d.getValue(x2+offsetx, z2+offsetz,t)* b);
@@ -393,7 +406,8 @@ public class GeometryFactory {
         }
         vert_data.flip();
         color_data.flip();
-        return new FloatBuffer[]{vert_data, color_data};
+        tex_data.flip();
+        return new FloatBuffer[]{vert_data, color_data, tex_data};
     }
 
     static void drawLinesByVBOHandles(int vertices, int[] handles){
@@ -422,9 +436,11 @@ public class GeometryFactory {
     public static void drawTrisByVBOHandles(int triangles, int[] handles){
         int vertex_size = 3; // X, Y, Z,
         int color_size = 3; // R, G, B,
+        int text_coord_size = 3; // X, Y, Z,
 
         int vbo_vertex_handle = handles[0];
         int vbo_color_handle = handles[1];
+        int vbo_texture_coord_handle = handles[2];
 
         glBindBuffer(GL_ARRAY_BUFFER, vbo_vertex_handle);
         glVertexPointer(vertex_size, GL_FLOAT, 0, 0L);
@@ -432,11 +448,18 @@ public class GeometryFactory {
         glBindBuffer(GL_ARRAY_BUFFER, vbo_color_handle);
         glColorPointer(color_size, GL_FLOAT, 0, 0L);
 
+        if(vbo_texture_coord_handle!=0){
+            glBindBuffer(GL_ARRAY_BUFFER, vbo_texture_coord_handle);
+            glTexCoordPointer(text_coord_size, GL_FLOAT, 0, 0L);
+        }
+
         glEnableClientState(GL_VERTEX_ARRAY);
         glEnableClientState(GL_COLOR_ARRAY);
+        glEnableClientState(GL_TEXTURE_2D);
 
         glDrawArrays(GL_TRIANGLES, 0, triangles*vertex_size);
 
+        glDisableClientState(GL_TEXTURE_2D);
         glDisableClientState(GL_COLOR_ARRAY);
         glDisableClientState(GL_VERTEX_ARRAY);
     }

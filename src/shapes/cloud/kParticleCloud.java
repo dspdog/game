@@ -11,7 +11,7 @@ public class kParticleCloud extends Kernel {
         final int PARTICLES_MAX = 20_000;
         public int numParticles=0;
 
-        final float neighborDistance = 1.0f;
+        final float neighborDistance = 1.4f;
         final float densREF = 1000; // kg/m^3
         final float mu = 0.01f; // kg/ms (dynamical viscosity))
         final float c = 1.9f; // m/s speed of sound
@@ -26,16 +26,16 @@ public class kParticleCloud extends Kernel {
 
     //PARTICLE PARAMS
         //velocity                                    //position                                    //density, mass, pressure
-        final float[] vx = new float[PARTICLES_MAX];  final float[] positionX = new float[PARTICLES_MAX];  final float[] pd = new float[PARTICLES_MAX];
-        final float[] vy = new float[PARTICLES_MAX];  final float[] positionY = new float[PARTICLES_MAX];  final float[] pm = new float[PARTICLES_MAX];
-        final float[] vz = new float[PARTICLES_MAX];  final float[] positionZ = new float[PARTICLES_MAX];  final float[] pp = new float[PARTICLES_MAX];
+        final float[] velocityX = new float[PARTICLES_MAX];  final float[] positionX = new float[PARTICLES_MAX];  final float[] pd = new float[PARTICLES_MAX];
+        final float[] velocityY = new float[PARTICLES_MAX];  final float[] positionY = new float[PARTICLES_MAX];  final float[] pm = new float[PARTICLES_MAX];
+        final float[] velocityZ = new float[PARTICLES_MAX];  final float[] positionZ = new float[PARTICLES_MAX];  final float[] pp = new float[PARTICLES_MAX];
 
-        final int MAX_NEIGHBORS = 32;
+        final int MAX_NEIGHBORS = 64;
         final int[] pn = new int[PARTICLES_MAX*MAX_NEIGHBORS]; //neighbors by index
         final int[] pnn = new int[PARTICLES_MAX]; //neighbors totals by index
 
         final int GRID_RES = 32;
-        final int GRID_SLOTS = 100;
+        final int GRID_SLOTS = 200;
         final int[] particleGrid = new int[GRID_RES*GRID_RES*GRID_RES * GRID_SLOTS];
         final int[] particleGridTotal = new int[GRID_RES*GRID_RES*GRID_RES];
 
@@ -148,14 +148,14 @@ public class kParticleCloud extends Kernel {
 
     public void importData(){ //TODO are most of these needed?
         this.put(positionX).put(positionY).put(positionZ)
-            .put(vx).put(vy).put(vz)
+            .put(velocityX).put(velocityY).put(velocityZ)
             .put(pd).put(pm).put(pp)
             .put(pn).put(pnn).put(particleGrid).put(particleGridTotal);
     }
 
     public void exportData(){
         this.get(positionX).get(positionY).get(positionZ);
-        this.get(vx).get(vy).get(vz).get(pd).get(pm).get(pp).get(pn).get(pnn).get(particleGrid).get(particleGridTotal);
+        this.get(velocityX).get(velocityY).get(velocityZ).get(pd).get(pm).get(pp).get(pn).get(pnn).get(particleGrid).get(particleGridTotal);
     }
 
     public particle getParticle(int particle){
@@ -183,47 +183,34 @@ public class kParticleCloud extends Kernel {
     }
 
     public void initParticle(int particle){
-        float velocityScale = 1f;
-
-        setVelocity(particle,
-                velocityScale * randZero() ,
-                velocityScale * randZero() ,
-                velocityScale * randZero());
-
+        setVelocity(particle,0,0,0);
         setPosition(particle,
                 rand()*(upperX-lowerX)+lowerX,
                 rand()*(upperY-lowerY)+lowerY,
                 rand()*(upperZ-lowerZ)+lowerZ);
-
         setMass(particle,0.01f);
         setDensity(particle,1f);
         setPressure(particle,1f);
     }
 
-    public void setVelocity(int particle, float x, float y, float z){vx[particle]=x; vy[particle]=y; vz[particle]=z;}
+    public void setVelocity(int particle, float x, float y, float z){
+        velocityX[particle]=x; velocityY[particle]=y; velocityZ[particle]=z;}
     public void setPosition(int particle, float x, float y, float z){
         positionX[particle]=x; positionY[particle]=y; positionZ[particle]=z;}
     public void setMass(int particle, float value){pm[particle]=value;}
     public void setDensity(int particle, float value){pd[particle]=value;}
     public void setPressure(int particle, float value){pp[particle]=value;}
 
-    public float getVelocityX(int particle){return vx[particle];}
-    public float getVelocityY(int particle){return vy[particle];}
-    public float getVelocityZ(int particle){return vz[particle];}
-
-    public void flipVelocityX(int particle){vx[particle]*=-1f;}
-    public void flipVelocityY(int particle){vy[particle]*=-1f;}
-    public void flipVelocityZ(int particle){vz[particle]*=-1f;}
-
-    public void translateVelocity(int particle, float x, float y, float z){vx[particle]+=x; vy[particle]+=y; vz[particle]+=z;}
+    public void translateVelocity(int particle, float x, float y, float z){
+        velocityX[particle]+=x; velocityY[particle]+=y; velocityZ[particle]+=z;}
     public void translatePosition(int particle, float x, float y, float z){
         positionX[particle]+=x; positionY[particle]+=y; positionZ[particle]+=z;}
 
     public void limitVelocity(int particle, float max){
-        float mag = sqrt(vx[particle]*vx[particle] + vy[particle]*vy[particle] + vz[particle]*vz[particle]);
+        float mag = sqrt(velocityX[particle]* velocityX[particle] + velocityY[particle]* velocityY[particle] + velocityZ[particle]* velocityZ[particle]);
         if(mag>max){
             float scale = max/mag;
-            setVelocity(particle, vx[particle]*scale, vy[particle]*scale, vz[particle]*scale);
+            setVelocity(particle, velocityX[particle]*scale, velocityY[particle]*scale, velocityZ[particle]*scale);
         }
     }
 
@@ -258,10 +245,10 @@ public class kParticleCloud extends Kernel {
         return false;
     }
 
-    public float distance(int i, int o){
-        float x = positionX[i]- positionX[o];
-        float y = positionY[i]- positionY[o];
-        float z = positionZ[i]- positionZ[o];
+    public float distance(int particle, int neighbor){
+        float x = positionX[particle]- positionX[neighbor];
+        float y = positionY[particle]- positionY[neighbor];
+        float z = positionZ[particle]- positionZ[neighbor];
         return sqrt(x*x+y*y+z*z);
     }
 
@@ -450,12 +437,12 @@ public class kParticleCloud extends Kernel {
         limitVelocity(particle, speedlimit);
 
         //flip velocities leaving box
-        if((positionX[particle]+getVelocityX(particle)*dt > upperX)||(positionX[particle]+getVelocityX(particle)*dt < lowerX)){flipVelocityX(particle);}
-        if((positionY[particle]+getVelocityY(particle)*dt > upperY)||(positionY[particle]+getVelocityY(particle)*dt < lowerY)){flipVelocityY(particle);}
-        if((positionZ[particle]+getVelocityZ(particle)*dt > upperZ)||(positionZ[particle]+getVelocityZ(particle)*dt < lowerZ)){flipVelocityZ(particle);}
+        if((positionX[particle]+velocityX[particle]*dt > upperX)||(positionX[particle]+velocityX[particle]*dt < lowerX)){velocityX[particle]*=-1f;}
+        if((positionY[particle]+velocityY[particle]*dt > upperY)||(positionY[particle]+velocityY[particle]*dt < lowerY)){velocityY[particle]*=-1f;}
+        if((positionZ[particle]+velocityZ[particle]*dt > upperZ)||(positionZ[particle]+velocityZ[particle]*dt < lowerZ)){velocityZ[particle]*=-1f;}
 
         //update positions
-        translatePosition(particle, getVelocityX(particle) * dt, getVelocityY(particle) * dt, getVelocityZ(particle) * dt);
+        translatePosition(particle, velocityX[particle] * dt, velocityY[particle] * dt, velocityZ[particle] * dt);
 
         //restrict position to box
         setPosition(particle,
@@ -487,9 +474,9 @@ public class kParticleCloud extends Kernel {
                                                          getPressure(neighbor) / (getDensity(neighbor) * getDensity(neighbor))) * weightVal;
             accViscScale = mu * getMass(neighbor) / getDensity(neighbor) / getDensity(particle) * weightVal_d;
 
-            accViscX+=accViscScale*(getVelocityX(neighbor) - getVelocityX(particle));
-            accViscY+=accViscScale*(getVelocityY(neighbor) - getVelocityY(particle));
-            accViscZ+=accViscScale*(getVelocityZ(neighbor) - getVelocityZ(particle));
+            accViscX+=accViscScale*(velocityX[neighbor] - velocityX[particle]);
+            accViscY+=accViscScale*(velocityY[neighbor] - velocityY[particle]);
+            accViscZ+=accViscScale*(velocityZ[neighbor] - velocityZ[particle]);
 
             accPressureX+=accPressScale*(positionX[neighbor] - positionX[particle]);
             accPressureY+=accPressScale*(positionY[neighbor] - positionY[particle]);
