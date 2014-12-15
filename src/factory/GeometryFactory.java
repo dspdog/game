@@ -114,8 +114,7 @@ public class GeometryFactory {
     }
 
     static void drawCircle(particle p, boolean cartoonMode){
-
-        float fatness = 1.9f;
+        float fatness = 1.5f;
 
         glVertex3f(p.pos.x, p.pos.y, p.pos.z);
         glBegin(GL11.GL_TRIANGLE_FAN);

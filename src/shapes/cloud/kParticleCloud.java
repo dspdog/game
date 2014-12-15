@@ -11,7 +11,7 @@ public class kParticleCloud extends Kernel {
         final int PARTICLES_MAX = 100000;
         public int numParticles=0;
 
-        final float neighborDistance = 2.5f;
+        final float neighborDistance = 2.0f;
         final float densREF = 1000; // kg/m^3
         final float mu = 0.01f; // kg/ms (dynamical viscosity))
         final float c = 1.9f; // m/s speed of sound
@@ -20,9 +20,9 @@ public class kParticleCloud extends Kernel {
 
         //bounding box
         final float boxSize = 200f;
-        public float lowerX = -boxSize;   public float upperX = boxSize;
-        public float lowerY = -boxSize;   public float upperY = boxSize;
-        public float lowerZ = -boxSize;   public float upperZ = boxSize;
+        public final float lowerX = -boxSize;   public final float upperX = boxSize;
+        public final float lowerY = -boxSize;   public final float upperY = boxSize;
+        public final float lowerZ = -boxSize;   public final float upperZ = boxSize;
 
     //PARTICLE PARAMS
         //velocity                                    //position                                    //density, mass, pressure
@@ -34,9 +34,77 @@ public class kParticleCloud extends Kernel {
         final int[] pn = new int[PARTICLES_MAX*MAX_NEIGHBORS]; //neighbors by index
         final int[] pnn = new int[PARTICLES_MAX]; //neighbors totals by index
 
+        final int GRID_RES = 32;
+        final int GRID_SLOTS = 100;
+        final int[] particleGrid = new int[GRID_RES*GRID_RES*GRID_RES * GRID_SLOTS];
+        final int[] particleGridTotal = new int[GRID_RES*GRID_RES*GRID_RES];
+
     public kParticleCloud(int _numParticles){
         numParticles=min(_numParticles, PARTICLES_MAX);
         generateParticles();
+    }
+
+    public void clearGrid(){
+
+        for(int i=0; i<particleGrid.length; i++){
+            particleGrid[i]=-1;
+        }
+
+        for(int i=0; i<particleGridTotal.length; i++){
+            particleGridTotal[i]=0;
+        }
+    }
+
+    public int getGridPos(float x, float y, float z){
+        int gridX = (int)(1f*GRID_RES*(x-lowerX)/(upperX-lowerX));
+        int gridY = (int)(1f*GRID_RES*(y-lowerY)/(upperY-lowerY));
+        int gridZ = (int)(1f*GRID_RES*(z-lowerZ)/(upperZ-lowerZ));
+
+        gridX = max(min(GRID_RES-1, gridX), 1);
+        gridY = max(min(GRID_RES-1, gridY), 1);
+        gridZ = max(min(GRID_RES-1, gridZ), 1);
+
+        return gridZ*GRID_RES*GRID_RES* GRID_SLOTS + gridY*GRID_RES* GRID_SLOTS + gridX* GRID_SLOTS;
+    }
+
+    public int getGridTotalsPos(float x, float y, float z){
+        int gridX = (int)(1f*GRID_RES*(x-lowerX)/(upperX-lowerX));
+        int gridY = (int)(1f*GRID_RES*(y-lowerY)/(upperY-lowerY));
+        int gridZ = (int)(1f*GRID_RES*(z-lowerZ)/(upperZ-lowerZ));
+
+        gridX = max(min(GRID_RES-1, gridX), 1);
+        gridY = max(min(GRID_RES-1, gridY), 1);
+        gridZ = max(min(GRID_RES-1, gridZ), 1);
+
+        return gridZ*GRID_RES*GRID_RES + gridY*GRID_RES + gridX;
+    }
+
+    public int getGridMember(int gridPos, int member){
+        member = min(member, GRID_SLOTS -1);
+        return particleGrid[gridPos + member];
+    }
+
+    public void addToGrid(int particle){
+        int gridPos = getGridPos(getPositionX(particle), getPositionY(particle), getPositionZ(particle));
+        int gridTotalsPos = getGridTotalsPos(getPositionX(particle), getPositionY(particle), getPositionZ(particle));
+
+        if(!alreadyInGrid(particle)){
+            particleGrid[gridPos + particleGridTotal[gridTotalsPos]] = particle;
+            particleGridTotal[gridTotalsPos]++;
+
+            particleGridTotal[gridTotalsPos]=min(particleGridTotal[gridTotalsPos], GRID_SLOTS -1);
+
+        }
+    }
+
+    public boolean alreadyInGrid(int particle){
+        int gridPos = getGridPos(getPositionX(particle), getPositionY(particle), getPositionZ(particle));
+        int gridTotalsPos = getGridTotalsPos(getPositionX(particle), getPositionY(particle), getPositionZ(particle));
+
+        for(int gridMemberNo=0; gridMemberNo<particleGridTotal[gridTotalsPos]; gridMemberNo++){
+            if(getGridMember(gridPos, gridMemberNo)==particle)return true;
+        }
+        return false;
     }
 
     public void generateParticles(){
@@ -51,12 +119,12 @@ public class kParticleCloud extends Kernel {
         this.put(px).put(py).put(pz)
             .put(vx).put(vy).put(vz)
             .put(pd).put(pm).put(pp)
-            .put(pn).put(pnn);
+            .put(pn).put(pnn).put(particleGrid).put(particleGridTotal);
     }
 
     public void exportAll(){
         this.get(px).get(py).get(pz);
-        this.get(vx).get(vy).get(vz).get(pd).get(pm).get(pp).get(pn).get(pnn);
+        this.get(vx).get(vy).get(vz).get(pd).get(pm).get(pp).get(pn).get(pnn).get(particleGrid).get(particleGridTotal);
     }
 
     public particle getParticle(int particle){
@@ -186,20 +254,48 @@ public class kParticleCloud extends Kernel {
        return (Sys.getTime() * 1000) / Sys.getTimerResolution();
     }
 
+    public int getTotalGridMembers(){
+        int total=0;
+        for(int i=0; i<particleGrid.length; i++){
+            if(particleGrid[i]!=-1){
+                total++;
+            }
+        }
+        return total;
+    }
+
+    public int getGridMax(){
+        int max=0;
+        for(int i=0; i<particleGridTotal.length; i++){
+            max = max(max, particleGridTotal[i]);
+        }
+        return max;
+    }
+
     public void update(){
+
+        float gridStep = (upperX-lowerX)/GRID_RES;
+        if(neighborDistance>gridStep/2){
+            System.out.println("bad grid step");
+        }
+
         long time1=System.currentTimeMillis();
 
         updateTime();
         this.setExplicit(true);
         Range range = Range.create(numParticles);
 
+        clearGrid();
+
         importData();
-        this.execute(range, 4);
+        this.execute(range, 5);
         exportAll();
+
         runNo++;
         float averageNeighbors = getAverageNeighbors();
 
-        limitedPrint(this.getExecutionMode() + " dt " + (dt*1000)+"ms parts " + numParticles + " exec" + (System.currentTimeMillis()-time1) + " avN " + averageNeighbors);
+        limitedPrint(this.getExecutionMode() + " dt " + (dt*1000)+"ms parts " + numParticles + " exec"
+                    + (System.currentTimeMillis()-time1) + " avN " + averageNeighbors + " grid " + getTotalGridMembers() + " max " + getGridMax());
     }
 
     public float getAverageNeighbors(){
@@ -224,27 +320,102 @@ public class kParticleCloud extends Kernel {
         int pass = getPassId();
 
         if(pass==0){
-            if(runNo%1==0){
-                findNeighbors(particle);
-            }
-        }else if(pass==1){
+            addToGrid(particle);
+        }if(pass==1){
+            //if(runNo%1==0)
+            findNeighbors(particle);
+        }else if(pass==2){
             updateDensity(particle);
             updatePressure(particle);
-        }else if(pass==2){
-            updateVelocity(particle);
         }else if(pass==3){
+            updateVelocity(particle);
+        }else if(pass==4){
             updatePosition(particle);
+        }
+    }
+
+    public void addNeighborsFromGrid(int particle, int gridPos, int gridTotalPos){
+        for(int gridMemberNo=0; gridMemberNo<particleGridTotal[gridTotalPos]; gridMemberNo++){
+            int gridMember=getGridMember(gridPos, gridMemberNo);
+            if(distance(gridMember,particle)<neighborDistance){
+                addNeighbor(particle,gridMember);
+            }
         }
     }
 
     public void findNeighbors(int particle){
         resetNeighbors(particle);
 
-        for(int o=0; o<numParticles; o++){
-            if(distance(o,particle)<neighborDistance){
-                addNeighbor(particle,o);
-            }
+        float x = getPositionX(particle);
+        float y = getPositionY(particle);
+        float z = getPositionZ(particle);
+
+        int _gridTotalPos = getGridTotalsPos(x, y, z); //record first grid location to avoid repeated queries
+
+        int gridTotalPos = getGridTotalsPos(x,y,z);
+        int gridPos = getGridPos(x, y, z);
+
+        addNeighborsFromGrid(particle,gridPos,gridTotalPos); //center of box
+
+        //top NW
+        gridTotalPos = getGridTotalsPos(x-neighborDistance,y-neighborDistance,z-neighborDistance);
+        if(gridTotalPos!=_gridTotalPos){
+            gridPos = getGridPos(x-neighborDistance,y-neighborDistance,z-neighborDistance);
+            addNeighborsFromGrid(particle,gridPos,gridTotalPos);
         }
+
+        //top NE
+        gridTotalPos = getGridTotalsPos(x+neighborDistance,y-neighborDistance,z-neighborDistance);
+        if(gridTotalPos!=_gridTotalPos) {
+            gridPos = getGridPos(x + neighborDistance, y - neighborDistance, z - neighborDistance);
+            addNeighborsFromGrid(particle, gridPos, gridTotalPos);
+        }
+
+        //top SW
+        gridTotalPos = getGridTotalsPos(x-neighborDistance,y+neighborDistance,z-neighborDistance);
+        if(gridTotalPos!=_gridTotalPos) {
+            gridPos = getGridPos(x - neighborDistance, y + neighborDistance, z - neighborDistance);
+            addNeighborsFromGrid(particle, gridPos, gridTotalPos);
+        }
+
+        //top SE
+        gridTotalPos = getGridTotalsPos(x+neighborDistance,y+neighborDistance,z-neighborDistance);
+        if(gridTotalPos!=_gridTotalPos) {
+            gridPos = getGridPos(x + neighborDistance, y + neighborDistance, z - neighborDistance);
+            addNeighborsFromGrid(particle, gridPos, gridTotalPos);
+        }
+
+        //bottom NW
+        gridTotalPos = getGridTotalsPos(x-neighborDistance,y-neighborDistance,z+neighborDistance);
+        if(gridTotalPos!=_gridTotalPos) {
+            gridPos = getGridPos(x - neighborDistance, y - neighborDistance, z + neighborDistance);
+            addNeighborsFromGrid(particle, gridPos, gridTotalPos);
+        }
+
+        //bottom NE
+        gridTotalPos = getGridTotalsPos(x+neighborDistance,y-neighborDistance,z+neighborDistance);
+        if(gridTotalPos!=_gridTotalPos) {
+            gridPos = getGridPos(x + neighborDistance, y - neighborDistance, z + neighborDistance);
+            addNeighborsFromGrid(particle, gridPos, gridTotalPos);
+        }
+
+        //bottom SW
+        gridTotalPos = getGridTotalsPos(x-neighborDistance,y+neighborDistance,z+neighborDistance);
+        if(gridTotalPos!=_gridTotalPos) {
+            gridPos = getGridPos(x - neighborDistance, y + neighborDistance, z + neighborDistance);
+            addNeighborsFromGrid(particle, gridPos, gridTotalPos);
+        }
+
+        //bottom SE
+        gridTotalPos = getGridTotalsPos(x+neighborDistance,y+neighborDistance,z+neighborDistance);
+        if(gridTotalPos!=_gridTotalPos) {
+            gridPos = getGridPos(x + neighborDistance, y + neighborDistance, z + neighborDistance);
+            addNeighborsFromGrid(particle, gridPos, gridTotalPos);
+        }
+
+        addNeighbor(particle,particle); //always include self
+
+        //TODO check grid resolution is low enough...
     }
 
     public void updatePosition(int particle){
