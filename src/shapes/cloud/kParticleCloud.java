@@ -19,14 +19,10 @@ public class kParticleCloud extends Kernel {
 
     //PARTICLE PARAMS
 
-    //velocity                                    //position
-    final float[] vx = new float[PARTICLES_MAX];  final float[] px = new float[PARTICLES_MAX];
-    final float[] vy = new float[PARTICLES_MAX];  final float[] py = new float[PARTICLES_MAX];
-    final float[] vz = new float[PARTICLES_MAX];  final float[] pz = new float[PARTICLES_MAX];
-
-    final float[] pd = new float[PARTICLES_MAX]; //density
-    final float[] pm = new float[PARTICLES_MAX]; //mass
-    final float[] pp = new float[PARTICLES_MAX]; //pressure
+    //velocity                                    //position                                    //density, mass, pressure
+    final float[] vx = new float[PARTICLES_MAX];  final float[] px = new float[PARTICLES_MAX];  final float[] pd = new float[PARTICLES_MAX];
+    final float[] vy = new float[PARTICLES_MAX];  final float[] py = new float[PARTICLES_MAX];  final float[] pm = new float[PARTICLES_MAX];
+    final float[] vz = new float[PARTICLES_MAX];  final float[] pz = new float[PARTICLES_MAX];  final float[] pp = new float[PARTICLES_MAX];
 
     final int MAX_NEIGHBORS = 20;
     final int[] pn = new int[PARTICLES_MAX*MAX_NEIGHBORS]; //neighbors by index
@@ -57,6 +53,17 @@ public class kParticleCloud extends Kernel {
     public void setMass(int particle, float value){pm[particle]=value;}
     public void setDensity(int particle, float value){pd[particle]=value;}
     public void setPressure(int particle, float value){pp[particle]=value;}
+
+    public float getVelocityX(int particle){return vx[particle];}
+    public float getVelocityY(int particle){return vy[particle];}
+    public float getVelocityZ(int particle){return vz[particle];}
+
+    public void translateVelocity(int particle, float x, float y, float z){vx[particle]+=x; vy[particle]+=y; vz[particle]+=z;}
+    public void translatePosition(int particle, float x, float y, float z){px[particle]+=x; py[particle]+=y; pz[particle]+=z;}
+
+    public float getPositionX(int particle){return px[particle];}
+    public float getPositionY(int particle){return py[particle];}
+    public float getPositionZ(int particle){return pz[particle];}
 
     public float getMass(int particle){return pm[particle];}
     public float getDensity(int particle){return pd[particle];}
@@ -198,37 +205,25 @@ public class kParticleCloud extends Kernel {
             neighbor = getNeighbor(particle, neighborNo);
             weightVal=weight(distance(particle,neighbor));
             weightVal_d=weight_deriv(distance(particle, neighbor));
+
+            accPressScale = -1.0f * getMass(neighbor) * (getPressure(particle) / (getDensity(particle) * getDensity(particle)) +
+                                                         getPressure(neighbor) / (getDensity(neighbor) * getDensity(neighbor))) * weightVal;
+            accViscScale = mu * getMass(neighbor) / getDensity(neighbor) / getDensity(particle) * weightVal_d;
+
+            accViscX+=accViscScale*(getVelocityX(neighbor) - getVelocityX(particle));         accPressureX+=accPressScale*(getPositionX(neighbor) - getPositionX(particle));
+            accViscY+=accViscScale*(getVelocityY(neighbor) - getVelocityY(particle));         accPressureY+=accPressScale*(getPositionY(neighbor) - getPositionY(particle));
+            accViscZ+=accViscScale*(getVelocityZ(neighbor) - getVelocityZ(particle));         accPressureZ+=accPressScale*(getPositionZ(neighbor) - getPositionZ(particle));
         }
 
-            /*
-            accPressScale = -1.0f * n.mass * (p.pressure / (p.density * p.density) + n.pressure / (n.density * n.density)) * kernalVal;
-            accViscScale = p.mu * n.mass / n.density / p.density * kernalVald;
+        //if(gravityDown){
+        //    accGravity = new Vector3f(0,1f,0);
+        //}
+        //accGravity.normalise().scale(9f);
 
-            accVisc.translate(
-                    accViscScale * (n.vel.x - p.vel.x),
-                    accViscScale * (n.vel.y - p.vel.y),
-                    accViscScale * (n.vel.z - p.vel.z)
-            );
-
-            accPressure.translate(
-                    accPressScale * (n.pos.x - p.pos.x),
-                    accPressScale * (n.pos.y - p.pos.y),
-                    accPressScale * (n.pos.z - p.pos.z)
-            );
-             */
-
-        /*
-            if(gravityDown){
-                accGravity = new Vector3f(0,1f,0);
-            }
-
-            accGravity.normalise().scale(9f);
-
-            p.vel.translate(
-                    accPressure.x+accVisc.x+accInteractive.x-accGravity.x,
-                    accPressure.y+accVisc.y+accInteractive.y-accGravity.y,
-                    accPressure.z+accVisc.z+accInteractive.z-accGravity.z);
-            */
+        translateVelocity(particle,
+                            accPressureX+accViscX+accInteractiveX-accGravX,
+                            accPressureY+accViscY+accInteractiveY-accGravY,
+                            accPressureZ+accViscZ+accInteractiveZ-accGravZ);
     }
 
     public void updateDensity(int particle){/////////////////////////////////
