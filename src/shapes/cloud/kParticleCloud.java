@@ -2,7 +2,6 @@ package shapes.cloud;
 import com.amd.aparapi.Kernel;
 import com.amd.aparapi.Range;
 import org.lwjgl.Sys;
-import org.lwjgl.util.vector.Vector3f;
 
 /**
  * Created by user on 12/13/2014.
@@ -41,10 +40,11 @@ public class kParticleCloud extends Kernel {
     }
 
     public void generateParticles(){
-        for(int i=0; i<numParticles; i++){
+        for(int i=0; i<PARTICLES_MAX; i++){
             initParticle(i);
             resetNeighbors(i);
         }
+        exportAll();
     }
 
     public void importData(){ //TODO are most of these needed?
@@ -54,9 +54,9 @@ public class kParticleCloud extends Kernel {
             .put(pn).put(pnn);
     }
 
-    public void exportPositions(){
+    public void exportAll(){
         this.get(px).get(py).get(pz);
-        //this.get(vx).get(vy).get(vz).get(pd).get(pm).get(pp).get(pn).get(pnn);
+        this.get(vx).get(vy).get(vz).get(pd).get(pm).get(pp).get(pn).get(pnn);
     }
 
     public particle getParticle(int particle){
@@ -84,7 +84,7 @@ public class kParticleCloud extends Kernel {
     }
 
     public void initParticle(int particle){
-        float velocityScale = 0.01f;
+        float velocityScale = 1f;
 
         setVelocity(particle,
                 velocityScale * randZero() ,
@@ -173,11 +173,11 @@ public class kParticleCloud extends Kernel {
     public void updateTime(){
         lastTime=time;
         time = getTime();
-        dt=(time-lastTime)*0.001f;
+        dt=(time-lastTime)*0.1f;
     }
 
     public float dt;
-    public long time;
+    public long time=getTime();
     public long lastTime;
 
     private static long getTime() {
@@ -192,8 +192,8 @@ public class kParticleCloud extends Kernel {
         Range range = Range.create(numParticles);
 
         importData();
-        this.execute(range, 4);
-        exportPositions();
+        this.execute(range, 1);
+        exportAll();
 
         limitedPrint(this.getExecutionMode() + " dt " + (dt*1000)+"ms parts" + numParticles + " exec" + (System.currentTimeMillis()-time1));
     }
@@ -212,15 +212,16 @@ public class kParticleCloud extends Kernel {
         int pass = getPassId();
 
         if(pass==0){
-            findNeighbors(particle);
-        }else if(pass==1){
+            updatePosition(particle);
+            //findNeighbors(particle);
+        }/*else if(pass==1){
             updateDensity(particle);
             updatePressure(particle);
         }else if(pass==2){
             updateVelocity(particle);
         }else if(pass==3){
             updatePosition(particle);
-        }
+        }*/
     }
 
     public void findNeighbors(int particle){
@@ -233,12 +234,12 @@ public class kParticleCloud extends Kernel {
     }
 
     public void updatePosition(int particle){
-        //limitVelocity(particle, speedlimit);
+        limitVelocity(particle, speedlimit);
 
         //flip velocities leaving box
-        if((getPositionX(particle)+getVelocityX(particle)*dt > upperX)||(getPositionX(particle)+getVelocityX(particle)*dt < lowerX))flipVelocityX(particle);
-        if((getPositionY(particle)+getVelocityY(particle)*dt > upperY)||(getPositionY(particle)+getVelocityY(particle)*dt < lowerY))flipVelocityY(particle);
-        if((getPositionZ(particle)+getVelocityZ(particle)*dt > upperZ)||(getPositionZ(particle)+getVelocityZ(particle)*dt < lowerZ))flipVelocityZ(particle);
+        if((getPositionX(particle)+getVelocityX(particle)*dt > upperX)||(getPositionX(particle)+getVelocityX(particle)*dt < lowerX)){flipVelocityX(particle);}
+        if((getPositionY(particle)+getVelocityY(particle)*dt > upperY)||(getPositionY(particle)+getVelocityY(particle)*dt < lowerY)){flipVelocityY(particle);}
+        if((getPositionZ(particle)+getVelocityZ(particle)*dt > upperZ)||(getPositionZ(particle)+getVelocityZ(particle)*dt < lowerZ)){flipVelocityZ(particle);}
 
         //update positions
         translatePosition(particle, getVelocityX(particle) * dt, getVelocityY(particle) * dt, getVelocityZ(particle) * dt);
