@@ -12,7 +12,7 @@ public class kParticleCloud extends Kernel {
         final int PARTICLES_MAX = 100000;
         public int numParticles=0;
 
-        final float neighborDistance = 5.0f;
+        final float neighborDistance = 1.0f;
         final float densREF = 1000; // kg/m^3
         final float mu = 0.01f; // kg/ms (dynamical viscosity))
         final float c = 1.9f; // m/s speed of sound
@@ -31,7 +31,7 @@ public class kParticleCloud extends Kernel {
         final float[] vy = new float[PARTICLES_MAX];  final float[] py = new float[PARTICLES_MAX];  final float[] pm = new float[PARTICLES_MAX];
         final float[] vz = new float[PARTICLES_MAX];  final float[] pz = new float[PARTICLES_MAX];  final float[] pp = new float[PARTICLES_MAX];
 
-        final int MAX_NEIGHBORS = 20;
+        final int MAX_NEIGHBORS = 50;
         final int[] pn = new int[PARTICLES_MAX*MAX_NEIGHBORS]; //neighbors by index
         final int[] pnn = new int[PARTICLES_MAX]; //neighbors totals by index
 
@@ -56,6 +56,7 @@ public class kParticleCloud extends Kernel {
 
     public void exportPositions(){
         this.get(px).get(py).get(pz);
+        //this.get(vx).get(vy).get(vz).get(pd).get(pm).get(pp).get(pn).get(pnn);
     }
 
     public particle getParticle(int particle){
@@ -78,13 +79,17 @@ public class kParticleCloud extends Kernel {
         return (randInt()/(1f*Integer.MAX_VALUE)+1f)/2f;
     }
 
+    float randZero(){ //random float from -1 to 1
+        return (randInt()/(1f*Integer.MAX_VALUE));
+    }
+
     public void initParticle(int particle){
         float velocityScale = 0.01f;
 
         setVelocity(particle,
-                velocityScale * rand() ,
-                velocityScale * rand() ,
-                velocityScale * rand());
+                velocityScale * randZero() ,
+                velocityScale * randZero() ,
+                velocityScale * randZero());
 
         setPosition(particle,
                 rand()*(upperX-lowerX)+lowerX,
@@ -304,11 +309,14 @@ public class kParticleCloud extends Kernel {
     }
 
     public float weight(float x){
-        //x*=1f;
+        if(x>neighborDistance)return 0;
+        x/=neighborDistance;
         return max(0,(1.0f - x*x)*1f);
     }
 
     public float weight_deriv(float x){
+        if(x>neighborDistance)return 0;
+        x/=neighborDistance;
         return -2f*x;
     }
 
