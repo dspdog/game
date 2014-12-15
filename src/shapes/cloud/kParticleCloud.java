@@ -17,6 +17,8 @@ public class kParticleCloud extends Kernel {
     final float mu = 0.01f; // kg/ms (dynamical viscosity))
     final float c = 1.9f; // m/s speed of sound
 
+    final float speedlimit = 0.1f;
+
     //PARTICLE PARAMS
 
     //velocity                                    //position                                    //density, mass, pressure
@@ -58,8 +60,20 @@ public class kParticleCloud extends Kernel {
     public float getVelocityY(int particle){return vy[particle];}
     public float getVelocityZ(int particle){return vz[particle];}
 
+    public void flipVelocityX(int particle){vx[particle]*=-1f;}
+    public void flipVelocityY(int particle){vy[particle]*=-1f;}
+    public void flipVelocityZ(int particle){vz[particle]*=-1f;}
+
     public void translateVelocity(int particle, float x, float y, float z){vx[particle]+=x; vy[particle]+=y; vz[particle]+=z;}
     public void translatePosition(int particle, float x, float y, float z){px[particle]+=x; py[particle]+=y; pz[particle]+=z;}
+
+    public void limitVelocity(int particle, float max){
+        float magSq = vx[particle]*vx[particle] + vy[particle]*vy[particle] + vz[particle]*vz[particle];
+        if(magSq>max*max){
+            float mag = sqrt(magSq)/max;
+            setVelocity(particle, vx[particle]/mag, vy[particle]/mag, vz[particle]/mag);
+        }
+    }
 
     public float getPositionX(int particle){return px[particle];}
     public float getPositionY(int particle){return py[particle];}
@@ -164,28 +178,28 @@ public class kParticleCloud extends Kernel {
     }
 
     public void updatePosition(int particle){
-        /*
-            Vector3f lower = sphCloud.lowerCorner;
-            Vector3f upper = sphCloud.upperCorner;
 
-            if(vel.lengthSquared()>speedlimit){
-                vel.normalise().scale(speedlimit);} //speed limiter
+        float boxSize = 100f;
+        float lowerX = -boxSize;   float upperX = boxSize;
+        float lowerY = -boxSize;   float upperY = boxSize;
+        float lowerZ = -boxSize;   float upperZ = boxSize;
 
-            if((pos.x+ vel.x*dt > upper.x) || (pos.x+ vel.x*dt < lower.x))
-                vel.x*=-1f;
-            if((pos.y+ vel.y*dt > upper.y) || (pos.y+ vel.y*dt < lower.y))
-                vel.y*=-1f;
-            if((pos.x+ vel.z*dt > upper.z) || (pos.z+ vel.z*dt < lower.z))
-                vel.z*=-1f;
-            pos.set(pos.x+ vel.x*dt, pos.y+ vel.y*dt, pos.z+ vel.z*dt);
+        limitVelocity(particle, speedlimit);
 
-            pos.set(
-                    Math.min(Math.max(lower.x, pos.x), upper.x),
-                    Math.min(Math.max(lower.y, pos.y), upper.y),
-                    Math.min(Math.max(lower.z, pos.z), upper.z)
-            );
+        //flip velocities leaving box
+        if((getPositionX(particle)+getVelocityX(particle)*dt > upperX)||(getPositionX(particle)+getVelocityX(particle)*dt < lowerX))flipVelocityX(particle);
+        if((getPositionY(particle)+getVelocityY(particle)*dt > upperY)||(getPositionY(particle)+getVelocityY(particle)*dt < lowerY))flipVelocityY(particle);
+        if((getPositionZ(particle)+getVelocityZ(particle)*dt > upperZ)||(getPositionZ(particle)+getVelocityZ(particle)*dt < lowerZ))flipVelocityZ(particle);
 
-         */
+        //update positions
+        translatePosition(particle, getVelocityX(particle) * dt, getVelocityY(particle) * dt, getVelocityZ(particle) * dt);
+
+        //restrict position to box
+        setPosition(particle,
+                min(max(lowerX, getPositionX(particle)), upperX),
+                min(max(lowerY, getPositionY(particle)), upperY),
+                min(max(lowerZ, getPositionZ(particle)), upperZ)
+        );
     }
 
     public void updateVelocity(int particle){
