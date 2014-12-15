@@ -73,7 +73,7 @@ public class GeometryFactory {
             b = (p.pos.z-cloud.lowerZ)/(cloud.upperZ - cloud.lowerZ);
 
             glColor3f(r, g, b);
-            drawCircle(p, true);
+            drawCircle(p, false);
         }
 
 
