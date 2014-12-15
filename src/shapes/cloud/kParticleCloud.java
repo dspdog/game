@@ -96,7 +96,7 @@ public class kParticleCloud extends Kernel {
                 rand()*(upperY-lowerY)+lowerY,
                 rand()*(upperZ-lowerZ)+lowerZ);
 
-        setMass(particle,1f);
+        setMass(particle,0.01f);
         setDensity(particle,1f);
         setPressure(particle,1f);
     }
@@ -192,7 +192,7 @@ public class kParticleCloud extends Kernel {
         Range range = Range.create(numParticles);
 
         importData();
-        this.execute(range, 1);
+        this.execute(range, 4);
         exportAll();
 
         limitedPrint(this.getExecutionMode() + " dt " + (dt*1000)+"ms parts" + numParticles + " exec" + (System.currentTimeMillis()-time1));
@@ -212,16 +212,15 @@ public class kParticleCloud extends Kernel {
         int pass = getPassId();
 
         if(pass==0){
-            updatePosition(particle);
-            //findNeighbors(particle);
-        }/*else if(pass==1){
+            findNeighbors(particle);
+        }else if(pass==1){
             updateDensity(particle);
             updatePressure(particle);
         }else if(pass==2){
             updateVelocity(particle);
         }else if(pass==3){
             updatePosition(particle);
-        }*/
+        }
     }
 
     public void findNeighbors(int particle){
@@ -294,13 +293,12 @@ public class kParticleCloud extends Kernel {
     }
 
     public void updateDensity(int particle){/////////////////////////////////
-        float density=0f;
+        float density=getDensity(particle);
         int len = getNumberOfNeighbors(particle);
         for(int neighborNo=0; neighborNo<len; neighborNo++){
             int neighborParticle = getNeighbor(particle,neighborNo);
             density+=getMass(neighborParticle)*weight(distance(particle,neighborParticle));
         }
-
         setDensity(particle,density);
     }
 
@@ -320,6 +318,4 @@ public class kParticleCloud extends Kernel {
         x/=neighborDistance;
         return -2f*x;
     }
-
-
 }
