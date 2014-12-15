@@ -2,6 +2,7 @@ package shapes.cloud;
 import com.amd.aparapi.Kernel;
 import com.amd.aparapi.Range;
 import org.lwjgl.Sys;
+import org.lwjgl.util.vector.Vector3f;
 
 /**
  * Created by user on 12/13/2014.
@@ -9,20 +10,20 @@ import org.lwjgl.Sys;
 public class kParticleCloud extends Kernel {
     //CLOUD PARAMS
         final int PARTICLES_MAX = 100000;
-        int numParticles=0;
+        public int numParticles=0;
 
-        final float neighborDistance = 1.0f;
+        final float neighborDistance = 5.0f;
         final float densREF = 1000; // kg/m^3
         final float mu = 0.01f; // kg/ms (dynamical viscosity))
         final float c = 1.9f; // m/s speed of sound
 
-        final float speedlimit = 0.1f;
+        final float speedlimit = 1f;
 
         //bounding box
-        float boxSize = 100f;
-        float lowerX = -boxSize;   float upperX = boxSize;
-        float lowerY = -boxSize;   float upperY = boxSize;
-        float lowerZ = -boxSize;   float upperZ = boxSize;
+        final float boxSize = 200f;
+        public float lowerX = -boxSize;   public float upperX = boxSize;
+        public float lowerY = -boxSize;   public float upperY = boxSize;
+        public float lowerZ = -boxSize;   public float upperZ = boxSize;
 
     //PARTICLE PARAMS
         //velocity                                    //position                                    //density, mass, pressure
@@ -57,6 +58,14 @@ public class kParticleCloud extends Kernel {
         this.get(px).get(py).get(pz);
     }
 
+    public particle getParticle(int particle){
+        particle p = new particle();
+        p.pos.x=getPositionX(particle);
+        p.pos.y=getPositionY(particle);
+        p.pos.z=getPositionZ(particle);
+        return p;
+    }
+
     int seed = 123456789;
     int randInt() { //random positive or negative integers
         int a = 1103515245;
@@ -70,12 +79,12 @@ public class kParticleCloud extends Kernel {
     }
 
     public void initParticle(int particle){
-        float velocityScale = 0.1f;
+        float velocityScale = 0.01f;
 
         setVelocity(particle,
-                velocityScale * rand() * (upperX - lowerX) + lowerX,
-                velocityScale * rand() * (upperY - lowerY) + lowerY,
-                velocityScale * rand() * (upperZ - lowerZ) + lowerZ);
+                velocityScale * rand() ,
+                velocityScale * rand() ,
+                velocityScale * rand());
 
         setPosition(particle,
                 rand()*(upperX-lowerX)+lowerX,
@@ -105,10 +114,10 @@ public class kParticleCloud extends Kernel {
     public void translatePosition(int particle, float x, float y, float z){px[particle]+=x; py[particle]+=y; pz[particle]+=z;}
 
     public void limitVelocity(int particle, float max){
-        float magSq = vx[particle]*vx[particle] + vy[particle]*vy[particle] + vz[particle]*vz[particle];
-        if(magSq>max*max){
-            float mag = sqrt(magSq)/max;
-            setVelocity(particle, vx[particle]/mag, vy[particle]/mag, vz[particle]/mag);
+        float mag = sqrt(vx[particle]*vx[particle] + vy[particle]*vy[particle] + vz[particle]*vz[particle]);
+        if(mag>max){
+            float scale = max/mag;
+            setVelocity(particle, vx[particle]*scale, vy[particle]*scale, vz[particle]*scale);
         }
     }
 
@@ -167,7 +176,7 @@ public class kParticleCloud extends Kernel {
     public long lastTime;
 
     private static long getTime() {
-        return (Sys.getTime() * 1000) / Sys.getTimerResolution();
+       return (Sys.getTime() * 1000) / Sys.getTimerResolution();
     }
 
     public void update(){
@@ -219,7 +228,7 @@ public class kParticleCloud extends Kernel {
     }
 
     public void updatePosition(int particle){
-        limitVelocity(particle, speedlimit);
+        //limitVelocity(particle, speedlimit);
 
         //flip velocities leaving box
         if((getPositionX(particle)+getVelocityX(particle)*dt > upperX)||(getPositionX(particle)+getVelocityX(particle)*dt < lowerX))flipVelocityX(particle);

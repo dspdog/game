@@ -30,28 +30,17 @@ public class gameWorldWater implements Runnable {
         while(running){
 
             try {
-                if(getTime()-lastNeighborUpdate>1) {
-                    sphCloud.findNeighbors();
-                    lastNeighborUpdate = getTime();
-                }
-
                 if(getTime()-lastPosUpdate>1) {
-
                     scene.myKCloud.update();
-
-                    sphCloud.updateParticleVelocities();
-                    sphCloud.updateParticlePositions();
-                    particle.updateTime();
                     lastPosUpdate = getTime();
                 }
 
                 if(getTime()-lastSurfaceUpdate>100) {
                     //getSurface();
-
                     lastSurfaceUpdate = getTime();
                 }
 
-                Thread.sleep(1);
+                Thread.sleep(10);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

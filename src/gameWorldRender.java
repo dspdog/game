@@ -118,7 +118,7 @@ public class gameWorldRender {
         WorldObject theWaves = new WorldObject((float x, float y, float t) -> GeographyFactory.oceanWaves(x, y, t)).setUpdateInterval(10).setColor(0,0,1.0f);
 
         WorldObject theParticles = new WorldObject(-1, theGround, TextureFactory.ballTexture());
-        WorldObject kCloud = new WorldObject(1000);
+        WorldObject kCloud = new WorldObject(100);
 
         myScene.myKCloud = kCloud.myKCloud;
 
@@ -126,7 +126,7 @@ public class gameWorldRender {
 
         //myScene.addWorldObject(theWaves);
         //myScene.addWorldObject(theGround);
-        myScene.addWorldObject(theParticles);
+        //myScene.addWorldObject(theParticles);
         myScene.addWorldObject(kCloud);
     }
 

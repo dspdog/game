@@ -51,6 +51,11 @@ public class particle {
         updateGridPos();
     }
 
+    public particle(){
+        vel = new Vector3f(0,0,0);
+        pos = new Vector3f(0,0,0);
+    }
+
     public particle emptyParticle(){
         myIndex=0;
 

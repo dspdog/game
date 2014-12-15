@@ -63,27 +63,25 @@ public class GeometryFactory {
 
     public static void kcloud(kParticleCloud cloud){
         long time = System.currentTimeMillis();
+        float r,g,b;
 
-        /*float r,g,b;
-        if(sphCloud.gridInited)
-            for(particle p : cloud.theParticles){
-                if(p!=null && p.myIndex !=0){
-                    r = (p.pos.x-sphCloud.lowerCorner.x)/(sphCloud.upperCorner.x - sphCloud.lowerCorner.x);
-                    g = (p.pos.y-sphCloud.lowerCorner.y)/(sphCloud.upperCorner.y - sphCloud.lowerCorner.y);
-                    b = (p.pos.z-sphCloud.lowerCorner.z)/(sphCloud.upperCorner.z - sphCloud.lowerCorner.z);
-                    // float d = p.myNeighbors.size()/12f;
+        for(int particleNo=0; particleNo<cloud.numParticles; particleNo++){
+            particle p = cloud.getParticle(particleNo);
+
+            r = (p.pos.x-cloud.lowerX)/(cloud.upperX - cloud.lowerX);
+            g = (p.pos.y-cloud.lowerY)/(cloud.upperY - cloud.lowerY);
+            b = (p.pos.z-cloud.lowerZ)/(cloud.upperZ - cloud.lowerZ);
+
+            glColor3f(r, g, b);
+            drawCircle(p, true);
+        }
 
 
+        //glColor3f(0.5f, 0f, 0f);
+        //drawBox(sphCloud.lowerCornerBoundsFinal, sphCloud.upperCornerBoundsFinal);
 
-                    glColor3f(r, g, b);
-                    drawCircle(p, true);
-                }
-            }
         glColor3f(0f, 0f, 0f);
-        drawBox(sphCloud.lowerCorner, sphCloud.upperCorner);
-        glColor3f(0.5f, 0f, 0f);
-        drawBox(sphCloud.lowerCornerBoundsFinal, sphCloud.upperCornerBoundsFinal);
-        */
+        drawBox(new Vector3f(cloud.lowerX, cloud.lowerY, cloud.lowerZ), new Vector3f(cloud.upperX, cloud.upperY, cloud.upperZ));
     }
 
     static void drawBox(Vector3f upperCorner, Vector3f lowerCorner){
