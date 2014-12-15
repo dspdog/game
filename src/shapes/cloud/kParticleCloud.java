@@ -11,12 +11,12 @@ public class kParticleCloud extends Kernel {
         final int PARTICLES_MAX = 100000;
         public int numParticles=0;
 
-        final float neighborDistance = 1.0f;
+        final float neighborDistance = 2.5f;
         final float densREF = 1000; // kg/m^3
         final float mu = 0.01f; // kg/ms (dynamical viscosity))
         final float c = 1.9f; // m/s speed of sound
 
-        final float speedlimit = 1f;
+        final float speedlimit = 2f;
 
         //bounding box
         final float boxSize = 200f;
@@ -173,12 +173,14 @@ public class kParticleCloud extends Kernel {
     public void updateTime(){
         lastTime=time;
         time = getTime();
-        dt=(time-lastTime)*0.1f;
+        dt=(time-lastTime)*0.21f;
     }
 
     public float dt;
     public long time=getTime();
     public long lastTime;
+    public boolean gravityDown = false;
+    public long runNo=0;
 
     private static long getTime() {
        return (Sys.getTime() * 1000) / Sys.getTimerResolution();
@@ -194,8 +196,18 @@ public class kParticleCloud extends Kernel {
         importData();
         this.execute(range, 4);
         exportAll();
+        runNo++;
+        float averageNeighbors = getAverageNeighbors();
 
-        limitedPrint(this.getExecutionMode() + " dt " + (dt*1000)+"ms parts" + numParticles + " exec" + (System.currentTimeMillis()-time1));
+        limitedPrint(this.getExecutionMode() + " dt " + (dt*1000)+"ms parts " + numParticles + " exec" + (System.currentTimeMillis()-time1) + " avN " + averageNeighbors);
+    }
+
+    public float getAverageNeighbors(){
+        float total=0;
+        for(int i=0; i<numParticles; i++){
+            total+=getNumberOfNeighbors(i);
+        }
+        return total/numParticles;
     }
 
     static long lastPrint = 0;
@@ -212,7 +224,9 @@ public class kParticleCloud extends Kernel {
         int pass = getPassId();
 
         if(pass==0){
-            findNeighbors(particle);
+            if(runNo%1==0){
+                findNeighbors(particle);
+            }
         }else if(pass==1){
             updateDensity(particle);
             updatePressure(particle);
@@ -225,6 +239,7 @@ public class kParticleCloud extends Kernel {
 
     public void findNeighbors(int particle){
         resetNeighbors(particle);
+
         for(int o=0; o<numParticles; o++){
             if(distance(o,particle)<neighborDistance){
                 addNeighbor(particle,o);
@@ -252,7 +267,7 @@ public class kParticleCloud extends Kernel {
     }
 
     public void updateVelocity(int particle){
-        float accPressureX=0f;   float accViscX=0f;   float accInteractiveX=0f;   float accGravX=0f;// new Vector3f(p.pos.x-center.x,p.pos.y-center.y,p.pos.z-center.z); //suction source at origin
+        float accPressureX=0f;   float accViscX=0f;   float accInteractiveX=0f;   float accGravX=0f;
         float accPressureY=0f;   float accViscY=0f;   float accInteractiveY=0f;   float accGravY=0f;
         float accPressureZ=0f;   float accViscZ=0f;   float accInteractiveZ=0f;   float accGravZ=0f;
 
@@ -281,10 +296,21 @@ public class kParticleCloud extends Kernel {
             accPressureY+=accPressScale*(getPositionY(neighbor) - getPositionY(particle));
             accPressureZ+=accPressScale*(getPositionZ(neighbor) - getPositionZ(particle));
         }
-        //if(gravityDown){
-        //    accGravity = new Vector3f(0,1f,0);
-        //}
-        //accGravity.normalise().scale(9f);
+
+        float gravScale = dt/30f;
+        if(gravityDown){
+            accGravX=0f;
+            accGravY=gravScale;
+            accGravZ=0f;
+        }else{
+            float mag = sqrt(
+                    getPositionX(particle)*getPositionX(particle) +
+                    getPositionY(particle)*getPositionY(particle) +
+                    getPositionZ(particle)*getPositionZ(particle));
+            accGravX = gravScale*getPositionX(particle)/mag;
+            accGravY = gravScale*getPositionY(particle)/mag;
+            accGravZ = gravScale*getPositionZ(particle)/mag;
+        }
 
         translateVelocity(particle,
                             accPressureX+accViscX+accInteractiveX-accGravX,

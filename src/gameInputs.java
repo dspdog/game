@@ -58,6 +58,7 @@ public class gameInputs {
                 if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
                     SPACE_down=true;
                     sphCloud.gravityDown = !sphCloud.gravityDown;
+                    scene.myKCloud.gravityDown = !scene.myKCloud.gravityDown;
                 }
             } else {
                 if (Keyboard.getEventKey() == Keyboard.KEY_A) {
