@@ -8,27 +8,31 @@ import org.lwjgl.Sys;
  */
 public class kParticleCloud extends Kernel {
     //CLOUD PARAMS
+        final int PARTICLES_MAX = 100000;
+        int numParticles=0;
 
-    final int PARTICLES_MAX = 100000;
-    int numParticles=0;
+        final float neighborDistance = 1.0f;
+        final float densREF = 1000; // kg/m^3
+        final float mu = 0.01f; // kg/ms (dynamical viscosity))
+        final float c = 1.9f; // m/s speed of sound
 
-    final float neighborDistance = 1.0f;
-    final float densREF = 1000; // kg/m^3
-    final float mu = 0.01f; // kg/ms (dynamical viscosity))
-    final float c = 1.9f; // m/s speed of sound
+        final float speedlimit = 0.1f;
 
-    final float speedlimit = 0.1f;
+        //bounding box
+        float boxSize = 100f;
+        float lowerX = -boxSize;   float upperX = boxSize;
+        float lowerY = -boxSize;   float upperY = boxSize;
+        float lowerZ = -boxSize;   float upperZ = boxSize;
 
     //PARTICLE PARAMS
+        //velocity                                    //position                                    //density, mass, pressure
+        final float[] vx = new float[PARTICLES_MAX];  final float[] px = new float[PARTICLES_MAX];  final float[] pd = new float[PARTICLES_MAX];
+        final float[] vy = new float[PARTICLES_MAX];  final float[] py = new float[PARTICLES_MAX];  final float[] pm = new float[PARTICLES_MAX];
+        final float[] vz = new float[PARTICLES_MAX];  final float[] pz = new float[PARTICLES_MAX];  final float[] pp = new float[PARTICLES_MAX];
 
-    //velocity                                    //position                                    //density, mass, pressure
-    final float[] vx = new float[PARTICLES_MAX];  final float[] px = new float[PARTICLES_MAX];  final float[] pd = new float[PARTICLES_MAX];
-    final float[] vy = new float[PARTICLES_MAX];  final float[] py = new float[PARTICLES_MAX];  final float[] pm = new float[PARTICLES_MAX];
-    final float[] vz = new float[PARTICLES_MAX];  final float[] pz = new float[PARTICLES_MAX];  final float[] pp = new float[PARTICLES_MAX];
-
-    final int MAX_NEIGHBORS = 20;
-    final int[] pn = new int[PARTICLES_MAX*MAX_NEIGHBORS]; //neighbors by index
-    final int[] pnn = new int[PARTICLES_MAX]; //neighbors totals by index
+        final int MAX_NEIGHBORS = 20;
+        final int[] pn = new int[PARTICLES_MAX*MAX_NEIGHBORS]; //neighbors by index
+        final int[] pnn = new int[PARTICLES_MAX]; //neighbors totals by index
 
     public kParticleCloud(int _numParticles){
         numParticles=min(_numParticles, PARTICLES_MAX);
@@ -42,9 +46,42 @@ public class kParticleCloud extends Kernel {
         }
     }
 
+    public void importData(){ //TODO are most of these needed?
+        this.put(px).put(py).put(pz)
+            .put(vx).put(vy).put(vz)
+            .put(pd).put(pm).put(pp)
+            .put(pn).put(pnn);
+    }
+
+    public void exportPositions(){
+        this.get(px).get(py).get(pz);
+    }
+
+    int seed = 123456789;
+    int randInt() { //random positive or negative integers
+        int a = 1103515245;
+        int c = 12345;
+        seed = (a * seed + c);
+        return seed;
+    }
+
+    float rand(){ //random float from 0 to 1
+        return (randInt()/(1f*Integer.MAX_VALUE)+1f)/2f;
+    }
+
     public void initParticle(int particle){
-        setVelocity(particle,0,0,0);
-        setPosition(particle,0,0,0);
+        float velocityScale = 0.1f;
+
+        setVelocity(particle,
+                velocityScale * rand() * (upperX - lowerX) + lowerX,
+                velocityScale * rand() * (upperY - lowerY) + lowerY,
+                velocityScale * rand() * (upperZ - lowerZ) + lowerZ);
+
+        setPosition(particle,
+                rand()*(upperX-lowerX)+lowerX,
+                rand()*(upperY-lowerY)+lowerY,
+                rand()*(upperZ-lowerZ)+lowerZ);
+
         setMass(particle,1f);
         setDensity(particle,1f);
         setPressure(particle,1f);
@@ -134,21 +171,25 @@ public class kParticleCloud extends Kernel {
     }
 
     public void update(){
-        updateTime();
-
         long time1=System.currentTimeMillis();
+
+        updateTime();
         this.setExplicit(true);
-
-        //update data w/:
-        //this.put(lineXY1).put(lineZS1).put(lineDI)
-        //        .put(lineXY2).put(lineZS2);
-
         Range range = Range.create(numParticles);
 
+        importData();
         this.execute(range, 4);
-        //this.get(pixels);
+        exportPositions();
 
-        System.out.println(this.getExecutionMode() + " dt " + (dt*1000)+"ms parts" + numParticles + " exec" + (System.currentTimeMillis()-time1));
+        limitedPrint(this.getExecutionMode() + " dt " + (dt*1000)+"ms parts" + numParticles + " exec" + (System.currentTimeMillis()-time1));
+    }
+
+    static long lastPrint = 0;
+    public void limitedPrint(String s){
+        if(getTime() - lastPrint > 1000){
+            System.out.println(s);
+            lastPrint=getTime();
+        }
     }
 
     @Override
@@ -178,12 +219,6 @@ public class kParticleCloud extends Kernel {
     }
 
     public void updatePosition(int particle){
-
-        float boxSize = 100f;
-        float lowerX = -boxSize;   float upperX = boxSize;
-        float lowerY = -boxSize;   float upperY = boxSize;
-        float lowerZ = -boxSize;   float upperZ = boxSize;
-
         limitVelocity(particle, speedlimit);
 
         //flip velocities leaving box
@@ -224,11 +259,14 @@ public class kParticleCloud extends Kernel {
                                                          getPressure(neighbor) / (getDensity(neighbor) * getDensity(neighbor))) * weightVal;
             accViscScale = mu * getMass(neighbor) / getDensity(neighbor) / getDensity(particle) * weightVal_d;
 
-            accViscX+=accViscScale*(getVelocityX(neighbor) - getVelocityX(particle));         accPressureX+=accPressScale*(getPositionX(neighbor) - getPositionX(particle));
-            accViscY+=accViscScale*(getVelocityY(neighbor) - getVelocityY(particle));         accPressureY+=accPressScale*(getPositionY(neighbor) - getPositionY(particle));
-            accViscZ+=accViscScale*(getVelocityZ(neighbor) - getVelocityZ(particle));         accPressureZ+=accPressScale*(getPositionZ(neighbor) - getPositionZ(particle));
-        }
+            accViscX+=accViscScale*(getVelocityX(neighbor) - getVelocityX(particle));
+            accViscY+=accViscScale*(getVelocityY(neighbor) - getVelocityY(particle));
+            accViscZ+=accViscScale*(getVelocityZ(neighbor) - getVelocityZ(particle));
 
+            accPressureX+=accPressScale*(getPositionX(neighbor) - getPositionX(particle));
+            accPressureY+=accPressScale*(getPositionY(neighbor) - getPositionY(particle));
+            accPressureZ+=accPressScale*(getPositionZ(neighbor) - getPositionZ(particle));
+        }
         //if(gravityDown){
         //    accGravity = new Vector3f(0,1f,0);
         //}
