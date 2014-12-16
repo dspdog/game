@@ -26,9 +26,9 @@ public class kParticleCloud extends Kernel {
 
     //PARTICLE PARAMS
         //velocity                                    //position                                    //density, mass, pressure
-        final float[] velocityX = new float[PARTICLES_MAX];  final float[] positionX = new float[PARTICLES_MAX];  final float[] pd = new float[PARTICLES_MAX];
-        final float[] velocityY = new float[PARTICLES_MAX];  final float[] positionY = new float[PARTICLES_MAX];  final float[] pm = new float[PARTICLES_MAX];
-        final float[] velocityZ = new float[PARTICLES_MAX];  final float[] positionZ = new float[PARTICLES_MAX];  final float[] pp = new float[PARTICLES_MAX];
+        final float[] velocityX = new float[PARTICLES_MAX];  public final float[] positionX = new float[PARTICLES_MAX];  final float[] pd = new float[PARTICLES_MAX];
+        final float[] velocityY = new float[PARTICLES_MAX];  public final float[] positionY = new float[PARTICLES_MAX];  final float[] pm = new float[PARTICLES_MAX];
+        final float[] velocityZ = new float[PARTICLES_MAX];  public final float[] positionZ = new float[PARTICLES_MAX];  final float[] pp = new float[PARTICLES_MAX];
 
         final int MAX_NEIGHBORS = 64;
         final int[] pn = new int[PARTICLES_MAX*MAX_NEIGHBORS]; //neighbors by index
@@ -38,6 +38,8 @@ public class kParticleCloud extends Kernel {
         final int GRID_SLOTS = 200;
         final int[] particleGrid = new int[GRID_RES*GRID_RES*GRID_RES * GRID_SLOTS];
         final int[] particleGridTotal = new int[GRID_RES*GRID_RES*GRID_RES];
+
+    public static boolean ready = false;
 
     public kParticleCloud(int _numParticles){
         numParticles=min(_numParticles, PARTICLES_MAX);
@@ -289,7 +291,7 @@ public class kParticleCloud extends Kernel {
     }
 
     public void update(){
-
+        ready=false;
         float gridStep = (upperX-lowerX)/GRID_RES;
         if(neighborDistance>gridStep/2){ //TODO is divide by 2 necessary?
             System.out.println("bad grid step!");
@@ -312,6 +314,7 @@ public class kParticleCloud extends Kernel {
 
         limitedPrint(this.getExecutionMode() + " dt " + (dt*1000)+"ms parts " + numParticles + " exec"
                     + (System.currentTimeMillis()-time1) + " avN " + averageNeighbors + " grid " + getTotalGridMembers() + " max " + getGridMax());
+        ready=true;
     }
 
     public float getAverageNeighbors(){

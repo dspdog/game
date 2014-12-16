@@ -45,6 +45,7 @@ public class scene{
             }else if(wo.isCloud){
                GeometryFactory.cloud(wo.myCloud, wo.myTextureId);
             }else if(wo.isKCloud){
+                wo.drawVBOs();
                 GeometryFactory.kcloud(wo.myKCloud);
             }
         }
@@ -55,10 +56,11 @@ public class scene{
         while (wi.hasNext()){
             WorldObject wo=wi.next();
             if(wo.isGrid){
-
                 wo.updateGridFb();
                 wo.setPos(cameraPosRealtime.x, 0f,cameraPosRealtime.z);
             }else if (wo.isPlane){
+            }if(wo.isKCloud){
+                wo.updateCloudFb();
             }
         }
     }

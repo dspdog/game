@@ -86,6 +86,8 @@ public class WorldObject{ //have this handle all the interactions w/ geometryfac
         name="KPARTICLES_" + stencilId;
         isKCloud = true;
         myKCloud = new kParticleCloud(numParticles);
+        myfb = GeometryFactory.cloudVertexData(myKCloud);
+        triangles = GeometryFactory.cloudTriangles;
     }
 
     public WorldObject setUpdateInterval(int interval){
@@ -107,11 +109,24 @@ public class WorldObject{ //have this handle all the interactions w/ geometryfac
         hasVBOHandles=false;
     }
 
+    public void forceUpdateCloudFb(){
+        float time = (System.currentTimeMillis()%1000000)/1000.0f;
+        if(kParticleCloud.ready){
+            myfb = GeometryFactory.cloudVertexData(myKCloud);
+            lastFunctionUpdate = System.currentTimeMillis();
+            hasVBOHandles=false;
+        }
+    }
 
     public void updateGridFb(){
-        if(functionUpdatePeriod > 0)
         if(System.currentTimeMillis()-lastFunctionUpdate > functionUpdatePeriod){
             forceUpdateGridFb();
+        }
+    }
+
+    public void updateCloudFb(){
+        if(System.currentTimeMillis()-lastFunctionUpdate > functionUpdatePeriod){
+            forceUpdateCloudFb();
         }
     }
 

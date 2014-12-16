@@ -62,7 +62,7 @@ public class GeometryFactory {
     }
 
     public static void kcloud(kParticleCloud cloud){
-        long time = System.currentTimeMillis();
+        /*long time = System.currentTimeMillis();
         float r,g,b;
 
         for(int particleNo=0; particleNo<cloud.numParticles; particleNo++){
@@ -79,7 +79,7 @@ public class GeometryFactory {
 
         //glColor3f(0.5f, 0f, 0f);
         //drawBox(sphCloud.lowerCornerBoundsFinal, sphCloud.upperCornerBoundsFinal);
-
+*/
         glColor3f(0f, 0f, 0f);
         drawBox(new Vector3f(cloud.lowerX, cloud.lowerY, cloud.lowerZ), new Vector3f(cloud.upperX, cloud.upperY, cloud.upperZ));
     }
@@ -201,18 +201,27 @@ public class GeometryFactory {
     public static FloatBuffer[] getCSGVertexData(CSG csg, int tris){
         final FloatBuffer vertex_data = BufferUtils.createFloatBuffer(tris*9);
         final FloatBuffer color_data = BufferUtils.createFloatBuffer(tris*9);
+        final FloatBuffer tex_data = BufferUtils.createFloatBuffer(tris*6);
 
         for(Polygon poly : csg.getPolygons()){
             for(int v=1; v<poly.vertices.size()-1; v++){
                 vertex_data.put((float)poly.vertices.get(0).pos.x).
                             put((float)poly.vertices.get(0).pos.y).
-                            put((float)poly.vertices.get(0).pos.z).
-                            put((float)poly.vertices.get(v).pos.x).
-                            put((float)poly.vertices.get(v).pos.y).
-                            put((float)poly.vertices.get(v).pos.z).
-                            put((float)poly.vertices.get(v+1).pos.x).
-                            put((float)poly.vertices.get(v+1).pos.y).
-                            put((float)poly.vertices.get(v+1).pos.z);
+                            put((float) poly.vertices.get(0).pos.z).
+                            put((float) poly.vertices.get(v).pos.x).
+                            put((float) poly.vertices.get(v).pos.y).
+                            put((float) poly.vertices.get(v).pos.z).
+                            put((float) poly.vertices.get(v + 1).pos.x).
+                            put((float) poly.vertices.get(v + 1).pos.y).
+                            put((float) poly.vertices.get(v + 1).pos.z);
+
+                tex_data.put((float)poly.vertices.get(0).pos.x).
+                        put((float)poly.vertices.get(0).pos.y).
+                        put((float)poly.vertices.get(v).pos.x).
+                        put((float)poly.vertices.get(v).pos.y).
+                        put((float)poly.vertices.get(v+1).pos.x).
+                        put((float)poly.vertices.get(v+1).pos.y);
+
 
                 color_data.put((float)poly.vertices.get(0).normal.x).
                         put((float)poly.vertices.get(0).normal.y).
@@ -227,7 +236,8 @@ public class GeometryFactory {
         }
         vertex_data.flip();
         color_data.flip();
-        return new FloatBuffer[]{vertex_data, color_data};
+        tex_data.flip();
+        return new FloatBuffer[]{vertex_data, color_data, tex_data};
     }
 
     public static int getTriangles(CSG csg){
@@ -324,11 +334,6 @@ public class GeometryFactory {
     }
 
     public static int[] VBOHandles(FloatBuffer[] fbs){
-
-        //findUniqueVerts(fbs);
-
-        //FloatBuffer[] fbs = functionGridVertexData(d);
-
         int vbo_vertex_handle = glGenBuffers();
         glBindBuffer(GL_ARRAY_BUFFER, vbo_vertex_handle);
         glBufferData(GL_ARRAY_BUFFER, fbs[0], GL_STATIC_DRAW);
@@ -349,6 +354,70 @@ public class GeometryFactory {
 
     public static int gridSize = 256;
     public static int gridStep = 2;
+    public static int cloudTriangles = 0;
+
+    public static FloatBuffer[] cloudVertexData(kParticleCloud kCloud){
+        int numParticles = kCloud.numParticles;
+        int vertsPerTriangle = 3;
+        int trisPerSprite = 2;
+
+        cloudTriangles=numParticles*trisPerSprite;
+
+        final FloatBuffer vert_data = BufferUtils.createFloatBuffer(numParticles*vertsPerTriangle*3*trisPerSprite);
+        final FloatBuffer color_data = BufferUtils.createFloatBuffer(numParticles*vertsPerTriangle*3*trisPerSprite);
+        final FloatBuffer tex_data = BufferUtils.createFloatBuffer(numParticles*vertsPerTriangle*2*trisPerSprite);
+
+        for(int particle=0; particle<numParticles; particle++){
+            float fatness = 20.5f;
+
+            float x = kCloud.positionX[particle];
+            float y = kCloud.positionY[particle];
+            float z = kCloud.positionZ[particle];
+
+            float xN = (kCloud.positionX[particle]-kCloud.lowerX)/(kCloud.upperX-kCloud.lowerX);
+            float yN = (kCloud.positionY[particle]-kCloud.lowerY)/(kCloud.upperY-kCloud.lowerY);
+            float zN = (kCloud.positionZ[particle]-kCloud.lowerZ)/(kCloud.upperZ-kCloud.lowerZ);
+
+            float cxX = scene.cameraXVector.x*fatness;
+            float cxY = scene.cameraXVector.y*fatness;
+            float cxZ = scene.cameraXVector.z*fatness;
+
+            float cyX = scene.cameraYVector.x*fatness;
+            float cyY = scene.cameraYVector.y*fatness;
+            float cyZ = scene.cameraYVector.z*fatness;
+
+            float tx = x;
+            float ty = y;
+
+            vert_data.put(x).put(y).put(z);
+            vert_data.put(x+cyX).put(y+cyY).put(z+cyZ);
+            vert_data.put(x+cxX).put(y+cxY).put(z+cxZ);
+
+            vert_data.put(x+cxX).put(y+cxY).put(z+cxZ);
+            vert_data.put(x+cyX).put(y+cyY).put(z+cyZ);
+            vert_data.put(x+cyX+cxX).put(y+cyY+cxY).put(z+cyZ+cxZ);
+
+            color_data.put(xN).put(yN).put(zN);
+            color_data.put(xN).put(yN).put(zN);
+            color_data.put(xN).put(yN).put(zN);
+            color_data.put(xN).put(yN).put(zN);
+            color_data.put(xN).put(yN).put(zN);
+            color_data.put(xN).put(yN).put(zN);
+
+            tex_data.put(0).put(0);
+            tex_data.put(0).put(1);
+            tex_data.put(1).put(0);
+
+            tex_data.put(1).put(0);
+            tex_data.put(0).put(1);
+            tex_data.put(1).put(1);
+        }
+
+        vert_data.flip();
+        color_data.flip();
+        tex_data.flip();
+        return new FloatBuffer[]{vert_data, color_data, tex_data};
+    }
 
     public static FloatBuffer[] functionGridVertexData(gridFunction d, float t, float offsetx, float offsetz, Vector3f color){
         int step = gridStep;
