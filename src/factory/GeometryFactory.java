@@ -368,7 +368,7 @@ public class GeometryFactory {
         final FloatBuffer tex_data = BufferUtils.createFloatBuffer(numParticles*vertsPerTriangle*2*trisPerSprite);
 
         for(int particle=0; particle<numParticles; particle++){
-            float fatness = 20.5f;
+            float fatness = 10.0f;
 
 
 

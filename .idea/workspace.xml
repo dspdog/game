@@ -68,11 +68,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="gameWorldRender.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="gameWorldRender.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/gameWorldRender.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="1293" max-vertical-offset="2839">
-              <caret line="120" column="71" selection-start-line="120" selection-start-column="71" selection-end-line="120" selection-end-column="71" />
+            <state vertical-scroll-proportion="0.6995582" vertical-offset="1293" max-vertical-offset="2839">
+              <caret line="120" column="46" selection-start-line="120" selection-start-column="46" selection-end-line="120" selection-end-column="46" />
               <folding />
             </state>
           </provider>
@@ -88,11 +88,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GeometryFactory.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="GeometryFactory.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/factory/GeometryFactory.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.5994109" vertical-offset="6257" max-vertical-offset="9775">
-              <caret line="392" column="0" selection-start-line="392" selection-start-column="0" selection-end-line="392" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="6155" max-vertical-offset="9775">
+              <caret line="370" column="32" selection-start-line="370" selection-start-column="32" selection-end-line="370" selection-end-column="32" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -222,8 +222,8 @@
         <option value="$PROJECT_DIR$/src/world/scene.java" />
         <option value="$PROJECT_DIR$/src/world/WorldObject.java" />
         <option value="$PROJECT_DIR$/src/shapes/cloud/kParticleCloud.java" />
-        <option value="$PROJECT_DIR$/src/gameWorldRender.java" />
         <option value="$PROJECT_DIR$/src/factory/GeometryFactory.java" />
+        <option value="$PROJECT_DIR$/src/gameWorldRender.java" />
       </list>
     </option>
   </component>
@@ -1014,21 +1014,21 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/gameWorldRender.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1293" max-vertical-offset="2839">
-          <caret line="120" column="71" selection-start-line="120" selection-start-column="71" selection-end-line="120" selection-end-column="71" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/factory/GeometryFactory.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5994109" vertical-offset="6257" max-vertical-offset="9775">
-          <caret line="392" column="0" selection-start-line="392" selection-start-column="0" selection-end-line="392" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="6155" max-vertical-offset="9775">
+          <caret line="370" column="32" selection-start-line="370" selection-start-column="32" selection-end-line="370" selection-end-column="32" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/gameWorldRender.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.6995582" vertical-offset="1293" max-vertical-offset="2839">
+          <caret line="120" column="46" selection-start-line="120" selection-start-column="46" selection-end-line="120" selection-end-column="46" />
+          <folding />
         </state>
       </provider>
     </entry>
