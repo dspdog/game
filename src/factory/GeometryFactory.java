@@ -327,7 +327,7 @@ public class GeometryFactory {
         final FloatBuffer tex_data = BufferUtils.createFloatBuffer(numParticles*vertsPerTriangle*2*trisPerSprite);
 
         for(int particle=0; particle<numParticles; particle++){
-            float fatness = 15.0f;
+            float fatness = 10.0f;
 
             float xN = (kCloud.positionX[particle]-kCloud.lowerX)/(kCloud.upperX-kCloud.lowerX);
             float yN = (kCloud.positionY[particle]-kCloud.lowerY)/(kCloud.upperY-kCloud.lowerY);

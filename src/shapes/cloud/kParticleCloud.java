@@ -12,11 +12,11 @@ public class kParticleCloud extends Kernel {
         public int numParticles=0;
 
         final float neighborDistance = 3f;
-        final float densREF = 0.011f; // kg/m^3
+        final float densREF = 0.014f; // kg/m^3
         final float mu = 1f; // kg/ms (dynamical viscosity))
-        final float c = 1.9f; // m/s speed of sound
+        final float c = 2f; // m/s speed of sound
 
-        final float speedlimit = 1.2f;
+        final float speedlimit = 0.7f;
 
         //bounding box
         final float boxSize = 100f;
@@ -139,7 +139,7 @@ public class kParticleCloud extends Kernel {
                 rand()*(upperY-lowerY)+lowerY,
                 rand()*(upperZ-lowerZ)+lowerZ);
         setMass(particle,0.01f);
-        setDensity(particle,1f);
+        setDensity(particle,1000f);
         setPressure(particle,1f);
     }
 
@@ -204,7 +204,7 @@ public class kParticleCloud extends Kernel {
     public void updateTime(){
         lastTime=time;
         time = getTime();
-        dt=(time-lastTime)*0.251f;
+        dt=(time-lastTime)*0.125f;
     }
 
     public float dt;
@@ -498,10 +498,10 @@ public class kParticleCloud extends Kernel {
     }
 
     public float weight(float x){
-        return max(0,1.0f - x*x);
+        return max(0,1.0f - x*x*x*x);
     }
 
     public float weight_deriv(float x){
-        return max(0,1.0f - x*x);
+        return max(0,1.0f - x*x*x*x);
     }
 }
