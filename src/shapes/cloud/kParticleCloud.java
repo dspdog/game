@@ -28,10 +28,10 @@ public class kParticleCloud extends Kernel {
         public final float lowerZ = -boxSize;   public final float upperZ = boxSize;
 
     //PARTICLE PARAMS
-        //velocity                                    //position                                    //density, mass, pressure
-        final float[] velocityX = new float[PARTICLES_MAX];  public final float[] positionX = new float[PARTICLES_MAX];  final float[] density = new float[PARTICLES_MAX];
-        final float[] velocityY = new float[PARTICLES_MAX];  public final float[] positionY = new float[PARTICLES_MAX];  final float[] pmass = new float[PARTICLES_MAX];
-        final float[] velocityZ = new float[PARTICLES_MAX];  public final float[] positionZ = new float[PARTICLES_MAX];  final float[] pressure = new float[PARTICLES_MAX];
+        //velocity                                          //position                                                   //density, mass, pressure
+        final float[] velocityX = new float[PARTICLES_MAX];  public final float[] positionX = new float[PARTICLES_MAX];  public final float[] density = new float[PARTICLES_MAX];
+        final float[] velocityY = new float[PARTICLES_MAX];  public final float[] positionY = new float[PARTICLES_MAX];  public final float[] pmass = new float[PARTICLES_MAX];
+        final float[] velocityZ = new float[PARTICLES_MAX];  public final float[] positionZ = new float[PARTICLES_MAX];  public final float[] pressure = new float[PARTICLES_MAX];
 
         final int MAX_NEIGHB_PER_PARTICLE = 64;
         final int[] neighborsList = new int[PARTICLES_MAX* MAX_NEIGHB_PER_PARTICLE]; //neighbors by index
