@@ -8,13 +8,13 @@ import org.lwjgl.Sys;
  */
 public class kParticleCloud extends Kernel {
 
-    final float S_PER_MS = 0.1f * 3; //seconds per milliseconds, make 0.001f for "realtime"(?)
+    final float S_PER_MS = 0.3f ; //seconds per milliseconds, make 0.001f for "realtime"(?)
 
     //CLOUD PARAMS
         public static final int PARTICLES_MAX = 10_000;
         public int numParticles=0;
 
-        final float neighborDistance = 4f;
+        final float neighborDistance = 5f;
         final float densREF = 0.014f; // kg/m^3
         final float mu = 1f; // kg/ms (dynamical viscosity))
         final float c = 1.7f; // m/s speed of sound
@@ -38,7 +38,7 @@ public class kParticleCloud extends Kernel {
         final int[] neighborTotals = new int[PARTICLES_MAX]; //neighbors totals by index
 
         final int GRID_RES = 20;
-        final int GRID_SLOTS = 50;
+        final int GRID_SLOTS = 40;
         final int[] particleGrid = new int[GRID_RES*GRID_RES*GRID_RES * GRID_SLOTS];
         final int[] particleGridTotal = new int[GRID_RES*GRID_RES*GRID_RES];
 
@@ -162,7 +162,7 @@ public class kParticleCloud extends Kernel {
         }
     }
 
-    public boolean alreadyNeighbors(int particle, int neighbor){
+    public boolean alreadyNeighbors(int particle, int neighbor){// return false;
         int len = neighborTotals[particle];
         for(int neighborNo=0; neighborNo<len; neighborNo++){
             if(neighborsList[particle* MAX_NEIGHB_PER_PARTICLE +neighborNo]==neighbor)return true;
@@ -208,7 +208,7 @@ public class kParticleCloud extends Kernel {
     public int getGridMax(){
         int max=0;
         for(int i=0; i<particleGridTotal.length; i++){
-            max = max(max, particleGridTotal[i]);
+            max = Math.max(max, particleGridTotal[i]);
         }
         return max;
     }

@@ -318,7 +318,12 @@ public class GeometryFactory {
     public static FloatBuffer[] cloudVertexData(kParticleCloud kCloud){
         int numParticles = kCloud.numParticles;
         int vertsPerTriangle = 3;
-        int trisPerSprite = 2;
+        int trisPerSprite = 6;
+
+        boolean useSquares = false;
+
+        if(useSquares)
+            trisPerSprite =2;
 
         cloudTriangles=numParticles*trisPerSprite;
 
@@ -329,6 +334,8 @@ public class GeometryFactory {
         for(int particle=0; particle<numParticles; particle++){
             //float fatness = kCloud.pressure[particle]/kCloud.averageP*5f; //higher pressure bigger (explodes?)
             float fatness = Math.min(30f, Math.max(10f, kCloud.density[particle]/kCloud.averageD*5f)); //denser bigger, range 10-30
+
+            //float fatness = 1f;
 
             float xN = (kCloud.positionX[particle]-kCloud.lowerX)/(kCloud.upperX-kCloud.lowerX);
             float yN = (kCloud.positionY[particle]-kCloud.lowerY)/(kCloud.upperY-kCloud.lowerY);
@@ -342,20 +349,83 @@ public class GeometryFactory {
             float cyY = scene.cameraYVector.y*fatness;
             float cyZ = scene.cameraYVector.z*fatness;
 
-            float x = kCloud.positionX[particle] - cxX/2 - cyX/2;
-            float y = kCloud.positionY[particle] - cxY/2 - cyY/2;
-            float z = kCloud.positionZ[particle] - cxZ/2 - cyZ/2;
 
-            float tx = x;
-            float ty = y;
+            if(useSquares){
 
-            vert_data.put(x).put(y).put(z);
-            vert_data.put(x+cyX).put(y+cyY).put(z+cyZ);
-            vert_data.put(x+cxX).put(y+cxY).put(z+cxZ);
+                float x = kCloud.positionX[particle] - cxX/2 - cyX/2;
+                float y = kCloud.positionY[particle] - cxY/2 - cyY/2;
+                float z = kCloud.positionZ[particle] - cxZ/2 - cyZ/2;
 
-            vert_data.put(x+cxX).put(y+cxY).put(z+cxZ);
-            vert_data.put(x+cyX).put(y+cyY).put(z+cyZ);
-            vert_data.put(x+cyX+cxX).put(y+cyY+cxY).put(z+cyZ+cxZ);
+                vert_data.put(x).put(y).put(z);
+                vert_data.put(x+cyX).put(y+cyY).put(z+cyZ);
+                vert_data.put(x+cxX).put(y+cxY).put(z+cxZ);
+
+                vert_data.put(x+cxX).put(y+cxY).put(z+cxZ);
+                vert_data.put(x+cyX).put(y+cyY).put(z+cyZ);
+                vert_data.put(x+cyX+cxX).put(y+cyY+cxY).put(z+cyZ+cxZ);
+
+                float size = 0.75f;
+
+                tex_data.put(0).put(0);
+                tex_data.put(0).put(size);
+                tex_data.put(size).put(0);
+
+                tex_data.put(size).put(0);
+                tex_data.put(0).put(size);
+                tex_data.put(size).put(size);
+
+
+                color_data.put(xN).put(yN).put(zN);
+                color_data.put(xN).put(yN).put(zN);
+                color_data.put(xN).put(yN).put(zN);
+                color_data.put(xN).put(yN).put(zN);
+                color_data.put(xN).put(yN).put(zN);
+                color_data.put(xN).put(yN).put(zN);
+            }else{
+                int segs = trisPerSprite;
+
+                for(int i=0; i<segs; i++) {
+                    float scale = 1/2f;
+                    float sin = (float) (Math.sin(i * 2 * Math.PI / segs)) * scale;
+                    float cos = (float) (Math.cos(i * 2 * Math.PI / segs)) * scale;
+                    float sin2 = (float) (Math.sin((i+1) * 2 * Math.PI / segs)) * scale;
+                    float cos2 = (float) (Math.cos((i+1) * 2 * Math.PI / segs)) * scale;
+
+                    float x = kCloud.positionX[particle];
+                    float y = kCloud.positionY[particle];
+                    float z = kCloud.positionZ[particle];
+
+                    float dx = cxX*sin + cyX*cos;
+                    float dy = cxY*sin + cyY*cos;
+                    float dz = cxZ*sin + cyZ*cos;
+
+                    float dx2 = cxX*sin2 + cyX*cos2;
+                    float dy2 = cxY*sin2 + cyY*cos2;
+                    float dz2 = cxZ*sin2 + cyZ*cos2;
+
+                    vert_data.put(x).put(y).put(z);
+                    vert_data.put(x+dx).put(y+dy).put(z+dz);
+                    vert_data.put(x+dx2).put(y+dy2).put(z+dz2);
+
+                    float tx=0.375f; float ty=0.375f;
+                    float scale2=0.75f;
+                    tex_data.put(tx).put(ty);
+                    tex_data.put(tx+cos*scale2).put(ty+sin*scale2);
+                    tex_data.put(tx+cos2*scale2).put(ty+sin2*scale2);
+
+                    color_data.put(xN).put(yN).put(zN);
+                    color_data.put(xN).put(yN).put(zN);
+                    color_data.put(xN).put(yN).put(zN);
+
+                    //vert_data.put(x+cxX).put(y+cxY).put(z+cxZ);
+                    //vert_data.put(x+cyX).put(y+cyY).put(z+cyZ);
+                    //vert_data.put(x+cyX+cxX).put(y+cyY+cxY).put(z+cyZ+cxZ);
+
+                }
+            }
+
+
+
 
             //float d = kCloud.getNumberOfNeighbors(particle)/6f;
             //float d = kCloud.getDensity(particle)/kCloud.averageD;
@@ -366,22 +436,7 @@ public class GeometryFactory {
             color_data.put(d).put(d).put(d);
             color_data.put(d).put(d).put(d);*/
 
-            color_data.put(xN).put(yN).put(zN);
-            color_data.put(xN).put(yN).put(zN);
-            color_data.put(xN).put(yN).put(zN);
-            color_data.put(xN).put(yN).put(zN);
-            color_data.put(xN).put(yN).put(zN);
-            color_data.put(xN).put(yN).put(zN);
 
-            float size = 0.75f;
-
-            tex_data.put(0).put(0);
-            tex_data.put(0).put(size);
-            tex_data.put(size).put(0);
-
-            tex_data.put(size).put(0);
-            tex_data.put(0).put(size);
-            tex_data.put(size).put(size);
         }
 
         vert_data.flip();
