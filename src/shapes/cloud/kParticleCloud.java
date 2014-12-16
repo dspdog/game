@@ -315,8 +315,9 @@ public class kParticleCloud extends Kernel {
         float z = positionZ[particle];
 
         int _gridTotalPos = getGridTotalsPos(x, y, z); //record first grid location to avoid repeated queries
+        int _prevGridTotalPos;
 
-        int gridTotalPos = getGridTotalsPos(x,y,z);
+        int gridTotalPos = getGridTotalsPos(x, y, z);
         int gridPos = getGridPos(x, y, z);
 
         addNeighborsFromGrid(particle,gridPos,gridTotalPos); //center of box
@@ -329,50 +330,57 @@ public class kParticleCloud extends Kernel {
         }
 
         //top NE
+        _prevGridTotalPos = gridTotalPos;
         gridTotalPos = getGridTotalsPos(x+neighborDistance,y-neighborDistance,z-neighborDistance);
-        if(gridTotalPos!=_gridTotalPos) {
+        if(gridTotalPos!=_gridTotalPos && gridTotalPos!=_prevGridTotalPos) {
             gridPos = getGridPos(x + neighborDistance, y - neighborDistance, z - neighborDistance);
             addNeighborsFromGrid(particle, gridPos, gridTotalPos);
         }
 
         //top SW
+        _prevGridTotalPos = gridTotalPos;
         gridTotalPos = getGridTotalsPos(x-neighborDistance,y+neighborDistance,z-neighborDistance);
-        if(gridTotalPos!=_gridTotalPos) {
+        if(gridTotalPos!=_gridTotalPos && gridTotalPos!=_prevGridTotalPos) {
             gridPos = getGridPos(x - neighborDistance, y + neighborDistance, z - neighborDistance);
             addNeighborsFromGrid(particle, gridPos, gridTotalPos);
         }
 
         //top SE
+        _prevGridTotalPos = gridTotalPos;
         gridTotalPos = getGridTotalsPos(x+neighborDistance,y+neighborDistance,z-neighborDistance);
-        if(gridTotalPos!=_gridTotalPos) {
+        if(gridTotalPos!=_gridTotalPos && gridTotalPos!=_prevGridTotalPos) {
             gridPos = getGridPos(x + neighborDistance, y + neighborDistance, z - neighborDistance);
             addNeighborsFromGrid(particle, gridPos, gridTotalPos);
         }
 
         //bottom NW
+        _prevGridTotalPos = gridTotalPos;
         gridTotalPos = getGridTotalsPos(x-neighborDistance,y-neighborDistance,z+neighborDistance);
-        if(gridTotalPos!=_gridTotalPos) {
+        if(gridTotalPos!=_gridTotalPos && gridTotalPos!=_prevGridTotalPos) {
             gridPos = getGridPos(x - neighborDistance, y - neighborDistance, z + neighborDistance);
             addNeighborsFromGrid(particle, gridPos, gridTotalPos);
         }
 
         //bottom NE
+        _prevGridTotalPos = gridTotalPos;
         gridTotalPos = getGridTotalsPos(x+neighborDistance,y-neighborDistance,z+neighborDistance);
-        if(gridTotalPos!=_gridTotalPos) {
+        if(gridTotalPos!=_gridTotalPos && gridTotalPos!=_prevGridTotalPos) {
             gridPos = getGridPos(x + neighborDistance, y - neighborDistance, z + neighborDistance);
             addNeighborsFromGrid(particle, gridPos, gridTotalPos);
         }
 
         //bottom SW
+        _prevGridTotalPos = gridTotalPos;
         gridTotalPos = getGridTotalsPos(x-neighborDistance,y+neighborDistance,z+neighborDistance);
-        if(gridTotalPos!=_gridTotalPos) {
+        if(gridTotalPos!=_gridTotalPos && gridTotalPos!=_prevGridTotalPos) {
             gridPos = getGridPos(x - neighborDistance, y + neighborDistance, z + neighborDistance);
             addNeighborsFromGrid(particle, gridPos, gridTotalPos);
         }
 
         //bottom SE
+        _prevGridTotalPos = gridTotalPos;
         gridTotalPos = getGridTotalsPos(x+neighborDistance,y+neighborDistance,z+neighborDistance);
-        if(gridTotalPos!=_gridTotalPos) {
+        if(gridTotalPos!=_gridTotalPos && gridTotalPos!=_prevGridTotalPos) {
             gridPos = getGridPos(x + neighborDistance, y + neighborDistance, z + neighborDistance);
             addNeighborsFromGrid(particle, gridPos, gridTotalPos);
         }
