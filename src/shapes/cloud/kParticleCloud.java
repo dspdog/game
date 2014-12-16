@@ -8,7 +8,7 @@ import org.lwjgl.Sys;
  */
 public class kParticleCloud extends Kernel {
     //CLOUD PARAMS
-        final int PARTICLES_MAX = 20_000;
+        final int PARTICLES_MAX = 10_000;
         public int numParticles=0;
 
         final float neighborDistance = 1.4f;
@@ -259,7 +259,7 @@ public class kParticleCloud extends Kernel {
     public void updateTime(){
         lastTime=time;
         time = getTime();
-        dt=(time-lastTime)*0.21f;
+        dt=(time-lastTime)*0.2f;
     }
 
     public float dt;
