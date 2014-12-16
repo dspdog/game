@@ -4,6 +4,7 @@ import org.lwjgl.Sys;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.*;
 import org.lwjgl.opengl.DisplayMode;
+import shapes.cloud.kParticleCloud;
 import shapes.geography.GeographyFactory;
 import utils.ShaderHelper;
 import world.*;
@@ -118,7 +119,7 @@ public class gameWorldRender {
         WorldObject theWaves = new WorldObject((float x, float y, float t) -> GeographyFactory.oceanWaves(x, y, t)).setUpdateInterval(10).setColor(0,0,1.0f);
 
         WorldObject theParticles = new WorldObject(-1, theGround, TextureFactory.ballTexture());
-        WorldObject kCloud = new WorldObject(10_000).setUpdateInterval(1);
+        WorldObject kCloud = new WorldObject(kParticleCloud.PARTICLES_MAX).setUpdateInterval(1);
 
         myScene.myKCloud = kCloud.myKCloud;
 

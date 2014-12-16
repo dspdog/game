@@ -8,18 +8,18 @@ import org.lwjgl.Sys;
  */
 public class kParticleCloud extends Kernel {
     //CLOUD PARAMS
-        final int PARTICLES_MAX = 10_000;
+        public static final int PARTICLES_MAX = 10_000;
         public int numParticles=0;
 
-        final float neighborDistance = 1.4f;
-        final float densREF = 0.01f; // kg/m^3
+        final float neighborDistance = 5f;
+        final float densREF = 0.0099f; // kg/m^3
         final float mu = 0.01f; // kg/ms (dynamical viscosity))
         final float c = 1.9f; // m/s speed of sound
 
         final float speedlimit = 2f;
 
         //bounding box
-        final float boxSize = 200f;
+        final float boxSize = 50f;
         public final float lowerX = -boxSize;   public final float upperX = boxSize;
         public final float lowerY = -boxSize;   public final float upperY = boxSize;
         public final float lowerZ = -boxSize;   public final float upperZ = boxSize;
@@ -34,8 +34,8 @@ public class kParticleCloud extends Kernel {
         final int[] pn = new int[PARTICLES_MAX*MAX_NEIGHBORS]; //neighbors by index
         final int[] pnn = new int[PARTICLES_MAX]; //neighbors totals by index
 
-        final int GRID_RES = 32;
-        final int GRID_SLOTS = 200;
+        final int GRID_RES = 10;
+        final int GRID_SLOTS = 50;
         final int[] particleGrid = new int[GRID_RES*GRID_RES*GRID_RES * GRID_SLOTS];
         final int[] particleGridTotal = new int[GRID_RES*GRID_RES*GRID_RES];
 
@@ -96,24 +96,8 @@ public class kParticleCloud extends Kernel {
     public void addToGrid(int particle){
         int gridPos = getGridPos(positionX[particle],positionY[particle],positionZ[particle]);
         int gridTotalsPos = getGridTotalsPos(positionX[particle],positionY[particle],positionZ[particle]);
-
-        if(!alreadyInGrid(particle)){
-            particleGrid[gridPos + particleGridTotal[gridTotalsPos]] = particle;
-            particleGridTotal[gridTotalsPos]++;
-
-            particleGridTotal[gridTotalsPos]=min(particleGridTotal[gridTotalsPos], GRID_SLOTS -1);
-
-        }
-    }
-
-    public boolean alreadyInGrid(int particle){
-        int gridPos = getGridPosI(particle);
-        int gridTotalsPos = getGridTotalsPos(positionX[particle],positionY[particle],positionZ[particle]);
-
-        for(int gridMemberNo=0; gridMemberNo<particleGridTotal[gridTotalsPos]; gridMemberNo++){
-            if(getGridMember(gridPos, gridMemberNo)==particle)return true;
-        }
-        return false;
+        particleGrid[gridPos + particleGridTotal[gridTotalsPos]] = particle;
+        particleGridTotal[gridTotalsPos]=min(particleGridTotal[gridTotalsPos]+1, GRID_SLOTS -1);
     }
 
     public void generateParticles(){
@@ -136,28 +120,16 @@ public class kParticleCloud extends Kernel {
         this.get(velocityX).get(velocityY).get(velocityZ).get(pd).get(pm).get(pp).get(pn).get(pnn).get(particleGrid).get(particleGridTotal);
     }
 
-    public particle getParticle(int particle){
-        particle p = new particle();
-        p.pos.x=positionX[particle];
-        p.pos.y=positionY[particle];
-        p.pos.z=positionZ[particle];
-        return p;
-    }
-
-    int seed = 123456789;
+    private int seed = 123456789;
     int randInt() { //random positive or negative integers
-        int a = 1103515245;
-        int c = 12345;
+        final int a = 1103515245;
+        final int c = 12345;
         seed = (a * seed + c);
         return seed;
     }
 
     float rand(){ //random float from 0 to 1
         return (randInt()/(1f*Integer.MAX_VALUE)+1f)/2f;
-    }
-
-    float randZero(){ //random float from -1 to 1
-        return (randInt()/(1f*Integer.MAX_VALUE));
     }
 
     public void initParticle(int particle){
@@ -199,9 +171,6 @@ public class kParticleCloud extends Kernel {
 
     public void resetNeighbors(int i){
         pnn[i]=0;
-        for(int n=0; n<MAX_NEIGHBORS; n++){
-            pn[i*MAX_NEIGHBORS+n]=0;
-        }
     }
 
     public void addNeighbor(int particle, int neighbor){
@@ -235,7 +204,7 @@ public class kParticleCloud extends Kernel {
     public void updateTime(){
         lastTime=time;
         time = getTime();
-        dt=(time-lastTime)*0.2f;
+        dt=(time-lastTime)*0.0151f;
     }
 
     public float dt;
@@ -266,6 +235,9 @@ public class kParticleCloud extends Kernel {
         return max;
     }
 
+    public float averageD = 0.10f;
+    public float averageP = 0.10f;
+
     public void update(){
         ready=false;
         float gridStep = (upperX-lowerX)/GRID_RES;
@@ -287,8 +259,9 @@ public class kParticleCloud extends Kernel {
 
         runNo++;
         float averageNeighbors = getAverageNeighbors();
-        float averageD = getAverageDensity();
-        float averageP = getAveragePressure();
+
+        averageD = getAverageDensity();
+        averageP = getAveragePressure();
 
         limitedPrint(" " +this.getExecutionMode() + " dt " + (dt*1000)+"ms parts " + numParticles + " exec" + (System.currentTimeMillis()-time1) +
                     "\n avN " + averageNeighbors + " avD " + averageD + " avP " + averageP+
