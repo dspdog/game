@@ -327,7 +327,7 @@ public class GeometryFactory {
         final FloatBuffer tex_data = BufferUtils.createFloatBuffer(numParticles*vertsPerTriangle*2*trisPerSprite);
 
         for(int particle=0; particle<numParticles; particle++){
-            float fatness = 10.0f;
+            float fatness = 15.0f;
 
             float xN = (kCloud.positionX[particle]-kCloud.lowerX)/(kCloud.upperX-kCloud.lowerX);
             float yN = (kCloud.positionY[particle]-kCloud.lowerY)/(kCloud.upperY-kCloud.lowerY);
@@ -355,7 +355,7 @@ public class GeometryFactory {
             vert_data.put(x+cxX).put(y+cxY).put(z+cxZ);
             vert_data.put(x+cyX).put(y+cyY).put(z+cyZ);
             vert_data.put(x+cyX+cxX).put(y+cyY+cxY).put(z+cyZ+cxZ);
-
+/*
             float d = kCloud.getNumberOfNeighbors(particle)/8f;
 
             color_data.put(d).put(d).put(d);
@@ -363,14 +363,14 @@ public class GeometryFactory {
             color_data.put(d).put(d).put(d);
             color_data.put(d).put(d).put(d);
             color_data.put(d).put(d).put(d);
-            color_data.put(d).put(d).put(d);
-            /*
-            color_data.put(xN*d).put(yN*d).put(zN*d);
-            color_data.put(xN*d).put(yN*d).put(zN*d);
-            color_data.put(xN*d).put(yN*d).put(zN*d);
-            color_data.put(xN*d).put(yN*d).put(zN*d);
-            color_data.put(xN*d).put(yN*d).put(zN*d);
-            color_data.put(xN*d).put(yN*d).put(zN*d);*/
+            color_data.put(d).put(d).put(d);*/
+
+            color_data.put(xN).put(yN).put(zN);
+            color_data.put(xN).put(yN).put(zN);
+            color_data.put(xN).put(yN).put(zN);
+            color_data.put(xN).put(yN).put(zN);
+            color_data.put(xN).put(yN).put(zN);
+            color_data.put(xN).put(yN).put(zN);
 
             float size = 0.75f;
 

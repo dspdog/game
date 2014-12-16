@@ -11,15 +11,15 @@ public class kParticleCloud extends Kernel {
         public static final int PARTICLES_MAX = 10_000;
         public int numParticles=0;
 
-        final float neighborDistance = 5f;
-        final float densREF = 0.0099f; // kg/m^3
-        final float mu = 0.01f; // kg/ms (dynamical viscosity))
+        final float neighborDistance = 3f;
+        final float densREF = 0.011f; // kg/m^3
+        final float mu = 1f; // kg/ms (dynamical viscosity))
         final float c = 1.9f; // m/s speed of sound
 
-        final float speedlimit = 2f;
+        final float speedlimit = 1.2f;
 
         //bounding box
-        final float boxSize = 50f;
+        final float boxSize = 100f;
         public final float lowerX = -boxSize;   public final float upperX = boxSize;
         public final float lowerY = -boxSize;   public final float upperY = boxSize;
         public final float lowerZ = -boxSize;   public final float upperZ = boxSize;
@@ -34,7 +34,7 @@ public class kParticleCloud extends Kernel {
         final int[] pn = new int[PARTICLES_MAX*MAX_NEIGHBORS]; //neighbors by index
         final int[] pnn = new int[PARTICLES_MAX]; //neighbors totals by index
 
-        final int GRID_RES = 10;
+        final int GRID_RES = 20;
         final int GRID_SLOTS = 50;
         final int[] particleGrid = new int[GRID_RES*GRID_RES*GRID_RES * GRID_SLOTS];
         final int[] particleGridTotal = new int[GRID_RES*GRID_RES*GRID_RES];
@@ -204,7 +204,7 @@ public class kParticleCloud extends Kernel {
     public void updateTime(){
         lastTime=time;
         time = getTime();
-        dt=(time-lastTime)*0.0151f;
+        dt=(time-lastTime)*0.251f;
     }
 
     public float dt;
