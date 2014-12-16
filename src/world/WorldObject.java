@@ -2,6 +2,7 @@ package world;
 
 import eu.mihosoft.vrl.v3d.CSG;
 import eu.mihosoft.vrl.v3d.Vector3d;
+import factory.TextureFactory;
 import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.opengl.Texture;
 import factory.GeometryFactory;
@@ -12,7 +13,7 @@ import java.nio.FloatBuffer;
 
 public class WorldObject{ //have this handle all the interactions w/ geometryfactory...
     CSG myCSG;
-    int myTextureId;
+    int myTextureId=0;
     GeometryFactory.gridFunction myFunction;
     sphCloud myCloud;
     public kParticleCloud myKCloud;
@@ -36,6 +37,8 @@ public class WorldObject{ //have this handle all the interactions w/ geometryfac
 
     boolean hasVBOHandles=false;
 
+    Texture myTexture = null;
+
     FloatBuffer[] myfb;
 
     public void drawVBOs(){
@@ -43,8 +46,8 @@ public class WorldObject{ //have this handle all the interactions w/ geometryfac
             VBOHandles = GeometryFactory.VBOHandles(myfb);
             hasVBOHandles=true;
         }
-
-        GeometryFactory.drawTrisByVBOHandles(triangles, VBOHandles);
+        if(myTexture!=null)
+            GeometryFactory.drawTrisByVBOHandles(triangles, VBOHandles, myTexture);
     }
 
     public WorldObject(CSG csg){
@@ -88,6 +91,7 @@ public class WorldObject{ //have this handle all the interactions w/ geometryfac
         myKCloud = new kParticleCloud(numParticles);
         myfb = GeometryFactory.cloudVertexData(myKCloud);
         triangles = GeometryFactory.cloudTriangles;
+        myTexture = TextureFactory.ballTextureT();
     }
 
     public WorldObject setUpdateInterval(int interval){

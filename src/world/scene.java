@@ -38,7 +38,7 @@ public class scene{
                 glTranslatef(-wo.myLastDrawnPos.x, -wo.myLastDrawnPos.y, -wo.myLastDrawnPos.z);
             }else if (wo.isPlane){
                 GeometryFactory.billboardCheatSphericalBegin();
-                GeometryFactory.plane(wo.myTextureId);
+                GeometryFactory.plane(wo.myTexture);
                 GeometryFactory.billboardEnd();
             }else if(wo.isCSG){
                 wo.drawVBOs();

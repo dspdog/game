@@ -21,12 +21,30 @@ public class TextureFactory {
         Texture myTexture;
         try {
              myTexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("./res/myball.png")));
+            System.out.println("TEXID" + myTexture.getTextureID());
+            //myTexture.release();
             return myTexture.getTextureID();
         } catch (IOException e) {
             e.printStackTrace();
         }
         return 0;
-        //myTexture.release();
+        //
+    }
+
+
+    static public Texture ballTextureT(){
+        //load texture from png
+        Texture myTexture;
+        try {
+            myTexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("./res/myball.png")));
+            System.out.println("TEXID" + myTexture.getTextureID());
+            //myTexture.release();
+            return myTexture;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+        //
     }
 
     static public int proceduralTexture(){  //http://www.java-gaming.org/index.php?topic=25516.0
@@ -76,15 +94,15 @@ public class TextureFactory {
         glBindTexture(GL_TEXTURE_2D, textureID); //Bind texture ID
 
         //Setup wrap mode
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
         //Setup texture scaling filtering
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
 
         //Send texel data to OpenGL
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA4, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
 
         //Return the texture ID so we can bind it later again
         return textureID;

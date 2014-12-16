@@ -21,21 +21,6 @@ import static org.lwjgl.opengl.GL15.*;
 
 public class GeometryFactory {
 
-    static void plane(){
-
-        int size = 250;
-        glBegin(GL11.GL_QUADS);
-        glColor3f(0, 0, 0);
-        glVertex3f(0, 0, 0);
-        glColor3f(1, 0, 0);
-        glVertex3f(size, 0, 0);
-        glColor3f(1, 0, 1);
-        glVertex3f(size, 0, size);
-        glColor3f(0, 0, 1);
-        glVertex3f(0, 0, size);
-        glEnd();
-    }
-
     public static void cloud(sphCloud cloud, int texId){
         long time = System.currentTimeMillis();
         float r,g,b;
@@ -146,7 +131,7 @@ public class GeometryFactory {
         }
     }
 
-    static void plane(Texture tex){
+    public static void plane(Texture tex){
         glEnable(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, tex.getTextureID());
         int size = 250;
@@ -167,32 +152,6 @@ public class GeometryFactory {
         glTexCoord2f(0, 1);
         glColor3f(1, 1, 1);
         glVertex3f(0, 0, size);
-
-        glEnd();
-        glDisable(GL_TEXTURE_2D);
-    }
-
-    public static void plane(int texid){
-        glEnable(GL_TEXTURE_2D);
-        glBindTexture(GL_TEXTURE_2D, texid);
-        int size = 250;
-        glBegin(GL11.GL_QUADS);
-
-        glTexCoord2f(0, 0);
-        glColor3f(0, 0, 0);
-        glVertex3f(0, 0, 0);
-
-        glTexCoord2f(1, 0);
-        glColor3f(1, 1, 1);
-        glVertex3f(size, 0, 0);
-
-        glTexCoord2f(1, 1);
-        glColor3f(1, 1, 1);
-        glVertex3f(size, size, 0);
-
-        glTexCoord2f(0, 1);
-        glColor3f(1, 1, 1);
-        glVertex3f(0, size, 0);
 
         glEnd();
         glDisable(GL_TEXTURE_2D);
@@ -406,13 +365,15 @@ public class GeometryFactory {
             color_data.put(xN).put(yN).put(zN);
             color_data.put(xN).put(yN).put(zN);
 
-            tex_data.put(0).put(0);
-            tex_data.put(0).put(1);
-            tex_data.put(1).put(0);
+            float size = 0.75f;
 
-            tex_data.put(1).put(0);
-            tex_data.put(0).put(1);
-            tex_data.put(1).put(1);
+            tex_data.put(0).put(0);
+            tex_data.put(0).put(size);
+            tex_data.put(size).put(0);
+
+            tex_data.put(size).put(0);
+            tex_data.put(0).put(size);
+            tex_data.put(size).put(size);
         }
 
         vert_data.flip();
@@ -504,35 +465,53 @@ public class GeometryFactory {
     }
 
 
-    public static void drawTrisByVBOHandles(int triangles, int[] handles){
+    public static void drawTrisByVBOHandles(int triangles, int[] handles, Texture tex){
+        //http://www.java-gaming.org/index.php?topic=18710.0
+        glColor3f(1.0f, 1.0f, 1.0f);
+        glEnable(GL_TEXTURE_2D);
+        glEnable(GL_COLOR_MATERIAL);
+        //glEnable (GL_BLEND);
+        //glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         int vertex_size = 3; // X, Y, Z,
         int color_size = 3; // R, G, B,
-        int text_coord_size = 3; // X, Y, Z,
+        int text_coord_size = 2; // X, Y,
 
         int vbo_vertex_handle = handles[0];
         int vbo_color_handle = handles[1];
         int vbo_texture_coord_handle = handles[2];
 
-        glBindBuffer(GL_ARRAY_BUFFER, vbo_vertex_handle);
-        glVertexPointer(vertex_size, GL_FLOAT, 0, 0L);
+        glBindTexture(GL_TEXTURE_2D, tex.getTextureID());
+
+        //Setup wrap mode
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+        //Setup texture scaling filtering
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+
+
+        glBindBuffer(GL_ARRAY_BUFFER, vbo_texture_coord_handle);
+        glTexCoordPointer(text_coord_size, GL_FLOAT, 0, 0L);
 
         glBindBuffer(GL_ARRAY_BUFFER, vbo_color_handle);
         glColorPointer(color_size, GL_FLOAT, 0, 0L);
 
-        if(vbo_texture_coord_handle!=0){
-            glBindBuffer(GL_ARRAY_BUFFER, vbo_texture_coord_handle);
-            glTexCoordPointer(text_coord_size, GL_FLOAT, 0, 0L);
-        }
+        glBindBuffer(GL_ARRAY_BUFFER, vbo_vertex_handle);
+        glVertexPointer(vertex_size, GL_FLOAT, 0, 0L);
 
         glEnableClientState(GL_VERTEX_ARRAY);
         glEnableClientState(GL_COLOR_ARRAY);
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
         glEnableClientState(GL_TEXTURE_2D);
 
         glDrawArrays(GL_TRIANGLES, 0, triangles*vertex_size);
 
-        glDisableClientState(GL_TEXTURE_2D);
+        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
         glDisableClientState(GL_COLOR_ARRAY);
         glDisableClientState(GL_VERTEX_ARRAY);
+        glDisable(GL_TEXTURE_2D);
+
     }
 
 
