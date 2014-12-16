@@ -370,9 +370,7 @@ public class GeometryFactory {
         for(int particle=0; particle<numParticles; particle++){
             float fatness = 20.5f;
 
-            float x = kCloud.positionX[particle];
-            float y = kCloud.positionY[particle];
-            float z = kCloud.positionZ[particle];
+
 
             float xN = (kCloud.positionX[particle]-kCloud.lowerX)/(kCloud.upperX-kCloud.lowerX);
             float yN = (kCloud.positionY[particle]-kCloud.lowerY)/(kCloud.upperY-kCloud.lowerY);
@@ -385,6 +383,10 @@ public class GeometryFactory {
             float cyX = scene.cameraYVector.x*fatness;
             float cyY = scene.cameraYVector.y*fatness;
             float cyZ = scene.cameraYVector.z*fatness;
+
+            float x = kCloud.positionX[particle] - cxX/2 - cyX/2;
+            float y = kCloud.positionY[particle] - cxY/2 - cyY/2;
+            float z = kCloud.positionZ[particle] - cxZ/2 - cyZ/2;
 
             float tx = x;
             float ty = y;
