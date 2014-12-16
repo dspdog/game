@@ -355,10 +355,10 @@ public class GeometryFactory {
             vert_data.put(x+cxX).put(y+cxY).put(z+cxZ);
             vert_data.put(x+cyX).put(y+cyY).put(z+cyZ);
             vert_data.put(x+cyX+cxX).put(y+cyY+cxY).put(z+cyZ+cxZ);
-/*
-            float d = kCloud.getNumberOfNeighbors(particle)/8f;
 
-            color_data.put(d).put(d).put(d);
+            //float d = kCloud.getNumberOfNeighbors(particle)/6f;
+            //float d = kCloud.getDensity(particle)/kCloud.averageD;
+            /*color_data.put(d).put(d).put(d);
             color_data.put(d).put(d).put(d);
             color_data.put(d).put(d).put(d);
             color_data.put(d).put(d).put(d);

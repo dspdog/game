@@ -11,8 +11,8 @@ public class kParticleCloud extends Kernel {
         public static final int PARTICLES_MAX = 10_000;
         public int numParticles=0;
 
-        final float neighborDistance = 3f;
-        final float densREF = 0.014f; // kg/m^3
+        final float neighborDistance = 5f;
+        final float densREF = 0.024f; // kg/m^3
         final float mu = 1f; // kg/ms (dynamical viscosity))
         final float c = 2f; // m/s speed of sound
 
