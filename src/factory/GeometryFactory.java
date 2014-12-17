@@ -318,7 +318,7 @@ public class GeometryFactory {
     public static FloatBuffer[] cloudVertexData(kParticleCloud kCloud){
         int numParticles = kCloud.numParticles;
         int vertsPerTriangle = 3;
-        int trisPerSprite = 6;
+        int trisPerSprite = 6; //for hexagons use 6 - actually only uses (N-2) tris
 
         boolean useSquares = false;
 
@@ -330,6 +330,8 @@ public class GeometryFactory {
         final FloatBuffer vert_data = BufferUtils.createFloatBuffer(numParticles*vertsPerTriangle*3*trisPerSprite);
         final FloatBuffer color_data = BufferUtils.createFloatBuffer(numParticles*vertsPerTriangle*3*trisPerSprite);
         final FloatBuffer tex_data = BufferUtils.createFloatBuffer(numParticles*vertsPerTriangle*2*trisPerSprite);
+
+        long time = System.currentTimeMillis();
 
         for(int particle=0; particle<numParticles; particle++){
             //float fatness = kCloud.pressure[particle]/kCloud.averageP*5f; //higher pressure bigger (explodes?)
@@ -384,11 +386,15 @@ public class GeometryFactory {
                 color_data.put(xN).put(yN).put(zN);
             }else{
                 int segs = trisPerSprite;
-                float extraRotation = (float)(2f*Math.PI*particle/numParticles);
-                for(int i=0; i<segs; i++) {
-                    float scale = 1/2f;
-                    float sin = (float) (Math.sin(i * 2 * Math.PI / segs + extraRotation)) * scale;
-                    float cos = (float) (Math.cos(i * 2 * Math.PI / segs + extraRotation)) * scale;
+                float extraRotation = (float)(2f*Math.PI*particle/numParticles + 17f* 2f*Math.PI*(time%1000)/1000f);
+                float scale = 1/2f;
+                float sin0 = (float) (Math.sin(extraRotation)) * scale;
+                float cos0 = (float) (Math.cos(extraRotation)) * scale;
+
+                for(int i=1; i<segs-1; i++) {
+
+                    float sin1 = (float) (Math.sin(i * 2 * Math.PI / segs + extraRotation)) * scale;
+                    float cos1 = (float) (Math.cos(i * 2 * Math.PI / segs + extraRotation)) * scale;
                     float sin2 = (float) (Math.sin((i+1) * 2 * Math.PI / segs + extraRotation)) * scale;
                     float cos2 = (float) (Math.cos((i+1) * 2 * Math.PI / segs + extraRotation)) * scale;
 
@@ -396,32 +402,31 @@ public class GeometryFactory {
                     float y = kCloud.positionY[particle];
                     float z = kCloud.positionZ[particle];
 
-                    float dx = cxX*sin + cyX*cos;
-                    float dy = cxY*sin + cyY*cos;
-                    float dz = cxZ*sin + cyZ*cos;
+                    float dx0 = cxX*sin0 + cyX*cos0;
+                    float dy0 = cxY*sin0 + cyY*cos0;
+                    float dz0 = cxZ*sin0 + cyZ*cos0;
+
+                    float dx1 = cxX*sin1 + cyX*cos1;
+                    float dy1 = cxY*sin1 + cyY*cos1;
+                    float dz1 = cxZ*sin1 + cyZ*cos1;
 
                     float dx2 = cxX*sin2 + cyX*cos2;
                     float dy2 = cxY*sin2 + cyY*cos2;
                     float dz2 = cxZ*sin2 + cyZ*cos2;
 
-                    vert_data.put(x).put(y).put(z);
-                    vert_data.put(x+dx).put(y+dy).put(z+dz);
+                    vert_data.put(x+dx0).put(y+dy0).put(z+dz0);
+                    vert_data.put(x+dx1).put(y+dy1).put(z+dz1);
                     vert_data.put(x+dx2).put(y+dy2).put(z+dz2);
 
                     float tx=0.375f; float ty=0.375f;
                     float scale2=0.75f;
-                    tex_data.put(tx).put(ty);
-                    tex_data.put(tx+cos*scale2).put(ty+sin*scale2);
+                    tex_data.put(tx+cos0*scale2).put(ty+sin0*scale2);
+                    tex_data.put(tx+cos1*scale2).put(ty + sin1 * scale2);
                     tex_data.put(tx+cos2*scale2).put(ty+sin2*scale2);
 
                     color_data.put(xN).put(yN).put(zN);
                     color_data.put(xN).put(yN).put(zN);
                     color_data.put(xN).put(yN).put(zN);
-
-                    //vert_data.put(x+cxX).put(y+cxY).put(z+cxZ);
-                    //vert_data.put(x+cyX).put(y+cyY).put(z+cyZ);
-                    //vert_data.put(x+cyX+cxX).put(y+cyY+cxY).put(z+cyZ+cxZ);
-
                 }
             }
 
