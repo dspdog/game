@@ -247,6 +247,9 @@ public class kParticleCloud extends Kernel {
     public float averageD = 0.10f;
     public float averageP = 0.10f;
 
+
+    static long lastPrint = 0;
+
     public void update(){
 
         ready=false;
@@ -268,15 +271,21 @@ public class kParticleCloud extends Kernel {
         exportData();
 
         runNo++;
-        float averageNeighbors = getAverageNeighbors();
 
-        averageD = getAverageDensity();
-        averageP = getAveragePressure();
+        if(getTime() - lastPrint > 1000){
 
-        limitedPrint(" " +this.getExecutionMode() + " dt " + (dt*1000)+"ms parts " + numParticles + " exec" + (System.currentTimeMillis()-time1) +
+            float averageNeighbors = getAverageNeighbors();
+
+            averageD = getAverageDensity();
+            averageP = getAveragePressure();
+
+            System.out.println(" " +this.getExecutionMode() + " dt " + (dt*1000)+"ms parts " + numParticles + " exec" + (System.currentTimeMillis()-time1) +
                     "\n avN " + averageNeighbors + " avD " + averageD + " avP " + averageP+
                     "\n grid " + getTotalGridMembers() + " max " + getGridMax() +
                     "\n localsum" + getTotalExports() + " localsize " + range.getLocalSize(0) + " grps " + range.getNumGroups(0));
+            lastPrint=getTime();
+        }
+
         ready=true;
     }
 
@@ -310,14 +319,6 @@ public class kParticleCloud extends Kernel {
             total+=pressure[i];
         }
         return total/numParticles;
-    }
-
-    static long lastPrint = 0;
-    public void limitedPrint(String s){
-        if(getTime() - lastPrint > 1000){
-            System.out.println(s);
-            lastPrint=getTime();
-        }
     }
 
     final int LOCALSIZE=250;

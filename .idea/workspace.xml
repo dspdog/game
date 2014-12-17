@@ -132,14 +132,14 @@
       <file leaf-file-name="kParticleCloud.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/shapes/cloud/kParticleCloud.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.41628265" vertical-offset="7260" max-vertical-offset="9401">
-              <caret line="447" column="30" selection-start-line="447" selection-start-column="25" selection-end-line="447" selection-end-column="30" />
+            <state vertical-scroll-proportion="0.6205837" vertical-offset="4356" max-vertical-offset="9418">
+              <caret line="284" column="48" selection-start-line="284" selection-start-column="48" selection-end-line="284" selection-end-column="48" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#6262#6263#0" expanded="true" />
                 <element signature="e#6352#6353#0" expanded="true" />
-                <element signature="e#12015#12016#0" expanded="true" />
-                <element signature="e#12065#12066#0" expanded="true" />
+                <element signature="e#11960#11961#0" expanded="true" />
+                <element signature="e#12010#12011#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -1043,14 +1043,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/shapes/cloud/kParticleCloud.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.41628265" vertical-offset="7260" max-vertical-offset="9401">
-          <caret line="447" column="30" selection-start-line="447" selection-start-column="25" selection-end-line="447" selection-end-column="30" />
+        <state vertical-scroll-proportion="0.6205837" vertical-offset="4356" max-vertical-offset="9418">
+          <caret line="284" column="48" selection-start-line="284" selection-start-column="48" selection-end-line="284" selection-end-column="48" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#6262#6263#0" expanded="true" />
             <element signature="e#6352#6353#0" expanded="true" />
-            <element signature="e#12015#12016#0" expanded="true" />
-            <element signature="e#12065#12066#0" expanded="true" />
+            <element signature="e#11960#11961#0" expanded="true" />
+            <element signature="e#12010#12011#0" expanded="true" />
           </folding>
         </state>
       </provider>
