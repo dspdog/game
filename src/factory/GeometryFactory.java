@@ -384,13 +384,13 @@ public class GeometryFactory {
                 color_data.put(xN).put(yN).put(zN);
             }else{
                 int segs = trisPerSprite;
-
+                float extraRotation = (float)(2f*Math.PI*particle/numParticles);
                 for(int i=0; i<segs; i++) {
                     float scale = 1/2f;
-                    float sin = (float) (Math.sin(i * 2 * Math.PI / segs)) * scale;
-                    float cos = (float) (Math.cos(i * 2 * Math.PI / segs)) * scale;
-                    float sin2 = (float) (Math.sin((i+1) * 2 * Math.PI / segs)) * scale;
-                    float cos2 = (float) (Math.cos((i+1) * 2 * Math.PI / segs)) * scale;
+                    float sin = (float) (Math.sin(i * 2 * Math.PI / segs + extraRotation)) * scale;
+                    float cos = (float) (Math.cos(i * 2 * Math.PI / segs + extraRotation)) * scale;
+                    float sin2 = (float) (Math.sin((i+1) * 2 * Math.PI / segs + extraRotation)) * scale;
+                    float cos2 = (float) (Math.cos((i+1) * 2 * Math.PI / segs + extraRotation)) * scale;
 
                     float x = kCloud.positionX[particle];
                     float y = kCloud.positionY[particle];
