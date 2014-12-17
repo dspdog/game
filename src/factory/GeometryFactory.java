@@ -7,8 +7,6 @@ import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.opengl.*;
 import org.lwjgl.opengl.GL11;
 import shapes.cloud.kParticleCloud;
-import shapes.cloud.particle;
-import shapes.cloud.sphCloud;
 import world.scene;
 
 import java.nio.FloatBuffer;
@@ -20,31 +18,6 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
 
 public class GeometryFactory {
-
-    public static void cloud(sphCloud cloud, int texId){
-        long time = System.currentTimeMillis();
-        float r,g,b;
-        if(sphCloud.gridInited)
-        for(particle p : cloud.theParticles){
-            if(p!=null && p.myIndex !=0){
-                r = (p.pos.x-sphCloud.lowerCorner.x)/(sphCloud.upperCorner.x - sphCloud.lowerCorner.x);
-                g = (p.pos.y-sphCloud.lowerCorner.y)/(sphCloud.upperCorner.y - sphCloud.lowerCorner.y);
-                b = (p.pos.z-sphCloud.lowerCorner.z)/(sphCloud.upperCorner.z - sphCloud.lowerCorner.z);
-               // float d = p.myNeighbors.size()/12f;
-
-
-
-                glColor3f(r, g, b);
-                drawCircle(p, true);
-            }
-        }
-        glColor3f(0f, 0f, 0f);
-        drawBox(sphCloud.lowerCorner, sphCloud.upperCorner);
-        glColor3f(0.5f, 0f, 0f);
-        drawBox(sphCloud.lowerCornerBoundsFinal, sphCloud.upperCornerBoundsFinal);
-       // glColor3f(0f, 0f, 0f);
-       // drawCloudBoundsBox();
-    }
 
     public static void kcloud(kParticleCloud cloud){
         /*long time = System.currentTimeMillis();
@@ -96,39 +69,6 @@ public class GeometryFactory {
         glVertex3f(upperCorner.x, upperCorner.y, lowerCorner.z);
         glVertex3f(lowerCorner.x, upperCorner.y, lowerCorner.z);
         glEnd();
-    }
-
-    static void drawCircle(particle p, boolean cartoonMode){
-        float fatness = 1.5f;
-
-        glVertex3f(p.pos.x, p.pos.y, p.pos.z);
-        glBegin(GL11.GL_TRIANGLE_FAN);
-        int segs = 5;
-        float scale = sphCloud.gridSize/4f*fatness;
-        for(int i=0; i<segs; i++){
-            float sin = (float)(Math.sin(i * 2 * Math.PI / segs))*scale;
-            float cos = (float)(Math.cos(i * 2 * Math.PI / segs))*scale;
-            glVertex3f(p.pos.x+(scene.cameraYVector.x*sin+scene.cameraXVector.x*cos),
-                       p.pos.y+(scene.cameraYVector.y*sin+scene.cameraXVector.y*cos),
-                       p.pos.z+(scene.cameraYVector.z*sin+scene.cameraXVector.z*cos));
-        }
-        glEnd();
-
-        if(cartoonMode){
-            scale = sphCloud.gridSize/4f*1.1f*fatness;
-            float s = -0.25f;
-            glColor3f(0, 0, 0);
-            glVertex3f(p.pos.x+scene.cameraZVector.x*s, p.pos.y+scene.cameraZVector.y*s, p.pos.z+scene.cameraZVector.z*s);
-            glBegin(GL11.GL_TRIANGLE_FAN);
-            for(int i=0; i<segs; i++){
-                float sin = (float)(Math.sin(i * 2 * Math.PI / segs))*scale;
-                float cos = (float)(Math.cos(i * 2 * Math.PI / segs))*scale;
-                glVertex3f(p.pos.x+(scene.cameraYVector.x*sin+scene.cameraXVector.x*cos)+scene.cameraZVector.x*s,
-                        p.pos.y+(scene.cameraYVector.y*sin+scene.cameraXVector.y*cos)+scene.cameraZVector.y*s,
-                        p.pos.z+(scene.cameraYVector.z*sin+scene.cameraXVector.z*cos)+scene.cameraZVector.z*s);
-            }
-            glEnd();
-        }
     }
 
     public static void plane(Texture tex){

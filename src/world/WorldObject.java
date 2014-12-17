@@ -7,7 +7,7 @@ import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.opengl.Texture;
 import factory.GeometryFactory;
 import shapes.cloud.kParticleCloud;
-import shapes.cloud.sphCloud;
+
 
 import java.nio.FloatBuffer;
 
@@ -15,7 +15,7 @@ public class WorldObject{ //have this handle all the interactions w/ geometryfac
     CSG myCSG;
     int myTextureId=0;
     GeometryFactory.gridFunction myFunction;
-    sphCloud myCloud;
+
     public kParticleCloud myKCloud;
     Vector3f myPos = new Vector3f(0,0,0);
     Vector3f myLastDrawnPos = new Vector3f(0,0,0);
@@ -76,13 +76,6 @@ public class WorldObject{ //have this handle all the interactions w/ geometryfac
         myFunction = d;
         forceUpdateGridFb();
         triangles = (GeometryFactory.gridSize* GeometryFactory.gridSize/GeometryFactory.gridStep/GeometryFactory.gridStep)*2;
-    }
-
-    public WorldObject(int numParticles, WorldObject collisionObject, int texId){
-        myTextureId = texId;
-        name="PARTICLES_" + stencilId;
-        isCloud = true;
-        myCloud = new sphCloud(numParticles, collisionObject);
     }
 
     public WorldObject(int numParticles){

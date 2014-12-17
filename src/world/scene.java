@@ -42,8 +42,6 @@ public class scene{
                 GeometryFactory.billboardEnd();
             }else if(wo.isCSG){
                 wo.drawVBOs();
-            }else if(wo.isCloud){
-               GeometryFactory.cloud(wo.myCloud, wo.myTextureId);
             }else if(wo.isKCloud){
                 wo.drawVBOs();
                 GeometryFactory.kcloud(wo.myKCloud);

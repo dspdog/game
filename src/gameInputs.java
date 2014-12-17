@@ -2,7 +2,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-import shapes.cloud.sphCloud;
+
 import world.scene;
 
 import java.nio.IntBuffer;
@@ -58,7 +58,7 @@ public class gameInputs {
                 }
                 if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
                     SPACE_down=true;
-                    sphCloud.gravityDown = !sphCloud.gravityDown;
+
                     scene.myKCloud.gravityDown = !scene.myKCloud.gravityDown;
                     if(scene.myKCloud.gravityDown){
                         scene.myKCloud.lastShot=getTime();

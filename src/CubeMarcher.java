@@ -1,5 +1,5 @@
 import org.lwjgl.BufferUtils;
-import shapes.cloud.sphCloud;
+
 import shapes.tree.tree;
 
 import java.nio.FloatBuffer;
@@ -484,7 +484,7 @@ public class CubeMarcher implements Runnable{
 
         double step = p.getStep();
         int num_tri=0;
-
+        /*
         for(float x= sphCloud.lowerCornerBoundsFinal.x; x<sphCloud.upperCornerBoundsFinal.x; x+=step){
             for(float y= sphCloud.lowerCornerBoundsFinal.y; x<sphCloud.upperCornerBoundsFinal.y; y+=step){
                 for(float z= sphCloud.lowerCornerBoundsFinal.z; x<sphCloud.upperCornerBoundsFinal.z; z+=step){
@@ -497,7 +497,7 @@ public class CubeMarcher implements Runnable{
                     }
                 }
             }
-        }
+        }*/
 
         vertex_data.flip();
         color_data.flip();

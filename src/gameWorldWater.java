@@ -1,8 +1,4 @@
 import org.lwjgl.Sys;
-import org.lwjgl.util.vector.Vector3f;
-import shapes.cloud.kParticleCloud;
-import shapes.cloud.particle;
-import shapes.cloud.sphCloud;
 import world.scene;
 
 import java.util.ArrayList;
@@ -12,7 +8,6 @@ public class gameWorldWater implements Runnable {
 
     scene myScene;
 
-    long lastNeighborUpdate=0;
     long lastPosUpdate=0;
     long lastSurfaceUpdate=0;
 
