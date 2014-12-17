@@ -11,7 +11,7 @@ public class kParticleCloud extends Kernel {
     final float S_PER_MS = 0.3f ; //seconds per milliseconds, make 0.001f for "realtime"(?)
 
     //CLOUD PARAMS
-        public static final int PARTICLES_MAX = 10_000;
+        public static final int PARTICLES_MAX = 250;
         public int numParticles=0;
 
         final float neighborDistance = 5f;
@@ -41,6 +41,8 @@ public class kParticleCloud extends Kernel {
         final int GRID_SLOTS = 40;
         final int[] particleGrid = new int[GRID_RES*GRID_RES*GRID_RES * GRID_SLOTS];
         final int[] particleGridTotal = new int[GRID_RES*GRID_RES*GRID_RES];
+
+        final float[] exports = new float[PARTICLES_MAX];
 
     public static boolean ready = false;
 
@@ -91,6 +93,7 @@ public class kParticleCloud extends Kernel {
     public void addToGrid(int particle){
         int gridPos = getGridPos(positionX[particle],positionY[particle],positionZ[particle]);
         int gridTotalsPos = getGridTotalsPos(positionX[particle],positionY[particle],positionZ[particle]);
+        //int gridRndPos = (int)floor(rand()*(GRID_SLOTS-1));
         particleGrid[gridPos + particleGridTotal[gridTotalsPos]] = particle;
         particleGridTotal[gridTotalsPos]=min(particleGridTotal[gridTotalsPos]+1, GRID_SLOTS -1);
     }
@@ -111,8 +114,11 @@ public class kParticleCloud extends Kernel {
     }
 
     public void exportData(){
-        this.get(positionX).get(positionY).get(positionZ);
-        this.get(velocityX).get(velocityY).get(velocityZ).get(density).get(pmass).get(pressure).get(neighborsList).get(neighborTotals).get(particleGrid).get(particleGridTotal);
+        this.get(positionX).get(positionY).get(positionZ)
+            .get(velocityX).get(velocityY).get(velocityZ)
+
+            .get(density).get(pressure).get(neighborsList)
+            .get(neighborTotals).get(particleGrid).get(particleGridTotal).get(exports);
     }
 
     private int seed = 123456789;
@@ -232,7 +238,7 @@ public class kParticleCloud extends Kernel {
         clearGrid();
 
         importData();
-        this.execute(range, 5);
+        this.execute(range, 6);
         exportData();
 
         runNo++;
@@ -243,8 +249,17 @@ public class kParticleCloud extends Kernel {
 
         limitedPrint(" " +this.getExecutionMode() + " dt " + (dt*1000)+"ms parts " + numParticles + " exec" + (System.currentTimeMillis()-time1) +
                     "\n avN " + averageNeighbors + " avD " + averageD + " avP " + averageP+
-                    "\n grid " + getTotalGridMembers() + " max " + getGridMax());
+                    "\n grid " + getTotalGridMembers() + " max " + getGridMax() +
+                    "\n locals" + getTotalExports());
         ready=true;
+    }
+
+    public float getTotalExports(){
+        float total =0;
+        for(int i=0; i<numParticles; i++){
+            total+=exports[i];
+        }
+        return total;
     }
 
     public float getAverageNeighbors(){
@@ -279,6 +294,8 @@ public class kParticleCloud extends Kernel {
         }
     }
 
+    @Local float[] locals = new float[PARTICLES_MAX];
+
     @Override
     public void run() {
         int particle = getGlobalId(0);
@@ -286,7 +303,7 @@ public class kParticleCloud extends Kernel {
 
         if(pass==0){
             addToGrid(particle);
-        }if(pass==1){
+        }else if(pass==1){
             findNeighbors(particle);
         }else if(pass==2){
             updateDensity(particle);
@@ -295,7 +312,16 @@ public class kParticleCloud extends Kernel {
             updateVelocity(particle);
         }else if(pass==4){
             updatePosition(particle);
+        }else if(pass==5){
+            locals[particle]=1f;
+            passFromLocal(particle);
         }
+
+        localBarrier();
+    }
+
+    public void passFromLocal(int particle){
+        exports[particle]=locals[particle];
     }
 
     public void addNeighborsFromGrid(int particle, int gridPos, int gridTotalPos){
