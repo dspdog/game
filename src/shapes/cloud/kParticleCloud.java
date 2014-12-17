@@ -2,6 +2,8 @@ package shapes.cloud;
 import com.amd.aparapi.Kernel;
 import com.amd.aparapi.Range;
 import org.lwjgl.Sys;
+import org.lwjgl.util.vector.Vector3f;
+import world.scene;
 
 /**
  * Created by user on 12/13/2014.
@@ -11,7 +13,7 @@ public class kParticleCloud extends Kernel {
     final float S_PER_MS = 0.3f ; //seconds per milliseconds, make 0.001f for "realtime"(?)
 
     //CLOUD PARAMS
-        public static final int PARTICLES_MAX = 10_050;
+        public static final int PARTICLES_MAX = 5000;
         public int numParticles=0;
 
         final float neighborDistance = 5f;
@@ -22,10 +24,16 @@ public class kParticleCloud extends Kernel {
         final float speedlimit = 0.7f;
 
         //bounding box
-        final float boxSize = 100f;
+        final float boxSize = 400f;
         public final float lowerX = -boxSize;   public final float upperX = boxSize;
         public final float lowerY = -boxSize;   public final float upperY = boxSize;
         public final float lowerZ = -boxSize;   public final float upperZ = boxSize;
+
+    //USER PARAMS
+        final float cameraPos[] = new float[3];
+        final float cameraDirXVec[] = new float[3];
+        final float cameraDirYVec[] = new float[3];
+        final float cameraDirZVec[] = new float[3];
 
     //PARTICLE PARAMS
         //velocity                                          //position                                                   //density, mass, pressure
@@ -45,6 +53,21 @@ public class kParticleCloud extends Kernel {
         final float[] exports = new float[PARTICLES_MAX];
 
     public static boolean ready = false;
+
+    public void setCameraData(){
+        cameraPos[0] = scene.cameraPosDesired.x;
+        cameraPos[1] = scene.cameraPosDesired.y;
+        cameraPos[2] = scene.cameraPosDesired.z;
+        cameraDirXVec[0] = scene.cameraXVector.x;
+        cameraDirXVec[1] = scene.cameraXVector.y;
+        cameraDirXVec[2] = scene.cameraXVector.z;
+        cameraDirYVec[0] = scene.cameraYVector.x;
+        cameraDirYVec[1] = scene.cameraYVector.y;
+        cameraDirYVec[2] = scene.cameraYVector.z;
+        cameraDirZVec[0] = scene.cameraZVector.x;
+        cameraDirZVec[1] = scene.cameraZVector.y;
+        cameraDirZVec[2] = scene.cameraZVector.z;
+    }
 
     public kParticleCloud(int _numParticles){
         numParticles=min(_numParticles, PARTICLES_MAX);
@@ -110,7 +133,8 @@ public class kParticleCloud extends Kernel {
         this.put(positionX).put(positionY).put(positionZ)
             .put(velocityX).put(velocityY).put(velocityZ)
             .put(density).put(pmass).put(pressure)
-            .put(neighborsList).put(neighborTotals).put(particleGrid).put(particleGridTotal);
+            .put(neighborsList).put(neighborTotals).put(particleGrid).put(particleGridTotal)
+            .put(cameraDirXVec).put(cameraDirYVec).put(cameraDirZVec).put(cameraPos);
     }
 
     public void exportData(){
@@ -230,7 +254,7 @@ public class kParticleCloud extends Kernel {
         }
 
         long time1=System.currentTimeMillis();
-
+        setCameraData();
         updateTime();
         this.setExplicit(true);
         Range range = Range.create(numParticles);
@@ -471,13 +495,16 @@ public class kParticleCloud extends Kernel {
             accGravY=-gravScale;
             accGravZ=0f;
         }else{
-            float mag = sqrt(
-                    positionX[particle]*positionX[particle] +
-                    positionY[particle]*positionY[particle] +
-                    positionZ[particle]*positionZ[particle]);
-            accGravX = -gravScale*positionX[particle]/mag;
-            accGravY = -gravScale*positionY[particle]/mag;
-            accGravZ = -gravScale*positionZ[particle]/mag;
+            float armLen = 200f;
+            float xd=positionX[particle]-(upperX-cameraPos[0]+lowerX)+cameraDirZVec[0] * armLen;
+            float yd=positionY[particle]-(upperY-cameraPos[1]+lowerY)+cameraDirZVec[1] * armLen;
+            float zd=positionZ[particle]-(upperZ-cameraPos[2]+lowerZ)+cameraDirZVec[2] * armLen;
+
+            float mag = sqrt(xd*xd+yd*yd+zd*zd);
+
+            accGravX = -gravScale*xd/mag;
+            accGravY = -gravScale*yd/mag;
+            accGravZ = -gravScale*zd/mag;
         }
 
          velocityX[particle]+=accPressureX+accViscX+accInteractiveX+accGravX;

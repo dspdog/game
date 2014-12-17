@@ -88,6 +88,10 @@ public class scene{
         cameraXVector = new Vector3f(mdl.get(0),mdl.get(4),mdl.get(8));
         cameraYVector = new Vector3f(mdl.get(1),mdl.get(5),mdl.get(9));
         cameraZVector = new Vector3f(mdl.get(2),mdl.get(6),mdl.get(10));
+
+        cameraXVector.normalise();
+        cameraYVector.normalise();
+        cameraZVector.normalise();
     }
 
     public scene(){
