@@ -13,15 +13,15 @@ public class kParticleCloud extends Kernel {
     final float S_PER_MS = 0.3f ; //seconds per milliseconds, make 0.001f for "realtime"(?)
 
     //CLOUD PARAMS
-        public static final int PARTICLES_MAX = 5000;
+        public static final int PARTICLES_MAX = 1000;
         public int numParticles=0;
 
-        final float neighborDistance = 5f;
-        final float densREF = 0.014f; // kg/m^3
+        final float neighborDistance = 3f;
+        final float densREF = 0.0012f; // kg/m^3
         final float mu = 1f; // kg/ms (dynamical viscosity))
-        final float c = 1.7f; // m/s speed of sound
+        final float c = 2.5f; // m/s speed of sound
 
-        final float speedlimit = 0.7f;
+        final float speedlimit = 0.75f;
 
         //bounding box
         final float boxSize = 400f;
@@ -444,10 +444,14 @@ public class kParticleCloud extends Kernel {
     public void updatePosition(int particle){
         limitVelocity(particle, speedlimit);
 
+        float flipScale = -1f;
+        boolean sticky = false;
+        if(sticky)flipScale=0f;
+
         //flip velocities leaving box
-        if((positionX[particle]+velocityX[particle]*dt > upperX)||(positionX[particle]+velocityX[particle]*dt < lowerX)){velocityX[particle]*=-1f;}
-        if((positionY[particle]+velocityY[particle]*dt > upperY)||(positionY[particle]+velocityY[particle]*dt < lowerY)){velocityY[particle]*=-1f;}
-        if((positionZ[particle]+velocityZ[particle]*dt > upperZ)||(positionZ[particle]+velocityZ[particle]*dt < lowerZ)){velocityZ[particle]*=-1f;}
+        if((positionX[particle]+velocityX[particle]*dt > upperX)||(positionX[particle]+velocityX[particle]*dt < lowerX)){velocityX[particle]*=flipScale;}
+        if((positionY[particle]+velocityY[particle]*dt > upperY)||(positionY[particle]+velocityY[particle]*dt < lowerY)){velocityY[particle]*=flipScale;}
+        if((positionZ[particle]+velocityZ[particle]*dt > upperZ)||(positionZ[particle]+velocityZ[particle]*dt < lowerZ)){velocityZ[particle]*=flipScale;}
 
         //set position, restrict position to box
         positionX[particle]=min(max(lowerX, positionX[particle]+velocityX[particle]*dt), upperX);
@@ -508,16 +512,16 @@ public class kParticleCloud extends Kernel {
             }
 
         }else{
-            float armLen = 200f;
+            float armLen = 300f;
             float xd=positionX[particle]-(upperX-cameraPos[0]+lowerX)+cameraDirZVec[0] * armLen;
             float yd=positionY[particle]-(upperY-cameraPos[1]+ lowerY) + cameraDirZVec[1] * armLen;
             float zd=positionZ[particle]-(upperZ-cameraPos[2]+lowerZ)+cameraDirZVec[2] * armLen;
 
             float mag = sqrt(xd*xd+yd*yd+zd*zd);
 
-            accGravX = -gravScale*xd/mag;
-            accGravY = -gravScale*yd/mag;
-            accGravZ = -gravScale*zd/mag;
+            accGravX = -0.5f*gravScale*xd/mag;
+            accGravY = -0.5f*gravScale*yd/mag;
+            accGravZ = -0.5f*gravScale*zd/mag;
         }
 
          velocityX[particle]+=accPressureX+accViscX+accInteractiveX+accGravX;
