@@ -219,6 +219,7 @@ public class kParticleCloud extends Kernel {
     public long time=getTime();
     public long lastTime;
     public boolean gravityDown = false;
+    public long lastShot = 0;
     public long runNo=0;
 
     private static long getTime() {
@@ -247,6 +248,7 @@ public class kParticleCloud extends Kernel {
     public float averageP = 0.10f;
 
     public void update(){
+
         ready=false;
         float gridStep = (upperX-lowerX)/GRID_RES;
         if(neighborDistance>gridStep/2){ //TODO is divide by 2 necessary?
@@ -494,10 +496,21 @@ public class kParticleCloud extends Kernel {
             accGravX=0f;
             accGravY=-gravScale;
             accGravZ=0f;
+
+            float shotTimeMS = 500;
+            float shotStrength = 5f;
+            if(time-lastShot<shotTimeMS){
+                //float strength = shotStrength;
+                float strength = shotStrength*max(0,1f*(shotTimeMS-(time-lastShot))/shotTimeMS);
+                accInteractiveX = -cameraDirZVec[0]*strength;
+                accInteractiveY = -cameraDirZVec[1]*strength;
+                accInteractiveZ = -cameraDirZVec[2]*strength;
+            }
+
         }else{
             float armLen = 200f;
             float xd=positionX[particle]-(upperX-cameraPos[0]+lowerX)+cameraDirZVec[0] * armLen;
-            float yd=positionY[particle]-(upperY-cameraPos[1]+lowerY)+cameraDirZVec[1] * armLen;
+            float yd=positionY[particle]-(upperY-cameraPos[1]+ lowerY) + cameraDirZVec[1] * armLen;
             float zd=positionZ[particle]-(upperZ-cameraPos[2]+lowerZ)+cameraDirZVec[2] * armLen;
 
             float mag = sqrt(xd*xd+yd*yd+zd*zd);

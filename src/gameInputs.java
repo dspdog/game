@@ -1,4 +1,5 @@
 import org.lwjgl.BufferUtils;
+import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import shapes.cloud.sphCloud;
@@ -59,6 +60,9 @@ public class gameInputs {
                     SPACE_down=true;
                     sphCloud.gravityDown = !sphCloud.gravityDown;
                     scene.myKCloud.gravityDown = !scene.myKCloud.gravityDown;
+                    if(scene.myKCloud.gravityDown){
+                        scene.myKCloud.lastShot=getTime();
+                    }
                 }
             } else {
                 if (Keyboard.getEventKey() == Keyboard.KEY_A) {
@@ -118,6 +122,9 @@ public class gameInputs {
         }
 
         lastPollTime=System.currentTimeMillis();
+    }
+    private static long getTime() {
+        return (Sys.getTime() * 1000) / Sys.getTimerResolution();
     }
 
     public void onMouseDown(){
