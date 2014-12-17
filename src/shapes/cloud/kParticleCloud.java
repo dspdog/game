@@ -11,7 +11,7 @@ public class kParticleCloud extends Kernel {
     final float S_PER_MS = 0.3f ; //seconds per milliseconds, make 0.001f for "realtime"(?)
 
     //CLOUD PARAMS
-        public static final int PARTICLES_MAX = 250;
+        public static final int PARTICLES_MAX = 10_050;
         public int numParticles=0;
 
         final float neighborDistance = 5f;
@@ -250,7 +250,7 @@ public class kParticleCloud extends Kernel {
         limitedPrint(" " +this.getExecutionMode() + " dt " + (dt*1000)+"ms parts " + numParticles + " exec" + (System.currentTimeMillis()-time1) +
                     "\n avN " + averageNeighbors + " avD " + averageD + " avP " + averageP+
                     "\n grid " + getTotalGridMembers() + " max " + getGridMax() +
-                    "\n locals" + getTotalExports());
+                    "\n localsum" + getTotalExports() + " localsize " + range.getLocalSize(0) + " grps " + range.getNumGroups(0));
         ready=true;
     }
 
@@ -294,7 +294,8 @@ public class kParticleCloud extends Kernel {
         }
     }
 
-    @Local float[] locals = new float[PARTICLES_MAX];
+    final int LOCALSIZE=250;
+    @Local float[] locals = new float[LOCALSIZE];
 
     @Override
     public void run() {
@@ -313,8 +314,8 @@ public class kParticleCloud extends Kernel {
         }else if(pass==4){
             updatePosition(particle);
         }else if(pass==5){
-            locals[particle]=1f;
-            passFromLocal(particle);
+            locals[particle%LOCALSIZE]=1f;
+            passFromLocal(particle%LOCALSIZE);
         }
 
         localBarrier();
