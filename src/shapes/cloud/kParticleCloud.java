@@ -161,14 +161,14 @@ public class kParticleCloud extends Kernel {
         velocityY[particle]=0;
         velocityZ[particle]=0;
 
-        positionX[particle]=(prand()%1000)/1000f*(upperX-lowerX)+lowerX;
-        positionY[particle]=(prand()%1000)/1000f*(upperY-lowerY)+lowerY;
-        positionZ[particle]=(prand()%1000)/1000f*(upperZ-lowerZ)+lowerZ;
+        positionX[particle]=rand()*(upperX-lowerX)+lowerX;
+        positionY[particle]=rand()*(upperY-lowerY)+lowerY;
+        positionZ[particle]=rand()*(upperZ-lowerZ)+lowerZ;
 
         pmass[particle]=0.01f;
-        density[particle]=1000f;
+        density[particle]=1f;
         pressure[particle]=1f;
-        timestamp[particle]=time;
+        timestamp[particle]=time+(int)(rand()*particleLifetime);
     }
 
     public void limitVelocity(int particle, float max){
@@ -305,6 +305,7 @@ public class kParticleCloud extends Kernel {
         upperBoxBounds = new Vector3f(upperX,upperY,upperZ);
 
         for(int i=0; i<numParticles; i++){
+            updateLife(i);
             totalN+=getTotalNeighbors(i);
             totalP+=pressure[i];
             totalD+=density[i];
@@ -337,7 +338,6 @@ public class kParticleCloud extends Kernel {
         int pass = getPassId();
 
         if(pass==0){
-            updateLife(particle);
             addToGrid(particle);
         }else if(pass==1){
             findNeighbors(particle);
@@ -356,11 +356,11 @@ public class kParticleCloud extends Kernel {
         localBarrier();
     }
 
-    void updateLife(int particle){
-        long lifetime = 1000;
-        if(time-timestamp[particle]>lifetime){
-            int h = 0;
+    long particleLifetime = 1000;
 
+    void updateLife(int particle){
+        if(time-timestamp[particle]>particleLifetime){
+            resetParticle(particle);
         }
     }
 
