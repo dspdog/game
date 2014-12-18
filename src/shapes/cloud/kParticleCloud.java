@@ -116,7 +116,7 @@ public class kParticleCloud extends Kernel {
     public void addToGrid(int particle){
         int gridPos = getGridPos(positionX[particle],positionY[particle],positionZ[particle]);
         int gridTotalsPos = getGridTotalsPos(positionX[particle],positionY[particle],positionZ[particle]);
-        //int gridRndPos = (int)floor(rand()*(GRID_SLOTS-1));
+        int gridRndPos = prnd()%GRID_SLOTS;
         particleGrid[gridPos + particleGridTotal[gridTotalsPos]] = particle;
         particleGridTotal[gridTotalsPos]=min(particleGridTotal[gridTotalsPos]+1, GRID_SLOTS -1);
     }
@@ -322,7 +322,8 @@ public class kParticleCloud extends Kernel {
     }
 
     final int LOCALSIZE=250;
-    @Local float[] locals = new float[LOCALSIZE];
+    @Local long[] locals = new long[LOCALSIZE];
+    @Local long[] rndSeed = {123456789};
 
     @Override
     public void run() {
@@ -341,11 +342,22 @@ public class kParticleCloud extends Kernel {
         }else if(pass==4){
             updatePosition(particle);
         }else if(pass==5){
-            locals[particle%LOCALSIZE]=1f;
+            locals[particle%LOCALSIZE]=1;
             passFromLocal(particle%LOCALSIZE);
         }
 
         localBarrier();
+    }
+
+    int prnd() { //parallel random positive #
+        int particle = getGlobalId(0)+1;
+        int pass = getPassId()+1;
+        int entropy = (int)(particle*time*pass); // + (int)((positionX[particle]*100)%100 + (positionY[particle]*100)%100 + (positionZ[particle]*100)%100);
+
+        final int a = 1103515245;
+        final int c = 12345;
+        rndSeed[0] = (a * rndSeed[0] + c);
+        return (int)abs(rndSeed[0]*entropy);
     }
 
     public void passFromLocal(int particle){
