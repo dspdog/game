@@ -36,10 +36,13 @@ public class kParticleCloud extends Kernel {
         final float cameraDirZVec[] = new float[3];
 
     //PARTICLE PARAMS
+
+        long particleLifetime = 2000;
+
         //velocity                                          //position                                                   //density, mass, pressure
-        final float[] velocityX = new float[PARTICLES_MAX];  public final float[] positionX = new float[PARTICLES_MAX];  public final float[] density = new float[PARTICLES_MAX];
-        final float[] velocityY = new float[PARTICLES_MAX];  public final float[] positionY = new float[PARTICLES_MAX];  public final float[] pmass = new float[PARTICLES_MAX];
-        final float[] velocityZ = new float[PARTICLES_MAX];  public final float[] positionZ = new float[PARTICLES_MAX];  public final float[] pressure = new float[PARTICLES_MAX];
+        final float[] velocityX = new float[PARTICLES_MAX];  public final float[] positionX = new float[PARTICLES_MAX];  final float[] density = new float[PARTICLES_MAX];
+        final float[] velocityY = new float[PARTICLES_MAX];  public final float[] positionY = new float[PARTICLES_MAX];  final float[] pmass = new float[PARTICLES_MAX];
+        final float[] velocityZ = new float[PARTICLES_MAX];  public final float[] positionZ = new float[PARTICLES_MAX];  final float[] pressure = new float[PARTICLES_MAX];
 
         final long[] timestamp = new long[PARTICLES_MAX];
 
@@ -153,7 +156,7 @@ public class kParticleCloud extends Kernel {
         pmass[particle]=0.01f;
         density[particle]=1000f;
         pressure[particle]=1f;
-        timestamp[particle]=time;
+        timestamp[particle]=time+(int)(rand()*particleLifetime);
     }
 
     public void resetParticle(int particle){
@@ -355,8 +358,6 @@ public class kParticleCloud extends Kernel {
 
         localBarrier();
     }
-
-    long particleLifetime = 1000;
 
     void updateLife(int particle){
         if(time-timestamp[particle]>particleLifetime){
