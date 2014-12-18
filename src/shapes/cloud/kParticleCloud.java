@@ -41,6 +41,8 @@ public class kParticleCloud extends Kernel {
         final float[] velocityY = new float[PARTICLES_MAX];  public final float[] positionY = new float[PARTICLES_MAX];  public final float[] pmass = new float[PARTICLES_MAX];
         final float[] velocityZ = new float[PARTICLES_MAX];  public final float[] positionZ = new float[PARTICLES_MAX];  public final float[] pressure = new float[PARTICLES_MAX];
 
+        final long[] timestamp = new long[PARTICLES_MAX];
+
         final int MAX_NEIGHB_PER_PARTICLE = 64;
         final int[] neighborsList = new int[PARTICLES_MAX* MAX_NEIGHB_PER_PARTICLE]; //neighbors by index
         final int[] neighborTotals = new int[PARTICLES_MAX]; //neighbors totals by index
@@ -98,7 +100,7 @@ public class kParticleCloud extends Kernel {
 
     public void addToGrid(int particle){
         int gridPos = getGridPos(positionX[particle],positionY[particle],positionZ[particle]);
-        int gridRndPos = prnd()%GRID_SLOTS;
+        int gridRndPos = prand()%GRID_SLOTS;
 
         particleGrid[gridPos + gridRndPos] = particle;
     }
@@ -116,7 +118,7 @@ public class kParticleCloud extends Kernel {
             .put(velocityX).put(velocityY).put(velocityZ)
             .put(density).put(pmass).put(pressure)
             .put(neighborsList).put(neighborTotals).put(particleGrid)
-            .put(cameraDirXVec).put(cameraDirYVec).put(cameraDirZVec).put(cameraPos);
+            .put(cameraDirXVec).put(cameraDirYVec).put(cameraDirZVec).put(cameraPos).put(timestamp);
     }
 
     public void exportData(){
@@ -124,7 +126,7 @@ public class kParticleCloud extends Kernel {
             .get(velocityX).get(velocityY).get(velocityZ)
 
             .get(density).get(pressure).get(neighborsList)
-            .get(neighborTotals).get(particleGrid).get(exports);
+            .get(neighborTotals).get(particleGrid).get(exports).get(timestamp);
     }
 
     private int seed = 123456789;
@@ -151,6 +153,7 @@ public class kParticleCloud extends Kernel {
         pmass[particle]=0.01f;
         density[particle]=1000f;
         pressure[particle]=1f;
+        timestamp[particle]=time;
     }
 
     public void limitVelocity(int particle, float max){
@@ -319,6 +322,7 @@ public class kParticleCloud extends Kernel {
         int pass = getPassId();
 
         if(pass==0){
+            updateLife(particle);
             addToGrid(particle);
         }else if(pass==1){
             findNeighbors(particle);
@@ -337,7 +341,11 @@ public class kParticleCloud extends Kernel {
         localBarrier();
     }
 
-    int prnd() { //parallel random positive #
+    void updateLife(int particle){
+
+    }
+
+    int prand() { //parallel random positive #
         int particle = getGlobalId(0)+1;
         int pass = getPassId()+1;
         int entropy = (int)(particle*time*pass);
