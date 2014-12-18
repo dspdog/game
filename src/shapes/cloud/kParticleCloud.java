@@ -13,7 +13,7 @@ public class kParticleCloud extends Kernel {
     final float S_PER_MS = 0.3f ; //seconds per milliseconds, make 0.001f for "realtime"(?)
 
     //CLOUD PARAMS
-        public static final int PARTICLES_MAX = 1000;
+        public static final int PARTICLES_MAX = 5000;
         public int numParticles=0;
 
         final float neighborDistance = 3f;
@@ -163,8 +163,11 @@ public class kParticleCloud extends Kernel {
         }
     }
 
-    public void resetNeighbors(int i){
-        neighborTotals[i]=0;
+    public void resetNeighbors(int particle){
+        neighborTotals[particle]=0;
+        for(int i=0; i<MAX_NEIGHB_PER_PARTICLE; i++){
+            neighborsList[particle*MAX_NEIGHB_PER_PARTICLE + i]=-1;
+        }
     }
 
     public void addNeighbor(int particle, int neighbor){
@@ -175,6 +178,7 @@ public class kParticleCloud extends Kernel {
     }
 
     public boolean alreadyNeighbors(int particle, int neighbor){// return false;
+        if(neighbor==-1)return true;
         int len = neighborTotals[particle];
         for(int neighborNo=0; neighborNo<len; neighborNo++){
             if(neighborsList[particle* MAX_NEIGHB_PER_PARTICLE +neighborNo]==neighbor)return true;
@@ -274,7 +278,7 @@ public class kParticleCloud extends Kernel {
     public float getAverageNeighbors(){
         float total=0;
         for(int i=0; i<numParticles; i++){
-            total+= neighborTotals[i];
+            total+= getTotalNeighbors(i);
         }
         return total/numParticles;
     }
@@ -293,6 +297,16 @@ public class kParticleCloud extends Kernel {
             total+=pressure[i];
         }
         return total/numParticles;
+    }
+
+    public int getTotalNeighbors(int particle){
+        int total = 0;
+        for(int i=0; i<MAX_NEIGHB_PER_PARTICLE; i++){
+            if(neighborsList[particle* MAX_NEIGHB_PER_PARTICLE + i]!=-1){
+                total++;
+            }
+        }
+        return total;
     }
 
     final int LOCALSIZE=250;
@@ -454,22 +468,24 @@ public class kParticleCloud extends Kernel {
         for(int neighborNo=0; neighborNo<len; neighborNo++){
             if(neighbor!=particle){
                 neighbor = neighborsList[particle* MAX_NEIGHB_PER_PARTICLE +neighborNo];
-                float dist = distance(particle,neighbor);
-                if(dist<neighborDistance){
-                    weightVal=weight(dist/neighborDistance);
-                    weightVal_d=weight_deriv(dist/neighborDistance);
+                if(neighbor!=-1){
+                    float dist = distance(particle,neighbor);
+                    if(dist<neighborDistance){
+                        weightVal=weight(dist/neighborDistance);
+                        weightVal_d=weight_deriv(dist/neighborDistance);
 
-                    accPressScale = -1.0f * pmass[neighbor] * (pressure[particle] / (density[particle] * density[particle]) +
-                                                                 pressure[neighbor] / (density[neighbor] * density[neighbor])) * weightVal;
-                    accViscScale = mu * pmass[neighbor] / density[neighbor] / density[particle] * weightVal_d;
+                        accPressScale = -1.0f * pmass[neighbor] * (pressure[particle] / (density[particle] * density[particle]) +
+                                pressure[neighbor] / (density[neighbor] * density[neighbor])) * weightVal;
+                        accViscScale = mu * pmass[neighbor] / density[neighbor] / density[particle] * weightVal_d;
 
-                    accViscX+=accViscScale*(velocityX[neighbor] - velocityX[particle]);
-                    accViscY+=accViscScale*(velocityY[neighbor] - velocityY[particle]);
-                    accViscZ+=accViscScale*(velocityZ[neighbor] - velocityZ[particle]);
+                        accViscX+=accViscScale*(velocityX[neighbor] - velocityX[particle]);
+                        accViscY+=accViscScale*(velocityY[neighbor] - velocityY[particle]);
+                        accViscZ+=accViscScale*(velocityZ[neighbor] - velocityZ[particle]);
 
-                    accPressureX+=accPressScale*(positionX[neighbor] - positionX[particle]);
-                    accPressureY+=accPressScale*(positionY[neighbor] - positionY[particle]);
-                    accPressureZ+=accPressScale*(positionZ[neighbor] - positionZ[particle]);
+                        accPressureX+=accPressScale*(positionX[neighbor] - positionX[particle]);
+                        accPressureY+=accPressScale*(positionY[neighbor] - positionY[particle]);
+                        accPressureZ+=accPressScale*(positionZ[neighbor] - positionZ[particle]);
+                    }
                 }
             }
         }
