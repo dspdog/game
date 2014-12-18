@@ -57,6 +57,21 @@ public class gameWorldRender {
         return (Sys.getTime() * 1000) / Sys.getTimerResolution();
     }
 
+    public void initScene(){
+        myScene = new scene();
+
+        WorldObject theGround = new WorldObject((float x, float y, float t) -> GeographyFactory.bowl(x, y, t)).setColor(0,1.0f,0);
+        WorldObject theWaves = new WorldObject((float x, float y, float t) -> GeographyFactory.oceanWaves(x, y, t)).setUpdateInterval(10).setColor(0,0,1.0f);
+
+        WorldObject kCloud = new WorldObject(kParticleCloud.PARTICLES_MAX).setUpdateInterval(10);
+
+        myScene.myKCloud = kCloud.myKCloud;
+
+        myScene.addWorldObject(new WorldObject(myLogic.theTree.getUpdatedCSG()));
+
+        myScene.addWorldObject(kCloud);
+    }
+
     public void start() {
 
         lastFPS = getTime(); //initialise lastFPS by setting to current Time
@@ -71,7 +86,8 @@ public class gameWorldRender {
             System.exit(0);
         }
 
-        initGL();
+        prepare3D();
+        initScene();
         //bindShaders();
         while (!Display.isCloseRequested()) {
             update();
@@ -102,32 +118,12 @@ public class gameWorldRender {
         updateFPS();
     }
 
-
-
-    public void initGL() {
-
+    public void prepare3D(){
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        gluPerspective(myFOV, ((float)myWidth) / ((float)myHeight), 2.01f, 25000f);
+        gluPerspective(myFOV, ((float)myWidth) / ((float)myHeight), 0.01f, 5000f);
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
-
-        myScene = new scene();
-        //myScene.addWorldObject(new WorldObject(TextureFactory.proceduralTexture()));
-
-        WorldObject theGround = new WorldObject((float x, float y, float t) -> GeographyFactory.bowl(x, y, t)).setColor(0,1.0f,0);
-        WorldObject theWaves = new WorldObject((float x, float y, float t) -> GeographyFactory.oceanWaves(x, y, t)).setUpdateInterval(10).setColor(0,0,1.0f);
-
-        WorldObject kCloud = new WorldObject(kParticleCloud.PARTICLES_MAX).setUpdateInterval(10);
-
-        myScene.myKCloud = kCloud.myKCloud;
-
-        myScene.addWorldObject(new WorldObject(myLogic.theTree.getUpdatedCSG()));
-
-        //myScene.addWorldObject(theWaves);
-        //myScene.addWorldObject(theGround);
-        //myScene.addWorldObject(theParticles);
-        myScene.addWorldObject(kCloud);
     }
 
     public void renderGL() {

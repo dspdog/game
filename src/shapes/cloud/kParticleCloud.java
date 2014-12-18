@@ -13,8 +13,10 @@ public class kParticleCloud extends Kernel {
     final float S_PER_MS = 0.3f ; //seconds per milliseconds, make 0.001f for "realtime"(?)
 
     //CLOUD PARAMS
-        public static final int PARTICLES_MAX = 100;
-        public int numParticles=0;
+        public static final int PARTICLES_MAX = 1000;
+        long particleLifetime = 8000;
+
+    public int numParticles=0;
 
         final float neighborDistance = 3f;
         final float densREF = 0.0012f; // kg/m^3
@@ -36,8 +38,6 @@ public class kParticleCloud extends Kernel {
         final float cameraDirZVec[] = new float[3];
 
     //PARTICLE PARAMS
-
-        long particleLifetime = 2000;
 
         //velocity                                          //position                                                   //density, mass, pressure
         final float[] velocityX = new float[PARTICLES_MAX];  public final float[] positionX = new float[PARTICLES_MAX];  final float[] density = new float[PARTICLES_MAX];
