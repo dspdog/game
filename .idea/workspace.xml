@@ -68,8 +68,8 @@
       <file leaf-file-name="gameWorldRender.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/gameWorldRender.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.1766513" vertical-offset="1024" max-vertical-offset="2754">
-              <caret line="82" column="84" selection-start-line="82" selection-start-column="84" selection-end-line="82" selection-end-column="84" />
+            <state vertical-scroll-proportion="0.516129" vertical-offset="1687" max-vertical-offset="3009">
+              <caret line="136" column="25" selection-start-line="136" selection-start-column="25" selection-end-line="136" selection-end-column="25" />
               <folding />
             </state>
           </provider>
@@ -1009,8 +1009,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/gameWorldRender.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.1766513" vertical-offset="1024" max-vertical-offset="2754">
-          <caret line="82" column="84" selection-start-line="82" selection-start-column="84" selection-end-line="82" selection-end-column="84" />
+        <state vertical-scroll-proportion="0.516129" vertical-offset="1687" max-vertical-offset="3009">
+          <caret line="136" column="25" selection-start-line="136" selection-start-column="25" selection-end-line="136" selection-end-column="25" />
           <folding />
         </state>
       </provider>

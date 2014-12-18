@@ -118,12 +118,27 @@ public class gameWorldRender {
         updateFPS();
     }
 
-    public void prepare3D(){
+    public void prepare3D(){ //see http://gamedev.stackexchange.com/questions/18468/making-a-hud-gui-with-opengl-lwjgl
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         gluPerspective(myFOV, ((float)myWidth) / ((float)myHeight), 0.01f, 5000f);
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
+
+        glDepthFunc(GL_LEQUAL);
+        glEnable(GL_DEPTH_TEST);
+    }
+
+    public void prepare2D(){ //see http://gamedev.stackexchange.com/questions/18468/making-a-hud-gui-with-opengl-lwjgl
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        gluOrtho2D(0, myWidth, myHeight, 0.0f);
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+
+        glTranslatef(0.375f, 0.375f, 0.0f); //?
+
+        glDisable(GL_DEPTH_TEST);
     }
 
     public void renderGL() {
