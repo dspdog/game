@@ -156,6 +156,21 @@ public class kParticleCloud extends Kernel {
         timestamp[particle]=time;
     }
 
+    public void resetParticle(int particle){
+        velocityX[particle]=0;
+        velocityY[particle]=0;
+        velocityZ[particle]=0;
+
+        positionX[particle]=(prand()%1000)/1000f*(upperX-lowerX)+lowerX;
+        positionY[particle]=(prand()%1000)/1000f*(upperY-lowerY)+lowerY;
+        positionZ[particle]=(prand()%1000)/1000f*(upperZ-lowerZ)+lowerZ;
+
+        pmass[particle]=0.01f;
+        density[particle]=1000f;
+        pressure[particle]=1f;
+        timestamp[particle]=time;
+    }
+
     public void limitVelocity(int particle, float max){
         float mag = sqrt(velocityX[particle]* velocityX[particle] + velocityY[particle]* velocityY[particle] + velocityZ[particle]* velocityZ[particle]);
         if(mag>max){
@@ -342,7 +357,11 @@ public class kParticleCloud extends Kernel {
     }
 
     void updateLife(int particle){
+        long lifetime = 1000;
+        if(time-timestamp[particle]>lifetime){
+            int h = 0;
 
+        }
     }
 
     int prand() { //parallel random positive #
