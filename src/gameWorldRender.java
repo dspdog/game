@@ -118,7 +118,7 @@ public class gameWorldRender {
         WorldObject theGround = new WorldObject((float x, float y, float t) -> GeographyFactory.bowl(x, y, t)).setColor(0,1.0f,0);
         WorldObject theWaves = new WorldObject((float x, float y, float t) -> GeographyFactory.oceanWaves(x, y, t)).setUpdateInterval(10).setColor(0,0,1.0f);
 
-        WorldObject kCloud = new WorldObject(kParticleCloud.PARTICLES_MAX).setUpdateInterval(1);
+        WorldObject kCloud = new WorldObject(kParticleCloud.PARTICLES_MAX).setUpdateInterval(10);
 
         myScene.myKCloud = kCloud.myKCloud;
 

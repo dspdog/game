@@ -13,7 +13,7 @@ public class kParticleCloud extends Kernel {
     final float S_PER_MS = 0.3f ; //seconds per milliseconds, make 0.001f for "realtime"(?)
 
     //CLOUD PARAMS
-        public static final int PARTICLES_MAX = 1000;
+        public static final int PARTICLES_MAX = 100;
         public int numParticles=0;
 
         final float neighborDistance = 3f;
@@ -299,9 +299,9 @@ public class kParticleCloud extends Kernel {
     public Vector3f upperBoxBounds = new Vector3f(0,0,0);
 
     public void getAverages(){
-        float totalN=0;
-        float totalP=0;
-        float totalD=0;
+        float totalN=0f;
+        float totalP=0f;
+        float totalD=0f;
         lowerBounds = new Vector3f(1000000,1000000,1000000);
         upperBounds = new Vector3f(-1000000,-1000000,-1000000);
         lowerBoxBounds = new Vector3f(lowerX,lowerY,lowerZ);
@@ -310,6 +310,8 @@ public class kParticleCloud extends Kernel {
         for(int i=0; i<numParticles; i++){
             updateLife(i);
             totalN+=getTotalNeighbors(i);
+            //if(!Float.isNaN(pressure[i]))totalP+=pressure[i];
+            //if(!Float.isNaN(density[i]))totalD+=density[i];
             totalP+=pressure[i];
             totalD+=density[i];
             lowerBounds.set(min(lowerBounds.x,positionX[i]), min(lowerBounds.y,positionY[i]), min(lowerBounds.z,positionZ[i]));
