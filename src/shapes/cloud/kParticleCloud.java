@@ -13,7 +13,7 @@ public class kParticleCloud extends Kernel {
     final float S_PER_MS = 0.3f ; //seconds per milliseconds, make 0.001f for "realtime"(?)
 
     //CLOUD PARAMS
-        public static final int PARTICLES_MAX = 5000;
+        public static final int PARTICLES_MAX = 1000;
         public int numParticles=0;
 
         final float neighborDistance = 3f;
@@ -224,7 +224,7 @@ public class kParticleCloud extends Kernel {
 
     public float averageD = 0.10f;
     public float averageP = 0.10f;
-
+    public float averageNeighbors = 0.0f;
 
     static long lastPrint = 0;
 
@@ -250,13 +250,9 @@ public class kParticleCloud extends Kernel {
 
         runNo++;
 
+        getAverages();
+
         if(getTime() - lastPrint > 1000){
-
-            float averageNeighbors = getAverageNeighbors();
-
-            averageD = getAverageDensity();
-            averageP = getAveragePressure();
-
             System.out.println(" " +this.getExecutionMode() + " dt " + (dt*1000)+"ms parts " + numParticles + " exec" + (System.currentTimeMillis()-time1) +
                     "\n avN " + averageNeighbors + " avD " + averageD + " avP " + averageP+
                     "\n grid " + getTotalGridMembers() +
@@ -275,28 +271,32 @@ public class kParticleCloud extends Kernel {
         return total;
     }
 
-    public float getAverageNeighbors(){
-        float total=0;
-        for(int i=0; i<numParticles; i++){
-            total+= getTotalNeighbors(i);
-        }
-        return total/numParticles;
-    }
+    public Vector3f lowerBounds = new Vector3f(0,0,0);
+    public Vector3f upperBounds = new Vector3f(0,0,0);
 
-    public float getAverageDensity(){
-        float total=0;
-        for(int i=0; i<numParticles; i++){
-            total+=density[i];
-        }
-        return total/numParticles;
-    }
+    public Vector3f lowerBoxBounds = new Vector3f(0,0,0);
+    public Vector3f upperBoxBounds = new Vector3f(0,0,0);
 
-    public float getAveragePressure(){
-        float total=0;
+    public void getAverages(){
+        float totalN=0;
+        float totalP=0;
+        float totalD=0;
+        lowerBounds = new Vector3f(1000000,1000000,1000000);
+        upperBounds = new Vector3f(-1000000,-1000000,-1000000);
+        lowerBoxBounds = new Vector3f(lowerX,lowerY,lowerZ);
+        upperBoxBounds = new Vector3f(upperX,upperY,upperZ);
+
         for(int i=0; i<numParticles; i++){
-            total+=pressure[i];
+            totalN+=getTotalNeighbors(i);
+            totalP+=pressure[i];
+            totalD+=density[i];
+            lowerBounds.set(min(lowerBounds.x,positionX[i]), min(lowerBounds.y,positionY[i]), min(lowerBounds.z,positionZ[i]));
+            upperBounds.set(max(upperBounds.x, positionX[i]), max(upperBounds.y, positionY[i]), max(upperBounds.z, positionZ[i]));
         }
-        return total/numParticles;
+
+        averageNeighbors = totalN/numParticles;
+        averageP = totalP/numParticles;
+        averageD = totalD/numParticles;
     }
 
     public int getTotalNeighbors(int particle){

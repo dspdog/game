@@ -39,7 +39,10 @@ public class GeometryFactory {
         //drawBox(sphCloud.lowerCornerBoundsFinal, sphCloud.upperCornerBoundsFinal);
 */
         glColor3f(0f, 0f, 0f);
-        drawBox(new Vector3f(cloud.lowerX, cloud.lowerY, cloud.lowerZ), new Vector3f(cloud.upperX, cloud.upperY, cloud.upperZ));
+        drawBox(cloud.lowerBoxBounds, cloud.upperBoxBounds);
+
+        glColor3f(0.75f, 0f, 0f);
+        drawBox(cloud.lowerBounds, cloud.upperBounds);
     }
 
     static void drawBox(Vector3f upperCorner, Vector3f lowerCorner){

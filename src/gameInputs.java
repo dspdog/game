@@ -24,12 +24,6 @@ public class gameInputs {
 
     long lastPollTime = System.currentTimeMillis();
 
-    boolean W_down = false;
-    boolean A_down = false;
-    boolean S_down = false;
-    boolean D_down = false;
-    boolean Q_down = false;
-    boolean E_down = false;
     boolean SPACE_down = false;
 
     public void pollInput() {
@@ -38,51 +32,14 @@ public class gameInputs {
         }
         while (Keyboard.next()) {
             if (Keyboard.getEventKeyState()) {
-                if (Keyboard.getEventKey() == Keyboard.KEY_A) {
-                    A_down=true;
-                }
-                if (Keyboard.getEventKey() == Keyboard.KEY_S) {
-                    S_down=true;
-                }
-                if (Keyboard.getEventKey() == Keyboard.KEY_D) {
-                    D_down=true;
-                }
-                if (Keyboard.getEventKey() == Keyboard.KEY_W) {
-                    W_down=true;
-                }
-                if (Keyboard.getEventKey() == Keyboard.KEY_Q) {
-                    Q_down=true;
-                }
-                if (Keyboard.getEventKey() == Keyboard.KEY_E) {
-                    E_down=true;
-                }
                 if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
                     SPACE_down=true;
-
                     scene.myKCloud.gravityDown = !scene.myKCloud.gravityDown;
                     if(scene.myKCloud.gravityDown){
                         scene.myKCloud.lastShot=getTime();
                     }
                 }
             } else {
-                if (Keyboard.getEventKey() == Keyboard.KEY_A) {
-                    A_down=false;
-                }
-                if (Keyboard.getEventKey() == Keyboard.KEY_S) {
-                    S_down=false;
-                }
-                if (Keyboard.getEventKey() == Keyboard.KEY_D) {
-                    D_down=false;
-                }
-                if (Keyboard.getEventKey() == Keyboard.KEY_W) {
-                    W_down=false;
-                }
-                if (Keyboard.getEventKey() == Keyboard.KEY_Q) {
-                    Q_down=false;
-                }
-                if (Keyboard.getEventKey() == Keyboard.KEY_E) {
-                    E_down=false;
-                }
                 if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
                     SPACE_down=false;
                 }
@@ -90,32 +47,37 @@ public class gameInputs {
         }
 
         float step = 0.3f* (System.currentTimeMillis()-lastPollTime);
-        if(A_down){
+
+        if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)){
+            step*=2.5f;
+        }
+
+        if(Keyboard.isKeyDown(Keyboard.KEY_A)){
             scene.cameraPosDesired.x+=scene.cameraXVector.x*step;
             scene.cameraPosDesired.y+=scene.cameraXVector.y*step;
             scene.cameraPosDesired.z+=scene.cameraXVector.z*step;
         }
-        if(S_down){
+        if(Keyboard.isKeyDown(Keyboard.KEY_S)){
             scene.cameraPosDesired.x-=scene.cameraZVector.x*step;
             scene.cameraPosDesired.y-=scene.cameraZVector.y*step;
             scene.cameraPosDesired.z-=scene.cameraZVector.z*step;
         }
-        if(W_down){
+        if(Keyboard.isKeyDown(Keyboard.KEY_W)){
             scene.cameraPosDesired.x+=scene.cameraZVector.x*step;
             scene.cameraPosDesired.y+=scene.cameraZVector.y*step;
             scene.cameraPosDesired.z+=scene.cameraZVector.z*step;
         }
-        if(D_down){
+        if(Keyboard.isKeyDown(Keyboard.KEY_D)){
             scene.cameraPosDesired.x-=scene.cameraXVector.x*step;
             scene.cameraPosDesired.y-=scene.cameraXVector.y*step;
             scene.cameraPosDesired.z-=scene.cameraXVector.z*step;
         }
-        if(E_down){
+        if(Keyboard.isKeyDown(Keyboard.KEY_E)){
             scene.cameraPosDesired.x+=scene.cameraYVector.x*step;
             scene.cameraPosDesired.y+=scene.cameraYVector.y*step;
             scene.cameraPosDesired.z+=scene.cameraYVector.z*step;
         }
-        if(Q_down){
+        if(Keyboard.isKeyDown(Keyboard.KEY_Q)){
             scene.cameraPosDesired.x-=scene.cameraYVector.x*step;
             scene.cameraPosDesired.y-=scene.cameraYVector.y*step;
             scene.cameraPosDesired.z-=scene.cameraYVector.z*step;
