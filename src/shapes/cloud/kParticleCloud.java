@@ -390,7 +390,7 @@ public class kParticleCloud extends Kernel {
 
         final int rollScale = 1000000;
 
-        return (int)((rndSeed[0]*entropy)%rollScale+rollScale)%rollScale;
+        return (int)(abs(rndSeed[0]*entropy)%rollScale);
     }
 
     public void passFromLocal(int particle){
