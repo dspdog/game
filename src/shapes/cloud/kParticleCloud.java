@@ -259,7 +259,7 @@ public class kParticleCloud extends Kernel {
         clearGrid();
 
         importData();
-        this.execute(range, 6);
+        this.execute(range, 5);
         exportData();
 
         runNo++;
@@ -367,12 +367,12 @@ public class kParticleCloud extends Kernel {
             updateVelocity(particle);
         }else if(pass==4){
             updatePosition(particle);
-        }else if(pass==5){
+        }/*else if(pass==5){
             locals[particle%LOCALSIZE]=1;
             passFromLocal(particle%LOCALSIZE);
-        }
+        }*/
 
-        localBarrier();
+        //localBarrier();
     }
 
     void updateLife(int particle){
