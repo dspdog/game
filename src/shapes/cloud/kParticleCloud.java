@@ -13,8 +13,8 @@ public class kParticleCloud extends Kernel {
     final float S_PER_MS = 0.3f ; //seconds per milliseconds, make 0.001f for "realtime"(?)
 
     //CLOUD PARAMS
-        public static final int PARTICLES_MAX = 10000;
-        long particleLifetime = 10000;
+        public static final int PARTICLES_MAX = 5000;
+        long particleLifetime = 1000000;
 
     public int numParticles=0;
 
@@ -276,7 +276,9 @@ public class kParticleCloud extends Kernel {
                     "avSibs " + averageNeighbors + "\n"+
                     "gridFound " + getTotalGridMembers() + "\n" +
                     "LocalSz " + range.getLocalSize(0) + " Grps " + range.getNumGroups(0)+ "\n" +
-                    "Bad " + numberBad;
+                    "Bad " + numberBad + "\n" +
+                    "Arm " + armLen + "\n" +
+                    "";
             lastPrint=getTime();
         }
 

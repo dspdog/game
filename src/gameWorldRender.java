@@ -29,7 +29,7 @@ public class gameWorldRender {
 
     gameWorldLogic myLogic;
 
-    public float scrollPos = 1.0f;
+    public static float scrollPos = 1.0f;
 
     boolean handlesFound = false;
 
@@ -93,6 +93,7 @@ public class gameWorldRender {
         //bindShaders();
         while (!Display.isCloseRequested()) {
             update();
+            myScene.myKCloud.armLen = scrollPos * 100f;
             renderGL();
             myInput.pollInput();
             Display.update();
@@ -148,12 +149,11 @@ public class gameWorldRender {
         double rotationx = 90f- 180f * Mouse.getY()/myHeight;
         double rotationy = Mouse.getX();
 
-        int scroll = Mouse.getDWheel();
-
         int window_width = Display.getWidth(); //glutGet(GLUT_WINDOW_WIDTH);
         int window_height = Display.getHeight();
         int index = 0;
 
+        int scroll = Mouse.getDWheel();
         if(scroll<0){
             scrollPos*=0.95f;
         }else if(scroll>0){
