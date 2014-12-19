@@ -64,9 +64,10 @@ public class TextureFactory {
 
         String[] splitData = str.split("\n");
         int yOffset=0;
+        int pixelPerLine = 12;
         for (String eachSplit : splitData) {
             g2d.drawString(eachSplit, 5, 18+yOffset);
-            yOffset+=10;
+            yOffset+=pixelPerLine;
         }
 
 

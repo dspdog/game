@@ -14,7 +14,7 @@ public class kParticleCloud extends Kernel {
 
     //CLOUD PARAMS
         public static final int PARTICLES_MAX = 1000;
-        long particleLifetime = 8000;
+        long particleLifetime = 18000;
 
     public int numParticles=0;
 
@@ -248,6 +248,7 @@ public class kParticleCloud extends Kernel {
     public float averageNeighbors = 0.0f;
 
     static long lastPrint = 0;
+    public static long updateInterval = 200;
 
     public String statusString = "";
 
@@ -275,12 +276,16 @@ public class kParticleCloud extends Kernel {
 
         getAverages();
 
-        if(getTime() - lastPrint > 100){
-            statusString=this.getExecutionMode() + " dt " + (dt*1000)+"ms parts " + numParticles + " exec" + (System.currentTimeMillis()-time1) +
-                    "\navN " + averageNeighbors + " avD " + averageD + " avP " + averageP+
-                    "\ngrid " + getTotalGridMembers() +
-                    "\nlocalsum" + getTotalExports() + " localsize " + range.getLocalSize(0) + " grps " + range.getNumGroups(0);
-            //System.out.println(statusString);
+        if(getTime() - lastPrint > updateInterval){
+            statusString=
+                    "Particles " + numParticles + "\n"+
+                    "dt " + dt*1000+"ms\n" +
+                    this.getExecutionMode() + " Exec " + (System.currentTimeMillis()-time1) + "ms\n"+
+                    "avDens " + averageD + "\n" +
+                    "avPres " + averageP + "\n" +
+                    "avSibs " + averageNeighbors + "\n"+
+                    "gridFound " + getTotalGridMembers() + "\n" +
+                    "LocalSz " + range.getLocalSize(0) + " Grps " + range.getNumGroups(0);
             lastPrint=getTime();
         }
 

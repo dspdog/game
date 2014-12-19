@@ -96,7 +96,7 @@ public class gameWorldRender {
             renderGL();
             myInput.pollInput();
             Display.update();
-            //Display.sync(60); // cap fps to 60fps
+            Display.sync(60); // cap fps to 60fps
         }
 
         releaseShaders();
@@ -191,10 +191,9 @@ public class gameWorldRender {
 
     int hudTexture = -1;
     long lastHudUpdate = 0;
-    long hudUpdatePeriod = 100;
 
     public void drawHud(){
-        if(getTime() - lastHudUpdate > hudUpdatePeriod){
+        if(getTime() - lastHudUpdate > kParticleCloud.updateInterval){
             hudTexture = TextureFactory.proceduralTexture("Logic FPS: " + gameWorldLogic.myFPS  + "\nOpenGL FPS: "+myFPS + "\n" + myScene.myKCloud.statusString);
             lastHudUpdate = getTime();
         }
