@@ -100,6 +100,29 @@ public class GeometryFactory {
         glDisable(GL_TEXTURE_2D);
     }
 
+    public static void plane(int tex, int size){
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, tex);
+        glBegin(GL11.GL_QUADS);
+
+        glColor3f(1, 1, 1);
+
+        glTexCoord2f(0, 0);
+        glVertex3f(0, 0, 0);
+
+        glTexCoord2f(1, 0);
+        glVertex3f(size, 0, 0);
+
+        glTexCoord2f(1, 1);
+        glVertex3f(size, size, 0);
+
+        glTexCoord2f(0, 1);
+        glVertex3f(0, size, 0);
+
+        glEnd();
+        glDisable(GL_TEXTURE_2D);
+    }
+
     public static FloatBuffer[] getCSGVertexData(CSG csg, int tris){
         final FloatBuffer vertex_data = BufferUtils.createFloatBuffer(tris*9);
         final FloatBuffer color_data = BufferUtils.createFloatBuffer(tris*9);

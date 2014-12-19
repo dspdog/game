@@ -1,9 +1,11 @@
+import factory.GeometryFactory;
 import factory.TextureFactory;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.*;
 import org.lwjgl.opengl.DisplayMode;
+import org.newdawn.slick.opengl.Texture;
 import shapes.cloud.kParticleCloud;
 import shapes.geography.GeographyFactory;
 import utils.ShaderHelper;
@@ -165,7 +167,7 @@ public class gameWorldRender {
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_STENCIL_TEST);
         glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-
+        prepare3D();
         //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
         glLoadIdentity();
         //gluLookAt(myScene.cameraPosDesired.x,myScene.cameraPosDesired.y,myScene.cameraPosDesired.z,myScene.focalPos.x,myScene.focalPos.y,myScene.focalPos.z,0,1,0);
@@ -181,9 +183,24 @@ public class gameWorldRender {
             myScene.drawScene();
 
         glPopMatrix();
+
+        prepare2D();
+        drawHud();
+
     }
 
+    int hudTexture = -1;
+    long lastHudUpdate = 0;
+    long hudUpdatePeriod = 100;
 
+    public void drawHud(){
+        if(getTime() - lastHudUpdate > hudUpdatePeriod){
+            hudTexture = TextureFactory.proceduralTexture();
+
+            lastHudUpdate = getTime();
+        }
+        if(hudTexture!=-1)GeometryFactory.plane(hudTexture, 256);
+    }
 
 
 }
