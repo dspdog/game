@@ -145,18 +145,7 @@ public class kParticleCloud extends Kernel {
     }
 
     public void initParticle(int particle){
-        velocityX[particle]=0;
-        velocityY[particle]=0;
-        velocityZ[particle]=0;
-
-        positionX[particle]=rand()*(upperX-lowerX)+lowerX;
-        positionY[particle]=rand()*(upperY-lowerY)+lowerY;
-        positionZ[particle]=rand()*(upperZ-lowerZ)+lowerZ;
-
-        pmass[particle]=0.01f;
-        density[particle]=1000f;
-        pressure[particle]=1f;
-        timestamp[particle]=time+(int)(rand()*particleLifetime);
+        resetParticle(particle);
     }
 
     public void resetParticle(int particle){
@@ -164,14 +153,14 @@ public class kParticleCloud extends Kernel {
         velocityY[particle]=0;
         velocityZ[particle]=0;
 
-        positionX[particle]=rand()*(upperX-lowerX)+lowerX;
-        positionY[particle]=rand()*(upperY-lowerY)+lowerY;
-        positionZ[particle]=rand()*(upperZ-lowerZ)+lowerZ;
+        positionX[particle]= (prand()%(int)(upperX-lowerX))+lowerX;
+        positionY[particle]= (prand()%(int)(upperY-lowerY))+lowerY;
+        positionZ[particle]= (prand()%(int)(upperZ-lowerZ))+lowerZ;
 
         pmass[particle]=0.01f;
         density[particle]=1f;
         pressure[particle]=1f;
-        timestamp[particle]=time+(int)(rand()*particleLifetime);
+        timestamp[particle]=time+(int)(prand()%particleLifetime);
     }
 
     public void limitVelocity(int particle, float max){
@@ -398,7 +387,10 @@ public class kParticleCloud extends Kernel {
         final int a = 1103515245;
         final int c = 12345;
         rndSeed[0] = (a * rndSeed[0] + c);
-        return (int)abs(rndSeed[0]*entropy);
+
+        final int rollScale = 1000000;
+
+        return (int)((rndSeed[0])%rollScale+rollScale)%rollScale;
     }
 
     public void passFromLocal(int particle){
@@ -499,10 +491,33 @@ public class kParticleCloud extends Kernel {
         if((positionY[particle]+velocityY[particle]*dt > upperY)||(positionY[particle]+velocityY[particle]*dt < lowerY)){velocityY[particle]*=flipScale;}
         if((positionZ[particle]+velocityZ[particle]*dt > upperZ)||(positionZ[particle]+velocityZ[particle]*dt < lowerZ)){velocityZ[particle]*=flipScale;}
 
+
         //set position, restrict position to box
         positionX[particle]=min(max(lowerX, positionX[particle]+velocityX[particle]*dt), upperX);
         positionY[particle]=min(max(lowerY, positionY[particle]+velocityY[particle]*dt), upperY);
         positionZ[particle]=min(max(lowerZ, positionZ[particle]+velocityZ[particle]*dt), upperZ);
+        if(badPosition(particle)){
+            resetParticle(particle);
+            //positionX[particle]=(prand()%(int)(upperX-lowerX))+lowerX;
+            //positionY[particle]=(prand()%(int)(upperY-lowerY))+lowerY;
+            //positionZ[particle]=(prand()%(int)(upperZ-lowerZ))+lowerZ;
+
+            //velocityX[particle]=0;
+            //velocityY[particle]=0;
+            //velocityZ[particle]=0;
+
+            //positionX[particle]=prand()%(upperX-lowerX)+lowerX;
+            //positionY[particle]=prand()%(upperY-lowerY)+lowerY;
+            //positionZ[particle]=prand()%(upperZ-lowerZ)+lowerZ;
+
+            //pmass[particle]=0.01f;
+            //density[particle]=1f;
+            //pressure[particle]=1f;
+            //timestamp[particle]=time+(int)(prand()*particleLifetime);
+
+        }
+
+
     }
 
     public float armLen = 300f;

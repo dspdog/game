@@ -300,7 +300,7 @@ public class GeometryFactory {
         long time = System.currentTimeMillis();
 
         for(int particle=0; particle<numParticles; particle++){
-            
+
             //float fatness = kCloud.pressure[particle]/kCloud.averageP*5f; //higher pressure bigger (explodes?)
             //float fatness = Math.min(30f, Math.max(10f, kCloud.density[particle]/kCloud.averageD*5f)); //denser bigger, range 10-30
             float fatness = 20f;
