@@ -13,7 +13,7 @@ public class kParticleCloud extends Kernel {
     final float S_PER_MS = 0.3f ; //seconds per milliseconds, make 0.001f for "realtime"(?)
 
     //CLOUD PARAMS
-        public static final int PARTICLES_MAX = 1000;
+        public static final int PARTICLES_MAX = 10000;
         long particleLifetime = 10000;
 
     public int numParticles=0;
@@ -50,8 +50,8 @@ public class kParticleCloud extends Kernel {
         final int[] neighborsList = new int[PARTICLES_MAX* MAX_NEIGHB_PER_PARTICLE]; //neighbors by index
         final int[] neighborTotals = new int[PARTICLES_MAX]; //neighbors totals by index
 
-        final int GRID_RES = 20;
-        final int GRID_SLOTS = 40;
+        final int GRID_RES = 32;
+        final int GRID_SLOTS = 200;
         final int[] particleGrid = new int[GRID_RES*GRID_RES*GRID_RES * GRID_SLOTS];
 
         final float[] exports = new float[PARTICLES_MAX];
@@ -390,7 +390,7 @@ public class kParticleCloud extends Kernel {
 
         final int rollScale = 1000000;
 
-        return (int)((rndSeed[0])%rollScale+rollScale)%rollScale;
+        return (int)((rndSeed[0]*entropy)%rollScale+rollScale)%rollScale;
     }
 
     public void passFromLocal(int particle){
