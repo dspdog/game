@@ -48,7 +48,6 @@ public class kParticleCloud extends Kernel {
 
         final int MAX_NEIGHB_PER_PARTICLE = 64;
         final int[] neighborsList = new int[PARTICLES_MAX* MAX_NEIGHB_PER_PARTICLE]; //neighbors by index
-        final int[] neighborTotals = new int[PARTICLES_MAX]; //neighbors totals by index
 
         final int GRID_RES = 32;
         final int GRID_SLOTS = 200;
@@ -120,7 +119,7 @@ public class kParticleCloud extends Kernel {
         this.put(positionX).put(positionY).put(positionZ)
             .put(velocityX).put(velocityY).put(velocityZ)
             .put(density).put(pmass).put(pressure)
-            .put(neighborsList).put(neighborTotals).put(particleGrid)
+            .put(neighborsList).put(particleGrid)
             .put(cameraDirXVec).put(cameraDirYVec).put(cameraDirZVec).put(cameraPos).put(timestamp);
     }
 
@@ -129,7 +128,7 @@ public class kParticleCloud extends Kernel {
             .get(velocityX).get(velocityY).get(velocityZ)
 
             .get(density).get(pressure).get(neighborsList)
-            .get(neighborTotals).get(particleGrid).get(exports).get(timestamp);
+            .get(particleGrid).get(exports).get(timestamp);
     }
 
     private int seed = 123456789;
@@ -174,23 +173,21 @@ public class kParticleCloud extends Kernel {
     }
 
     public void resetNeighbors(int particle){
-        neighborTotals[particle]=0;
         for(int i=0; i<MAX_NEIGHB_PER_PARTICLE; i++){
             neighborsList[particle*MAX_NEIGHB_PER_PARTICLE + i]=-1;
         }
     }
 
     public void addNeighbor(int particle, int neighbor){
-        if(neighborTotals[particle] < MAX_NEIGHB_PER_PARTICLE && !alreadyNeighbors(particle,neighbor)){
-            neighborTotals[particle]++;
-            neighborsList[particle* MAX_NEIGHB_PER_PARTICLE + neighborTotals[particle]]=neighbor;
+        if(!alreadyNeighbors(particle,neighbor)){
+            int neighBPos = neighbor%MAX_NEIGHB_PER_PARTICLE;
+            neighborsList[particle* MAX_NEIGHB_PER_PARTICLE + neighBPos]=neighbor;
         }
     }
 
     public boolean alreadyNeighbors(int particle, int neighbor){// return false;
-        if(neighbor==-1)return true;
-        int len = neighborTotals[particle];
-        for(int neighborNo=0; neighborNo<len; neighborNo++){
+        if(neighbor==-1 || particle ==-1)return true;
+        for(int neighborNo=0; neighborNo<MAX_NEIGHB_PER_PARTICLE; neighborNo++){
             if(neighborsList[particle* MAX_NEIGHB_PER_PARTICLE +neighborNo]==neighbor)return true;
         }
         return false;
@@ -532,12 +529,11 @@ public class kParticleCloud extends Kernel {
         float accPressScale=0;
         float accViscScale=0;
 
-        int len = neighborTotals[particle];
         int neighbor=0;
         float weightVal=0;
         float weightVal_d=0;
 
-        for(int neighborNo=0; neighborNo<len; neighborNo++){
+        for(int neighborNo=0; neighborNo<MAX_NEIGHB_PER_PARTICLE; neighborNo++){
             if(neighbor!=particle){
                 neighbor = neighborsList[particle* MAX_NEIGHB_PER_PARTICLE +neighborNo];
                 if(neighbor!=-1){
@@ -597,12 +593,13 @@ public class kParticleCloud extends Kernel {
     }
 
     public void updateDensity(int particle){/////////////////////////////////
-        float _density=0;//getDensity(particle);
-        int len = neighborTotals[particle];
-        for(int neighborNo=0; neighborNo<len; neighborNo++){
+        float _density=0;
+        for(int neighborNo=0; neighborNo<MAX_NEIGHB_PER_PARTICLE; neighborNo++){
             int neighborParticle = neighborsList[particle* MAX_NEIGHB_PER_PARTICLE +neighborNo];
-            float dist = distance(particle,neighborParticle);
-            _density+=pmass[neighborParticle]*weight(dist/neighborDistance);
+            if(neighborParticle!=-1){
+                float dist = distance(particle,neighborParticle);
+                _density+=pmass[neighborParticle]*weight(dist/neighborDistance);
+            }
         }
         density[particle]=_density;
     }
