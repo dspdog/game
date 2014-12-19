@@ -15,7 +15,7 @@ public class gameWorldLogic implements Runnable {
     private int fps;
     private long lastFPS;
     private long startTime;
-    public int myFPS = 0;
+    public static int myFPS = 0;
 
     tree theTree;
 
@@ -30,7 +30,7 @@ public class gameWorldLogic implements Runnable {
     public void updateFPS() {
         if (getTime() - lastFPS > 1000) {
             myFPS = fps;
-            System.out.println("logic FPS: " + myFPS);
+            //System.out.println("logic FPS: " + myFPS);
             fps = 0;
             lastFPS += 1000;
         }

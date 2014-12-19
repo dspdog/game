@@ -195,8 +195,7 @@ public class gameWorldRender {
 
     public void drawHud(){
         if(getTime() - lastHudUpdate > hudUpdatePeriod){
-            hudTexture = TextureFactory.proceduralTexture("OpenGL FPS: "+myFPS + "\n" + myScene.myKCloud.statusString);
-
+            hudTexture = TextureFactory.proceduralTexture("Logic FPS: " + gameWorldLogic.myFPS  + "\nOpenGL FPS: "+myFPS + "\n" + myScene.myKCloud.statusString);
             lastHudUpdate = getTime();
         }
         glEnable (GL_BLEND);
