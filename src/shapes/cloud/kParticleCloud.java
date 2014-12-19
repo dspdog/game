@@ -14,7 +14,7 @@ public class kParticleCloud extends Kernel {
 
     //CLOUD PARAMS
         public static final int PARTICLES_MAX = 1000;
-        long particleLifetime = 18000;
+        long particleLifetime = 10000;
 
     public int numParticles=0;
 
@@ -243,6 +243,7 @@ public class kParticleCloud extends Kernel {
         return total;
     }
 
+    public float numberBad = 0f;
     public float averageD = 0.10f;
     public float averageP = 0.10f;
     public float averageNeighbors = 0.0f;
@@ -285,7 +286,8 @@ public class kParticleCloud extends Kernel {
                     "avPres " + averageP + "\n" +
                     "avSibs " + averageNeighbors + "\n"+
                     "gridFound " + getTotalGridMembers() + "\n" +
-                    "LocalSz " + range.getLocalSize(0) + " Grps " + range.getNumGroups(0);
+                    "LocalSz " + range.getLocalSize(0) + " Grps " + range.getNumGroups(0)+ "\n" +
+                    "Bad " + numberBad;
             lastPrint=getTime();
         }
 
@@ -310,6 +312,7 @@ public class kParticleCloud extends Kernel {
         float totalN=0f;
         float totalP=0f;
         float totalD=0f;
+        float totalBad =0f;
         lowerBounds = new Vector3f(1000000,1000000,1000000);
         upperBounds = new Vector3f(-1000000,-1000000,-1000000);
         lowerBoxBounds = new Vector3f(lowerX,lowerY,lowerZ);
@@ -324,11 +327,23 @@ public class kParticleCloud extends Kernel {
             totalD+=density[i];
             lowerBounds.set(min(lowerBounds.x,positionX[i]), min(lowerBounds.y,positionY[i]), min(lowerBounds.z,positionZ[i]));
             upperBounds.set(max(upperBounds.x, positionX[i]), max(upperBounds.y, positionY[i]), max(upperBounds.z, positionZ[i]));
+
+            if(badPosition(i)){
+                totalBad++;
+            }
         }
 
         averageNeighbors = totalN/numParticles;
         averageP = totalP/numParticles;
         averageD = totalD/numParticles;
+        numberBad=totalBad;
+    }
+
+    public boolean badPosition(int particle){
+        final float edgeThresh = 0.001f;
+        return  abs(positionX[particle]-lowerX)<edgeThresh || abs(positionX[particle]-upperX)<edgeThresh ||
+                abs(positionY[particle]-lowerY)<edgeThresh || abs(positionY[particle]-upperY)<edgeThresh||
+                abs(positionZ[particle]-lowerZ)<edgeThresh || abs(positionZ[particle]-upperZ)<edgeThresh;
     }
 
     public int getTotalNeighbors(int particle){
@@ -490,6 +505,8 @@ public class kParticleCloud extends Kernel {
         positionZ[particle]=min(max(lowerZ, positionZ[particle]+velocityZ[particle]*dt), upperZ);
     }
 
+    public float armLen = 300f;
+
     public void updateVelocity(int particle){
         float accPressureX=0f;   float accViscX=0f;   float accInteractiveX=0f;   float accGravX=0f;
         float accPressureY=0f;   float accViscY=0f;   float accInteractiveY=0f;   float accGravY=0f;
@@ -545,9 +562,9 @@ public class kParticleCloud extends Kernel {
             }
 
         }else{
-            float armLen = 300f;
+
             float xd=positionX[particle]-(upperX-cameraPos[0]+lowerX)+cameraDirZVec[0] * armLen;
-            float yd=positionY[particle]-(upperY-cameraPos[1]+ lowerY) + cameraDirZVec[1] * armLen;
+            float yd=positionY[particle]-(upperY-cameraPos[1]+ lowerY)+cameraDirZVec[1] * armLen;
             float zd=positionZ[particle]-(upperZ-cameraPos[2]+lowerZ)+cameraDirZVec[2] * armLen;
 
             float mag = sqrt(xd*xd+yd*yd+zd*zd);
