@@ -249,6 +249,8 @@ public class kParticleCloud extends Kernel {
 
     static long lastPrint = 0;
 
+    public String statusString = "";
+
     public void update(){
 
         ready=false;
@@ -273,11 +275,12 @@ public class kParticleCloud extends Kernel {
 
         getAverages();
 
-        if(getTime() - lastPrint > 1000){
-            System.out.println(" " +this.getExecutionMode() + " dt " + (dt*1000)+"ms parts " + numParticles + " exec" + (System.currentTimeMillis()-time1) +
-                    "\n avN " + averageNeighbors + " avD " + averageD + " avP " + averageP+
-                    "\n grid " + getTotalGridMembers() +
-                    "\n localsum" + getTotalExports() + " localsize " + range.getLocalSize(0) + " grps " + range.getNumGroups(0));
+        if(getTime() - lastPrint > 100){
+            statusString=this.getExecutionMode() + " dt " + (dt*1000)+"ms parts " + numParticles + " exec" + (System.currentTimeMillis()-time1) +
+                    "\navN " + averageNeighbors + " avD " + averageD + " avP " + averageP+
+                    "\ngrid " + getTotalGridMembers() +
+                    "\nlocalsum" + getTotalExports() + " localsize " + range.getLocalSize(0) + " grps " + range.getNumGroups(0);
+            //System.out.println(statusString);
             lastPrint=getTime();
         }
 

@@ -48,7 +48,6 @@ public class gameWorldRender {
     public void updateFPS() {
         if (getTime() - lastFPS > 1000) {
             myFPS = fps;
-            Display.setTitle("FPS: " + myFPS);
             fps = 0;
             lastFPS += 1000;
         }
@@ -60,6 +59,7 @@ public class gameWorldRender {
     }
 
     public void initScene(){
+        Display.setTitle("Sand Castles");
         myScene = new scene();
 
         WorldObject theGround = new WorldObject((float x, float y, float t) -> GeographyFactory.bowl(x, y, t)).setColor(0,1.0f,0);
@@ -195,11 +195,13 @@ public class gameWorldRender {
 
     public void drawHud(){
         if(getTime() - lastHudUpdate > hudUpdatePeriod){
-            hudTexture = TextureFactory.proceduralTexture();
+            hudTexture = TextureFactory.proceduralTexture("OpenGL FPS: "+myFPS + "\n" + myScene.myKCloud.statusString);
 
             lastHudUpdate = getTime();
         }
-        if(hudTexture!=-1)GeometryFactory.plane(hudTexture, 256);
+        glEnable (GL_BLEND);
+        glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        if(hudTexture!=-1)GeometryFactory.plane(hudTexture, 512);
     }
 
 

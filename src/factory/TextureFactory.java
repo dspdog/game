@@ -47,21 +47,28 @@ public class TextureFactory {
         //
     }
 
-    static public int proceduralTexture(){  //http://www.java-gaming.org/index.php?topic=25516.0
+    static public int proceduralTexture(String str){  //http://www.java-gaming.org/index.php?topic=25516.0
         //Generate a small test image by drawing to a BufferedImage
         //It's of course also possible to just load an image using ImageIO.load()
-        BufferedImage test = new BufferedImage(128, 128, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage test = new BufferedImage(512, 512, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = test.createGraphics();
 
-        g2d.setColor(new Color(0.5f, 1.0f, 1.0f, 0.5f));
+        g2d.setColor(new Color(1f, 1.0f, 1.0f, 0.0f));
         g2d.fillRect(0, 0, 128, 128); //A transparent white background
 
-        g2d.setColor(Color.red);
-        g2d.drawRect(0, 0, 127, 127); //A red frame around the image
-        g2d.fillRect(10, 10, 10, 10); //A red box
+        //g2d.setColor(Color.red);
+        //g2d.drawRect(0, 0, 127, 127); //A red frame around the image
+        g2d.fillRect(10, 10, 10, 10);
 
-        g2d.setColor(Color.blue);
-        g2d.drawString("Test image", 10, 64); //Some blue text
+        g2d.setColor(Color.black);
+
+        String[] splitData = str.split("\n");
+        int yOffset=0;
+        for (String eachSplit : splitData) {
+            g2d.drawString(eachSplit, 5, 18+yOffset);
+            yOffset+=10;
+        }
+
 
         return loadTexture(test);
     }
