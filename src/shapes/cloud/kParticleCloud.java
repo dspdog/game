@@ -111,11 +111,16 @@ public class kParticleCloud extends Kernel {
     }
 
     public void importData(){ //TODO are most of these needed?
-        this.put(positionX).put(positionY).put(positionZ)
-            .put(velocityX).put(velocityY).put(velocityZ)
-            .put(pmass)//.put(pressure).put(density)
-            .put(neighborsList).put(particleGrid)
+        this.put(particleGrid)
             .put(cameraDirXVec).put(cameraDirYVec).put(cameraDirZVec).put(cameraPos).put(timestamp);
+    }
+
+    public void importData_firstTime(){ //TODO are most of these needed?
+        this.put(positionX).put(positionY).put(positionZ)
+                .put(velocityX).put(velocityY).put(velocityZ)
+                .put(pmass)
+                .put(particleGrid)
+                .put(cameraDirXVec).put(cameraDirYVec).put(cameraDirZVec).put(cameraPos).put(timestamp);
     }
 
     public void exportData(){
@@ -233,6 +238,7 @@ public class kParticleCloud extends Kernel {
     public static long updateInterval = 200;
 
     public String statusString = "";
+    public static boolean firstTime = true;
 
     public void update(){
 
@@ -250,7 +256,13 @@ public class kParticleCloud extends Kernel {
 
         clearGrid();
 
-        importData();
+        if(firstTime){
+            importData_firstTime();
+            firstTime=false;
+        }else{
+            importData();
+        }
+
         this.execute(range, 5);
         exportData();
 

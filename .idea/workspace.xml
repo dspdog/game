@@ -102,7 +102,7 @@
       <file leaf-file-name="kParticleCloud.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/shapes/cloud/kParticleCloud.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.2549923" vertical-offset="1704" max-vertical-offset="9962">
+            <state vertical-scroll-proportion="0.33873343" vertical-offset="1640" max-vertical-offset="10166">
               <caret line="110" column="5" selection-start-line="110" selection-start-column="5" selection-end-line="110" selection-end-column="5" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -1029,7 +1029,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/shapes/cloud/kParticleCloud.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.2549923" vertical-offset="1704" max-vertical-offset="9962">
+        <state vertical-scroll-proportion="0.33873343" vertical-offset="1640" max-vertical-offset="10166">
           <caret line="110" column="5" selection-start-line="110" selection-start-column="5" selection-end-line="110" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="true" />
