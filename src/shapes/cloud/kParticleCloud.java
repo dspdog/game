@@ -18,7 +18,7 @@ public class kParticleCloud extends Kernel {
 
     public int numParticles=0;
 
-        final float neighborDistance = 4f;
+        final float neighborDistance = 5f;
         final float densREF = 0.0012f; // kg/m^3
         final float mu = 1f; // kg/ms (dynamical viscosity))
         final float c = 2.5f; // m/s speed of sound
@@ -46,12 +46,12 @@ public class kParticleCloud extends Kernel {
 
         final long[] timestamp = new long[PARTICLES_MAX];
 
-        final int MAX_NEIGHB_PER_PARTICLE = 64;
+        final int MAX_NEIGHB_PER_PARTICLE = 16;
         final int[] neighborsList = new int[PARTICLES_MAX* MAX_NEIGHB_PER_PARTICLE]; //neighbors by index
 
         final int GRID_RES = 32;
         final int GRID_SLOTS = 200;
-        final int[] particleGrid = new int[GRID_RES*GRID_RES*GRID_RES * GRID_SLOTS];
+        final int[] particleGrid = new int[GRID_RES*GRID_RES*GRID_RES*GRID_SLOTS];
 
         final float[] exports = new float[PARTICLES_MAX];
 
@@ -95,11 +95,6 @@ public class kParticleCloud extends Kernel {
         return gridZ*GRID_RES*GRID_RES* GRID_SLOTS + gridY*GRID_RES* GRID_SLOTS + gridX* GRID_SLOTS;
     }
 
-    public int getGridMember(int gridPos, int member){
-        //member = min(member, GRID_SLOTS);
-        return particleGrid[gridPos + member];
-    }
-
     public void addToGrid(int particle){
         int gridPos = getGridPos(positionX[particle],positionY[particle],positionZ[particle]);
         int gridRndPos = prand()%GRID_SLOTS;
@@ -118,7 +113,7 @@ public class kParticleCloud extends Kernel {
     public void importData(){ //TODO are most of these needed?
         this.put(positionX).put(positionY).put(positionZ)
             .put(velocityX).put(velocityY).put(velocityZ)
-            .put(density).put(pmass).put(pressure)
+            .put(pmass)//.put(pressure).put(density)
             .put(neighborsList).put(particleGrid)
             .put(cameraDirXVec).put(cameraDirYVec).put(cameraDirZVec).put(cameraPos).put(timestamp);
     }
@@ -398,7 +393,7 @@ public class kParticleCloud extends Kernel {
 
     public void addNeighborsFromGrid(int particle, int gridPos){
         for(int gridMemberNo=0; gridMemberNo<GRID_SLOTS; gridMemberNo++){
-            int gridMember=getGridMember(gridPos, gridMemberNo);
+            int gridMember=particleGrid[gridPos + gridMemberNo];//getGridMember(gridPos, gridMemberNo);
             if(gridMember!=-1)
             if(distance(gridMember,particle)<neighborDistance){
                 addNeighbor(particle,gridMember);
@@ -490,33 +485,11 @@ public class kParticleCloud extends Kernel {
         if((positionY[particle]+velocityY[particle]*dt > upperY)||(positionY[particle]+velocityY[particle]*dt < lowerY)){velocityY[particle]*=flipScale;}
         if((positionZ[particle]+velocityZ[particle]*dt > upperZ)||(positionZ[particle]+velocityZ[particle]*dt < lowerZ)){velocityZ[particle]*=flipScale;}
 
-
         //set position, restrict position to box
         positionX[particle]=min(max(lowerX, positionX[particle]+velocityX[particle]*dt), upperX);
         positionY[particle]=min(max(lowerY, positionY[particle]+velocityY[particle]*dt), upperY);
         positionZ[particle]=min(max(lowerZ, positionZ[particle]+velocityZ[particle]*dt), upperZ);
-        if(badPosition(particle)){
-            resetParticle(particle);
-            //positionX[particle]=(prand()%(int)(upperX-lowerX))+lowerX;
-            //positionY[particle]=(prand()%(int)(upperY-lowerY))+lowerY;
-            //positionZ[particle]=(prand()%(int)(upperZ-lowerZ))+lowerZ;
-
-            //velocityX[particle]=0;
-            //velocityY[particle]=0;
-            //velocityZ[particle]=0;
-
-            //positionX[particle]=prand()%(upperX-lowerX)+lowerX;
-            //positionY[particle]=prand()%(upperY-lowerY)+lowerY;
-            //positionZ[particle]=prand()%(upperZ-lowerZ)+lowerZ;
-
-            //pmass[particle]=0.01f;
-            //density[particle]=1f;
-            //pressure[particle]=1f;
-            //timestamp[particle]=time+(int)(prand()*particleLifetime);
-
-        }
-
-
+        if(badPosition(particle))resetParticle(particle);
     }
 
     public float armLen = 300f;
