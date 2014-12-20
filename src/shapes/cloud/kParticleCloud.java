@@ -51,6 +51,7 @@ public class kParticleCloud extends Kernel {
 
         final int GRID_RES = 32;
         final int GRID_SLOTS = 200;
+        final int GRID_TOTAL = GRID_RES*GRID_RES*GRID_RES*GRID_SLOTS;
         final int[] particleGrid = new int[GRID_RES*GRID_RES*GRID_RES*GRID_SLOTS];
 
         final float[] exports = new float[PARTICLES_MAX];
@@ -97,7 +98,7 @@ public class kParticleCloud extends Kernel {
 
     public void addToGrid(int particle){
         int gridPos = getGridPos(positionX[particle],positionY[particle],positionZ[particle]);
-        int gridRndPos = prand()%GRID_SLOTS;
+        int gridRndPos = prand()%GRID_SLOTS; //this must be random to work!
 
         particleGrid[gridPos + gridRndPos] = particle;
     }
@@ -105,7 +106,6 @@ public class kParticleCloud extends Kernel {
     public void generateParticles(){
         for(int i=0; i<PARTICLES_MAX; i++){
             initParticle(i);
-            resetNeighbors(i);
         }
         exportData();
     }
@@ -126,7 +126,6 @@ public class kParticleCloud extends Kernel {
     public void exportData(){
         this.get(positionX).get(positionY).get(positionZ)
             .get(velocityX).get(velocityY).get(velocityZ)
-
             .get(density).get(pressure).get(neighborsList)
             .get(particleGrid).get(exports).get(timestamp);
     }
@@ -172,17 +171,13 @@ public class kParticleCloud extends Kernel {
         }
     }
 
-    public void resetNeighbors(int particle){
-        for(int i=0; i<MAX_NEIGHB_PER_PARTICLE; i++){
-            neighborsList[particle*MAX_NEIGHB_PER_PARTICLE + i]=-1;
-        }
-    }
-
-    public void addNeighbor(int particle, int neighbor){
-        if(!alreadyNeighbors(particle,neighbor)){
-            int neighBPos = neighbor%MAX_NEIGHB_PER_PARTICLE;
-            neighborsList[particle* MAX_NEIGHB_PER_PARTICLE + neighBPos]=neighbor;
-        }
+    public final void addNeighbor(int particle, int neighbor){
+        neighborsList[particle*MAX_NEIGHB_PER_PARTICLE+(neighbor%MAX_NEIGHB_PER_PARTICLE)]=neighbor;
+        //if(!alreadyNeighbors(particle,neighbor)){
+        //int neighBPos = neighbor%MAX_NEIGHB_PER_PARTICLE;
+        //if(neighborsList[particle* MAX_NEIGHB_PER_PARTICLE +neighBPos]!=neighbor){
+            //neighborsList[particle* MAX_NEIGHB_PER_PARTICLE + neighBPos]=neighbor;
+        //}
     }
 
     public boolean alreadyNeighbors(int particle, int neighbor){// return false;
@@ -222,7 +217,7 @@ public class kParticleCloud extends Kernel {
     public int getTotalGridMembers(){
         int total=0;
         for(int i=0; i<particleGrid.length; i++){
-            if(particleGrid[i]!=-1){
+            if(particleGrid[i]>=0 && particleGrid[i]<numParticles){
                 total++;
             }
         }
@@ -232,6 +227,8 @@ public class kParticleCloud extends Kernel {
     public float numberBad = 0f;
     public float averageD = 0.10f;
     public float averageP = 0.10f;
+    public int maxG = 0;
+    public int maxN = 0;
     public float averageNeighbors = 0.0f;
 
     static long lastPrint = 0;
@@ -253,9 +250,7 @@ public class kParticleCloud extends Kernel {
         updateTime();
         this.setExplicit(true);
         Range range = Range.create(numParticles);
-
         clearGrid();
-
         if(firstTime){
             importData_firstTime();
             firstTime=false;
@@ -278,7 +273,9 @@ public class kParticleCloud extends Kernel {
                     "avDens " + averageD + "\n" +
                     "avPres " + averageP + "\n" +
                     "avSibs " + averageNeighbors + "\n"+
+                    "maxSibs " + maxN + "\n"+
                     "gridFound " + getTotalGridMembers() + "\n" +
+                    "gridMAX " + maxG + "\n" +
                     "LocalSz " + range.getLocalSize(0) + " Grps " + range.getNumGroups(0)+ "\n" +
                     "Bad " + numberBad + "\n" +
                     "Arm " + armLen + "\n" +
@@ -308,14 +305,19 @@ public class kParticleCloud extends Kernel {
         float totalP=0f;
         float totalD=0f;
         float totalBad =0f;
+        int neighborsMax=0;
         lowerBounds = new Vector3f(1000000,1000000,1000000);
         upperBounds = new Vector3f(-1000000,-1000000,-1000000);
         lowerBoxBounds = new Vector3f(lowerX,lowerY,lowerZ);
         upperBoxBounds = new Vector3f(upperX,upperY,upperZ);
 
+        int neighbors=0;
+
         for(int i=0; i<numParticles; i++){
+            neighbors=getTotalNeighbors(i);
             updateLife(i);
-            totalN+=getTotalNeighbors(i);
+            totalN+=neighbors;
+            neighborsMax=max(neighborsMax,neighbors);
             //if(!Float.isNaN(pressure[i]))totalP+=pressure[i];
             //if(!Float.isNaN(density[i]))totalD+=density[i];
             totalP+=pressure[i];
@@ -328,6 +330,20 @@ public class kParticleCloud extends Kernel {
             }
         }
 
+        int slotMax=0;
+        int totalMax=0;
+        for(int i=0; i<GRID_TOTAL; i++){
+            if(i%GRID_SLOTS==0){
+                totalMax=max(slotMax,totalMax);
+                slotMax=0;
+            }
+            if(particleGrid[i]!=-1){
+                slotMax++;
+            }
+        }
+
+        maxG=totalMax;
+        maxN=neighborsMax;
         averageNeighbors = totalN/numParticles;
         averageP = totalP/numParticles;
         averageD = totalD/numParticles;
@@ -365,12 +381,14 @@ public class kParticleCloud extends Kernel {
         }else if(pass==1){
             findNeighbors(particle);
         }else if(pass==2){
+            //pluckFromGrid(particle);
             updateDensity(particle);
             updatePressure(particle);
         }else if(pass==3){
             updateVelocity(particle);
         }else if(pass==4){
             updatePosition(particle);
+
         }/*else if(pass==5){
             locals[particle%LOCALSIZE]=1;
             passFromLocal(particle%LOCALSIZE);
@@ -403,18 +421,20 @@ public class kParticleCloud extends Kernel {
         exports[particle]=locals[particle];
     }
 
-    public void addNeighborsFromGrid(int particle, int gridPos){
+    public final void addNeighborsFromGrid(int particle, int gridPos){
         for(int gridMemberNo=0; gridMemberNo<GRID_SLOTS; gridMemberNo++){
-            int gridMember=particleGrid[gridPos + gridMemberNo];//getGridMember(gridPos, gridMemberNo);
-            if(gridMember!=-1)
-            if(distance(gridMember,particle)<neighborDistance){
-                addNeighbor(particle,gridMember);
+            int gridMember=particleGrid[gridPos + gridMemberNo];
+            if(gridMember!=-1){
+                if(distance(gridMember,particle)<neighborDistance)
+                    addNeighbor(particle,gridMember);
             }
         }
     }
 
-    public void findNeighbors(int particle){
-        resetNeighbors(particle);
+    public final void findNeighbors(int particle){
+        for(int i=0; i<MAX_NEIGHB_PER_PARTICLE; i++){//reset existing neighbors
+            neighborsList[particle*MAX_NEIGHB_PER_PARTICLE + i]=-1;
+        }
 
         float x = positionX[particle];
         float y = positionY[particle];
