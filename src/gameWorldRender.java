@@ -131,8 +131,9 @@ public class gameWorldRender {
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
 
-        glDepthFunc(GL_LEQUAL);
-        glEnable(GL_DEPTH_TEST);
+        //glDepthFunc(GL_LEQUAL);
+        //glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_NEVER);
     }
 
     public void prepare2D(){ //see http://gamedev.stackexchange.com/questions/18468/making-a-hud-gui-with-opengl-lwjgl
@@ -167,7 +168,7 @@ public class gameWorldRender {
         glClearColor(0.5f,0.5f,0.75f,1f);
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-        glEnable(GL_DEPTH_TEST);
+        //glEnable(GL_DEPTH_TEST);
         glEnable(GL_STENCIL_TEST);
         glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
         prepare3D();

@@ -289,7 +289,8 @@ public class GeometryFactory {
         int vertsPerTriangle = 3;
         int trisPerSprite = 6; //for hexagons use 6 - actually only uses (N-2) tris
 
-        boolean useSquares = false;
+        float alpha = 1.00f;
+        boolean useSquares = true;
 
         if(useSquares)
             trisPerSprite =2;
@@ -297,7 +298,7 @@ public class GeometryFactory {
         cloudTriangles=numParticles*trisPerSprite;
 
         final FloatBuffer vert_data = BufferUtils.createFloatBuffer(numParticles*vertsPerTriangle*3*trisPerSprite);
-        final FloatBuffer color_data = BufferUtils.createFloatBuffer(numParticles*vertsPerTriangle*3*trisPerSprite);
+        final FloatBuffer color_data = BufferUtils.createFloatBuffer(numParticles*vertsPerTriangle*4*trisPerSprite);
         final FloatBuffer tex_data = BufferUtils.createFloatBuffer(numParticles*vertsPerTriangle*2*trisPerSprite);
 
         long time = System.currentTimeMillis();
@@ -347,13 +348,12 @@ public class GeometryFactory {
                 tex_data.put(0).put(size);
                 tex_data.put(size).put(size);
 
-
-                color_data.put(xN).put(yN).put(zN);
-                color_data.put(xN).put(yN).put(zN);
-                color_data.put(xN).put(yN).put(zN);
-                color_data.put(xN).put(yN).put(zN);
-                color_data.put(xN).put(yN).put(zN);
-                color_data.put(xN).put(yN).put(zN);
+                color_data.put(xN).put(yN).put(zN).put(alpha);
+                color_data.put(xN).put(yN).put(zN).put(alpha);
+                color_data.put(xN).put(yN).put(zN).put(alpha);
+                color_data.put(xN).put(yN).put(zN).put(alpha);
+                color_data.put(xN).put(yN).put(zN).put(alpha);
+                color_data.put(xN).put(yN).put(zN).put(alpha);
             }else{
                 int segs = trisPerSprite;
                 float extraRotation = (float)(2f*Math.PI*particle/numParticles + 17f* 2f*Math.PI*(time%1000)/1000f);
@@ -394,9 +394,9 @@ public class GeometryFactory {
                     tex_data.put(tx+cos1*scale2).put(ty + sin1 * scale2);
                     tex_data.put(tx+cos2*scale2).put(ty+sin2*scale2);
 
-                    color_data.put(xN).put(yN).put(zN);
-                    color_data.put(xN).put(yN).put(zN);
-                    color_data.put(xN).put(yN).put(zN);
+                    color_data.put(xN).put(yN).put(zN).put(alpha);
+                    color_data.put(xN).put(yN).put(zN).put(alpha);
+                    color_data.put(xN).put(yN).put(zN).put(alpha);
                 }
             }
 
@@ -509,10 +509,10 @@ public class GeometryFactory {
         glColor3f(1.0f, 1.0f, 1.0f);
         glEnable(GL_TEXTURE_2D);
         glEnable(GL_COLOR_MATERIAL);
-        //glEnable (GL_BLEND);
-        //glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glEnable (GL_BLEND);
+        glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         int vertex_size = 3; // X, Y, Z,
-        int color_size = 3; // R, G, B,
+        int color_size = 4; // R, G, B, A
         int text_coord_size = 2; // X, Y,
 
         int vbo_vertex_handle = handles[0];
