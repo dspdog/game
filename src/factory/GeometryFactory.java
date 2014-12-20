@@ -38,13 +38,13 @@ public class GeometryFactory {
         //glColor3f(0.5f, 0f, 0f);
         //drawBox(sphCloud.lowerCornerBoundsFinal, sphCloud.upperCornerBoundsFinal);
 */
-        glColor3f(0f, 0f, 0f);
+        glColor4f(0f, 0f, 0f, 0.5f);
         drawBox(cloud.lowerBoxBounds, cloud.upperBoxBounds);
 
-        glColor3f(0.75f, 0f, 0f);
+        glColor4f(0.75f, 0f, 0f, 0.5f);
         drawBox(cloud.lowerBounds, cloud.upperBounds);
 
-        glColor3f(0f, 0f, 0.5f);
+        glColor4f(0f, 0f, 0.5f, 0.5f);
         drawBox(cloud.lowerDenseBounds, cloud.upperDenseBounds);
     }
 
