@@ -43,6 +43,9 @@ public class GeometryFactory {
 
         glColor3f(0.75f, 0f, 0f);
         drawBox(cloud.lowerBounds, cloud.upperBounds);
+
+        glColor3f(0f, 0f, 0.5f);
+        drawBox(cloud.lowerDenseBounds, cloud.upperDenseBounds);
     }
 
     static void drawBox(Vector3f upperCorner, Vector3f lowerCorner){

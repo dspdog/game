@@ -300,6 +300,9 @@ public class kParticleCloud extends Kernel {
     public Vector3f lowerBoxBounds = new Vector3f(0,0,0);
     public Vector3f upperBoxBounds = new Vector3f(0,0,0);
 
+    public Vector3f lowerDenseBounds = new Vector3f(0,0,0);
+    public Vector3f upperDenseBounds = new Vector3f(0,0,0);
+
     public void getAverages(){
         float totalN=0f;
         float totalP=0f;
@@ -310,6 +313,8 @@ public class kParticleCloud extends Kernel {
         upperBounds = new Vector3f(-1000000,-1000000,-1000000);
         lowerBoxBounds = new Vector3f(lowerX,lowerY,lowerZ);
         upperBoxBounds = new Vector3f(upperX,upperY,upperZ);
+        lowerDenseBounds = new Vector3f(1000000,1000000,1000000);
+        upperDenseBounds = new Vector3f(-1000000,-1000000,-1000000);
 
         int neighbors=0;
 
@@ -324,6 +329,11 @@ public class kParticleCloud extends Kernel {
             totalD+=density[i];
             lowerBounds.set(min(lowerBounds.x,positionX[i]), min(lowerBounds.y,positionY[i]), min(lowerBounds.z,positionZ[i]));
             upperBounds.set(max(upperBounds.x, positionX[i]), max(upperBounds.y, positionY[i]), max(upperBounds.z, positionZ[i]));
+
+            if(neighbors>1){
+                lowerDenseBounds.set(min(lowerDenseBounds.x,positionX[i]),  min(lowerDenseBounds.y,positionY[i]),  min(lowerDenseBounds.z, positionZ[i]));
+                upperDenseBounds.set(max(upperDenseBounds.x, positionX[i]), max(upperDenseBounds.y, positionY[i]), max(upperDenseBounds.z, positionZ[i]));
+            }
 
             if(badPosition(i)){
                 totalBad++;
