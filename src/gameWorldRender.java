@@ -169,6 +169,8 @@ public class gameWorldRender {
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
         //glEnable(GL_DEPTH_TEST);
+        //glClear(GL_ACCUM_BUFFER_BIT);
+
         glEnable(GL_STENCIL_TEST);
         glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
         prepare3D();
@@ -191,6 +193,11 @@ public class gameWorldRender {
         prepare2D();
         drawHud();
 
+        //glDrawBuffer(GL_FRONT);
+        //glAccum(GL_ACCUM, 0.2f);
+        //glDrawBuffer(GL_BACK);
+
+        //glAccum(GL_RETURN, 1.0f);//push bach to draw buffer
     }
 
     int hudTexture = -1;

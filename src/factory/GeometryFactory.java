@@ -291,7 +291,7 @@ public class GeometryFactory {
 
         float alpha = 1.00f;
 
-        boolean alphaModulate = !kCloud.neighborsReset;
+        boolean alphaModulate = true;//!kCloud.neighborsReset;
 
         float _origAlpha = alpha;
         boolean useSquares = true;
@@ -310,11 +310,11 @@ public class GeometryFactory {
         for(int particle=0; particle<numParticles; particle++){
 
             if(alphaModulate)
-                alpha=_origAlpha*kCloud.getTotalNeighbors(particle)/kCloud.averageNeighbors;
+                alpha=_origAlpha*kCloud.getTotalNeighbors(particle)/((float)Math.pow(kCloud.averageNeighbors, 1.0f));
 
             //float fatness = kCloud.pressure[particle]/kCloud.averageP*5f; //higher pressure bigger (explodes?)
             //float fatness = Math.min(30f, Math.max(10f, kCloud.density[particle]/kCloud.averageD*5f)); //denser bigger, range 10-30
-            float fatness = 20f;
+            float fatness = 22f;
 
             //float fatness = 1f;
 

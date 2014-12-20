@@ -65,11 +65,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="gameWorldRender.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="gameWorldRender.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/gameWorldRender.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-10.892858" vertical-offset="1922" max-vertical-offset="3791">
-              <caret line="135" column="10" selection-start-line="135" selection-start-column="10" selection-end-line="135" selection-end-column="10" />
+            <state vertical-scroll-proportion="0.8580247" vertical-offset="2759" max-vertical-offset="3910">
+              <caret line="199" column="10" selection-start-line="199" selection-start-column="10" selection-end-line="199" selection-end-column="10" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -90,24 +90,24 @@
       <file leaf-file-name="GeometryFactory.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/factory/GeometryFactory.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-7.107143" vertical-offset="4527" max-vertical-offset="9945">
-              <caret line="293" column="55" selection-start-line="293" selection-start-column="55" selection-end-line="293" selection-end-column="55" />
+            <state vertical-scroll-proportion="-8.928572" vertical-offset="4510" max-vertical-offset="9945">
+              <caret line="295" column="33" selection-start-line="295" selection-start-column="33" selection-end-line="295" selection-end-column="33" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="kParticleCloud.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="kParticleCloud.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/shapes/cloud/kParticleCloud.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.3148148" vertical-offset="612" max-vertical-offset="10897">
-              <caret line="48" column="42" selection-start-line="48" selection-start-column="42" selection-end-line="48" selection-end-column="42" />
+            <state vertical-scroll-proportion="-7.714286" vertical-offset="600" max-vertical-offset="10897">
+              <caret line="48" column="43" selection-start-line="48" selection-start-column="43" selection-end-line="48" selection-end-column="43" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#23592#23593#0" expanded="true" />
-                <element signature="e#23636#23637#0" expanded="true" />
-                <element signature="e#23677#23678#0" expanded="true" />
-                <element signature="e#23721#23722#0" expanded="true" />
+                <element signature="e#23593#23594#0" expanded="true" />
+                <element signature="e#23637#23638#0" expanded="true" />
+                <element signature="e#23678#23679#0" expanded="true" />
+                <element signature="e#23722#23723#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -186,8 +186,8 @@
         <option value="$PROJECT_DIR$/src/gameInputs.java" />
         <option value="$PROJECT_DIR$/src/factory/TextureFactory.java" />
         <option value="$PROJECT_DIR$/src/factory/GeometryFactory.java" />
-        <option value="$PROJECT_DIR$/src/gameWorldRender.java" />
         <option value="$PROJECT_DIR$/src/shapes/cloud/kParticleCloud.java" />
+        <option value="$PROJECT_DIR$/src/gameWorldRender.java" />
       </list>
     </option>
   </component>
@@ -888,13 +888,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="jar://$PROJECT_DIR$/aparapi/aparapi.jar!/com/amd/aparapi/Kernel.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.47893915" vertical-offset="2923" max-vertical-offset="14178">
-          <caret line="279" column="22" selection-start-line="279" selection-start-column="16" selection-end-line="279" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$PROJECT_DIR$/lwjgl-2.9.1/jar/lwjgl.jar!/org/lwjgl/Sys.class">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.34556574" vertical-offset="1117" max-vertical-offset="2516">
@@ -965,34 +958,53 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/factory/GeometryFactory.java">
+    <entry file="jar://$PROJECT_DIR$/aparapi/aparapi.jar!/com/amd/aparapi/KernelRunner.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-7.107143" vertical-offset="4527" max-vertical-offset="9945">
-          <caret line="293" column="55" selection-start-line="293" selection-start-column="55" selection-end-line="293" selection-end-column="55" />
+        <state vertical-scroll-proportion="0.346395" vertical-offset="15164" max-vertical-offset="16167">
+          <caret line="946" column="19" selection-start-line="946" selection-start-column="19" selection-end-line="946" selection-end-column="19" />
+          <folding>
+            <element signature="e#44056#44057#0" expanded="true" />
+            <element signature="e#44097#44098#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/aparapi/aparapi.jar!/com/amd/aparapi/Kernel.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.47962382" vertical-offset="8500" max-vertical-offset="14144">
+          <caret line="693" column="30" selection-start-line="693" selection-start-column="30" selection-end-line="693" selection-end-column="30" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/gameWorldRender.java">
+    <entry file="file://$PROJECT_DIR$/src/factory/GeometryFactory.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-10.892858" vertical-offset="1922" max-vertical-offset="3791">
-          <caret line="135" column="10" selection-start-line="135" selection-start-column="10" selection-end-line="135" selection-end-column="10" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state vertical-scroll-proportion="-8.928572" vertical-offset="4510" max-vertical-offset="9945">
+          <caret line="295" column="33" selection-start-line="295" selection-start-column="33" selection-end-line="295" selection-end-column="33" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/shapes/cloud/kParticleCloud.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3148148" vertical-offset="612" max-vertical-offset="10897">
-          <caret line="48" column="42" selection-start-line="48" selection-start-column="42" selection-end-line="48" selection-end-column="42" />
+        <state vertical-scroll-proportion="-7.714286" vertical-offset="600" max-vertical-offset="10897">
+          <caret line="48" column="43" selection-start-line="48" selection-start-column="43" selection-end-line="48" selection-end-column="43" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#23592#23593#0" expanded="true" />
-            <element signature="e#23636#23637#0" expanded="true" />
-            <element signature="e#23677#23678#0" expanded="true" />
-            <element signature="e#23721#23722#0" expanded="true" />
+            <element signature="e#23593#23594#0" expanded="true" />
+            <element signature="e#23637#23638#0" expanded="true" />
+            <element signature="e#23678#23679#0" expanded="true" />
+            <element signature="e#23722#23723#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/gameWorldRender.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.8580247" vertical-offset="2759" max-vertical-offset="3910">
+          <caret line="199" column="10" selection-start-line="199" selection-start-column="10" selection-end-line="199" selection-end-column="10" />
+          <folding>
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
