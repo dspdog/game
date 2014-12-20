@@ -13,7 +13,7 @@ public class kParticleCloud extends Kernel {
     final float S_PER_MS = 0.3f ; //seconds per milliseconds, make 0.001f for "realtime"(?)
 
     //CLOUD PARAMS
-        public static final int PARTICLES_MAX = 1000;
+        public static final int PARTICLES_MAX = 5000;
         long particleLifetime = 1000000;
 
     public int numParticles=0;
@@ -46,7 +46,7 @@ public class kParticleCloud extends Kernel {
 
         final long[] timestamp = new long[PARTICLES_MAX];
 
-        final boolean neighborsReset=false; //smoother motion if set to false?
+        public boolean neighborsReset=true; //smoother motion if set to false?
 
         final int MAX_NEIGHB_PER_PARTICLE = 12;
         final int[] neighborsList = new int[PARTICLES_MAX* MAX_NEIGHB_PER_PARTICLE]; //neighbors by index

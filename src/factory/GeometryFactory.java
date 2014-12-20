@@ -290,6 +290,10 @@ public class GeometryFactory {
         int trisPerSprite = 6; //for hexagons use 6 - actually only uses (N-2) tris
 
         float alpha = 1.00f;
+
+        boolean alphaModulate = !kCloud.neighborsReset;
+
+        float _origAlpha = alpha;
         boolean useSquares = true;
 
         if(useSquares)
@@ -304,6 +308,9 @@ public class GeometryFactory {
         long time = System.currentTimeMillis();
 
         for(int particle=0; particle<numParticles; particle++){
+
+            if(alphaModulate)
+                alpha=_origAlpha*kCloud.getTotalNeighbors(particle)/kCloud.averageNeighbors;
 
             //float fatness = kCloud.pressure[particle]/kCloud.averageP*5f; //higher pressure bigger (explodes?)
             //float fatness = Math.min(30f, Math.max(10f, kCloud.density[particle]/kCloud.averageD*5f)); //denser bigger, range 10-30

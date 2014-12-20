@@ -131,9 +131,9 @@ public class gameWorldRender {
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
 
-        //glDepthFunc(GL_LEQUAL);
         //glEnable(GL_DEPTH_TEST);
-        glDepthFunc(GL_NEVER);
+        //glDepthFunc(GL_LEQUAL);
+        //glDepthFunc(GL_NEVER);
     }
 
     public void prepare2D(){ //see http://gamedev.stackexchange.com/questions/18468/making-a-hud-gui-with-opengl-lwjgl
