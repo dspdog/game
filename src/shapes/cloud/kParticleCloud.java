@@ -46,6 +46,8 @@ public class kParticleCloud extends Kernel {
 
         final long[] timestamp = new long[PARTICLES_MAX];
 
+        final boolean neighborsReset=true; //smoother motion if set to false?
+
         final int MAX_NEIGHB_PER_PARTICLE = 16;
         final int[] neighborsList = new int[PARTICLES_MAX* MAX_NEIGHB_PER_PARTICLE]; //neighbors by index
 
@@ -105,7 +107,7 @@ public class kParticleCloud extends Kernel {
 
     public void generateParticles(){
         for(int i=0; i<PARTICLES_MAX; i++){
-            initParticle(i);
+            resetParticle(i);
         }
         exportData();
     }
@@ -140,10 +142,6 @@ public class kParticleCloud extends Kernel {
 
     float rand(){ //random float from 0 to 1
         return (randInt()/(1f*Integer.MAX_VALUE)+1f)/2f;
-    }
-
-    public void initParticle(int particle){
-        resetParticle(particle);
     }
 
     public void resetParticle(int particle){
@@ -232,7 +230,7 @@ public class kParticleCloud extends Kernel {
     public float averageNeighbors = 0.0f;
 
     static long lastPrint = 0;
-    public static long updateInterval = 200;
+    public static long statusUpdateInterval = 50;
 
     public String statusString = "";
     public static boolean firstTime = true;
@@ -262,14 +260,15 @@ public class kParticleCloud extends Kernel {
         exportData();
 
         runNo++;
-
+        long time2=System.currentTimeMillis();
         getAverages();
+        long time3=System.currentTimeMillis();
 
-        if(getTime() - lastPrint > updateInterval){
+        if(getTime() - lastPrint > statusUpdateInterval){
             statusString=
                     "Particles " + numParticles + "\n"+
                     "dt " + dt*1000+"ms\n" +
-                    this.getExecutionMode() + " Exec " + (System.currentTimeMillis()-time1) + "ms\n"+
+                    this.getExecutionMode() + " Exec " + (time2-time1) + "ms CPU " +  (time3-time2) + "ms\n"+
                     "avDens " + averageD + "\n" +
                     "avPres " + averageP + "\n" +
                     "avSibs " + averageNeighbors + "\n"+
@@ -442,8 +441,10 @@ public class kParticleCloud extends Kernel {
     }
 
     public final void findNeighbors(int particle){
-        for(int i=0; i<MAX_NEIGHB_PER_PARTICLE; i++){//reset existing neighbors
-            neighborsList[particle*MAX_NEIGHB_PER_PARTICLE + i]=-1;
+        if(neighborsReset){
+            for(int i=0; i<MAX_NEIGHB_PER_PARTICLE; i++){//reset existing neighbors
+                neighborsList[particle*MAX_NEIGHB_PER_PARTICLE + i]=-1;
+            }
         }
 
         float x = positionX[particle];

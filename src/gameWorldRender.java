@@ -1,13 +1,12 @@
 import factory.GeometryFactory;
 import factory.TextureFactory;
+
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.*;
 import org.lwjgl.opengl.DisplayMode;
-import org.newdawn.slick.opengl.Texture;
 import shapes.cloud.kParticleCloud;
-import shapes.geography.GeographyFactory;
 import utils.ShaderHelper;
 import world.*;
 
@@ -65,7 +64,7 @@ public class gameWorldRender {
         //WorldObject theGround = new WorldObject((float x, float y, float t) -> GeographyFactory.bowl(x, y, t)).setColor(0,1.0f,0);
         //WorldObject theWaves = new WorldObject((float x, float y, float t) -> GeographyFactory.oceanWaves(x, y, t)).setUpdateInterval(10).setColor(0,0,1.0f);
 
-        WorldObject kCloud = new WorldObject(kParticleCloud.PARTICLES_MAX).setUpdateInterval(30);
+        WorldObject kCloud = new WorldObject(kParticleCloud.PARTICLES_MAX).setUpdateInterval(5);
 
         myScene.myKCloud = kCloud.myKCloud;
 
@@ -75,6 +74,8 @@ public class gameWorldRender {
     }
 
     public void start() {
+
+
 
         lastFPS = getTime(); //initialise lastFPS by setting to current Time
 
@@ -90,9 +91,11 @@ public class gameWorldRender {
 
         prepare3D();
         initScene();
+
         //bindShaders();
         while (!Display.isCloseRequested()) {
             update();
+
             myScene.myKCloud.armLen = scrollPos * 100f;
             renderGL();
             myInput.pollInput();
@@ -193,8 +196,20 @@ public class gameWorldRender {
     long lastHudUpdate = 0;
 
     public void drawHud(){
-        if(getTime() - lastHudUpdate > kParticleCloud.updateInterval){
-            hudTexture = TextureFactory.proceduralTexture("Logic FPS: " + gameWorldLogic.myFPS  + "\nOpenGL FPS: "+myFPS + "\n" + myScene.myKCloud.statusString);
+        if(getTime() - lastHudUpdate > kParticleCloud.statusUpdateInterval){
+            hudTexture = TextureFactory.proceduralTexture(
+                    "Logic FPS: " + gameWorldLogic.myFPS  +
+                    "\nOpenGL FPS: "+myFPS +
+                    "\n" + myScene.myKCloud.statusString+
+                    "\nParam1: " + gameInputs.param1+
+                    "\nParam2: " + gameInputs.param2+
+                    "\nParam3: " + gameInputs.param3+
+                    "\nParam4: " + gameInputs.param4+
+                    "\nParam5: " + gameInputs.param5+
+                    "\nParam6: " + gameInputs.param6+
+                    "\nParam7: " + gameInputs.param7+
+                    "\nParam8: " + gameInputs.param8+
+                    "\nParam9: " + gameInputs.param9);
             lastHudUpdate = getTime();
         }
         glEnable (GL_BLEND);
