@@ -48,7 +48,7 @@ public class kParticleCloud extends Kernel {
 
         final boolean neighborsReset=true; //smoother motion if set to false?
 
-        final int MAX_NEIGHB_PER_PARTICLE = 16;
+        final int MAX_NEIGHB_PER_PARTICLE = 12;
         final int[] neighborsList = new int[PARTICLES_MAX* MAX_NEIGHB_PER_PARTICLE]; //neighbors by index
 
         final int GRID_RES = 32;
@@ -157,6 +157,14 @@ public class kParticleCloud extends Kernel {
         density[particle]=1f;
         pressure[particle]=1f;
         timestamp[particle]=time+(int)(prand()%particleLifetime);
+
+        resetNeighbors(particle);
+   }
+
+    public void resetNeighbors(int particle){
+        for(int i=0; i<MAX_NEIGHB_PER_PARTICLE; i++){//reset existing neighbors
+            neighborsList[particle*MAX_NEIGHB_PER_PARTICLE + i]=-1;
+        }
     }
 
     public void limitVelocity(int particle, float max){
@@ -442,9 +450,7 @@ public class kParticleCloud extends Kernel {
 
     public final void findNeighbors(int particle){
         if(neighborsReset){
-            for(int i=0; i<MAX_NEIGHB_PER_PARTICLE; i++){//reset existing neighbors
-                neighborsList[particle*MAX_NEIGHB_PER_PARTICLE + i]=-1;
-            }
+            resetNeighbors(particle);
         }
 
         float x = positionX[particle];
