@@ -14,7 +14,7 @@ public class kParticleCloud extends Kernel {
     public boolean paused = false;
 
     //CLOUD PARAMS
-        public static final int PARTICLES_MAX = 10000;
+        public static final int PARTICLES_MAX = 50000;
         long particleLifetime = 1000000;
 
     public int numParticles=0;
@@ -39,12 +39,12 @@ public class kParticleCloud extends Kernel {
         final float cameraDirZVec[] = new float[3];
 
     //PARTICLE PARAMS
-
+        final float pmass = 0.01f;
         public float fatness = 32f;
 
         //velocity                                          //position                                                   //density, mass, pressure
         final float[] velocityX = new float[PARTICLES_MAX];  public final float[] positionX = new float[PARTICLES_MAX];  final float[] density = new float[PARTICLES_MAX];
-        final float[] velocityY = new float[PARTICLES_MAX];  public final float[] positionY = new float[PARTICLES_MAX];  final float[] pmass = new float[PARTICLES_MAX];
+        final float[] velocityY = new float[PARTICLES_MAX];  public final float[] positionY = new float[PARTICLES_MAX];  //final float[] pmass = new float[PARTICLES_MAX];
         final float[] velocityZ = new float[PARTICLES_MAX];  public final float[] positionZ = new float[PARTICLES_MAX];  final float[] pressure = new float[PARTICLES_MAX];
 
         final long[] timestamp = new long[PARTICLES_MAX];
@@ -142,7 +142,7 @@ public class kParticleCloud extends Kernel {
     public void importData_firstTime(){ //TODO are most of these needed?
         this.put(positionX).put(positionY).put(positionZ)
                 .put(velocityX).put(velocityY).put(velocityZ)
-                .put(pmass)
+                //.put(pmass)
                 .put(particleGrid)
                 .put(cameraDirXVec).put(cameraDirYVec).put(cameraDirZVec).put(cameraPos).put(timestamp);
     }
@@ -175,7 +175,7 @@ public class kParticleCloud extends Kernel {
         positionY[particle]= (prand()%(int)(upperY-lowerY))+lowerY;
         positionZ[particle]= (prand()%(int)(upperZ-lowerZ))+lowerZ;
 
-        pmass[particle]=0.01f;
+        //pmass[particle]=0.01f;
         density[particle]=1f;
         pressure[particle]=1f;
         timestamp[particle]=time+(int)(prand()%particleLifetime);
@@ -599,9 +599,9 @@ public class kParticleCloud extends Kernel {
                         weightVal=weight(dist/neighborDistance);
                         weightVal_d=weight_deriv(dist/neighborDistance);
 
-                        accPressScale = -1.0f * pmass[neighbor] * (pressure[particle] / (density[particle] * density[particle]) +
+                        accPressScale = -1.0f * pmass * (pressure[particle] / (density[particle] * density[particle]) +
                                 pressure[neighbor] / (density[neighbor] * density[neighbor])) * weightVal;
-                        accViscScale = mu * pmass[neighbor] / density[neighbor] / density[particle] * weightVal_d;
+                        accViscScale = mu * pmass / density[neighbor] / density[particle] * weightVal_d;
 
                         accViscX+=accViscScale*(velocityX[neighbor] - velocityX[particle]);
                         accViscY+=accViscScale*(velocityY[neighbor] - velocityY[particle]);
@@ -655,7 +655,7 @@ public class kParticleCloud extends Kernel {
             int neighborParticle = neighborsList[particle* MAX_NEIGHB_PER_PARTICLE +neighborNo];
             if(neighborParticle!=-1){
                 float dist = distance(particle,neighborParticle);
-                _density+=pmass[neighborParticle]*weight(dist/neighborDistance);
+                _density+=pmass*weight(dist/neighborDistance);
             }
         }
         density[particle]=_density;
