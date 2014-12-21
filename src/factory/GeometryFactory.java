@@ -307,8 +307,31 @@ public class GeometryFactory {
 
         long time = System.currentTimeMillis();
 
-        for(int particle=0; particle<numParticles; particle++){
+        Integer[] particlesByDist = new Integer[numParticles];
 
+        int MAX_DIST = 1024;
+
+        ArrayList<Integer>[] particlesByDistList = new ArrayList[MAX_DIST];
+        //get particles by dist
+
+        for(int distI=0; distI<numParticles; distI++){
+            int dist = Math.max(0, Math.min(MAX_DIST-1, (int) kCloud.cameraDistance(distI)));
+            if(particlesByDistList[dist]==null){
+                particlesByDistList[dist]=new ArrayList<Integer>();
+            }
+            particlesByDistList[dist].add(distI);
+        }
+
+        ArrayList<Integer> distList = new ArrayList<>();
+        for(int i=0; i<particlesByDistList.length; i++){
+            if(particlesByDistList[i]!=null)
+            distList.addAll(particlesByDistList[i]);
+        }
+
+        //System.out.println(particlesByDist.length + " particles by dist ");
+
+        for(int distI=0; distI<numParticles; distI++){
+            int particle = distList.get(distI); //particlesByDist[distI];
             if(alphaModulate)
                 alpha=_origAlpha*kCloud.getTotalNeighbors(particle)/((float)Math.pow(kCloud.averageNeighbors, 1.0f));
 
