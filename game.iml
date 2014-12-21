@@ -101,5 +101,8 @@
     <orderEntry type="library" name="FengGUI" level="project" />
     <orderEntry type="library" name="FengGUI-Examples" level="project" />
     <orderEntry type="library" name="FengGUI-Optional" level="project" />
+    <orderEntry type="library" name="xpp3_min-1.1.4c" level="project" />
+    <orderEntry type="library" name="xpp3-1.1.4c" level="project" />
+    <orderEntry type="library" name="xpp3_xpath-1.1.4c" level="project" />
   </component>
 </module>
