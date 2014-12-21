@@ -354,9 +354,9 @@ public class GeometryFactory {
 
             float fatness = kCloud.fatness;
 
-            float xN = (kCloud.positionX[particle]-kCloud.lowerX)/(kCloud.upperX-kCloud.lowerX);
-            float yN = (kCloud.positionY[particle]-kCloud.lowerY)/(kCloud.upperY-kCloud.lowerY);
-            float zN = (kCloud.positionZ[particle]-kCloud.lowerZ)/(kCloud.upperZ-kCloud.lowerZ);
+            float xN = (kCloud.getPositionX(particle)-kCloud.lowerX)/(kCloud.upperX-kCloud.lowerX);
+            float yN = (kCloud.getPositionY(particle)-kCloud.lowerY)/(kCloud.upperY-kCloud.lowerY);
+            float zN = (kCloud.getPositionZ(particle)-kCloud.lowerZ)/(kCloud.upperZ-kCloud.lowerZ);
 
             float cxX = scene.cameraXVector.x*fatness;
             float cxY = scene.cameraXVector.y*fatness;
@@ -369,9 +369,9 @@ public class GeometryFactory {
 
             if(useSquares){
 
-                float x = kCloud.positionX[particle] - cxX/2 - cyX/2;
-                float y = kCloud.positionY[particle] - cxY/2 - cyY/2;
-                float z = kCloud.positionZ[particle] - cxZ/2 - cyZ/2;
+                float x = kCloud.getPositionX(particle) - cxX/2 - cyX/2;
+                float y = kCloud.getPositionY(particle) - cxY/2 - cyY/2;
+                float z = kCloud.getPositionZ(particle) - cxZ/2 - cyZ/2;
 
                 vert_data.put(x).put(y).put(z);
                 vert_data.put(x+cyX).put(y+cyY).put(z+cyZ);
@@ -411,9 +411,9 @@ public class GeometryFactory {
                     float sin2 = (float) (Math.sin((i+1) * 2 * Math.PI / segs + extraRotation)) * scale;
                     float cos2 = (float) (Math.cos((i+1) * 2 * Math.PI / segs + extraRotation)) * scale;
 
-                    float x = kCloud.positionX[particle];
-                    float y = kCloud.positionY[particle];
-                    float z = kCloud.positionZ[particle];
+                    float x = kCloud.getPositionX(particle);
+                    float y = kCloud.getPositionY(particle);
+                    float z = kCloud.getPositionZ(particle);
 
                     float dx0 = cxX*sin0 + cyX*cos0;
                     float dy0 = cxY*sin0 + cyY*cos0;
