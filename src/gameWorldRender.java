@@ -281,11 +281,12 @@ public class gameWorldRender {
 
         //gui.update(); //uncomment to see TWL gui
 
-        //glDrawBuffer(GL_FRONT);
-        //glAccum(GL_ACCUM, 0.2f);
-        //glDrawBuffer(GL_BACK);
+        /*glDrawBuffer(GL_FRONT);
+        glAccum(GL_ACCUM, 1f);
+        glDrawBuffer(GL_BACK);
 
-        //glAccum(GL_RETURN, 1.0f);//push bach to draw buffer
+        glAccum(GL_RETURN, 0.1f);//push bach to draw buffer
+        */
     }
 
     int hudTexture = -1;

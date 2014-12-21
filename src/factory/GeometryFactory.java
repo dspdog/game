@@ -346,9 +346,8 @@ public class GeometryFactory {
 
             //float fatness = kCloud.pressure[particle]/kCloud.averageP*5f; //higher pressure bigger (explodes?)
             //float fatness = Math.min(30f, Math.max(10f, kCloud.density[particle]/kCloud.averageD*5f)); //denser bigger, range 10-30
-            float fatness = 22f;
 
-            //float fatness = 1f;
+            float fatness = kCloud.fatness;
 
             float xN = (kCloud.positionX[particle]-kCloud.lowerX)/(kCloud.upperX-kCloud.lowerX);
             float yN = (kCloud.positionY[particle]-kCloud.lowerY)/(kCloud.upperY-kCloud.lowerY);

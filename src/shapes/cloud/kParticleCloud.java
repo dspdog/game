@@ -40,6 +40,8 @@ public class kParticleCloud extends Kernel {
 
     //PARTICLE PARAMS
 
+        public float fatness = 32f;
+
         //velocity                                          //position                                                   //density, mass, pressure
         final float[] velocityX = new float[PARTICLES_MAX];  public final float[] positionX = new float[PARTICLES_MAX];  final float[] density = new float[PARTICLES_MAX];
         final float[] velocityY = new float[PARTICLES_MAX];  public final float[] positionY = new float[PARTICLES_MAX];  final float[] pmass = new float[PARTICLES_MAX];
