@@ -48,7 +48,7 @@ public class kParticleCloud extends Kernel {
 
         public boolean neighborsReset=false; //smoother motion if set to false?
 
-        final int MAX_NEIGHB_PER_PARTICLE = 12;
+        final int MAX_NEIGHB_PER_PARTICLE = 20;
         final int[] neighborsList = new int[PARTICLES_MAX* MAX_NEIGHB_PER_PARTICLE]; //neighbors by index
 
         final int GRID_RES = 32;
@@ -398,7 +398,6 @@ public class kParticleCloud extends Kernel {
         }else if(pass==1){
             findNeighbors(particle);
         }else if(pass==2){
-            //pluckFromGrid(particle);
             updateDensity(particle);
             updatePressure(particle);
         }else if(pass==3){
@@ -412,6 +411,16 @@ public class kParticleCloud extends Kernel {
         }*/
 
         //localBarrier();
+
+
+        /*   //single pass mode -- sloppy but maybe faster?
+            addToGrid(particle);
+            findNeighbors(particle);
+            updateDensity(particle);
+            updatePressure(particle);
+            updateVelocity(particle);
+            updatePosition(particle);
+         */
     }
 
     void updateLife(int particle){

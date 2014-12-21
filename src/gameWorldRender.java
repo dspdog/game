@@ -183,7 +183,6 @@ public class gameWorldRender {
             glTranslatef(myScene.cameraPosDesired.x, myScene.cameraPosDesired.y, myScene.cameraPosDesired.z);
         //glScalef(zoom, zoom, zoom);
 
-
             //glTranslatef(-myScene.cameraPosDesired.x, -myScene.cameraPosDesired.y, -myScene.cameraPosDesired.z);
 
             myScene.drawScene();
