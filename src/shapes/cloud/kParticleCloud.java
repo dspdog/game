@@ -222,9 +222,10 @@ public class kParticleCloud extends Kernel {
     }
 
     public float cameraDistance(int particle){
-        float x = positionX[particle]- cameraPos[0];
-        float y = positionY[particle]- cameraPos[1];
-        float z = positionZ[particle]- cameraPos[2];
+        float x = positionX[particle]-(upperX-cameraPos[0]+lowerX);
+        float y = positionY[particle]-(upperY-cameraPos[1]+ lowerY);
+        float z = positionZ[particle]-(upperZ-cameraPos[2]+lowerZ);
+
         return sqrt(x*x+y*y+z*z);
     }
 

@@ -11,6 +11,7 @@ import world.scene;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -314,21 +315,29 @@ public class GeometryFactory {
         ArrayList<Integer>[] particlesByDistList = new ArrayList[MAX_DIST];
         //get particles by dist
 
-        for(int distI=0; distI<numParticles; distI++){
-            int dist = Math.max(0, Math.min(MAX_DIST-1, (int) kCloud.cameraDistance(distI)));
+        float camMin = 1000000;
+        float camMax = 0;
+
+        for(int particleNo=0; particleNo<numParticles; particleNo++){
+            float camDist = kCloud.cameraDistance(particleNo);
+            camMin = Math.min(camMin, camDist);
+            camMax = Math.max(camMax, camDist);
+            int dist = Math.max(0, Math.min(MAX_DIST-1, (int) (camDist)));
             if(particlesByDistList[dist]==null){
                 particlesByDistList[dist]=new ArrayList<Integer>();
             }
-            particlesByDistList[dist].add(distI);
+            particlesByDistList[dist].add(particleNo);
         }
 
         ArrayList<Integer> distList = new ArrayList<>();
         for(int i=0; i<particlesByDistList.length; i++){
-            if(particlesByDistList[i]!=null)
-            distList.addAll(particlesByDistList[i]);
+            if(particlesByDistList[i]!=null){
+                //Collections.reverse(particlesByDistList[i]);
+                distList.addAll(particlesByDistList[i]);
+            }
         }
-
-        //System.out.println(particlesByDist.length + " particles by dist ");
+        Collections.reverse(distList);
+       // System.out.println(particlesByDist.length + " particles by dist MIN " + camMin  + " MAX " + camMax);
 
         for(int distI=0; distI<numParticles; distI++){
             int particle = distList.get(distI); //particlesByDist[distI];

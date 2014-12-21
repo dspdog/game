@@ -36,7 +36,7 @@ public class TextureFactory {
         //load texture from png
         Texture myTexture;
         try {
-            myTexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("./res/myball4.png")));
+            myTexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("./res/myball6.png")));
             System.out.println("TEXID" + myTexture.getTextureID());
             //myTexture.release();
             return myTexture;
