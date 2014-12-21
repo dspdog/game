@@ -68,8 +68,8 @@
       <file leaf-file-name="gameWorldRender.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/gameWorldRender.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-14.392858" vertical-offset="4255" max-vertical-offset="5406">
-              <caret line="278" column="20" selection-start-line="278" selection-start-column="20" selection-end-line="278" selection-end-column="20" />
+            <state vertical-scroll-proportion="-7.714286" vertical-offset="4374" max-vertical-offset="5406">
+              <caret line="274" column="25" selection-start-line="274" selection-start-column="20" selection-end-line="274" selection-end-column="25" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -100,16 +100,16 @@
       <file leaf-file-name="kParticleCloud.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/shapes/cloud/kParticleCloud.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-0.8529887" vertical-offset="8875" max-vertical-offset="11356">
-              <caret line="495" column="31" selection-start-line="495" selection-start-column="25" selection-end-line="495" selection-end-column="31" />
+            <state vertical-scroll-proportion="0.34104937" vertical-offset="714" max-vertical-offset="11356">
+              <caret line="55" column="33" selection-start-line="55" selection-start-column="33" selection-end-line="55" selection-end-column="33" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#16481#16482#0" expanded="true" />
-                <element signature="e#16531#16532#0" expanded="true" />
-                <element signature="e#24842#24843#0" expanded="true" />
-                <element signature="e#24886#24887#0" expanded="true" />
-                <element signature="e#24927#24928#0" expanded="true" />
-                <element signature="e#24971#24972#0" expanded="true" />
+                <element signature="e#16480#16481#0" expanded="true" />
+                <element signature="e#16530#16531#0" expanded="true" />
+                <element signature="e#24841#24842#0" expanded="true" />
+                <element signature="e#24885#24886#0" expanded="true" />
+                <element signature="e#24926#24927#0" expanded="true" />
+                <element signature="e#24970#24971#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -132,6 +132,16 @@
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0" vertical-offset="157" max-vertical-offset="2176">
               <caret line="35" column="12" selection-start-line="35" selection-start-column="12" selection-end-line="35" selection-end-column="12" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="scene.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/world/scene.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="81" max-vertical-offset="1666">
+              <caret line="45" column="16" selection-start-line="45" selection-start-column="16" selection-end-line="45" selection-end-column="16" />
               <folding />
             </state>
           </provider>
@@ -166,7 +176,6 @@
         <option value="$PROJECT_DIR$/src/shapes/cloud/particle.java" />
         <option value="$PROJECT_DIR$/src/world/WorldObject.java" />
         <option value="$PROJECT_DIR$/src/CubeMarcher.java" />
-        <option value="$PROJECT_DIR$/src/world/scene.java" />
         <option value="$PROJECT_DIR$/src/gameWorldWater.java" />
         <option value="$PROJECT_DIR$/src/gameWorldLogic.java" />
         <option value="$PROJECT_DIR$/src/factory/TextureFactory.java" />
@@ -174,15 +183,16 @@
         <option value="$PROJECT_DIR$/twl/TWLExamples/src/test/TwlTest.java" />
         <option value="$PROJECT_DIR$/src/gameWorldRender.java" />
         <option value="$PROJECT_DIR$/src/gameInputs.java" />
+        <option value="$PROJECT_DIR$/src/world/scene.java" />
         <option value="$PROJECT_DIR$/src/shapes/cloud/kParticleCloud.java" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="705" />
-    <option name="y" value="120" />
-    <option name="width" value="960" />
-    <option name="height" value="1040" />
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="1936" />
+    <option name="height" value="1056" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -478,7 +488,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="705" y="120" width="960" height="1040" extended-state="0" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="14" side_tool="false" content_ui="tabs" />
@@ -487,14 +497,14 @@
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32864866" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2431243" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23891892" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2431243" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23891892" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.5277778" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2531983" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.16864865" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -817,14 +827,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/world/scene.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33333334" vertical-offset="654" max-vertical-offset="1666">
-          <caret line="65" column="20" selection-start-line="65" selection-start-column="20" selection-end-line="65" selection-end-column="20" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/world/WorldObject.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="365" max-vertical-offset="2482">
@@ -930,16 +932,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/gameWorldRender.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-14.392858" vertical-offset="4255" max-vertical-offset="5406">
-          <caret line="278" column="20" selection-start-line="278" selection-start-column="20" selection-end-line="278" selection-end-column="20" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/twl/TWLExamples/src/test/TwlTest.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="1.2253087" vertical-offset="141" max-vertical-offset="2074">
@@ -956,18 +948,36 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/shapes/cloud/kParticleCloud.java">
+    <entry file="file://$PROJECT_DIR$/src/gameWorldRender.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.8529887" vertical-offset="8875" max-vertical-offset="11356">
-          <caret line="495" column="31" selection-start-line="495" selection-start-column="25" selection-end-line="495" selection-end-column="31" />
+        <state vertical-scroll-proportion="-7.714286" vertical-offset="4374" max-vertical-offset="5406">
+          <caret line="274" column="25" selection-start-line="274" selection-start-column="20" selection-end-line="274" selection-end-column="25" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#16481#16482#0" expanded="true" />
-            <element signature="e#16531#16532#0" expanded="true" />
-            <element signature="e#24842#24843#0" expanded="true" />
-            <element signature="e#24886#24887#0" expanded="true" />
-            <element signature="e#24927#24928#0" expanded="true" />
-            <element signature="e#24971#24972#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/world/scene.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="81" max-vertical-offset="1666">
+          <caret line="45" column="16" selection-start-line="45" selection-start-column="16" selection-end-line="45" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/shapes/cloud/kParticleCloud.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.34104937" vertical-offset="714" max-vertical-offset="11356">
+          <caret line="55" column="33" selection-start-line="55" selection-start-column="33" selection-end-line="55" selection-end-column="33" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#16480#16481#0" expanded="true" />
+            <element signature="e#16530#16531#0" expanded="true" />
+            <element signature="e#24841#24842#0" expanded="true" />
+            <element signature="e#24885#24886#0" expanded="true" />
+            <element signature="e#24926#24927#0" expanded="true" />
+            <element signature="e#24970#24971#0" expanded="true" />
           </folding>
         </state>
       </provider>

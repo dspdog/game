@@ -14,7 +14,7 @@ public class kParticleCloud extends Kernel {
     public boolean paused = false;
 
     //CLOUD PARAMS
-        public static final int PARTICLES_MAX = 2000;
+        public static final int PARTICLES_MAX = 5000;
         long particleLifetime = 1000000;
 
     public int numParticles=0;
@@ -53,7 +53,7 @@ public class kParticleCloud extends Kernel {
         final int[] neighborsList = new int[PARTICLES_MAX* MAX_NEIGHB_PER_PARTICLE]; //neighbors by index
 
         final int GRID_RES = 32;
-        final int GRID_SLOTS = 200;
+        final int GRID_SLOTS = 32;
         final int GRID_TOTAL = GRID_RES*GRID_RES*GRID_RES*GRID_SLOTS;
         final int[] particleGrid = new int[GRID_RES*GRID_RES*GRID_RES*GRID_SLOTS];
 
