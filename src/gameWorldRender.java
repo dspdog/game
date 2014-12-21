@@ -278,7 +278,9 @@ public class gameWorldRender {
 
         prepare2D();
         drawHud();
-        gui.update();
+
+        //gui.update(); //uncomment to see TWL gui
+
         //glDrawBuffer(GL_FRONT);
         //glAccum(GL_ACCUM, 0.2f);
         //glDrawBuffer(GL_BACK);

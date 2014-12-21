@@ -49,6 +49,10 @@ public class gameInputs {
                         scene.myKCloud.lastShot=getTime();
                     }
                 }
+
+                if (Keyboard.getEventKey() == Keyboard.KEY_P || Keyboard.getEventKey() == Keyboard.KEY_PAUSE) {
+                    scene.myKCloud.paused = !scene.myKCloud.paused;
+                }
             } else {
                 if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
                     SPACE_down=false;

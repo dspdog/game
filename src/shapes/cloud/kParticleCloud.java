@@ -11,6 +11,7 @@ import world.scene;
 public class kParticleCloud extends Kernel {
 
     final float S_PER_MS = 0.3f ; //seconds per milliseconds, make 0.001f for "realtime"(?)
+    public boolean paused = false;
 
     //CLOUD PARAMS
         public static final int PARTICLES_MAX = 2000;
@@ -206,7 +207,7 @@ public class kParticleCloud extends Kernel {
     public void updateTime(){
         lastTime=time;
         time = getTime();
-        dt=(time-lastTime)*S_PER_MS;
+        dt=paused?0:(time-lastTime)*S_PER_MS;
     }
 
     public float dt;
