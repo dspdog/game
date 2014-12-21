@@ -14,7 +14,7 @@ public class kParticleCloud extends Kernel {
     public boolean paused = false;
 
     //CLOUD PARAMS
-        public static final int PARTICLES_MAX = 5000;
+        public static final int PARTICLES_MAX = 10000;
         long particleLifetime = 1000000;
 
     public int numParticles=0;
@@ -51,7 +51,7 @@ public class kParticleCloud extends Kernel {
 
         public boolean neighborsReset=false; //smoother motion if set to false?
 
-        final int MAX_NEIGHB_PER_PARTICLE = 20;
+        final int MAX_NEIGHB_PER_PARTICLE = 10;
         final int[] neighborsList = new int[PARTICLES_MAX* MAX_NEIGHB_PER_PARTICLE]; //neighbors by index
 
         final int GRID_RES = 32;

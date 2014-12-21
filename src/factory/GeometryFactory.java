@@ -47,6 +47,8 @@ public class GeometryFactory {
 
         glColor4f(0f, 0f, 0.5f, 0.5f);
         drawBox(cloud.lowerDenseBounds, cloud.upperDenseBounds);
+
+        glColor4f(1f, 1f, 1f, 1f);
     }
 
     static void drawBox(Vector3f upperCorner, Vector3f lowerCorner){
@@ -286,7 +288,8 @@ public class GeometryFactory {
     public static int cloudTriangles = 0;
 
     public static FloatBuffer[] cloudVertexData(kParticleCloud kCloud){
-        int numParticles = kCloud.numParticles;
+        int stride = 1;
+        int numParticles = kCloud.numParticles/stride;
         int vertsPerTriangle = 3;
         int trisPerSprite = 6; //for hexagons use 6 - actually only uses (N-2) tris
 
@@ -318,7 +321,9 @@ public class GeometryFactory {
         float camMin = 1000000;
         float camMax = 0;
 
-        for(int particleNo=0; particleNo<numParticles; particleNo++){
+        float densityPower= 1.0f;
+
+        for(int particleNo=0; particleNo<numParticles; particleNo+=stride){
             float camDist = kCloud.cameraDistance(particleNo);
             camMin = Math.min(camMin, camDist);
             camMax = Math.max(camMax, camDist);
@@ -339,10 +344,10 @@ public class GeometryFactory {
         Collections.reverse(distList);
        // System.out.println(particlesByDist.length + " particles by dist MIN " + camMin  + " MAX " + camMax);
 
-        for(int distI=0; distI<numParticles; distI++){
+        for(int distI=0; distI<distList.size(); distI++){
             int particle = distList.get(distI); //particlesByDist[distI];
             if(alphaModulate)
-                alpha=_origAlpha*kCloud.getTotalNeighbors(particle)/((float)Math.pow(kCloud.averageNeighbors, 1.0f));
+                alpha=_origAlpha*kCloud.getTotalNeighbors(particle)/((float)Math.pow(kCloud.averageNeighbors, densityPower));
 
             //float fatness = kCloud.pressure[particle]/kCloud.averageP*5f; //higher pressure bigger (explodes?)
             //float fatness = Math.min(30f, Math.max(10f, kCloud.density[particle]/kCloud.averageD*5f)); //denser bigger, range 10-30
@@ -566,7 +571,6 @@ public class GeometryFactory {
         //Setup texture scaling filtering
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
-
 
         glBindBuffer(GL_ARRAY_BUFFER, vbo_texture_coord_handle);
         glTexCoordPointer(text_coord_size, GL_FLOAT, 0, 0L);
