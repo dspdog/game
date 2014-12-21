@@ -33,6 +33,9 @@ public class kParticleCloud extends Kernel {
         public final float lowerZ = -boxSize;   public final float upperZ = boxSize;
 
     //USER PARAMS
+
+        public float armLen = 300f;
+
         final float cameraPos[] = new float[3];
         final float cameraDirXVec[] = new float[3];
         final float cameraDirYVec[] = new float[3];
@@ -386,7 +389,7 @@ public class kParticleCloud extends Kernel {
 
         for(int i=0; i<numParticles; i++){
             neighbors=getTotalNeighbors(i);
-            updateLife(i);
+            //updateLife(i);
             totalN+=neighbors;
             neighborsMax=max(neighborsMax,neighbors);
             //if(!Float.isNaN(pressure[i]))totalP+=pressure[i];
@@ -468,7 +471,6 @@ public class kParticleCloud extends Kernel {
             updateVelocity(particle);
         }else if(pass==4){
             updatePosition(particle);
-
         }/*else if(pass==5){
             locals[particle%LOCALSIZE]=1;
             passFromLocal(particle%LOCALSIZE);
@@ -485,12 +487,6 @@ public class kParticleCloud extends Kernel {
             updateVelocity(particle);
             updatePosition(particle);
          */
-    }
-
-    void updateLife(int particle){
-        if(time-timestamp[particle]>particleLifetime){
-            resetParticle(particle);
-        }
     }
 
     int prand() { //parallel random positive #
@@ -622,10 +618,8 @@ public class kParticleCloud extends Kernel {
                 min(max(lowerY, posy + vy * dt), upperY),
                 min(max(lowerZ, posz + vz * dt), upperZ));
 
-        if(badPosition(particle))resetParticle(particle);
+        if(badPosition(particle) || (time-timestamp[particle]>particleLifetime)){resetParticle(particle);}
     }
-
-    public float armLen = 300f;
 
     public void updateVelocity(int particle){
         float accPressureX=0f;   float accViscX=0f;   float accInteractiveX=0f;   float accGravX=0f;
