@@ -42,9 +42,7 @@ public class kParticleCloud extends Kernel {
         final float pmass = 0.01f;
         public float fatness = 32f;
 
-        //velocity
         final float[] velocityXYZ = new float[PARTICLES_MAX*3];
-        //position
         public final float[] positionXYZ = new float[PARTICLES_MAX*3];
 
         //density, pressure
@@ -67,17 +65,13 @@ public class kParticleCloud extends Kernel {
 
     public static boolean ready = false;
 
-    public float getPositionX(int particle){
-        return positionXYZ[particle*3+X_OFFSET];
-    }
+    final int X_OFFSET=0;
+    final int Y_OFFSET=1;
+    final int Z_OFFSET=2;
 
-    public float getPositionY(int particle){
-        return positionXYZ[particle*3+Y_OFFSET];
-    }
-
-    public float getPositionZ(int particle){
-        return positionXYZ[particle*3+Z_OFFSET];
-    }
+    public float getPositionX(int particle){return positionXYZ[particle*3+X_OFFSET];}
+    public float getPositionY(int particle){return positionXYZ[particle*3+Y_OFFSET];}
+    public float getPositionZ(int particle){return positionXYZ[particle*3+Z_OFFSET];}
 
     public void setPosition(int particle, float newX, float newY, float newZ){
         positionXYZ[particle*3+X_OFFSET]=newX;
@@ -87,21 +81,9 @@ public class kParticleCloud extends Kernel {
 
     ////////////////////////////////
 
-    final int X_OFFSET=0;
-    final int Y_OFFSET=1;
-    final int Z_OFFSET=2;
-
-    public float getVelocityX(int particle){
-        return velocityXYZ[particle*3+X_OFFSET];
-    }
-
-    public float getVelocityY(int particle){
-        return velocityXYZ[particle*3+Y_OFFSET];
-    }
-
-    public float getVelocityZ(int particle){
-        return velocityXYZ[particle*3+Z_OFFSET];
-    }
+    public float getVelocityX(int particle){return velocityXYZ[particle*3+X_OFFSET];}
+    public float getVelocityY(int particle){return velocityXYZ[particle*3+Y_OFFSET];}
+    public float getVelocityZ(int particle){return velocityXYZ[particle*3+Z_OFFSET];}
 
     public void setVelocity(int particle, float newX, float newY, float newZ){
         velocityXYZ[particle*3+X_OFFSET]=newX;
@@ -109,15 +91,9 @@ public class kParticleCloud extends Kernel {
         velocityXYZ[particle*3+Z_OFFSET]=newZ;
     }
 
-    public void setVelocityX(int particle, float newX){
-        velocityXYZ[particle*3+X_OFFSET]=newX;
-    }
-    public void setVelocityY(int particle, float newY){
-        velocityXYZ[particle*3+Y_OFFSET]=newY;
-    }
-    public void setVelocityZ(int particle, float newZ){
-        velocityXYZ[particle*3+Z_OFFSET]=newZ;
-    }
+    public void setVelocityX(int particle, float newX){velocityXYZ[particle*3+X_OFFSET]=newX;}
+    public void setVelocityY(int particle, float newY){velocityXYZ[particle*3+Y_OFFSET]=newY;}
+    public void setVelocityZ(int particle, float newZ){velocityXYZ[particle*3+Z_OFFSET]=newZ;}
 
     public void setCameraData(){
         cameraPos[0] = scene.cameraPosDesired.x;
@@ -190,24 +166,22 @@ public class kParticleCloud extends Kernel {
         exportData();
     }
 
-    public void importData(){ //TODO are most of these needed?
+    public void importData(){
         this.put(particleGrid)
-            .put(cameraDirXVec).put(cameraDirYVec).put(cameraDirZVec).put(cameraPos).put(timestamp);
+            .put(cameraDirXVec).put(cameraDirYVec).put(cameraDirZVec).put(cameraPos);
     }
 
-    public void importData_firstTime(){ //TODO are most of these needed?
+    public void importData_firstTime(){
         this.put(positionXYZ)
-                .put(velocityXYZ)
-                //.put(pmass)
-                .put(particleGrid)
-                .put(cameraDirXVec).put(cameraDirYVec).put(cameraDirZVec).put(cameraPos).put(timestamp);
+            .put(velocityXYZ)
+            .put(particleGrid)
+            .put(cameraDirXVec).put(cameraDirYVec).put(cameraDirZVec).put(cameraPos).put(timestamp);
     }
 
     public void exportData(){
         this.get(positionXYZ)
-                .get(velocityXYZ)
             .get(density).get(pressure).get(neighborsList)
-            .get(particleGrid).get(exports).get(timestamp);
+            .get(particleGrid).get(exports);
     }
 
     private int seed = 123456789;
