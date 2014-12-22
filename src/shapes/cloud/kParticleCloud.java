@@ -406,8 +406,11 @@ public class kParticleCloud extends Kernel {
             upperBounds.set(max(upperBounds.x,posX), max(upperBounds.y,posY), max(upperBounds.z,posZ));
 
             if(neighbors>1){
-                lowerDenseBounds.set(min(lowerDenseBounds.x,posX),  min(lowerDenseBounds.y,posY),  min(lowerDenseBounds.z,posZ));
-                upperDenseBounds.set(max(upperDenseBounds.x,posX), max(upperDenseBounds.y, posY), max(upperDenseBounds.z, posZ));
+
+                float margin = fatness/2f;
+
+                lowerDenseBounds.set(min(lowerDenseBounds.x,posX-margin),  min(lowerDenseBounds.y,posY-margin),  min(lowerDenseBounds.z,posZ-margin));
+                upperDenseBounds.set(max(upperDenseBounds.x,posX+margin),  max(upperDenseBounds.y, posY+margin),  max(upperDenseBounds.z, posZ+margin));
 
                 float gX=1.0f*getGridX(posX)*(1f*(upperX-lowerX)/(GRID_RES-1)) + lowerX;
                 float gY=1.0f*getGridY(posY)*(1f*(upperY-lowerY)/(GRID_RES-1)) + lowerY;
