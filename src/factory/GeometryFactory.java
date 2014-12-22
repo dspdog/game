@@ -42,11 +42,14 @@ public class GeometryFactory {
         glColor4f(0f, 0f, 0f, 0.5f);
         drawBox(cloud.lowerBoxBounds, cloud.upperBoxBounds);
 
-        glColor4f(0.75f, 0f, 0f, 0.5f);
-        drawBox(cloud.lowerBounds, cloud.upperBounds);
+        glColor4f(0f, 0.5f, 0f, 0.5f);
+        drawBox(cloud.lowerDenseGridBounds, cloud.upperDenseGridBounds);
 
-        glColor4f(0f, 0f, 0.5f, 0.5f);
-        drawBox(cloud.lowerDenseBounds, cloud.upperDenseBounds);
+        //glColor4f(0.75f, 0f, 0f, 0.5f);
+        //drawBox(cloud.lowerBounds, cloud.upperBounds);
+
+        //glColor4f(0f, 0f, 0.5f, 0.5f);
+        //drawBox(cloud.lowerDenseBounds, cloud.upperDenseBounds);
 
         glColor4f(1f, 1f, 1f, 1f);
     }

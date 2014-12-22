@@ -14,12 +14,12 @@ public class kParticleCloud extends Kernel {
     public boolean paused = false;
 
     //CLOUD PARAMS
-        public static final int PARTICLES_MAX = 5000;
-        long particleLifetime = 1000000;
+        public static final int PARTICLES_MAX = 10000;
+        long particleLifetime = 100000000;
 
     public int numParticles=0;
 
-        final float neighborDistance = 5f;
+        final float neighborDistance = 3f;
         final float densREF = 0.0012f; // kg/m^3
         final float mu = 1f; // kg/ms (dynamical viscosity))
         final float c = 2.5f; // m/s speed of sound
@@ -143,16 +143,12 @@ public class kParticleCloud extends Kernel {
         return abs(gxd-0.5)<marginX && abs(gyd-0.5)<marginY && abs(gyd-0.5)<marginZ ;
     }
 
+    public int getGridX(float x) {return max(0, min(GRID_RES - 1, (int) (GRID_RES * (x - lowerX) / (upperX - lowerX))));}
+    public int getGridY(float y) {return max(0, min(GRID_RES - 1, (int) (GRID_RES * (y - lowerY) / (upperY - lowerY))));}
+    public int getGridZ(float z) {return max(0, min(GRID_RES - 1, (int) (GRID_RES * (z - lowerZ) / (upperZ - lowerZ))));}
+
     public int getGridPos(float x, float y, float z){
-        int gridX = (int)(GRID_RES*(x-lowerX)/(upperX-lowerX));
-        int gridY = (int)(GRID_RES*(y-lowerY)/(upperY-lowerY));
-        int gridZ = (int)(GRID_RES*(z-lowerZ)/(upperZ-lowerZ));
-
-        gridX = max(min(GRID_RES-1, gridX), 1);
-        gridY = max(min(GRID_RES-1, gridY), 1);
-        gridZ = max(min(GRID_RES-1, gridZ), 1);
-
-        return gridZ*GRID_RES*GRID_RES* GRID_SLOTS + gridY*GRID_RES* GRID_SLOTS + gridX* GRID_SLOTS;
+        return getGridZ(z)*GRID_RES*GRID_RES* GRID_SLOTS + getGridY(y)*GRID_RES* GRID_SLOTS + getGridX(x)* GRID_SLOTS;
     }
 
     public void addToGrid(int particle){
@@ -184,7 +180,7 @@ public class kParticleCloud extends Kernel {
     public void exportData(){
         this.get(positionXYZ)
             .get(density).get(pressure).get(neighborsList)
-            .get(particleGrid).get(exports);
+            .get(particleGrid);//.get(exports);
     }
 
     private int seed = 123456789;
@@ -308,7 +304,7 @@ public class kParticleCloud extends Kernel {
     public void update(){
 
         ready=false;
-        float gridStep = (upperX-lowerX)/GRID_RES;
+        float gridStep = (upperX-lowerX)/(GRID_RES-1);
         if(neighborDistance>gridStep/2){ //TODO is divide by 2 necessary?
             System.out.println("bad grid step!");
         }
@@ -372,6 +368,9 @@ public class kParticleCloud extends Kernel {
     public Vector3f lowerDenseBounds = new Vector3f(0,0,0);
     public Vector3f upperDenseBounds = new Vector3f(0,0,0);
 
+    public Vector3f lowerDenseGridBounds = new Vector3f(0,0,0);
+    public Vector3f upperDenseGridBounds = new Vector3f(0,0,0);
+
     public void getAverages(){
         float totalN=0f;
         float totalP=0f;
@@ -384,6 +383,8 @@ public class kParticleCloud extends Kernel {
         upperBoxBounds = new Vector3f(upperX,upperY,upperZ);
         lowerDenseBounds = new Vector3f(1000000,1000000,1000000);
         upperDenseBounds = new Vector3f(-1000000,-1000000,-1000000);
+        lowerDenseGridBounds = new Vector3f(1000000,1000000,1000000);
+        upperDenseGridBounds = new Vector3f(-1000000,-1000000,-1000000);
 
         int neighbors=0;
 
@@ -407,6 +408,13 @@ public class kParticleCloud extends Kernel {
             if(neighbors>1){
                 lowerDenseBounds.set(min(lowerDenseBounds.x,posX),  min(lowerDenseBounds.y,posY),  min(lowerDenseBounds.z,posZ));
                 upperDenseBounds.set(max(upperDenseBounds.x,posX), max(upperDenseBounds.y, posY), max(upperDenseBounds.z, posZ));
+
+                float gX=1.0f*getGridX(posX)*(1f*(upperX-lowerX)/(GRID_RES-1)) + lowerX;
+                float gY=1.0f*getGridY(posY)*(1f*(upperY-lowerY)/(GRID_RES-1)) + lowerY;
+                float gZ=1.0f*getGridZ(posZ)*(1f*(upperZ-lowerZ)/(GRID_RES-1)) + lowerZ;
+
+                lowerDenseGridBounds.set(min(lowerDenseGridBounds.x,gX),  min(lowerDenseGridBounds.y,gY),  min(lowerDenseGridBounds.z,gZ));
+                upperDenseGridBounds.set(max(upperDenseGridBounds.x,gX),  max(upperDenseGridBounds.y,gY),  max(upperDenseGridBounds.z,gZ));
             }
 
             if(badPosition(i)){
