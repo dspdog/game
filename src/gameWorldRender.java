@@ -111,7 +111,7 @@ public class gameWorldRender {
 
             myScene.myKCloud.armLen = scrollPos * 100f;
             renderGL();
-            
+
             Display.update();
             Display.sync(60); // cap fps to 60fps
             myInput.pollInput();
@@ -163,7 +163,7 @@ public class gameWorldRender {
     }
 
     public void setupGui(){
-        myMenu.addMenu(100, 100, "MENU");
+        myMenu.addMenu(20, 400, "my text");
     }
 
     public void renderGL() {
