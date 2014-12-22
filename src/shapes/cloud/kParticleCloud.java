@@ -390,11 +390,8 @@ public class kParticleCloud extends Kernel {
 
         for(int i=0; i<numParticles; i++){
             neighbors=getTotalNeighbors(i);
-            //updateLife(i);
             totalN+=neighbors;
             neighborsMax=max(neighborsMax,neighbors);
-            //if(!Float.isNaN(pressure[i]))totalP+=pressure[i];
-            //if(!Float.isNaN(density[i]))totalD+=density[i];
 
             float posX=getPositionX(i);
             float posY=getPositionY(i);
@@ -462,8 +459,8 @@ public class kParticleCloud extends Kernel {
         return total;
     }
 
-    final int LOCALSIZE=250;
-    @Local long[] locals = new long[LOCALSIZE];
+    //final int LOCALSIZE=250;
+    //@Local long[] locals = new long[LOCALSIZE];
     @Local long[] rndSeed = {123456789};
 
     @Override
@@ -514,9 +511,9 @@ public class kParticleCloud extends Kernel {
         return (int)(abs(rndSeed[0]*entropy)%rollScale);
     }
 
-    public void passFromLocal(int particle){
-        exports[particle]=locals[particle];
-    }
+    //public void passFromLocal(int particle){
+    //    exports[particle]=locals[particle];
+    //}
 
     public final void addNeighborsFromGrid(int particle, int gridPos){
         for(int gridMemberNo=0; gridMemberNo<GRID_SLOTS; gridMemberNo++){

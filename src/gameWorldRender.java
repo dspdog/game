@@ -1,10 +1,10 @@
 import de.matthiasmann.twl.*;
 import de.matthiasmann.twl.renderer.lwjgl.LWJGLRenderer;
-import de.matthiasmann.twl.textarea.HTMLTextAreaModel;
 import de.matthiasmann.twl.theme.ThemeManager;
 import factory.GeometryFactory;
 import factory.TextureFactory;
 
+import gui.menu;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
 import org.lwjgl.input.Mouse;
@@ -16,18 +16,12 @@ import world.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 
 import static org.lwjgl.opengl.GL11.*;
 
 import static org.lwjgl.util.glu.GLU.*;
 
 public class gameWorldRender {
-
-    private LWJGLRenderer renderer;
-    private ThemeManager theme;
-    private GUI gui;
-    private Widget root;
 
     private int fps;
     private long lastFPS;
@@ -44,6 +38,8 @@ public class gameWorldRender {
     public static float scrollPos = 1.0f;
 
     boolean handlesFound = false;
+
+    menu myMenu;
 
     public gameWorldRender(gameWorldLogic gl){
         myFOV = 75;
@@ -104,16 +100,21 @@ public class gameWorldRender {
 
         prepare3D();
         initScene();
+
+        myMenu = new menu("");
+
         setupGui();
+
         //bindShaders();
         while (!Display.isCloseRequested()) {
             update();
 
             myScene.myKCloud.armLen = scrollPos * 100f;
             renderGL();
-            myInput.pollInput();
+            
             Display.update();
             Display.sync(60); // cap fps to 60fps
+            myInput.pollInput();
         }
 
         releaseShaders();
@@ -162,77 +163,7 @@ public class gameWorldRender {
     }
 
     public void setupGui(){
-        try {
-            renderer = new LWJGLRenderer();
-        } catch (LWJGLException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            File theThemeFile = new File("./res/simple_demo.xml");
-            theme = ThemeManager.createThemeManager(theThemeFile.toURI().toURL(), renderer);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        root = new Widget();
-        root.setTheme("");
-
-        gui = new GUI(root, renderer);
-        gui.setSize();
-        gui.applyTheme(theme);
-
-
-        addTestAlert(100, 100, "ASDASDASDASDASDASD");
-
-    }
-
-    private void addTestAlert(int x, int y, String text) {
-        Alert alert = new Alert(text);
-        alert.addButton("OK");
-        alert.addButton("Cancel");
-        alert.setPosition(x, y);
-        root.add(alert);
-        alert.adjustSize();
-    }
-
-
-    public class Alert extends ResizableFrame {
-
-        private DialogLayout.Group buttonGroupH, buttonGroupV;
-        private TextArea textArea;
-        private ScrollPane scrollPane;
-
-        public Alert(String text) {
-            setTheme("/resizableframe");
-
-            final HTMLTextAreaModel textAreaModel = new HTMLTextAreaModel(text);
-            textArea = new TextArea(textAreaModel);
-
-            scrollPane = new ScrollPane(textArea);
-            scrollPane.setFixed(ScrollPane.Fixed.HORIZONTAL);
-
-            DialogLayout layout = new DialogLayout();
-
-            buttonGroupH = layout.createSequentialGroup();
-            buttonGroupH.addGap();
-            buttonGroupV = layout.createParallelGroup();
-
-            layout.setTheme("/alertbox");
-            layout.setHorizontalGroup(layout.createParallelGroup()
-                    .addWidget(scrollPane)
-                    .addGroup(buttonGroupH));
-            layout.setVerticalGroup(layout.createSequentialGroup()
-                    .addWidget(scrollPane)
-                    .addGroup(buttonGroupV));
-            add(layout);
-        }
-
-        public void addButton(String text) {
-            Button button = new Button(text);
-            buttonGroupH.addWidget(button);
-            buttonGroupV.addWidget(button);
-        }
+        myMenu.addMenu(100, 100, "MENU");
     }
 
     public void renderGL() {
@@ -279,7 +210,7 @@ public class gameWorldRender {
         prepare2D();
         drawHud();
 
-        //gui.update(); //uncomment to see TWL gui
+        myMenu.update(); //uncomment to see TWL gui
 
         /*glDrawBuffer(GL_FRONT);
         glAccum(GL_ACCUM, 1f);
