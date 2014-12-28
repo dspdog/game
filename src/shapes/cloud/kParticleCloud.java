@@ -18,7 +18,7 @@ public class kParticleCloud extends Kernel {
 
     //CLOUD PARAMS
         public static final int PARTICLES_MAX = 10000;
-        public long particleLifetime = 5_000;
+        public long particleLifetime = 5000;
 
     public int numParticles=0;
 
@@ -208,7 +208,7 @@ public class kParticleCloud extends Kernel {
 
         density[particle]=1f;
         pressure[particle]=1f;
-        timestamp[particle]=time+(int)(prand()%particleLifetime);
+        timestamp[particle]=time+(int)(prand()%particleLifetime - particleLifetime/2);
 
         resetNeighbors(particle);
    }
