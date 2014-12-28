@@ -37,7 +37,7 @@ public class menu extends ResizableFrame {
     SimpleFloatModel adjusterModel9 = new SimpleFloatModel(0,100000000f,10f);
 
     ValueAdjuster adjuster1 = new ValueAdjusterFloat(adjusterModel1);  Label label1 = new Label("nDist"); //nieghbor dist
-    ValueAdjuster adjuster2 = new ValueAdjusterFloat(adjusterModel2);  Label label2 = new Label("mu"); //mu
+    ValueAdjuster adjuster2 = new ValueAdjusterFloat(adjusterModel2);  Label label2 = new Label("mu");  //mu
     ValueAdjuster adjuster3 = new ValueAdjusterFloat(adjusterModel3);  Label label3 = new Label("dRef"); //dREF
     ValueAdjuster adjuster4 = new ValueAdjusterFloat(adjusterModel4);  Label label4 = new Label("Grav"); //Grav
     ValueAdjuster adjuster5 = new ValueAdjusterFloat(adjusterModel5);  Label label5 = new Label("c"); //c
@@ -52,12 +52,10 @@ public class menu extends ResizableFrame {
         gui.update();
     }
 
-
-
     public void initMenuState(kParticleCloud cloud){
         ((ValueAdjusterFloat)adjuster1).setStepSize(0.1f);     ((ValueAdjusterFloat)adjuster1).setFormat("%.2f");   ((ValueAdjusterFloat)adjuster1).setValue(cloud.neighborDistance);
-        ((ValueAdjusterFloat)adjuster2).setStepSize(0.001f);   ((ValueAdjusterFloat)adjuster2).setFormat("%.3f");   ((ValueAdjusterFloat)adjuster2).setValue(cloud.mu);
-        ((ValueAdjusterFloat)adjuster3).setStepSize(0.0001f);  ((ValueAdjusterFloat)adjuster3).setFormat("%.4f");   ((ValueAdjusterFloat)adjuster3).setValue(cloud.densREF);
+        ((ValueAdjusterFloat)adjuster2).setStepSize(1f);       ((ValueAdjusterFloat)adjuster2).setFormat("%.3f");   ((ValueAdjusterFloat)adjuster2).setValue(cloud.mu);
+        ((ValueAdjusterFloat)adjuster3).setStepSize(0.01f);    ((ValueAdjusterFloat)adjuster3).setFormat("%.4f");   ((ValueAdjusterFloat)adjuster3).setValue(cloud.densREF);
         ((ValueAdjusterFloat)adjuster4).setStepSize(0.01f);    ((ValueAdjusterFloat)adjuster4).setFormat("%.2f");   ((ValueAdjusterFloat)adjuster4).setValue(cloud.grav_scale);
         ((ValueAdjusterFloat)adjuster5).setStepSize(0.1f);     ((ValueAdjusterFloat)adjuster5).setFormat("%.2f");   ((ValueAdjusterFloat)adjuster5).setValue(cloud.c);
         ((ValueAdjusterFloat)adjuster6).setStepSize(0.1f);     ((ValueAdjusterFloat)adjuster6).setFormat("%.2f");   ((ValueAdjusterFloat)adjuster6).setValue(cloud.speedlimit);
