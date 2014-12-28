@@ -44,6 +44,7 @@ public class gameWorldLogic implements Runnable {
         //cm.generateTris(theTree);
         updateFPS();
         myScene.sceneLogic();
+
         lastGameLogic = getTime();
     }
 

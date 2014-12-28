@@ -44,11 +44,13 @@ public class menu extends ResizableFrame {
     ValueAdjuster adjuster7 = new ValueAdjusterFloat(adjusterModel7);  Label label7 = new Label("Time Scale"); //time sclae
     ValueAdjuster adjuster8 = new ValueAdjusterFloat(adjusterModel8);  Label label8 = new Label("Fatness");  //fatness
 
-    boolean inited=false;
+    public boolean inited=false;
 
     public void update(){
         gui.update();
     }
+
+
 
     public void initMenuState(kParticleCloud cloud){
         ((ValueAdjusterFloat)adjuster1).setValue(cloud.neighborDistance);
@@ -58,8 +60,36 @@ public class menu extends ResizableFrame {
 
         ((ValueAdjusterFloat)adjuster5).setValue(cloud.c);
         ((ValueAdjusterFloat)adjuster6).setValue(cloud.speedlimit);
-        ((ValueAdjusterFloat)adjuster7).setValue(cloud.S_PER_MS);
+        ((ValueAdjusterFloat)adjuster7).setValue(cloud.s_per_ms);
         ((ValueAdjusterFloat)adjuster8).setValue(cloud.fatness);
+
+        ((ValueAdjusterFloat)adjuster1).setFormat("%.2f");
+        ((ValueAdjusterFloat)adjuster2).setFormat("%.3f");
+        ((ValueAdjusterFloat)adjuster3).setFormat("%.4f");
+        ((ValueAdjusterFloat)adjuster4).setFormat("%.2f");
+        ((ValueAdjusterFloat)adjuster5).setFormat("%.2f");
+        ((ValueAdjusterFloat)adjuster6).setFormat("%.2f");
+        ((ValueAdjusterFloat)adjuster7).setFormat("%.2f");
+        ((ValueAdjusterFloat)adjuster8).setFormat("%.2f");
+
+        ((ValueAdjusterFloat)adjuster1).setStepSize(0.1f);
+        ((ValueAdjusterFloat)adjuster2).setStepSize(0.001f);
+        ((ValueAdjusterFloat)adjuster3).setStepSize(0.0001f);
+        ((ValueAdjusterFloat)adjuster4).setStepSize(0.01f);
+        ((ValueAdjusterFloat)adjuster5).setStepSize(0.1f);
+        ((ValueAdjusterFloat)adjuster6).setStepSize(0.1f);
+        ((ValueAdjusterFloat)adjuster7).setStepSize(0.01f);
+        ((ValueAdjusterFloat)adjuster8).setStepSize(0.1f);
+
+        adjusterModel1.addCallback(() -> cloud.neighborDistance = adjusterModel1.getValue());
+        adjusterModel2.addCallback(() -> cloud.mu = adjusterModel2.getValue());
+        adjusterModel3.addCallback(() -> cloud.densREF = adjusterModel3.getValue());
+        adjusterModel4.addCallback(() -> cloud.grav_scale = adjusterModel4.getValue());
+
+        adjusterModel5.addCallback(() -> cloud.c = adjusterModel5.getValue());
+        adjusterModel6.addCallback(() -> cloud.speedlimit = adjusterModel6.getValue());
+        adjusterModel7.addCallback(() -> cloud.s_per_ms = adjusterModel7.getValue());
+        adjusterModel8.addCallback(() -> cloud.fatness = adjusterModel8.getValue());
 
         inited=true;
     }

@@ -298,7 +298,7 @@ public class GeometryFactory {
 
         float alpha = 1.00f;
 
-        boolean alphaModulate = true;//!kCloud.neighborsReset;
+        boolean alphaModulate = false;//!kCloud.neighborsReset;
 
         float _origAlpha = alpha;
         boolean useSquares = true;

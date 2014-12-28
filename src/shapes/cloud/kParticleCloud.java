@@ -1,6 +1,7 @@
 package shapes.cloud;
 import com.amd.aparapi.Kernel;
 import com.amd.aparapi.Range;
+import gui.menu;
 import org.lwjgl.Sys;
 import org.lwjgl.util.vector.Vector3f;
 import world.scene;
@@ -10,7 +11,7 @@ import world.scene;
  */
 public class kParticleCloud extends Kernel {
 
-    final public float S_PER_MS = 0.3f ; //seconds per milliseconds, make 0.001f for "realtime"(?)
+    public float s_per_ms = 0.3f ; //seconds per milliseconds, make 0.001f for "realtime"(?)
     public boolean paused = false;
 
     public float grav_scale = 1/30f;
@@ -21,12 +22,12 @@ public class kParticleCloud extends Kernel {
 
     public int numParticles=0;
 
-        final public float neighborDistance = 3f;
-        final public float densREF = 0.0012f; // kg/m^3
-        final public float mu = 1f; // kg/ms (dynamical viscosity))
-        final public float c = 2.5f; // m/s speed of sound
+        public float neighborDistance = 3f;
+        public float densREF = 0.0012f; // kg/m^3
+        public float mu = 1f; // kg/ms (dynamical viscosity))
+        public float c = 2.5f; // m/s speed of sound
 
-        final public float speedlimit = 0.75f;
+        public float speedlimit = 0.75f;
 
         //bounding box
         final float boxSize = 200f;
@@ -73,6 +74,8 @@ public class kParticleCloud extends Kernel {
     final int X_OFFSET=0;
     final int Y_OFFSET=1;
     final int Z_OFFSET=2;
+
+    menu myMenu = null;
 
     public float getPositionX(int particle){return positionXYZ[particle*3+X_OFFSET];}
     public float getPositionY(int particle){return positionXYZ[particle*3+Y_OFFSET];}
@@ -266,7 +269,7 @@ public class kParticleCloud extends Kernel {
     public void updateTime(){
         lastTime=time;
         time = getTime();
-        dt=paused?0:(time-lastTime)*S_PER_MS;
+        dt=paused?0:(time-lastTime)* s_per_ms;
     }
 
     public float dt;
