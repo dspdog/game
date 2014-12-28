@@ -1,6 +1,7 @@
 package world;
 
 import org.lwjgl.BufferUtils;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector3f;
 import factory.GeometryFactory;
@@ -19,7 +20,7 @@ public class scene{
     public static Map<String, WorldObject> idsMap = new HashMap<String, WorldObject>();
 
     public static Vector3f focalPos = new Vector3f(0,0,0);
-    public static Vector3f cameraPosDesired = new Vector3f(0,-30,0);
+    public static Vector3f cameraPosDesired = new Vector3f(325,-232,512);
     public static Vector3f cameraXVector = new Vector3f(0,0,0);
     public static Vector3f cameraYVector = new Vector3f(0,0,0);
     public static Vector3f cameraZVector = new Vector3f(0,0,0);
@@ -30,6 +31,9 @@ public class scene{
 
     public void drawScene(){
         cameraPosRealtime = getCamPos();
+
+        //System.out.println(cameraPosRealtime.toString() + " " + Mouse.getX() + " " + Mouse.getY());
+
         for(WorldObject wo : objs){
             glStencilFunc(GL_ALWAYS, wo.stencilId + 1, -1);
             if(wo.isGrid){

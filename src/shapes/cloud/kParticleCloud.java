@@ -10,21 +10,23 @@ import world.scene;
  */
 public class kParticleCloud extends Kernel {
 
-    final float S_PER_MS = 0.3f ; //seconds per milliseconds, make 0.001f for "realtime"(?)
+    final public float S_PER_MS = 0.3f ; //seconds per milliseconds, make 0.001f for "realtime"(?)
     public boolean paused = false;
+
+    public float grav_scale = 1/30f;
 
     //CLOUD PARAMS
         public static final int PARTICLES_MAX = 10000;
-        long particleLifetime = 100000000;
+        public long particleLifetime = 100000000;
 
     public int numParticles=0;
 
-        final float neighborDistance = 3f;
-        final float densREF = 0.0012f; // kg/m^3
-        final float mu = 1f; // kg/ms (dynamical viscosity))
-        final float c = 2.5f; // m/s speed of sound
+        final public float neighborDistance = 3f;
+        final public float densREF = 0.0012f; // kg/m^3
+        final public float mu = 1f; // kg/ms (dynamical viscosity))
+        final public float c = 2.5f; // m/s speed of sound
 
-        final float speedlimit = 0.75f;
+        final public float speedlimit = 0.75f;
 
         //bounding box
         final float boxSize = 200f;
@@ -34,7 +36,7 @@ public class kParticleCloud extends Kernel {
 
     //USER PARAMS
 
-        public float armLen = 300f;
+        public float armLen = 550f;
 
         final float cameraPos[] = new float[3];
         final float cameraDirXVec[] = new float[3];
@@ -334,13 +336,13 @@ public class kParticleCloud extends Kernel {
             statusString=
                     "Particles " + numParticles + "\n"+
                     "dt " + dt*1000+"ms\n" +
-                    this.getExecutionMode() + " Exec " + (time2-time1) + "ms CPU " +  (time3-time2) + "ms\n"+
+                    this.getExecutionMode() + " Exec " + (time2-time1) + "ms CPU " +  (time3-time2) + "ms\n\n"+
                     "avDens " + averageD + "\n" +
                     "avPres " + averageP + "\n" +
                     "avSibs " + averageNeighbors + "\n"+
                     "maxSibs " + maxN + "\n"+
                     "gridFound " + getTotalGridMembers() + "\n" +
-                    "gridMAX " + maxG + "\n" +
+                    "gridMAX " + maxG + "\n\n" +
                     "LocalSz " + range.getLocalSize(0) + " Grps " + range.getNumGroups(0)+ "\n" +
                     "Bad " + numberBad + "\n" +
                     "Arm " + armLen + "\n" +
@@ -666,10 +668,10 @@ public class kParticleCloud extends Kernel {
             }
         }
 
-        float gravScale = dt/30f;
+        float grav = dt*grav_scale;
         if(gravityDown){
             accGravX=0f;
-            accGravY=-gravScale;
+            accGravY=-grav;
             accGravZ=0f;
 
             float shotTimeMS = 500;
@@ -690,9 +692,9 @@ public class kParticleCloud extends Kernel {
 
             float mag = sqrt(xd*xd+yd*yd+zd*zd);
 
-            accGravX = -0.5f*gravScale*xd/mag;
-            accGravY = -0.5f*gravScale*yd/mag;
-            accGravZ = -0.5f*gravScale*zd/mag;
+            accGravX = -0.5f*grav*xd/mag;
+            accGravY = -0.5f*grav*yd/mag;
+            accGravZ = -0.5f*grav*zd/mag;
         }
 
         setVelocityX(particle, getVelocityX(particle)+accPressureX+accViscX+accInteractiveX+accGravX);

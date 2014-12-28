@@ -1,6 +1,3 @@
-import de.matthiasmann.twl.*;
-import de.matthiasmann.twl.renderer.lwjgl.LWJGLRenderer;
-import de.matthiasmann.twl.theme.ThemeManager;
 import factory.GeometryFactory;
 import factory.TextureFactory;
 
@@ -13,9 +10,6 @@ import org.lwjgl.opengl.DisplayMode;
 import shapes.cloud.kParticleCloud;
 import utils.ShaderHelper;
 import world.*;
-
-import java.io.File;
-import java.io.IOException;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -42,9 +36,9 @@ public class gameWorldRender {
     menu myMenu;
 
     public gameWorldRender(gameWorldLogic gl){
-        myFOV = 75;
+        myFOV = 60;
         myWidth = 1024;
-        myHeight = 1024;
+        myHeight = 800;
         myLogic=gl;
         myScene=gl.myScene;
         myInput = new gameInputs(myScene);
@@ -83,9 +77,6 @@ public class gameWorldRender {
     }
 
     public void start() {
-
-
-
         lastFPS = getTime(); //initialise lastFPS by setting to current Time
 
         try {
@@ -109,7 +100,7 @@ public class gameWorldRender {
         while (!Display.isCloseRequested()) {
             update();
 
-            myScene.myKCloud.armLen = scrollPos * 100f;
+            myScene.myKCloud.armLen = scrollPos * 25f + 450f;
             renderGL();
 
             Display.update();
@@ -163,13 +154,14 @@ public class gameWorldRender {
     }
 
     public void setupGui(){
-        myMenu.addMenu(20, 400, "my text");
+        myMenu.addMenu(20, 400, "Params");
+
     }
 
     public void renderGL() {
 
-        double rotationx = 90f- 180f * Mouse.getY()/myHeight;
-        double rotationy = Mouse.getX();
+        double rotationx = 90f- 180f * gameInputs.mouseY/myHeight;
+        double rotationy = gameInputs.mouseX;
 
         int window_width = Display.getWidth(); //glutGet(GLUT_WINDOW_WIDTH);
         int window_height = Display.getHeight();
@@ -177,9 +169,9 @@ public class gameWorldRender {
 
         int scroll = Mouse.getDWheel();
         if(scroll<0){
-            scrollPos*=0.95f;
+            scrollPos--;
         }else if(scroll>0){
-            scrollPos*=1.05f;
+            scrollPos++;
         }
 
         float zoom = 5f*scrollPos;
@@ -202,7 +194,7 @@ public class gameWorldRender {
         //glScalef(zoom, zoom, zoom);
 
             //glTranslatef(-myScene.cameraPosDesired.x, -myScene.cameraPosDesired.y, -myScene.cameraPosDesired.z);
-
+        myMenu.initMenuState(myScene.myKCloud);
             myScene.drawScene();
 
         glPopMatrix();
@@ -228,16 +220,7 @@ public class gameWorldRender {
             hudTexture = TextureFactory.proceduralTexture(
                     "Logic FPS: " + gameWorldLogic.myFPS  +
                     "\nOpenGL FPS: "+myFPS +
-                    "\n" + myScene.myKCloud.statusString+
-                    "\nParam1: " + gameInputs.param1+
-                    "\nParam2: " + gameInputs.param2+
-                    "\nParam3: " + gameInputs.param3+
-                    "\nParam4: " + gameInputs.param4+
-                    "\nParam5: " + gameInputs.param5+
-                    "\nParam6: " + gameInputs.param6+
-                    "\nParam7: " + gameInputs.param7+
-                    "\nParam8: " + gameInputs.param8+
-                    "\nParam9: " + gameInputs.param9);
+                    "\n\n" + myScene.myKCloud.statusString);
             lastHudUpdate = getTime();
         }
         glEnable (GL_BLEND);
