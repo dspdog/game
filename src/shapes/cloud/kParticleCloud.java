@@ -18,7 +18,7 @@ public class kParticleCloud extends Kernel {
 
     //CLOUD PARAMS
         public static final int PARTICLES_MAX = 10000;
-        public long particleLifetime = 100000000;
+        public long particleLifetime = 5_000;
 
     public int numParticles=0;
 
