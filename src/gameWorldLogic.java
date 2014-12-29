@@ -14,7 +14,8 @@ public class gameWorldLogic implements Runnable {
     }
 
     public void updateGameLogic(){
-        //theTree.perturb(false, false, 2.50f);
+        theTree.perturb(false, false, 1.250f);
+
         //theTree.updateCSG();
         //cm.generateTris(theTree);
         lastGameLogic = getTime();
@@ -26,7 +27,7 @@ public class gameWorldLogic implements Runnable {
 
     public void initWorld(){
         theTree = new tree();
-        theTree.setToPreset(0); //1 or 0 or 9
+        theTree.setToPreset(9); //1 or 0 or 9
         theTree.reIndex();
     }
 
@@ -39,7 +40,7 @@ public class gameWorldLogic implements Runnable {
         while(running){
             try {
                 updateGameLogic();
-                Thread.sleep(100);
+                Thread.sleep(20);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

@@ -41,6 +41,8 @@ public class gameWorldRender {
     public int myWidth, myHeight;
     public float myFOV;
 
+    long lastPrint=0;
+
     long lastVBOUpdate=0;
 
     gameWorldLogic myLogic;
@@ -122,10 +124,10 @@ public class gameWorldRender {
         }
 
         myScene = new scene();
-        myScene.addWorldObject(new WorldObject(myTexture));
-        myLogic.theTree.updateCSG();
-        myScene.addWorldObject(new WorldObject(myLogic.theTree.myCSG));
-        myScene.addWorldObject(new WorldObject((x, y) -> (float)(1f-(SimplexNoise.noise(x/20f,y/20f)+1f)*(SimplexNoise.noise(x/20f,y/20f)+1f))*10f));
+        //myScene.addWorldObject(new WorldObject(myTexture));
+        //myLogic.theTree.updateCSG();
+        myScene.addWorldObject(new WorldObject(myLogic.theTree));
+        //myScene.addWorldObject(new WorldObject((x, y) -> (float)(1f-(SimplexNoise.noise(x/20f,y/20f)+1f)*(SimplexNoise.noise(x/20f,y/20f)+1f))*10f));
     }
 
     public void renderGL() {
@@ -175,11 +177,15 @@ public class gameWorldRender {
 
         glReadPixels(Mouse.getX(), Mouse.getY(), 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, ib);
 
-        if(myScene.idsMap.containsKey(ib.get(0)+"")){
-            System.out.println("SELECTED " + myScene.idsMap.get(ib.get(0)+"").name );
-        }else{
-            System.out.println("SELECTED NONE ");
+        if(getTime() - lastPrint > 1000){
+            lastPrint = getTime();
+            if(myScene.idsMap.containsKey(ib.get(0)+"")){
+                System.out.println("SELECTED " + myScene.idsMap.get(ib.get(0)+"").name );
+            }else{
+                System.out.println("SELECTED NONE ");
+            }
         }
+
 
         //glReadPixels(Mouse.getX(), Mouse.getY() - 1, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, fb);
         //System.out.println("depth?" +fb.get(0));
@@ -199,6 +205,12 @@ public class gameWorldRender {
                     //GeometryFactory.drawFunctionGrid(wo.myFunction);
                 }else if (wo.isPlane){
                     GeometryFactory.plane(wo.myTexture);
+                }else if (wo.isTree){
+                    if(myLogic.lastGameLogic - lastVBOUpdate > 1){
+                        wo.updateVBOs();
+                        lastVBOUpdate=getTime();
+                    }
+                    GeometryFactory.drawLinesByVBOHandles(wo.vertices,wo.VBOHandles);
                 }
             }
         }
@@ -216,6 +228,7 @@ public class gameWorldRender {
 
     public class WorldObject{ //have this handle all the interactions w/ geometryfactory...
         CSG myCSG;
+        tree myTree;
         Texture myTexture;
         GeometryFactory.gridFunction myFunction;
         int[] VBOHandles;
@@ -223,9 +236,11 @@ public class gameWorldRender {
         String name="";
 
         int stencilId = (int)(System.currentTimeMillis()%255); //for stencil buffer
+        int vertices = 0;
         boolean isCSG = false;
         boolean isGrid = false;
         boolean isPlane = false;
+        boolean isTree = false;
 
         public WorldObject(CSG csg){
             name="CSG_" + stencilId;
@@ -233,6 +248,20 @@ public class gameWorldRender {
             myCSG = csg;
             csg.getTriangles();
             VBOHandles = GeometryFactory.csgVBOHandles(csg);
+        }
+
+        public WorldObject(tree tree){
+            name="TREE_" + stencilId;
+            isTree=true;
+            myTree = tree;
+            VBOHandles = GeometryFactory.treeVBOHandles(tree);
+        }
+
+        public void updateVBOs(){
+            if(isTree){
+                VBOHandles = GeometryFactory.treeVBOHandles(myTree);
+                vertices = myTree.vertices;
+            }
         }
 
         public WorldObject(Texture texture){
