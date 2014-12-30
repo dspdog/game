@@ -1,7 +1,4 @@
 import eu.mihosoft.vrl.v3d.CSG;
-import eu.mihosoft.vrl.v3d.Cube;
-import eu.mihosoft.vrl.v3d.Polygon;
-import eu.mihosoft.vrl.v3d.Sphere;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
@@ -14,22 +11,17 @@ import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 import shapes.tree;
-import sun.font.TrueTypeFont;
-import utils.SimplexNoise;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL15.*;
 
 import static org.lwjgl.util.glu.GLU.*;
 
@@ -253,7 +245,7 @@ public class gameWorldRender {
                         wo.updateVBOs();
                         lastVBOUpdate=getTime();
                     }
-                    GeometryFactory.drawLinesByVBOHandles(wo.vertices,wo.VBOHandles);
+                    GeometryFactory.drawQuadsByVBOHandles(wo.vertices, wo.VBOHandles);
                 }
             }
         }
@@ -297,12 +289,12 @@ public class gameWorldRender {
             name="TREE_" + stencilId;
             isTree=true;
             myTree = tree;
-            VBOHandles = GeometryFactory.treeVBOHandles(tree);
+            VBOHandles = GeometryFactory.treeVBOLineHandles(tree);
         }
 
         public void updateVBOs(){
             if(isTree){
-                VBOHandles = GeometryFactory.treeVBOHandles(myTree);
+                VBOHandles = GeometryFactory.treeVBOQuadHandles(myTree);
                 vertices = myTree.vertices;
             }
         }

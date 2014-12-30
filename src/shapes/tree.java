@@ -39,7 +39,7 @@ public final class tree implements java.io.Serializable {
     public CSG myCSG = new Cylinder().toCSG();
 
     public void resetShape(){
-        iterations =750;
+        iterations=550;
 
         hasDrawList = false;
         evolutionDisqualified=false;
@@ -373,8 +373,14 @@ public final class tree implements java.io.Serializable {
     //final int[] lineZS2= new int[NUM_LINES];
 
     int vertex_size = 3;
+
+
     public final FloatBuffer vertex_data = BufferUtils.createFloatBuffer(NUM_LINES * vertex_size * 2); //XYZ1 XYZ2
     public final FloatBuffer color_data = BufferUtils.createFloatBuffer(NUM_LINES * vertex_size * 2); //RGB1 RGB2
+
+    public final FloatBuffer vertex_data2 = BufferUtils.createFloatBuffer(NUM_LINES * vertex_size * 4); //XYZ1 XYZ2 XYZ3 4
+    public final FloatBuffer color_data2 = BufferUtils.createFloatBuffer(NUM_LINES * vertex_size * 4); //RGB1 RGB2 RGB3 4
+
 
     public void reIndex(){
         Random rnd = new Random();
@@ -397,6 +403,8 @@ public final class tree implements java.io.Serializable {
         indexFunction(0, (int)(this.iterations/100)+1, this.iterations%100,  1.0f, new treePt(0,0,0), new treePt(this.pts[0]), rnd, randomScale, (short)0, maxBranchDist, pruneThresh, 0);
         vertex_data.flip();
         color_data.flip();
+        vertex_data2.flip();
+        color_data2.flip();
         vertices=lineIndex;
     }
 
@@ -435,20 +443,53 @@ public final class tree implements java.io.Serializable {
         dpt._add(rpt);
         float scale = 0.12f;
 
+        Vector3f pVec = new Vector3f((dpt.x-odp.x)*scale, (dpt.y-odp.y)*scale, (dpt.z-odp.z)*scale);
+        Vector3f oVec = new Vector3f(0,0,0);
+        Vector3f.cross(pVec, cameraZVector, oVec);
+        if(oVec.length()>0)oVec.normalise();
+        oVec.scale(_cumulativeScale*10f);
+
         vertex_data.put(dpt.x*scale).
                     put(dpt.y*scale).
                     put(dpt.z*scale).
                     put(odp.x*scale).
-                    put(Math.max(odp.y*scale, 0)).
-                    put(odp.z*scale);
+                    put(odp.y*scale).
+                    put(odp.z * scale);
+
+        vertex_data2.put(dpt.x*scale - oVec.x / 2f).
+                     put(dpt.y*scale - oVec.y / 2f).
+                     put(dpt.z*scale - oVec.z / 2f).
+                     put(dpt.x*scale + oVec.x / 2f).
+                     put(dpt.y*scale + oVec.y / 2f).
+                     put(dpt.z*scale + oVec.z / 2f).
+
+                    put(odp.x*scale - oVec.x / 2f).
+                    put(odp.y*scale - oVec.y / 2f).
+                    put(odp.z*scale - oVec.z / 2f).
+                    put(odp.x*scale + oVec.x / 2f).
+                    put(odp.y*scale + oVec.y / 2f).
+                    put(odp.z*scale + oVec.z / 2f);
 
         scale = 0.0014f;
         color_data.put(dpt.x*scale).
                    put(dpt.y*scale).
                    put(dpt.z*scale).
                    put(odp.x*scale).
-                   put(Math.max(odp.y*scale, 0)).
+                   put(odp.y*scale).
                    put(odp.z * scale);
+
+        color_data2.put(dpt.x*scale).
+                put(dpt.y*scale).
+                put(dpt.z*scale).
+                put(dpt.x*scale).
+                put(dpt.y*scale).
+                put(dpt.z*scale).
+                put(odp.x*scale).
+                put(odp.y*scale).
+                put(odp.z*scale).
+                put(odp.x*scale).
+                put(odp.y*scale).
+                put(odp.z*scale);
 
         //lineDI[lineIndex]=(((short)(dist))<<16) + ((short)_iterations);
         //lineXY1[lineIndex]=(((short)(dpt.x))<<16) + ((short)Math.max(dpt.y, 0));

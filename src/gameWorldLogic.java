@@ -17,7 +17,7 @@ public class gameWorldLogic implements Runnable {
         tree.cameraXVector.set(gameWorldRender.cameraXVector);
         tree.cameraYVector.set(gameWorldRender.cameraYVector);
         tree.cameraZVector.set(gameWorldRender.cameraZVector);
-        theTree.perturb(false, false, 1.250f);
+        theTree.perturb(false, false, 0.250f);
 
         //theTree.updateCSG();
         //cm.generateTris(theTree);
@@ -30,7 +30,7 @@ public class gameWorldLogic implements Runnable {
 
     public void initWorld(){
         theTree = new tree();
-        theTree.setToPreset(9); //1 or 0 or 9
+        theTree.setToPreset(0); //1 or 0 or 9
         theTree.reIndex();
     }
 
@@ -43,7 +43,7 @@ public class gameWorldLogic implements Runnable {
         while(running){
             try {
                 updateGameLogic();
-                Thread.sleep(20);
+                Thread.sleep(5);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

@@ -60,7 +60,7 @@ public class GeometryFactory {
         glDisable(GL_TEXTURE_2D);
     }
 
-    static int[] treeVBOHandles(shapes.tree theTree){
+    static int[] treeVBOLineHandles(shapes.tree theTree){
         int vbo_vertex_handle = glGenBuffers();
         glBindBuffer(GL_ARRAY_BUFFER, vbo_vertex_handle);
         glBufferData(GL_ARRAY_BUFFER, theTree.vertex_data, GL_STATIC_DRAW);
@@ -69,6 +69,20 @@ public class GeometryFactory {
         int vbo_color_handle = glGenBuffers();
         glBindBuffer(GL_ARRAY_BUFFER, vbo_color_handle);
         glBufferData(GL_ARRAY_BUFFER, theTree.color_data, GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        return new int[]{vbo_vertex_handle,vbo_color_handle};
+    }
+
+    static int[] treeVBOQuadHandles(shapes.tree theTree){
+        int vbo_vertex_handle = glGenBuffers();
+        glBindBuffer(GL_ARRAY_BUFFER, vbo_vertex_handle);
+        glBufferData(GL_ARRAY_BUFFER, theTree.vertex_data2, GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        int vbo_color_handle = glGenBuffers();
+        glBindBuffer(GL_ARRAY_BUFFER, vbo_color_handle);
+        glBufferData(GL_ARRAY_BUFFER, theTree.color_data2, GL_STATIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
         return new int[]{vbo_vertex_handle,vbo_color_handle};
@@ -286,6 +300,28 @@ public class GeometryFactory {
         glEnableClientState(GL_COLOR_ARRAY);
 
         glDrawArrays(GL_TRIANGLES, 0, triangles*vertex_size);
+
+        glDisableClientState(GL_COLOR_ARRAY);
+        glDisableClientState(GL_VERTEX_ARRAY);
+    }
+
+    static void drawQuadsByVBOHandles(int quads, int[] handles){
+        int vertex_size = 3; // X, Y, Z,
+        int color_size = 3; // R, G, B,
+
+        int vbo_vertex_handle = handles[0];
+        int vbo_color_handle = handles[1];
+
+        glBindBuffer(GL_ARRAY_BUFFER, vbo_vertex_handle);
+        glVertexPointer(vertex_size, GL_FLOAT, 0, 0L);
+
+        glBindBuffer(GL_ARRAY_BUFFER, vbo_color_handle);
+        glColorPointer(color_size, GL_FLOAT, 0, 0L);
+
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glEnableClientState(GL_COLOR_ARRAY);
+
+        glDrawArrays(GL_QUADS, 0, 4*quads*vertex_size);
 
         glDisableClientState(GL_COLOR_ARRAY);
         glDisableClientState(GL_VERTEX_ARRAY);
