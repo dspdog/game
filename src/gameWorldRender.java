@@ -144,6 +144,10 @@ public class gameWorldRender {
 
         float zoom = 5f*scrollPos;
 
+
+
+        //glClear(GL_ACCUM_BUFFER_BIT);
+
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_STENCIL_TEST);
@@ -162,6 +166,17 @@ public class gameWorldRender {
             myScene.drawScene();
 
         glPopMatrix();
+
+
+
+        /*glDrawBuffer(GL_FRONT);
+        glAccum(GL_ACCUM, 1f);
+        glDrawBuffer(GL_BACK);
+
+        glAccum(GL_RETURN, 0.1f);//push bach to draw buffer
+        */
+
+
 
         //sampling:
 

@@ -449,6 +449,8 @@ public final class tree implements java.io.Serializable {
         if(oVec.length()>0)oVec.normalise();
         oVec.scale(_cumulativeScale*10f);
 
+        float scaleDown = thePt.scale/centerPt.scale;
+
         vertex_data.put(dpt.x*scale).
                     put(dpt.y*scale).
                     put(dpt.z*scale).
@@ -456,19 +458,18 @@ public final class tree implements java.io.Serializable {
                     put(odp.y*scale).
                     put(odp.z * scale);
 
-        vertex_data2.put(dpt.x*scale - oVec.x / 2f).
-                     put(dpt.y*scale - oVec.y / 2f).
-                     put(dpt.z*scale - oVec.z / 2f).
-                     put(dpt.x*scale + oVec.x / 2f).
-                     put(dpt.y*scale + oVec.y / 2f).
-                     put(dpt.z*scale + oVec.z / 2f).
-
-                    put(odp.x*scale - oVec.x / 2f).
+        vertex_data2.put(dpt.x * scale - oVec.x / 2f*scaleDown).
+                     put(dpt.y*scale - oVec.y / 2f*scaleDown).
+                     put(dpt.z*scale - oVec.z / 2f*scaleDown).
+                    put(odp.x * scale - oVec.x / 2f).
                     put(odp.y*scale - oVec.y / 2f).
                     put(odp.z*scale - oVec.z / 2f).
                     put(odp.x*scale + oVec.x / 2f).
                     put(odp.y*scale + oVec.y / 2f).
-                    put(odp.z*scale + oVec.z / 2f);
+                    put(odp.z*scale + oVec.z / 2f).
+                    put(dpt.x * scale + oVec.x / 2f*scaleDown).
+                    put(dpt.y * scale + oVec.y / 2f*scaleDown).
+                    put(dpt.z * scale + oVec.z / 2f*scaleDown);
 
         scale = 0.0014f;
         color_data.put(dpt.x*scale).
@@ -481,15 +482,15 @@ public final class tree implements java.io.Serializable {
         color_data2.put(dpt.x*scale).
                 put(dpt.y*scale).
                 put(dpt.z*scale).
-                put(dpt.x*scale).
-                put(dpt.y*scale).
-                put(dpt.z*scale).
                 put(odp.x*scale).
                 put(odp.y*scale).
                 put(odp.z*scale).
                 put(odp.x*scale).
                 put(odp.y*scale).
-                put(odp.z*scale);
+                put(odp.z*scale).
+                put(dpt.x*scale).
+                put(dpt.y*scale).
+                put(dpt.z*scale);
 
         //lineDI[lineIndex]=(((short)(dist))<<16) + ((short)_iterations);
         //lineXY1[lineIndex]=(((short)(dpt.x))<<16) + ((short)Math.max(dpt.y, 0));
