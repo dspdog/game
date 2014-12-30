@@ -217,7 +217,7 @@ public class gameWorldRender {
     }
 
 
-    public void getCamVecs(){//http://www.gamedev.net/topic/397751-how-to-get-camera-pos/
+    public static void getCamVectors(){//http://www.gamedev.net/topic/397751-how-to-get-camera-pos/
         FloatBuffer mdl = BufferUtils.createFloatBuffer(16);
         // save the current modelview matrix
         //glPushMatrix();
@@ -238,6 +238,7 @@ public class gameWorldRender {
         public Map<String, WorldObject> idsMap = new HashMap<String, WorldObject>();
 
         public void drawScene(){
+            getCamVectors();
             for(WorldObject wo : objs){
                 glStencilFunc(GL_ALWAYS, wo.stencilId + 1, -1);
                 if(wo.isCSG){

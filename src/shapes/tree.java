@@ -4,6 +4,7 @@ import eu.mihosoft.vrl.v3d.CSG;
 import eu.mihosoft.vrl.v3d.Cylinder;
 import eu.mihosoft.vrl.v3d.Vector3d;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.util.vector.Vector3f;
 
 import java.io.*;
 import java.nio.FloatBuffer;
@@ -352,10 +353,9 @@ public final class tree implements java.io.Serializable {
         updateCenterOnce();
     }
 
-
-
-
-
+    public static Vector3f cameraXVector = new Vector3f(0,0,0);
+    public static Vector3f cameraYVector = new Vector3f(0,0,0);
+    public static Vector3f cameraZVector = new Vector3f(0,0,0);
 
     final int NUM_LINES= 1024*1024; //MAX LINES
     private int lineIndex=0;

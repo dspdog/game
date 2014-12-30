@@ -14,6 +14,9 @@ public class gameWorldLogic implements Runnable {
     }
 
     public void updateGameLogic(){
+        tree.cameraXVector.set(gameWorldRender.cameraXVector);
+        tree.cameraYVector.set(gameWorldRender.cameraYVector);
+        tree.cameraZVector.set(gameWorldRender.cameraZVector);
         theTree.perturb(false, false, 1.250f);
 
         //theTree.updateCSG();
