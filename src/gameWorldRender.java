@@ -8,6 +8,7 @@ import org.lwjgl.Sys;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.PixelFormat;
 import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.opengl.Texture;
@@ -33,6 +34,10 @@ import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.util.glu.GLU.*;
 
 public class gameWorldRender {
+
+    public static Vector3f cameraXVector = new Vector3f(0,0,0);
+    public static Vector3f cameraYVector = new Vector3f(0,0,0);
+    public static Vector3f cameraZVector = new Vector3f(0,0,0);
 
     private int fps;
     private long lastFPS;
@@ -111,11 +116,7 @@ public class gameWorldRender {
     scene myScene;
 
     public void initGL() {
-        glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
-        gluPerspective(myFOV, ((float)myWidth) / ((float)myHeight), 0.01f, 2500f);
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
+        prepare3D();
 
         try {
             myTexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("./res/myball.png")));
@@ -189,6 +190,47 @@ public class gameWorldRender {
 
         //glReadPixels(Mouse.getX(), Mouse.getY() - 1, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, fb);
         //System.out.println("depth?" +fb.get(0));
+    }
+
+    public void prepare3D(){ //see http://gamedev.stackexchange.com/questions/18468/making-a-hud-gui-with-opengl-lwjgl
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        gluPerspective(myFOV, ((float)myWidth) / ((float)myHeight), 0.01f, 5000f);
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+
+        //glEnable(GL_DEPTH_TEST);
+        //glDepthFunc(GL_LEQUAL);
+        //glDepthFunc(GL_NEVER);
+    }
+
+    public void prepare2D(){ //see http://gamedev.stackexchange.com/questions/18468/making-a-hud-gui-with-opengl-lwjgl
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        gluOrtho2D(0, myWidth, myHeight, 0.0f);
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+
+        glTranslatef(0.375f, 0.375f, 0.0f); //?
+
+        glDisable(GL_DEPTH_TEST);
+    }
+
+
+    public void getCamVecs(){//http://www.gamedev.net/topic/397751-how-to-get-camera-pos/
+        FloatBuffer mdl = BufferUtils.createFloatBuffer(16);
+        // save the current modelview matrix
+        //glPushMatrix();
+        // get the current modelview matrix
+        GL11.glGetFloat(GL_MODELVIEW_MATRIX, mdl);
+
+        cameraXVector = new Vector3f(mdl.get(0),mdl.get(4),mdl.get(8));
+        cameraYVector = new Vector3f(mdl.get(1),mdl.get(5),mdl.get(9));
+        cameraZVector = new Vector3f(mdl.get(2),mdl.get(6),mdl.get(10));
+
+        cameraXVector.normalise();
+        cameraYVector.normalise();
+        cameraZVector.normalise();
     }
 
     class scene{
