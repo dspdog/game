@@ -16,6 +16,8 @@ public final class tree implements java.io.Serializable {
 
     public float unitScale;
 
+    public float fatness = 20f;
+
     public int pointsInUse;
     public boolean autoUpdateCenterEnabled;
     public boolean stateSaved;
@@ -39,7 +41,7 @@ public final class tree implements java.io.Serializable {
     public CSG myCSG = new Cylinder().toCSG();
 
     public void resetShape(){
-        iterations=550;
+        iterations=450;
 
         hasDrawList = false;
         evolutionDisqualified=false;
@@ -357,7 +359,7 @@ public final class tree implements java.io.Serializable {
     public static Vector3f cameraYVector = new Vector3f(0,0,0);
     public static Vector3f cameraZVector = new Vector3f(0,0,0);
 
-    final int NUM_LINES= 1024*1024; //MAX LINES
+    final int NUM_LINES= 1024*1024*10; //MAX LINES
     private int lineIndex=0;
     public int vertices=0;
     long lastIndex = System.currentTimeMillis();
@@ -447,7 +449,7 @@ public final class tree implements java.io.Serializable {
         Vector3f oVec = new Vector3f(0,0,0);
         Vector3f.cross(pVec, cameraZVector, oVec);
         if(oVec.length()>0)oVec.normalise();
-        oVec.scale(_cumulativeScale*10f);
+        oVec.scale(_cumulativeScale*fatness);
 
         float scaleDown = thePt.scale/centerPt.scale;
 
@@ -479,14 +481,22 @@ public final class tree implements java.io.Serializable {
                    put(odp.y*scale).
                    put(odp.z * scale);
 
+        /*float altColor = distance(dpt.x-512f,dpt.y-512f,dpt.z-512f)/1000f;
+
+        color_data2.put(altColor).put(altColor).put(altColor).put(altColor)
+                .put(altColor).put(altColor).put(altColor).put(altColor)
+                .put(altColor).put(altColor).put(altColor).put(altColor);*/
+
         color_data2.put(dpt.x*scale).
                 put(dpt.y*scale).
                 put(dpt.z*scale).
                 put(odp.x*scale).
+
                 put(odp.y*scale).
                 put(odp.z*scale).
                 put(odp.x*scale).
                 put(odp.y*scale).
+
                 put(odp.z*scale).
                 put(dpt.x*scale).
                 put(dpt.y*scale).
