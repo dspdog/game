@@ -4,10 +4,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.PixelFormat;
+import org.lwjgl.opengl.*;
 import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
@@ -100,6 +97,18 @@ public class gameWorldRender {
         Display.destroy();
         System.exit(1);
     }
+
+    private void bindShaders(){
+        ShaderHelper.setupShaders("screen.vert", "screen.frag");
+        if(ShaderHelper.useShader)
+            ARBShaderObjects.glUseProgramObjectARB(ShaderHelper.program);
+    }
+
+    private void releaseShaders(){
+        if(ShaderHelper.useShader)
+            ARBShaderObjects.glUseProgramObjectARB(0);
+    }
+
 
     public void update() {
         updateFPS();

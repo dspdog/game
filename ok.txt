@@ -1,0 +1,17 @@
+
+    private void bindShaders(){
+        ShaderHelper.setupShaders("screen.vert", "screen.frag");
+        if(ShaderHelper.useShader)
+            ARBShaderObjects.glUseProgramObjectARB(ShaderHelper.program);
+    }
+
+    private void releaseShaders(){
+        if(ShaderHelper.useShader)
+            ARBShaderObjects.glUseProgramObjectARB(0);
+    }
+	
+	/////////////////////
+	
+	
+	   Display.sync(60); // cap fps to 60fps
+            myInput.pollInput();
