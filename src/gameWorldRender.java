@@ -9,6 +9,7 @@ import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 import shapes.tree;
+import utils.ShaderHelper;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -76,14 +77,15 @@ public class gameWorldRender {
 
         try {
             Display.setDisplayMode(new DisplayMode(myWidth, myHeight));
-            //Display.create(new PixelFormat(0, 16, 8, 16)); //anti aliasing 16x max
-            Display.create(new PixelFormat(0, 16, 8));
+            Display.create(new PixelFormat(0, 16, 8, 16)); //anti aliasing 16x max
+            //Display.create(new PixelFormat(0, 16, 8));
         } catch (LWJGLException e) {
             e.printStackTrace();
             System.exit(0);
         }
 
         initGL();
+        //bindShaders();
 
         while (!Display.isCloseRequested()) {
             update();
@@ -92,6 +94,7 @@ public class gameWorldRender {
             //Display.sync(60); // cap fps to 60fps
         }
 
+        //releaseShaders();
         myTexture.release();
         myLogic.end();
         Display.destroy();
@@ -177,8 +180,6 @@ public class gameWorldRender {
 
         glPopMatrix();
 
-
-
         /*glDrawBuffer(GL_FRONT);
         glAccum(GL_ACCUM, 1f);
         glDrawBuffer(GL_BACK);
@@ -196,7 +197,7 @@ public class gameWorldRender {
         glReadPixels(Mouse.getX(), Mouse.getY(), 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, ib);
 
         if(getTime() - lastPrint > 1000){
-            TextureFactory.savePixelsBuffer();
+            //TextureFactory.savePixelsBuffer(); //slow
             lastPrint = getTime();
             if(myScene.idsMap.containsKey(ib.get(0)+"")){
                 System.out.println("SELECTED " + myScene.idsMap.get(ib.get(0)+"").name );

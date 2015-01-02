@@ -140,22 +140,83 @@ public class TextureFactory {
         String format = "PNG"; // Example: "PNG" or "JPG"
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
-        for(int x = 0; x < width; x++)
-        {
-            for(int y = 0; y < height; y++)
-            {
-                int i = (x + (width * y)) * BYTES_PER_PIXEL;
-                int r = buffer.get(i) & 0xFF;
-                int g = buffer.get(i + 1) & 0xFF;
-                int b = buffer.get(i + 2) & 0xFF;
-                image.setRGB(x, height - (y + 1), (0xFF << 24) | (r << 16) | (g << 8) | b);
+        boolean findEdges=true;
+
+        long time1 = System.currentTimeMillis();
+
+        for(int x = 1; x < width-1; x++) {
+            for(int y = 1; y < height-1; y++) {
+                if(findEdges){
+                    color c = getColor(x,y,buffer,width).toGray();
+                    color o = new color(0,0,0);
+                    float s = 1/8f;
+                    float d = 0.70711f/8f;
+
+                    o.addDiff(d, c,getColor(x-1,y-1,buffer,width).toGray());
+                    o.addDiff(s, c,getColor(x-1,y,buffer,width)  .toGray());
+                    o.addDiff(d, c,getColor(x-1,y+1,buffer,width).toGray());
+                    o.addDiff(s, c,getColor(x,y+1,buffer,width)  .toGray());
+                    o.addDiff(d, c,getColor(x+1,y+1,buffer,width).toGray());
+                    o.addDiff(s, c,getColor(x+1,y,buffer,width)  .toGray());
+                    o.addDiff(d, c,getColor(x+1,y-1,buffer,width).toGray());
+                    o.addDiff(s, c,getColor(x,y-1,buffer,width)  .toGray());
+
+                    image.setRGB(x, height - (y + 1), o.rgb());
+                }else{
+
+                    color c = getColor(x,y,buffer,width);
+                    image.setRGB(x, height - (y + 1), c.rgb());
+                }
+
+
             }
         }
 
+        long time2 = System.currentTimeMillis();
         try {
             ImageIO.write(image, format, file);
         } catch (IOException e) { e.printStackTrace(); }
 
-        System.out.println("img saved " + file.getAbsolutePath());
+        System.out.println("img saved " + file.getAbsolutePath() + " edges in " + (time2-time1) + ", saved in " + (System.currentTimeMillis()-time2));
+    }
+
+
+
+    public static color getColor(int x, int y, ByteBuffer buffer, int width){
+        int i = (x + (width * y)) * BYTES_PER_PIXEL;
+        return new color(
+                buffer.get(i) & 0xFF,
+                buffer.get(i + 1) & 0xFF,
+                buffer.get(i + 2) & 0xFF);
+    }
+
+    static class color{
+        public float r=0, g=0, b=0;
+        public color(float _r, float _g, float _b){
+            r=_r;
+            b=_b;
+            g=_g;
+        }
+
+        public int rgb(){
+            return (0xFF << 24) | ((int)r << 16) | ((int)g << 8) | (int)b;
+        }
+
+        public color toGray(){
+            float gray = (r+g+b)/3f;
+            return new color(gray,gray,gray);
+        }
+
+        public void addDiff(float s, color c, color d){
+            r+=(d.r-c.r)*s;
+            g+=(d.g-c.g)*s;
+            b+=(d.b-c.b)*s;
+        }
+
+        public void scale(float s){
+            r*=s;
+            g*=s;
+            b*=s;
+        }
     }
 }
