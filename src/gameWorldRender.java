@@ -187,7 +187,7 @@ public class gameWorldRender {
         glReadPixels(Mouse.getX(), Mouse.getY(), 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, ib);
 
         if(getTime() - lastPrint > 1000){
-            //TextureFactory.savePixelsBuffer();
+            TextureFactory.savePixelsBuffer();
             lastPrint = getTime();
             if(myScene.idsMap.containsKey(ib.get(0)+"")){
                 System.out.println("SELECTED " + myScene.idsMap.get(ib.get(0)+"").name );
