@@ -11,6 +11,7 @@ import org.newdawn.slick.opengl.TextureLoader;
 import shapes.tree;
 import utils.ShaderHelper;
 
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -21,8 +22,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.lwjgl.opengl.GL11.*;
-
+import org.lwjgl.opengl.GL14.*;
 import static org.lwjgl.util.glu.GLU.*;
+import static org.lwjgl.opengl.EXTFramebufferObject.*;
 
 public class gameWorldRender {
 
@@ -120,6 +122,10 @@ public class gameWorldRender {
     Texture myTexture;
     scene myScene;
 
+    int framebufferID;
+    int colorTextureID;
+    int depthRenderBufferID;
+
     public void initGL() {
         prepare3D();
 
@@ -134,6 +140,31 @@ public class gameWorldRender {
         //myLogic.theTree.updateCSG();
         myScene.addWorldObject(new WorldObject(myLogic.theTree));
         //myScene.addWorldObject(new WorldObject((x, y) -> (float)(1f-(SimplexNoise.noise(x/20f,y/20f)+1f)*(SimplexNoise.noise(x/20f,y/20f)+1f))*10f));
+
+
+        //http://wiki.lwjgl.org/index.php?title=Render_to_Texture_with_Frame_Buffer_Objects_%28FBO%29
+        // init our fbo
+
+        framebufferID = glGenFramebuffersEXT();                                         // create a new framebuffer
+        colorTextureID = glGenTextures();                                               // and a new texture used as a color buffer
+        depthRenderBufferID = glGenRenderbuffersEXT();                                  // And finally a new depthbuffer
+
+        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, framebufferID);                        // switch to the new framebuffer
+
+        // initialize color texture
+        glBindTexture(GL_TEXTURE_2D, colorTextureID);                                   // Bind the colorbuffer texture
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);               // make it linear filterd
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 512, 512, 0,GL_RGBA, GL_INT, (java.nio.ByteBuffer) null);  // Create the texture data
+        glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,GL_COLOR_ATTACHMENT0_EXT,GL_TEXTURE_2D, colorTextureID, 0); // attach it to the framebuffer
+
+
+        // initialize depth renderbuffer
+        glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, depthRenderBufferID);                // bind the depth renderbuffer
+        glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL14.GL_DEPTH_COMPONENT24, 512, 512); // get the data space for it
+        glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,GL_DEPTH_ATTACHMENT_EXT,GL_RENDERBUFFER_EXT, depthRenderBufferID); // bind it to the renderbuffer
+
+        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);                                    // Swithch back to normal framebuffer rendering
+
     }
 
     public void renderGL() {
@@ -159,6 +190,38 @@ public class gameWorldRender {
 
 
 
+        // FBO render pass
+
+        glViewport (0, 0, 512, 512);                                    // set The Current Viewport to the fbo size
+
+        glBindTexture(GL_TEXTURE_2D, 0);                                // unlink textures because if we dont it all is gonna fail
+        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, framebufferID);        // switch to rendering on our FBO
+
+        glClearColor (1.0f, 0.0f, 0.0f, 0.5f);
+        glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);            // Clear Screen And Depth Buffer on the fbo to red
+        glLoadIdentity ();
+        gluLookAt(500,500,500,centerPt.x,centerPt.y,centerPt.z,0,1,0);
+        glPushMatrix();
+        glScalef(zoom, zoom, zoom);
+        glTranslatef(centerPt.x, centerPt.y, centerPt.z);
+        glRotatef((float) rotationy, 0f, 1f, 0f);
+        glRotatef((float) rotationx, 1f, 0f, 0f);
+        glTranslatef(-centerPt.x, -centerPt.y, -centerPt.z);
+
+        myScene.drawScene();
+
+
+        // Normal render pass, draw cube with texture
+        glViewport (0, 0, myWidth, myHeight);
+        glEnable(GL_TEXTURE_2D);                                        // enable texturing
+        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);                    // switch to rendering on the framebuffer
+        glClearColor (0.0f, 0.0f, 0.0f, 0.5f);
+        glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);            // Clear Screen And Depth Buffer on the framebuffer to black
+        //glBindTexture(GL_TEXTURE_2D, colorTextureID);                   // bind our FBO texture
+
+
+        //normal render pass
+
         //glClear(GL_ACCUM_BUFFER_BIT);
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -177,6 +240,10 @@ public class gameWorldRender {
             glTranslatef(-centerPt.x, -centerPt.y, -centerPt.z);
 
             myScene.drawScene();
+
+            GeometryFactory.plane(colorTextureID);
+
+
 
         glPopMatrix();
 

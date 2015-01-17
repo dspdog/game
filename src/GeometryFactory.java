@@ -60,6 +60,32 @@ public class GeometryFactory {
         glDisable(GL_TEXTURE_2D);
     }
 
+    static void plane(int tex){
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, tex);
+        int size = 550;
+        glBegin(GL11.GL_QUADS);
+
+        glTexCoord2f(0, 0);
+        glColor3f(0, 0, 0);
+        glVertex3f(0, 0, 0);
+
+        glTexCoord2f(1, 0);
+        glColor3f(1, 1, 1);
+        glVertex3f(size, 0, 0);
+
+        glTexCoord2f(1, 1);
+        glColor3f(1, 1, 1);
+        glVertex3f(size, 0, size);
+
+        glTexCoord2f(0, 1);
+        glColor3f(1, 1, 1);
+        glVertex3f(0, 0, size);
+
+        glEnd();
+        glDisable(GL_TEXTURE_2D);
+    }
+
     static int[] treeVBOLineHandles(shapes.tree theTree){
         int vbo_vertex_handle = glGenBuffers();
         glBindBuffer(GL_ARRAY_BUFFER, vbo_vertex_handle);
