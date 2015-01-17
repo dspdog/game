@@ -16,6 +16,7 @@ import static org.lwjgl.opengl.ARBBufferObject.*;
 import static org.lwjgl.opengl.ARBVertexBufferObject.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
+import static org.lwjgl.util.glu.GLU.gluOrtho2D;
 
 public class GeometryFactory {
 
@@ -81,6 +82,62 @@ public class GeometryFactory {
         glTexCoord2f(0, 1);
         glColor3f(1, 1, 1);
         glVertex3f(0, 0, size);
+
+        glEnd();
+        glDisable(GL_TEXTURE_2D);
+    }
+
+    static void plane2D(int tex){
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, tex);
+        int size = 550;
+        glBegin(GL11.GL_QUADS);
+
+        glTexCoord2f(0, 0);
+        glColor3f(1, 1, 1);
+        glVertex3f(0, 0, 0);
+
+        glTexCoord2f(1, 0);
+        glColor3f(1, 1, 1);
+        glVertex3f(size, 0, 0);
+
+        glTexCoord2f(1, 1);
+        glColor3f(1, 1, 1);
+        glVertex3f(size, size, 0);
+
+        glTexCoord2f(0, 1);
+        glColor3f(1, 1, 1);
+        glVertex3f(0, size, 0);
+
+        glEnd();
+        glDisable(GL_TEXTURE_2D);
+    }
+
+
+    static void sprite(int tex){
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, tex);
+        int size = 256;
+        glBegin(GL11.GL_QUADS);
+
+        glTexCoord2f(0, 0);
+        glColor3f(1, 1, 1);
+        glVertex3f(0, 0, 0);
+
+        glTexCoord2f(1, 0);
+        glColor3f(1, 1, 1);
+        glVertex3f(gameWorldRender.cameraXVector.x * size, gameWorldRender.cameraXVector.y * size, gameWorldRender.cameraXVector.z * size);
+
+        glTexCoord2f(1, 1);
+        glColor3f(1, 1, 1);
+        glVertex3f(gameWorldRender.cameraXVector.x * size + gameWorldRender.cameraYVector.x * size,
+                    gameWorldRender.cameraXVector.y * size + gameWorldRender.cameraYVector.y * size,
+                    gameWorldRender.cameraXVector.z * size + gameWorldRender.cameraYVector.z * size);
+
+
+        glTexCoord2f(0, 1);
+        glColor3f(1, 1, 1);
+        glVertex3f(gameWorldRender.cameraYVector.x * size, gameWorldRender.cameraYVector.y * size, gameWorldRender.cameraYVector.z * size);
 
         glEnd();
         glDisable(GL_TEXTURE_2D);

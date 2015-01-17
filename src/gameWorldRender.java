@@ -1,5 +1,4 @@
 import eu.mihosoft.vrl.v3d.CSG;
-import factory.TextureFactory;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
@@ -22,7 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.lwjgl.opengl.GL11.*;
-import org.lwjgl.opengl.GL14.*;
 import static org.lwjgl.util.glu.GLU.*;
 import static org.lwjgl.opengl.EXTFramebufferObject.*;
 
@@ -188,7 +186,7 @@ public class gameWorldRender {
 
         float zoom = 5f*scrollPos;
 
-
+        prepare3D();
 
         // FBO render pass
 
@@ -209,7 +207,7 @@ public class gameWorldRender {
         glTranslatef(-centerPt.x, -centerPt.y, -centerPt.z);
 
         myScene.drawScene();
-
+        //GeometryFactory.sprite(colorTextureID);
 
         // Normal render pass, draw cube with texture
         glViewport (0, 0, myWidth, myHeight);
@@ -241,11 +239,13 @@ public class gameWorldRender {
 
             myScene.drawScene();
 
-            GeometryFactory.plane(colorTextureID);
 
 
 
         glPopMatrix();
+
+        prepare2D();
+        GeometryFactory.plane2D(colorTextureID);
 
         /*glDrawBuffer(GL_FRONT);
         glAccum(GL_ACCUM, 1f);
@@ -297,9 +297,9 @@ public class gameWorldRender {
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
 
-        glTranslatef(0.375f, 0.375f, 0.0f); //?
+        //glTranslatef(0.375f, 0.375f, 0.0f); //?
 
-        glDisable(GL_DEPTH_TEST);
+        //glDisable(GL_DEPTH_TEST);
     }
 
 
