@@ -4,19 +4,12 @@ import org.lwjgl.BufferUtils;
 import org.newdawn.slick.opengl.*;
 import org.lwjgl.opengl.GL11;
 
-import shapes.tree;
-import org.lwjgl.*;
-import org.lwjgl.opengl.*;
+import utils.CubeMarcher;
 
 import java.nio.FloatBuffer;
-import java.util.List;
-import java.util.function.DoubleBinaryOperator;
 
-import static org.lwjgl.opengl.ARBBufferObject.*;
-import static org.lwjgl.opengl.ARBVertexBufferObject.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.util.glu.GLU.gluOrtho2D;
 
 public class GeometryFactory {
 
@@ -87,10 +80,9 @@ public class GeometryFactory {
         glDisable(GL_TEXTURE_2D);
     }
 
-    static void plane2D(int tex){
+    static void plane2D(int tex, int size){
         glEnable(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, tex);
-        int size = 550;
         glBegin(GL11.GL_QUADS);
 
         glTexCoord2f(0, 0);

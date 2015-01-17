@@ -77,8 +77,8 @@ public class gameWorldRender {
 
         try {
             Display.setDisplayMode(new DisplayMode(myWidth, myHeight));
-            Display.create(new PixelFormat(0, 16, 8, 16)); //anti aliasing 16x max
-            //Display.create(new PixelFormat(0, 16, 8));
+            //Display.create(new PixelFormat(0, 16, 8, 16)); //anti aliasing 16x max
+            Display.create(new PixelFormat(0, 16, 8));
         } catch (LWJGLException e) {
             e.printStackTrace();
             System.exit(0);
@@ -103,8 +103,10 @@ public class gameWorldRender {
 
     private void bindShaders(){
         ShaderHelper.setupShaders("screen.vert", "screen.frag");
-        if(ShaderHelper.useShader)
+        if(ShaderHelper.useShader){
             ARBShaderObjects.glUseProgramObjectARB(ShaderHelper.program);
+        }
+        setTextureUnit0(ShaderHelper.program);
     }
 
     private void releaseShaders(){
@@ -166,6 +168,7 @@ public class gameWorldRender {
     }
 
     public void renderGL() {
+
         Vector3f centerPt = new Vector3f(50,50,50);
 
         double rotationx = 90f- 180f * Mouse.getY()/myHeight;
@@ -195,7 +198,7 @@ public class gameWorldRender {
         glBindTexture(GL_TEXTURE_2D, 0);                                // unlink textures because if we dont it all is gonna fail
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, framebufferID);        // switch to rendering on our FBO
 
-        glClearColor (1.0f, 0.0f, 0.0f, 0.5f);
+        glClearColor (0.0f, 0.0f, 1.0f, 1.0f);
         glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);            // Clear Screen And Depth Buffer on the fbo to red
         glLoadIdentity ();
         gluLookAt(500,500,500,centerPt.x,centerPt.y,centerPt.z,0,1,0);
@@ -215,6 +218,7 @@ public class gameWorldRender {
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);                    // switch to rendering on the framebuffer
         glClearColor (0.0f, 0.0f, 0.0f, 0.5f);
         glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);            // Clear Screen And Depth Buffer on the framebuffer to black
+
         //glBindTexture(GL_TEXTURE_2D, colorTextureID);                   // bind our FBO texture
 
 
@@ -245,8 +249,12 @@ public class gameWorldRender {
         glPopMatrix();
 
         prepare2D();
-        GeometryFactory.plane2D(colorTextureID);
+        bindShaders();
+        GL13.glActiveTexture(GL13.GL_TEXTURE0);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, colorTextureID);
 
+        GeometryFactory.plane2D(colorTextureID, 512);
+        releaseShaders();
         /*glDrawBuffer(GL_FRONT);
         glAccum(GL_ACCUM, 1f);
         glDrawBuffer(GL_BACK);
@@ -276,6 +284,14 @@ public class gameWorldRender {
 
         //glReadPixels(Mouse.getX(), Mouse.getY() - 1, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, fb);
         //System.out.println("depth?" +fb.get(0));
+    }
+
+    public void setTextureUnit0(int programId) {
+        //Please note your program must be linked before calling this and I would advise the program be in use also.
+        int loc = GL20.glGetUniformLocation(programId, "texture1");
+        //First of all, we retrieve the location of the sampler in memory.
+        GL20.glUniform1i(loc, 0);
+        //Then we pass the 0 value to the sampler meaning it is to use texture unit 0.
     }
 
     public void prepare3D(){ //see http://gamedev.stackexchange.com/questions/18468/making-a-hud-gui-with-opengl-lwjgl

@@ -1,3 +1,5 @@
+package utils;
+
 import org.lwjgl.BufferUtils;
 import shapes.tree;
 
