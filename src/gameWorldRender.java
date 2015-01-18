@@ -102,7 +102,8 @@ public class gameWorldRender {
     }
 
     private void bindShaders(){
-        ShaderHelper.setupShaders("screen.vert", "screen.frag");
+        ShaderHelper.setupShaders("screen.vert", "find_edges.frag");
+        //ShaderHelper.setupShaders("screen.vert", "plain_texture0.frag");
         if(ShaderHelper.useShader){
             ARBShaderObjects.glUseProgramObjectARB(ShaderHelper.program);
         }
