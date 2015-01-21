@@ -1,3 +1,4 @@
+
 uniform sampler2D texture1;
 
 float threshold(in float thr1, in float thr2 , in float val) {

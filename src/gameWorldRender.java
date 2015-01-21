@@ -14,6 +14,7 @@ import utils.ShaderHelper;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ import java.util.Map;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.util.glu.GLU.*;
 import static org.lwjgl.opengl.EXTFramebufferObject.*;
-
+import static org.lwjgl.opengl.ARBPixelBufferObject.*;
 public class gameWorldRender {
 
     public static Vector3f cameraXVector = new Vector3f(0,0,0);
@@ -36,6 +37,13 @@ public class gameWorldRender {
     public int myFPS = 0;
     public int myWidth, myHeight;
     public float myFOV;
+
+
+    // "index" is used to read pixels from framebuffer to a PBO
+    // "nextIndex" is used to update pixels in the other PBO
+    int frame_index;// = (index + 1) % 2;
+    int frame_nextIndex;// = (index + 1) % 2;
+
 
     long lastPrint=0;
 
@@ -72,7 +80,8 @@ public class gameWorldRender {
     }
 
     public void start() {
-
+        frame_index = 0;
+        frame_nextIndex = 0;
         lastFPS = getTime(); //initialise lastFPS by setting to current Time
 
         try {
@@ -166,9 +175,29 @@ public class gameWorldRender {
 
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);                                    // Swithch back to normal framebuffer rendering
 
+
+        ////////////////////////////////////////////////////////
+
+        glGenBuffersARB(pboIds);
+
+        glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, pboIds.get(0));
+        glBufferDataARB(GL_PIXEL_PACK_BUFFER_ARB, 512*512*3, GL_STREAM_READ_ARB);
+        glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, pboIds.get(1));
+        glBufferDataARB(GL_PIXEL_PACK_BUFFER_ARB, 512*512*3, GL_STREAM_READ_ARB);
+
+        glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, 0);
+
+        //System.out.println("PBO1 " + pboIds.get(0) + " PBO2 " + pboIds.get(1));
+
     }
 
+    IntBuffer pboIds = BufferUtils.createIntBuffer(2);
+    ByteBuffer pixels = BufferUtils.createByteBuffer(512 * 512 * 3);
+
     public void renderGL() {
+
+        frame_index = (frame_index + 1) % 2;
+        frame_nextIndex = (frame_index + 1) % 2;
 
         Vector3f centerPt = new Vector3f(50,50,50);
 
@@ -189,7 +218,7 @@ public class gameWorldRender {
         }
 
         float zoom = 5f*scrollPos;
-
+        glEnable(GL_DEPTH_TEST);
         prepare3D();
 
         // FBO render pass
@@ -265,6 +294,30 @@ public class gameWorldRender {
 
 
 
+
+        // set the target framebuffer to read
+        glReadBuffer(GL_FRONT);
+
+        // read pixels from framebuffer to PBO
+        // glReadPixels() should return immediately.
+        glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, pboIds.get(frame_index));
+        glReadPixels(0, 512, 512, 512, GL_RGB, GL_UNSIGNED_BYTE, 0); //anchor point for coords is LOWER LEFT
+
+        // map the PBO to process its data by CPU
+        glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, pboIds.get(frame_nextIndex));
+        pixels = ARBBufferObject.glMapBufferARB(GL_PIXEL_PACK_BUFFER_ARB, GL_READ_ONLY_ARB, 512*512*3, null);
+        processPixels();
+        glUnmapBufferARB(GL_PIXEL_PACK_BUFFER_ARB);
+
+
+        // back to conventional pixel operation
+        glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, 0);
+
+
+
+
+
+
         //sampling:
 
         IntBuffer ib = BufferUtils.createIntBuffer(1);
@@ -283,8 +336,23 @@ public class gameWorldRender {
         }
 
 
-        //glReadPixels(Mouse.getX(), Mouse.getY() - 1, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, fb);
+
+
+        //glReadPixels(0, 0, 512, 512, GL_LUMINANCE, GL_INT, pixels);
         //System.out.println("depth?" +fb.get(0));
+    }
+
+    public void processPixels(){
+        long _total = 0;
+        if(pixels.remaining()==0)pixels.flip();
+        for(int x=0; x<512*512; x++){
+            int r,g,b;
+            r=pixels.get();//R
+            g=pixels.get();//G
+            b=pixels.get();//B
+            _total+=(r+g+b);
+        }
+        //System.out.println("total?"+_total);
     }
 
     public void setTextureUnit0(int programId) {
