@@ -246,7 +246,7 @@ public class gameWorldRender {
         glViewport (0, 0, myWidth, myHeight);
         glEnable(GL_TEXTURE_2D);                                        // enable texturing
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);                    // switch to rendering on the framebuffer
-        glClearColor (0.0f, 0.0f, 0.0f, 0.5f);
+        glClearColor (0.5f, 0.5f, 0.5f, 0.5f);
         glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);            // Clear Screen And Depth Buffer on the framebuffer to black
 
         //glBindTexture(GL_TEXTURE_2D, colorTextureID);                   // bind our FBO texture
@@ -352,7 +352,7 @@ public class gameWorldRender {
             b=pixels.get();//B
             _total+=(r+g+b);
         }
-        //System.out.println("total?"+_total);
+        System.out.print("total?"+(_total/3_000_000f)+'\r');
     }
 
     public void setTextureUnit0(int programId) {
