@@ -6,22 +6,19 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 
-/**
- * Created by user on 11/24/2014.
- */
 public class ShaderHelper { //http://wiki.lwjgl.org/index.php?title=GLSL_Shaders_with_LWJGL
     /*
        * if the shaders are setup ok we can use shaders, otherwise we just
        * use default settings
        */
-    public static boolean useShader=false;
+    private static boolean useShader=false;
 
     /*
     * program shader, to which is attached a vertex and fragment shaders.
     * They are set to 0 as a check because GL will assign unique int
     * values to each
     */
-    public static int program=0;
+    private static int program=0;
 
     public static void bindShaders(){
         ShaderHelper.setupShaders("screen.vert", "find_edges.frag");
@@ -38,7 +35,7 @@ public class ShaderHelper { //http://wiki.lwjgl.org/index.php?title=GLSL_Shaders
     }
 
 
-    public static void setTextureUnit0(int programId) {
+    private static void setTextureUnit0(int programId) {
         //Please note your program must be linked before calling this and I would advise the program be in use also.
         int loc = GL20.glGetUniformLocation(programId, "texture1");
         //First of all, we retrieve the location of the sampler in memory.
@@ -46,7 +43,7 @@ public class ShaderHelper { //http://wiki.lwjgl.org/index.php?title=GLSL_Shaders
         //Then we pass the 0 value to the sampler meaning it is to use texture unit 0.
     }
 
-    static public void setupShaders(String vertShaderName, String fragShaderName){
+    private static void setupShaders(String vertShaderName, String fragShaderName){
         int vertShader = 0, fragShader = 0;
 
         try {

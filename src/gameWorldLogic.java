@@ -1,21 +1,19 @@
 import org.lwjgl.Sys;
 import shapes.tree;
-import utils.CubeMarcher;
 import utils.glHelper;
 
 public class gameWorldLogic implements Runnable {
 
-    boolean running = false;
+    private boolean running = false;
     long lastGameLogic;
 
     tree theTree;
 
-    public CubeMarcher cm = new CubeMarcher();
     public gameWorldLogic(){
 
     }
 
-    public void updateGameLogic(){
+    void updateGameLogic(){
         tree.cameraXVector.set(glHelper.cameraXVector);
         tree.cameraYVector.set(glHelper.cameraYVector);
         tree.cameraZVector.set(glHelper.cameraZVector);
@@ -30,7 +28,7 @@ public class gameWorldLogic implements Runnable {
         running=false;
     }
 
-    public void initWorld(){
+    void initWorld(){
         theTree = new tree();
         theTree.setToPreset(9); //1 or 0 or 9
         theTree.reIndex();
@@ -52,7 +50,7 @@ public class gameWorldLogic implements Runnable {
         }
     }
 
-    public long getTime() {
+    long getTime() {
         return (Sys.getTime() * 1000) / Sys.getTimerResolution();
     }
 }

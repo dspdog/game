@@ -7,7 +7,6 @@ import org.lwjgl.util.vector.Vector3f;
 import java.nio.FloatBuffer;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL11.glLoadIdentity;
 import static org.lwjgl.util.glu.GLU.gluOrtho2D;
 import static org.lwjgl.util.glu.GLU.gluPerspective;
 
@@ -20,7 +19,7 @@ public class glHelper {
     public static Vector3f cameraYVector = new Vector3f(0,0,0);
     public static Vector3f cameraZVector = new Vector3f(0,0,0);
 
-    public static void getCamVectors(){//http://www.gamedev.net/topic/397751-how-to-get-camera-pos/
+    public static void updateCamVectors(){//http://www.gamedev.net/topic/397751-how-to-get-camera-pos/
         FloatBuffer mdl = BufferUtils.createFloatBuffer(16);
         // save the current modelview matrix
         //glPushMatrix();

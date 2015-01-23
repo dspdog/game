@@ -16,7 +16,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,25 +30,26 @@ public class gameWorldRender {
     private int fps;
     private long lastFPS;
     private long startTime;
-    public int myFPS = 0;
-    public int myWidth, myHeight;
-    public float myFOV;
+    private int myFPS = 0;
+    private int myWidth;
+    private int myHeight;
+    private float myFOV;
 
     // "index" is used to read pixels from framebuffer to a PBO
     // "nextIndex" is used to update pixels in the other PBO
-    int frame_index;// = (index + 1) % 2;
-    int frame_nextIndex;// = (index + 1) % 2;
+    private int frame_index;// = (index + 1) % 2;
+    private int frame_nextIndex;// = (index + 1) % 2;
 
 
     long lastPrint=0;
 
-    long lastVBOUpdate=0;
+    private long lastVBOUpdate=0;
 
-    gameWorldLogic myLogic;
+    private gameWorldLogic myLogic;
 
-    public float scrollPos = 1.0f;
+    private float scrollPos = 1.0f;
 
-    boolean handlesFound = false;
+    private boolean handlesFound = false;
 
     public gameWorldRender(gameWorldLogic gl){
         myFOV = 75;
@@ -61,7 +61,7 @@ public class gameWorldRender {
 
     }
 
-    public void updateFPS() {
+    void updateFPS() {
         if (getTime() - lastFPS > 1000) {
             myFPS = fps;
             fps = 0;
@@ -71,7 +71,7 @@ public class gameWorldRender {
         fps++;
     }
 
-    float mySurfaceTotal = 0;
+    private float mySurfaceTotal = 0;
     private void updateConsoleString(){
         String console = "FPS: " + myFPS +
                         "\nSURFACE: " + mySurfaceTotal +
@@ -79,7 +79,7 @@ public class gameWorldRender {
         gameConsole.setConsoleString(console);
     }
 
-    public long getTime() {
+    long getTime() {
         return (Sys.getTime() * 1000) / Sys.getTimerResolution();
     }
 
@@ -116,18 +116,18 @@ public class gameWorldRender {
 
 
 
-    public void update() {
+    void update() {
         updateFPS();
     }
 
-    Texture myTexture;
-    scene myScene;
+    private Texture myTexture;
+    private scene myScene;
 
-    int framebufferID;
-    int colorTextureID;
-    int depthRenderBufferID;
+    private int framebufferID;
+    private int colorTextureID;
+    private int depthRenderBufferID;
 
-    public void initGL() {
+    void initGL() {
         glHelper.prepare3D(myWidth, myHeight, myFOV);
 
         try {
@@ -182,10 +182,10 @@ public class gameWorldRender {
 
     }
 
-    IntBuffer pboIds = BufferUtils.createIntBuffer(2);
-    ByteBuffer pixels = BufferUtils.createByteBuffer(512 * 512 * 3);
+    private IntBuffer pboIds = BufferUtils.createIntBuffer(2);
+    private ByteBuffer pixels = BufferUtils.createByteBuffer(512 * 512 * 3);
 
-    public void renderGL() {
+    void renderGL() {
 
         frame_index = (frame_index + 1) % 2;
         frame_nextIndex = (frame_index + 1) % 2;
@@ -307,8 +307,8 @@ public class gameWorldRender {
     }
 
 
-    String mySelection = "";
-    public void sampleScreen(){
+    private String mySelection = "";
+    void sampleScreen(){
         //sampling:
 
         IntBuffer ib = BufferUtils.createIntBuffer(1);
@@ -322,7 +322,7 @@ public class gameWorldRender {
         }
     }
 
-    public void processPixels(){
+    void processPixels(){
         long _total = 0;
         if(pixels.remaining()==0)pixels.flip();
         for(int x=0; x<512*512; x++){
@@ -342,10 +342,10 @@ public class gameWorldRender {
 
     class scene{
         private ArrayList<WorldObject> objs;
-        public Map<String, WorldObject> idsMap = new HashMap<String, WorldObject>();
+        public Map<String, WorldObject> idsMap = new HashMap<>();
 
         public void drawScene(){
-            glHelper.getCamVectors();
+            glHelper.updateCamVectors();
             for(WorldObject wo : objs){
                 glStencilFunc(GL_ALWAYS, wo.stencilId + 1, -1);
                 if(wo.isCSG){

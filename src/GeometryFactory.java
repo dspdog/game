@@ -4,6 +4,7 @@ import org.lwjgl.BufferUtils;
 import org.newdawn.slick.opengl.*;
 import org.lwjgl.opengl.GL11;
 
+import shapes.tree;
 import utils.CubeMarcher;
 import utils.glHelper;
 
@@ -144,12 +145,12 @@ public class GeometryFactory {
     static int[] treeVBOLineHandles(shapes.tree theTree){
         int vbo_vertex_handle = glGenBuffers();
         glBindBuffer(GL_ARRAY_BUFFER, vbo_vertex_handle);
-        glBufferData(GL_ARRAY_BUFFER, theTree.vertex_data, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, tree.vertex_data, GL_STATIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
         int vbo_color_handle = glGenBuffers();
         glBindBuffer(GL_ARRAY_BUFFER, vbo_color_handle);
-        glBufferData(GL_ARRAY_BUFFER, theTree.color_data, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, tree.color_data, GL_STATIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
         return new int[]{vbo_vertex_handle,vbo_color_handle};
@@ -158,12 +159,12 @@ public class GeometryFactory {
     static int[] treeVBOQuadHandles(shapes.tree theTree){
         int vbo_vertex_handle = glGenBuffers();
         glBindBuffer(GL_ARRAY_BUFFER, vbo_vertex_handle);
-        glBufferData(GL_ARRAY_BUFFER, theTree.vertex_data2, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, tree.vertex_data2, GL_STATIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
         int vbo_color_handle = glGenBuffers();
         glBindBuffer(GL_ARRAY_BUFFER, vbo_color_handle);
-        glBufferData(GL_ARRAY_BUFFER, theTree.color_data2, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, tree.color_data2, GL_STATIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
         return new int[]{vbo_vertex_handle,vbo_color_handle};
