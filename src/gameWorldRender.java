@@ -11,7 +11,6 @@ import shapes.tree;
 import utils.ShaderHelper;
 import utils.glHelper;
 
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -34,6 +33,8 @@ public class gameWorldRender {
     private int myWidth;
     private int myHeight;
     private float myFOV;
+
+    private String mySelection = "";
 
     // "index" is used to read pixels from framebuffer to a PBO
     // "nextIndex" is used to update pixels in the other PBO
@@ -190,20 +191,6 @@ public class gameWorldRender {
         frame_index = (frame_index + 1) % 2;
         frame_nextIndex = (frame_index + 1) % 2;
 
-        Vector3f centerPt = new Vector3f(50,50,50);
-
-        double rotationx = 90f- 180f * Mouse.getY()/myHeight;
-        double rotationy = Mouse.getX();
-
-        int scroll = Mouse.getDWheel();
-
-        if(scroll<0){
-            scrollPos*=0.95f;
-        }else if(scroll>0){
-            scrollPos*=1.05f;
-        }
-
-        float zoom = 5f*scrollPos;
         glEnable(GL_DEPTH_TEST);
         glHelper.prepare3D(myWidth, myHeight, myFOV);
 
@@ -216,14 +203,7 @@ public class gameWorldRender {
 
         glClearColor (0.0f, 0.0f, 1.0f, 1.0f);
         glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);            // Clear Screen And Depth Buffer on the fbo to red
-        glLoadIdentity ();
-        gluLookAt(500,500,500,centerPt.x,centerPt.y,centerPt.z,0,1,0);
-        glPushMatrix();
-            glScalef(zoom, zoom, zoom);
-            glTranslatef(centerPt.x, centerPt.y, centerPt.z);
-            glRotatef((float) rotationy, 0f, 1f, 0f);
-            glRotatef((float) rotationx, 1f, 0f, 0f);
-            glTranslatef(-centerPt.x, -centerPt.y, -centerPt.z);
+        cameraTransform();
 
         myScene.drawScene();
 
@@ -249,15 +229,8 @@ public class gameWorldRender {
         glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
         //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-        glLoadIdentity();
-        gluLookAt(500,500,500,centerPt.x,centerPt.y,centerPt.z,0,1,0);
-        glPushMatrix();
-            glScalef(zoom, zoom, zoom);
-            glTranslatef(centerPt.x, centerPt.y, centerPt.z);
-            glRotatef((float) rotationy, 0f, 1f, 0f);
-            glRotatef((float) rotationx, 1f, 0f, 0f);
-            glTranslatef(-centerPt.x, -centerPt.y, -centerPt.z);
-            myScene.drawScene();
+        cameraTransform();
+        myScene.drawScene();
 
         glPopMatrix();
 
@@ -306,17 +279,36 @@ public class gameWorldRender {
         //glReadPixels(0, 0, 512, 512, GL_LUMINANCE, GL_INT, pixels);
     }
 
+    void cameraTransform(){
+        double rotationx = 90f- 180f * Mouse.getY()/myHeight;
+        double rotationy = Mouse.getX();
 
-    private String mySelection = "";
+        int scroll = Mouse.getDWheel();
+
+        if(scroll<0){
+            scrollPos*=0.95f;
+        }else if(scroll>0){
+            scrollPos*=1.05f;
+        }
+
+        Vector3f centerPt = new Vector3f(50,50,50);
+
+        float zoom = 5f*scrollPos;
+
+        glLoadIdentity();
+        gluLookAt(500,500,500,centerPt.x,centerPt.y,centerPt.z,0,1,0);
+        glPushMatrix();
+        glScalef(zoom, zoom, zoom);
+        glTranslatef(centerPt.x, centerPt.y, centerPt.z);
+        glRotatef((float) rotationy, 0f, 1f, 0f);
+        glRotatef((float) rotationx, 1f, 0f, 0f);
+        glTranslatef(-centerPt.x, -centerPt.y, -centerPt.z);
+    }
+
     void sampleScreen(){
-        //sampling:
-
-        IntBuffer ib = BufferUtils.createIntBuffer(1);
-
-        glReadPixels(Mouse.getX(), Mouse.getY(), 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, ib);
-
-        if(myScene.idsMap.containsKey(ib.get(0)+"")){
-            mySelection = myScene.idsMap.get(ib.get(0) + "").name;
+        int stencilValue = glHelper.sampleStencil(Mouse.getX(), Mouse.getY());
+        if(myScene.idsMap.containsKey(stencilValue+"")){
+            mySelection = myScene.idsMap.get(stencilValue+"").name;
         }else{
             mySelection = "NONE";
         }

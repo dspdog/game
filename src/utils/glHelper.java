@@ -1,10 +1,12 @@
 package utils;
 
 import org.lwjgl.BufferUtils;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector3f;
 
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.util.glu.GLU.gluOrtho2D;
@@ -18,6 +20,12 @@ public class glHelper {
     public static Vector3f cameraXVector = new Vector3f(0,0,0);
     public static Vector3f cameraYVector = new Vector3f(0,0,0);
     public static Vector3f cameraZVector = new Vector3f(0,0,0);
+
+    public static int sampleStencil(int x, int y){ //sample single pixel of Stencil Buffer
+        IntBuffer ib = BufferUtils.createIntBuffer(1);
+        glReadPixels(x,y, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, ib);
+        return ib.get(0);
+    }
 
     public static void updateCamVectors(){//http://www.gamedev.net/topic/397751-how-to-get-camera-pos/
         FloatBuffer mdl = BufferUtils.createFloatBuffer(16);
