@@ -5,6 +5,7 @@ import org.newdawn.slick.opengl.*;
 import org.lwjgl.opengl.GL11;
 
 import utils.CubeMarcher;
+import utils.glHelper;
 
 import java.nio.FloatBuffer;
 
@@ -123,18 +124,18 @@ public class GeometryFactory {
 
         glTexCoord2f(1, 0);
         glColor3f(1, 1, 1);
-        glVertex3f(gameWorldRender.cameraXVector.x * size, gameWorldRender.cameraXVector.y * size, gameWorldRender.cameraXVector.z * size);
+        glVertex3f(glHelper.cameraXVector.x * size, glHelper.cameraXVector.y * size, glHelper.cameraXVector.z * size);
 
         glTexCoord2f(1, 1);
         glColor3f(1, 1, 1);
-        glVertex3f(gameWorldRender.cameraXVector.x * size + gameWorldRender.cameraYVector.x * size,
-                    gameWorldRender.cameraXVector.y * size + gameWorldRender.cameraYVector.y * size,
-                    gameWorldRender.cameraXVector.z * size + gameWorldRender.cameraYVector.z * size);
+        glVertex3f(glHelper.cameraXVector.x * size + glHelper.cameraYVector.x * size,
+                    glHelper.cameraXVector.y * size + glHelper.cameraYVector.y * size,
+                    glHelper.cameraXVector.z * size + glHelper.cameraYVector.z * size);
 
 
         glTexCoord2f(0, 1);
         glColor3f(1, 1, 1);
-        glVertex3f(gameWorldRender.cameraYVector.x * size, gameWorldRender.cameraYVector.y * size, gameWorldRender.cameraYVector.z * size);
+        glVertex3f(glHelper.cameraYVector.x * size, glHelper.cameraYVector.y * size, glHelper.cameraYVector.z * size);
 
         glEnd();
         glDisable(GL_TEXTURE_2D);

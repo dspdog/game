@@ -1,5 +1,4 @@
 import eu.mihosoft.vrl.v3d.CSG;
-import factory.TextureFactory;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
@@ -10,6 +9,7 @@ import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 import shapes.tree;
 import utils.ShaderHelper;
+import utils.glHelper;
 
 
 import java.io.File;
@@ -28,18 +28,12 @@ import static org.lwjgl.opengl.EXTFramebufferObject.*;
 import static org.lwjgl.opengl.ARBPixelBufferObject.*;
 public class gameWorldRender {
 
-    public static Vector3f cameraXVector = new Vector3f(0,0,0);
-    public static Vector3f cameraYVector = new Vector3f(0,0,0);
-    public static Vector3f cameraZVector = new Vector3f(0,0,0);
-
     private int fps;
     private long lastFPS;
-    private long lastConsoleUpdate;
     private long startTime;
     public int myFPS = 0;
     public int myWidth, myHeight;
     public float myFOV;
-
 
     // "index" is used to read pixels from framebuffer to a PBO
     // "nextIndex" is used to update pixels in the other PBO
@@ -73,18 +67,16 @@ public class gameWorldRender {
             fps = 0;
             lastFPS += 1000;
         }
-        if (getTime() - lastConsoleUpdate > 100) {
-            lastConsoleUpdate = getTime();
-            consoleTexture = TextureFactory.proceduralTexture(getConsoleString(), consoleWidth, consoleHeight);
-        }
+
         fps++;
     }
 
     float mySurfaceTotal = 0;
-    private String getConsoleString(){
-        return    "FPS: " + myFPS +
-                "\nSURFACE: " + mySurfaceTotal +
-                "\nSELECTED: " + mySelection;
+    private void updateConsoleString(){
+        String console = "FPS: " + myFPS +
+                        "\nSURFACE: " + mySurfaceTotal +
+                        "\nSELECTED: " + mySelection;
+        gameConsole.setConsoleString(console);
     }
 
     public long getTime() {
@@ -122,19 +114,6 @@ public class gameWorldRender {
         System.exit(1);
     }
 
-    private void bindShaders(){
-        ShaderHelper.setupShaders("screen.vert", "find_edges.frag");
-        //ShaderHelper.setupShaders("screen.vert", "plain_texture0.frag");
-        if(ShaderHelper.useShader){
-            ARBShaderObjects.glUseProgramObjectARB(ShaderHelper.program);
-        }
-        setTextureUnit0(ShaderHelper.program);
-    }
-
-    private void releaseShaders(){
-        if(ShaderHelper.useShader)
-            ARBShaderObjects.glUseProgramObjectARB(0);
-    }
 
 
     public void update() {
@@ -149,7 +128,7 @@ public class gameWorldRender {
     int depthRenderBufferID;
 
     public void initGL() {
-        prepare3D();
+        glHelper.prepare3D(myWidth, myHeight, myFOV);
 
         try {
             myTexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("./res/myball.png")));
@@ -206,10 +185,6 @@ public class gameWorldRender {
     IntBuffer pboIds = BufferUtils.createIntBuffer(2);
     ByteBuffer pixels = BufferUtils.createByteBuffer(512 * 512 * 3);
 
-    int consoleTexture = 0;
-    int consoleWidth = 512;
-    int consoleHeight = 128;
-
     public void renderGL() {
 
         frame_index = (frame_index + 1) % 2;
@@ -222,11 +197,6 @@ public class gameWorldRender {
 
         int scroll = Mouse.getDWheel();
 
-        int window_width = Display.getWidth(); //glutGet(GLUT_WINDOW_WIDTH);
-        int window_height = Display.getHeight();
-        int index = 0;
-
-
         if(scroll<0){
             scrollPos*=0.95f;
         }else if(scroll>0){
@@ -235,7 +205,7 @@ public class gameWorldRender {
 
         float zoom = 5f*scrollPos;
         glEnable(GL_DEPTH_TEST);
-        prepare3D();
+        glHelper.prepare3D(myWidth, myHeight, myFOV);
 
         // FBO render pass
 
@@ -249,14 +219,16 @@ public class gameWorldRender {
         glLoadIdentity ();
         gluLookAt(500,500,500,centerPt.x,centerPt.y,centerPt.z,0,1,0);
         glPushMatrix();
-        glScalef(zoom, zoom, zoom);
-        glTranslatef(centerPt.x, centerPt.y, centerPt.z);
-        glRotatef((float) rotationy, 0f, 1f, 0f);
-        glRotatef((float) rotationx, 1f, 0f, 0f);
-        glTranslatef(-centerPt.x, -centerPt.y, -centerPt.z);
+            glScalef(zoom, zoom, zoom);
+            glTranslatef(centerPt.x, centerPt.y, centerPt.z);
+            glRotatef((float) rotationy, 0f, 1f, 0f);
+            glRotatef((float) rotationx, 1f, 0f, 0f);
+            glTranslatef(-centerPt.x, -centerPt.y, -centerPt.z);
 
         myScene.drawScene();
-        //GeometryFactory.sprite(colorTextureID);
+
+
+
 
         // Normal render pass, draw cube with texture
         glViewport (0, 0, myWidth, myHeight);
@@ -282,29 +254,32 @@ public class gameWorldRender {
         glPushMatrix();
             glScalef(zoom, zoom, zoom);
             glTranslatef(centerPt.x, centerPt.y, centerPt.z);
-        glRotatef((float) rotationy, 0f, 1f, 0f);
+            glRotatef((float) rotationy, 0f, 1f, 0f);
             glRotatef((float) rotationx, 1f, 0f, 0f);
             glTranslatef(-centerPt.x, -centerPt.y, -centerPt.z);
             myScene.drawScene();
 
         glPopMatrix();
 
-        prepare2D();
-        bindShaders();
+
+
+
+
+        glHelper.prepare2D(myWidth, myHeight);
+        ShaderHelper.bindShaders();
         GL13.glActiveTexture(GL13.GL_TEXTURE0);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, colorTextureID);
 
         GeometryFactory.plane2D(colorTextureID, 512, 0, 0);
-        releaseShaders();
+        ShaderHelper.releaseShaders();
         /*glDrawBuffer(GL_FRONT);
         glAccum(GL_ACCUM, 1f);
         glDrawBuffer(GL_BACK);
 
         glAccum(GL_RETURN, 0.1f);//push bach to draw buffer
         */
-
-
-        drawConsole();
+        updateConsoleString();
+        gameConsole.draw(myWidth, myHeight, 512, 256);
 
         // set the target framebuffer to read
         glReadBuffer(GL_FRONT);
@@ -325,38 +300,27 @@ public class gameWorldRender {
         glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, 0);
 
 
-        //sampling:
-
-        IntBuffer ib = BufferUtils.createIntBuffer(1);
-        //FloatBuffer fb = BufferUtils.createFloatBuffer(1);
-
-        glReadPixels(Mouse.getX(), Mouse.getY(), 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, ib);
-
-        if(getTime() - lastPrint > 1000){
-            //TextureFactory.savePixelsBuffer(); //slow
-            lastPrint = getTime();
-            if(myScene.idsMap.containsKey(ib.get(0)+"")){
-                mySelection = myScene.idsMap.get(ib.get(0) + "").name;
-            }else{
-                mySelection = "NONE";
-            }
-        }
-
-
+        sampleScreen();
 
 
         //glReadPixels(0, 0, 512, 512, GL_LUMINANCE, GL_INT, pixels);
-        //System.out.println("depth?" +fb.get(0));
     }
 
-    public void drawConsole(){
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        prepare2D();
-        GeometryFactory.plane2D(consoleTexture, consoleWidth, consoleHeight, 512, 0);
-    }
 
     String mySelection = "";
+    public void sampleScreen(){
+        //sampling:
+
+        IntBuffer ib = BufferUtils.createIntBuffer(1);
+
+        glReadPixels(Mouse.getX(), Mouse.getY(), 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, ib);
+
+        if(myScene.idsMap.containsKey(ib.get(0)+"")){
+            mySelection = myScene.idsMap.get(ib.get(0) + "").name;
+        }else{
+            mySelection = "NONE";
+        }
+    }
 
     public void processPixels(){
         long _total = 0;
@@ -372,61 +336,16 @@ public class gameWorldRender {
         mySurfaceTotal = (_total / 3_000_000f);
     }
 
-    public void setTextureUnit0(int programId) {
-        //Please note your program must be linked before calling this and I would advise the program be in use also.
-        int loc = GL20.glGetUniformLocation(programId, "texture1");
-        //First of all, we retrieve the location of the sampler in memory.
-        GL20.glUniform1i(loc, 0);
-        //Then we pass the 0 value to the sampler meaning it is to use texture unit 0.
-    }
-
-    public void prepare3D(){ //see http://gamedev.stackexchange.com/questions/18468/making-a-hud-gui-with-opengl-lwjgl
-        glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
-        gluPerspective(myFOV, ((float)myWidth) / ((float)myHeight), 0.01f, 5000f);
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
-
-        //glEnable(GL_DEPTH_TEST);
-        //glDepthFunc(GL_LEQUAL);
-        //glDepthFunc(GL_NEVER);
-    }
-
-    public void prepare2D(){ //see http://gamedev.stackexchange.com/questions/18468/making-a-hud-gui-with-opengl-lwjgl
-        glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
-        gluOrtho2D(0, myWidth, myHeight, 0.0f);
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
-
-        //glTranslatef(0.375f, 0.375f, 0.0f); //?
-
-        //glDisable(GL_DEPTH_TEST);
-    }
 
 
-    public static void getCamVectors(){//http://www.gamedev.net/topic/397751-how-to-get-camera-pos/
-        FloatBuffer mdl = BufferUtils.createFloatBuffer(16);
-        // save the current modelview matrix
-        //glPushMatrix();
-        // get the current modelview matrix
-        GL11.glGetFloat(GL_MODELVIEW_MATRIX, mdl);
 
-        cameraXVector = new Vector3f(mdl.get(0),mdl.get(4),mdl.get(8));
-        cameraYVector = new Vector3f(mdl.get(1),mdl.get(5),mdl.get(9));
-        cameraZVector = new Vector3f(mdl.get(2),mdl.get(6),mdl.get(10));
-
-        cameraXVector.normalise();
-        cameraYVector.normalise();
-        cameraZVector.normalise();
-    }
 
     class scene{
         private ArrayList<WorldObject> objs;
         public Map<String, WorldObject> idsMap = new HashMap<String, WorldObject>();
 
         public void drawScene(){
-            getCamVectors();
+            glHelper.getCamVectors();
             for(WorldObject wo : objs){
                 glStencilFunc(GL_ALWAYS, wo.stencilId + 1, -1);
                 if(wo.isCSG){

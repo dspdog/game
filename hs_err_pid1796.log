@@ -82,7 +82,7 @@ Java frames: (J=compiled Java code, j=interpreted, Vv=VM code)
 J 1112  org.lwjgl.opengl.GL11.nglTexImage2D(IIIIIIIIJJ)V (0 bytes) @ 0x0000000002ce1d85 [0x0000000002ce1d00+0x85]
 J 1069 C1 org.lwjgl.opengl.GL11.glTexImage2D(IIIIIIIILjava/nio/ByteBuffer;)V (67 bytes) @ 0x0000000002cc3854 [0x0000000002cc2b00+0xd54]
 J 587 C2 factory.TextureFactory.loadTexture(Ljava/awt/image/BufferedImage;)I (243 bytes) @ 0x0000000002b75048 [0x0000000002b74480+0xbc8]
-J 1057 C1 factory.TextureFactory.proceduralTexture(Ljava/lang/String;)I (135 bytes) @ 0x0000000002cb5f9c [0x0000000002cb5540+0xa5c]
+J 1057 C1 stringToTexture(Ljava/lang/String;)I (135 bytes) @ 0x0000000002cb5f9c [0x0000000002cb5540+0xa5c]
 J 1212 C1 gameWorldRender.renderGL()V (755 bytes) @ 0x0000000002d4051c [0x0000000002d32c80+0xd89c]
 j  gameWorldRender.start()V+78
 j  game.main([Ljava/lang/String;)V+29

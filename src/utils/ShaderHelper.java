@@ -1,9 +1,6 @@
 package utils;
 
-import org.lwjgl.opengl.ARBFragmentShader;
-import org.lwjgl.opengl.ARBShaderObjects;
-import org.lwjgl.opengl.ARBVertexShader;
-import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.*;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -25,6 +22,29 @@ public class ShaderHelper { //http://wiki.lwjgl.org/index.php?title=GLSL_Shaders
     * values to each
     */
     public static int program=0;
+
+    public static void bindShaders(){
+        ShaderHelper.setupShaders("screen.vert", "find_edges.frag");
+        //ShaderHelper.setupShaders("screen.vert", "plain_texture0.frag");
+        if(ShaderHelper.useShader){
+            ARBShaderObjects.glUseProgramObjectARB(ShaderHelper.program);
+        }
+        ShaderHelper.setTextureUnit0(ShaderHelper.program);
+    }
+
+    public static void releaseShaders(){
+        if(ShaderHelper.useShader)
+            ARBShaderObjects.glUseProgramObjectARB(0);
+    }
+
+
+    public static void setTextureUnit0(int programId) {
+        //Please note your program must be linked before calling this and I would advise the program be in use also.
+        int loc = GL20.glGetUniformLocation(programId, "texture1");
+        //First of all, we retrieve the location of the sampler in memory.
+        GL20.glUniform1i(loc, 0);
+        //Then we pass the 0 value to the sampler meaning it is to use texture unit 0.
+    }
 
     static public void setupShaders(String vertShaderName, String fragShaderName){
         int vertShader = 0, fragShader = 0;

@@ -51,7 +51,7 @@ public class TextureFactory {
         //
     }
 
-    static public int proceduralTexture(String str, int width, int height){  //http://www.java-gaming.org/index.php?topic=25516.0
+    static public int stringToTexture(String str, int width, int height){  //http://www.java-gaming.org/index.php?topic=25516.0
         //Generate a small test image by drawing to a BufferedImage
         //It's of course also possible to just load an image using ImageIO.load()
         BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
