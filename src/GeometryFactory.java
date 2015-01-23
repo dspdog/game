@@ -80,26 +80,31 @@ public class GeometryFactory {
         glDisable(GL_TEXTURE_2D);
     }
 
-    static void plane2D(int tex, int size){
+
+    static void plane2D(int tex, int size, int x, int y){
+        plane2D(tex, size, size, x, y);
+    }
+
+    static void plane2D(int tex, int width, int height, int x, int y){
         glEnable(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, tex);
         glBegin(GL11.GL_QUADS);
 
         glTexCoord2f(0, 0);
         glColor3f(1, 1, 1);
-        glVertex3f(0, 0, 0);
+        glVertex3f(x, y, 0);
 
         glTexCoord2f(1, 0);
         glColor3f(1, 1, 1);
-        glVertex3f(size, 0, 0);
+        glVertex3f(width+x, y, 0);
 
         glTexCoord2f(1, 1);
         glColor3f(1, 1, 1);
-        glVertex3f(size, size, 0);
+        glVertex3f(width+x, height+y, 0);
 
         glTexCoord2f(0, 1);
         glColor3f(1, 1, 1);
-        glVertex3f(0, size, 0);
+        glVertex3f(x, height+y, 0);
 
         glEnd();
         glDisable(GL_TEXTURE_2D);

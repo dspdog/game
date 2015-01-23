@@ -1,4 +1,5 @@
 import eu.mihosoft.vrl.v3d.CSG;
+import factory.TextureFactory;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
@@ -33,6 +34,7 @@ public class gameWorldRender {
 
     private int fps;
     private long lastFPS;
+    private long lastConsoleUpdate;
     private long startTime;
     public int myFPS = 0;
     public int myWidth, myHeight;
@@ -68,11 +70,21 @@ public class gameWorldRender {
     public void updateFPS() {
         if (getTime() - lastFPS > 1000) {
             myFPS = fps;
-            Display.setTitle("FPS: " + myFPS);
             fps = 0;
             lastFPS += 1000;
         }
+        if (getTime() - lastConsoleUpdate > 100) {
+            lastConsoleUpdate = getTime();
+            consoleTexture = TextureFactory.proceduralTexture(getConsoleString(), consoleWidth, consoleHeight);
+        }
         fps++;
+    }
+
+    float mySurfaceTotal = 0;
+    private String getConsoleString(){
+        return    "FPS: " + myFPS +
+                "\nSURFACE: " + mySurfaceTotal +
+                "\nSELECTED: " + mySelection;
     }
 
     public long getTime() {
@@ -194,6 +206,10 @@ public class gameWorldRender {
     IntBuffer pboIds = BufferUtils.createIntBuffer(2);
     ByteBuffer pixels = BufferUtils.createByteBuffer(512 * 512 * 3);
 
+    int consoleTexture = 0;
+    int consoleWidth = 512;
+    int consoleHeight = 128;
+
     public void renderGL() {
 
         frame_index = (frame_index + 1) % 2;
@@ -251,7 +267,6 @@ public class gameWorldRender {
 
         //glBindTexture(GL_TEXTURE_2D, colorTextureID);                   // bind our FBO texture
 
-
         //normal render pass
 
         //glClear(GL_ACCUM_BUFFER_BIT);
@@ -270,11 +285,7 @@ public class gameWorldRender {
         glRotatef((float) rotationy, 0f, 1f, 0f);
             glRotatef((float) rotationx, 1f, 0f, 0f);
             glTranslatef(-centerPt.x, -centerPt.y, -centerPt.z);
-
             myScene.drawScene();
-
-
-
 
         glPopMatrix();
 
@@ -283,7 +294,7 @@ public class gameWorldRender {
         GL13.glActiveTexture(GL13.GL_TEXTURE0);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, colorTextureID);
 
-        GeometryFactory.plane2D(colorTextureID, 512);
+        GeometryFactory.plane2D(colorTextureID, 512, 0, 0);
         releaseShaders();
         /*glDrawBuffer(GL_FRONT);
         glAccum(GL_ACCUM, 1f);
@@ -293,7 +304,7 @@ public class gameWorldRender {
         */
 
 
-
+        drawConsole();
 
         // set the target framebuffer to read
         glReadBuffer(GL_FRONT);
@@ -314,10 +325,6 @@ public class gameWorldRender {
         glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, 0);
 
 
-
-
-
-
         //sampling:
 
         IntBuffer ib = BufferUtils.createIntBuffer(1);
@@ -329,9 +336,9 @@ public class gameWorldRender {
             //TextureFactory.savePixelsBuffer(); //slow
             lastPrint = getTime();
             if(myScene.idsMap.containsKey(ib.get(0)+"")){
-                System.out.println("SELECTED " + myScene.idsMap.get(ib.get(0)+"").name );
+                mySelection = myScene.idsMap.get(ib.get(0) + "").name;
             }else{
-                System.out.println("SELECTED NONE ");
+                mySelection = "NONE";
             }
         }
 
@@ -341,6 +348,15 @@ public class gameWorldRender {
         //glReadPixels(0, 0, 512, 512, GL_LUMINANCE, GL_INT, pixels);
         //System.out.println("depth?" +fb.get(0));
     }
+
+    public void drawConsole(){
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        prepare2D();
+        GeometryFactory.plane2D(consoleTexture, consoleWidth, consoleHeight, 512, 0);
+    }
+
+    String mySelection = "";
 
     public void processPixels(){
         long _total = 0;
@@ -352,7 +368,8 @@ public class gameWorldRender {
             b=pixels.get();//B
             _total+=(r+g+b);
         }
-        System.out.print("total?"+(_total/3_000_000f)+'\r');
+        //myLogic.theTree.saveToFile("ok");
+        mySurfaceTotal = (_total / 3_000_000f);
     }
 
     public void setTextureUnit0(int programId) {
@@ -435,7 +452,6 @@ public class gameWorldRender {
 
         public void addWorldObject(WorldObject wo){
             objs.add(wo);
-            System.out.println("ADDING " + (wo.stencilId+1));
             idsMap.put((wo.stencilId+1)+"", wo);
         }
     }

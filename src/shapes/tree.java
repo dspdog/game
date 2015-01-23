@@ -1,8 +1,5 @@
 package shapes;
 
-import eu.mihosoft.vrl.v3d.CSG;
-import eu.mihosoft.vrl.v3d.Cylinder;
-import eu.mihosoft.vrl.v3d.Vector3d;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -38,7 +35,7 @@ public final class tree implements java.io.Serializable {
         resetShape();
     }
 
-    public CSG myCSG = new Cylinder().toCSG();
+    //public CSG myCSG = new Cylinder().toCSG();
 
     public void resetShape(){
         iterations=650;
@@ -77,11 +74,11 @@ public final class tree implements java.io.Serializable {
         }
     }
 
-    public void updateCSG(){
+    /*public void updateCSG(){
         myCSG = this.toCSG();
-    }
+    }*/
 
-    private CSG toCSG(){
+   /* private CSG toCSG(){
         Cylinder c1 = new Cylinder();
 
         CSG theTreeCSG = c1.toCSG();
@@ -93,7 +90,7 @@ public final class tree implements java.io.Serializable {
             theTreeCSG = theTreeCSG.dumbUnion(c1.toCSG());
         }
         return theTreeCSG;
-    }
+    }*/
 
     public void freshPoints(){
         pts = new treePt[1000];
@@ -112,10 +109,31 @@ public final class tree implements java.io.Serializable {
             out.writeObject(this);
             out.close();
             fileOut.close();
-            System.out.println("ifsShape saved to "+filename);
+            //System.out.println("ifsShape saved to "+filename);
         }catch(Exception i){
             i.printStackTrace();
         }
+    }
+
+    public tree loadFromFile(String filename){
+        tree _tree = null;
+
+        try {
+            //Read from the stored file
+            FileInputStream fileInputStream = new FileInputStream("./shapes/"+filename);
+            ObjectInputStream input = new ObjectInputStream(fileInputStream);
+            _tree = (tree) input.readObject();
+            input.close();
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return _tree;
     }
 
     public tree getPerturbedShape(treePt intensityDescriptor, boolean staySymmetric, boolean affectIterations){
@@ -359,7 +377,7 @@ public final class tree implements java.io.Serializable {
     public static Vector3f cameraYVector = new Vector3f(0,0,0);
     public static Vector3f cameraZVector = new Vector3f(0,0,0);
 
-    final int NUM_LINES= 1024*1024*10; //MAX LINES
+    final static int NUM_LINES= 1024*1024*10; //MAX LINES
     private int lineIndex=0;
     public int vertices=0;
     long lastIndex = System.currentTimeMillis();
@@ -374,14 +392,14 @@ public final class tree implements java.io.Serializable {
     //final int[] lineXY2= new int[NUM_LINES];
     //final int[] lineZS2= new int[NUM_LINES];
 
-    int vertex_size = 3;
+    static int vertex_size = 3;
 
 
-    public final FloatBuffer vertex_data = BufferUtils.createFloatBuffer(NUM_LINES * vertex_size * 2); //XYZ1 XYZ2
-    public final FloatBuffer color_data = BufferUtils.createFloatBuffer(NUM_LINES * vertex_size * 2); //RGB1 RGB2
+    public static final FloatBuffer vertex_data = BufferUtils.createFloatBuffer(NUM_LINES * vertex_size * 2); //XYZ1 XYZ2
+    public static final FloatBuffer color_data = BufferUtils.createFloatBuffer(NUM_LINES * vertex_size * 2); //RGB1 RGB2
 
-    public final FloatBuffer vertex_data2 = BufferUtils.createFloatBuffer(NUM_LINES * vertex_size * 4); //XYZ1 XYZ2 XYZ3 4
-    public final FloatBuffer color_data2 = BufferUtils.createFloatBuffer(NUM_LINES * vertex_size * 4); //RGB1 RGB2 RGB3 4
+    public static final FloatBuffer vertex_data2 = BufferUtils.createFloatBuffer(NUM_LINES * vertex_size * 4); //XYZ1 XYZ2 XYZ3 4
+    public static final FloatBuffer color_data2 = BufferUtils.createFloatBuffer(NUM_LINES * vertex_size * 4); //RGB1 RGB2 RGB3 4
 
 
     public void reIndex(){

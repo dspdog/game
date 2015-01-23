@@ -51,31 +51,46 @@ public class TextureFactory {
         //
     }
 
-    static public int proceduralTexture(String str){  //http://www.java-gaming.org/index.php?topic=25516.0
+    static public int proceduralTexture(String str, int width, int height){  //http://www.java-gaming.org/index.php?topic=25516.0
         //Generate a small test image by drawing to a BufferedImage
         //It's of course also possible to just load an image using ImageIO.load()
-        BufferedImage test = new BufferedImage(512, 512, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d = test.createGraphics();
+        BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = img.createGraphics();
+        drawOutlinedText(str, g2d);
 
-        g2d.setColor(new Color(1f, 1.0f, 1.0f, 0.0f));
-        g2d.fillRect(0, 0, 128, 128); //A transparent white background
+        return loadTexture(img);
+    }
 
-        //g2d.setColor(Color.red);
-        //g2d.drawRect(0, 0, 127, 127); //A red frame around the image
-        g2d.fillRect(10, 10, 10, 10);
-
-        g2d.setColor(Color.black);
+    static public void drawOutlinedText(String str, Graphics2D g2d){
+        g2d.setFont(new Font("Monospaced", Font.PLAIN, 14));
 
         String[] splitData = str.split("\n");
         int yOffset=0;
-        int pixelPerLine = 12;
-        for (String eachSplit : splitData) {
-            g2d.drawString(eachSplit, 5, 18+yOffset);
-            yOffset+=pixelPerLine;
+        int pixelPerLine = 14;
+
+        int baseX = 4;
+        int baseY = 18;
+
+        g2d.setColor(Color.black); //drop shadow
+
+        for(int x=0; x<2; x++){
+            for(int y=0; y<2; y++){
+                if(!(x==0 && y==0)){
+                    yOffset=0;
+                    for (String eachSplit : splitData) {
+                        g2d.drawString(eachSplit, baseX+x, baseY+yOffset+y);
+                        yOffset+=pixelPerLine;
+                    }
+                }
+            }
         }
 
-
-        return loadTexture(test);
+        g2d.setColor(Color.white); //text
+        yOffset=0;
+        for (String eachSplit : splitData) {
+            g2d.drawString(eachSplit, baseX, baseY+yOffset);
+            yOffset+=pixelPerLine;
+        }
     }
 
     private static final int BYTES_PER_PIXEL = 4;
@@ -140,35 +155,12 @@ public class TextureFactory {
         String format = "PNG"; // Example: "PNG" or "JPG"
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 
-        boolean findEdges=true;
-
         long time1 = System.currentTimeMillis();
 
         for(int x = 1; x < width-1; x++) {
             for(int y = 1; y < height-1; y++) {
-                if(findEdges){
-                    color c = getColor(x,y,buffer,width).toGray();
-                    color o = new color(0,0,0);
-                    float s = 1/8f;
-                    float d = 0.70711f/8f;
-
-                    o.addDiff(d, c,getColor(x-1,y-1,buffer,width).toGray());
-                    o.addDiff(s, c,getColor(x-1,y,buffer,width)  .toGray());
-                    o.addDiff(d, c,getColor(x-1,y+1,buffer,width).toGray());
-                    o.addDiff(s, c,getColor(x,y+1,buffer,width)  .toGray());
-                    o.addDiff(d, c,getColor(x+1,y+1,buffer,width).toGray());
-                    o.addDiff(s, c,getColor(x+1,y,buffer,width)  .toGray());
-                    o.addDiff(d, c,getColor(x+1,y-1,buffer,width).toGray());
-                    o.addDiff(s, c,getColor(x,y-1,buffer,width)  .toGray());
-
-                    image.setRGB(x, height - (y + 1), o.rgb());
-                }else{
-
-                    color c = getColor(x,y,buffer,width);
-                    image.setRGB(x, height - (y + 1), c.rgb());
-                }
-
-
+                color c = getColor(x,y,buffer,width);
+                image.setRGB(x, height - (y + 1), c.rgb());
             }
         }
 
@@ -179,8 +171,6 @@ public class TextureFactory {
 
         System.out.println("img saved " + file.getAbsolutePath() + " edges in " + (time2-time1) + ", saved in " + (System.currentTimeMillis()-time2));
     }
-
-
 
     public static color getColor(int x, int y, ByteBuffer buffer, int width){
         int i = (x + (width * y)) * BYTES_PER_PIXEL;

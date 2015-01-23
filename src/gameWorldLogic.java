@@ -18,7 +18,7 @@ public class gameWorldLogic implements Runnable {
         tree.cameraXVector.set(gameWorldRender.cameraXVector);
         tree.cameraYVector.set(gameWorldRender.cameraYVector);
         tree.cameraZVector.set(gameWorldRender.cameraZVector);
-        theTree.perturb(false, false, 0.1250f);
+        theTree.perturb(false, false, 0.1250f*4f);
 
         //theTree.updateCSG();
         //cm.generateTris(theTree);

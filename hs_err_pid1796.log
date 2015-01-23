@@ -1,0 +1,383 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  EXCEPTION_ACCESS_VIOLATION (0xc0000005) at pc=0x000000005ee29660, pid=1796, tid=7932
+#
+# JRE version: Java(TM) SE Runtime Environment (8.0_25-b18) (build 1.8.0_25-b18)
+# Java VM: Java HotSpot(TM) 64-Bit Server VM (25.25-b02 mixed mode windows-amd64 compressed oops)
+# Problematic frame:
+# C  [nvoglv64.DLL+0xa99660]
+#
+# Failed to write core dump. Minidumps are not enabled by default on client versions of Windows
+#
+# If you would like to submit a bug report, please visit:
+#   http://bugreport.sun.com/bugreport/crash.jsp
+# The crash happened outside the Java Virtual Machine in native code.
+# See problematic frame for where to report the bug.
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x0000000002188000):  JavaThread "main" [_thread_in_native, id=7932, stack(0x0000000002500000,0x0000000002600000)]
+
+siginfo: ExceptionCode=0xc0000005, reading address 0x0000000079c70040
+
+Registers:
+RAX=0x0000000079c70060, RBX=0x0000000079c70040, RCX=0x000000004dc609e0, RDX=0x0000000079c70040
+RSP=0x00000000025fcd98, RBP=0x0000000000000800, RSI=0x0000000000000000, RDI=0x000000004dc609c0
+R8 =0x0000000000000020, R9 =0x0000000000000006, R10=0x0000000000000010, R11=0x0000000000000006
+R12=0x0000000000000000, R13=0x000000005ee46370, R14=0x00000000000000fe, R15=0x0000000000000000
+RIP=0x000000005ee29660, EFLAGS=0x0000000000010202
+
+Top of Stack: (sp=0x00000000025fcd98)
+0x00000000025fcd98:   000000005ee2928d 0000000000000001
+0x00000000025fcda8:   0000000079c70040 0000000000000001
+0x00000000025fcdb8:   000000005ee31881 0000000000000200
+0x00000000025fcdc8:   000000003a742800 0000000079c70040
+0x00000000025fcdd8:   00000000000000ff 000000004dc609c0
+0x00000000025fcde8:   000000005ed66070 0000000000000800
+0x00000000025fcdf8:   0000000000000800 0000000000000200
+0x00000000025fce08:   0000000000100002 000000005ee46370
+0x00000000025fce18:   0000000000000000 000000000000007f
+0x00000000025fce28:   0000000000000000 0000000000000006
+0x00000000025fce38:   0000000079ffe040 0000000079f00040
+0x00000000025fce48:   0000000079f00040 0000000000000000
+0x00000000025fce58:   000000004e3f7500 0000020000000000
+0x00000000025fce68:   0000000000000010 0000000000000000
+0x00000000025fce78:   000000ff00000000 00000000000000ff
+0x00000000025fce88:   0000000000100000 000000004dc609c0 
+
+Instructions: (pc=0x000000005ee29660)
+0x000000005ee29640:   8d 40 40 0f 11 41 d0 49 ff c8 75 d4 c3 4d 85 c0
+0x000000005ee29650:   74 3a 48 83 c1 20 48 8d 42 20 66 0f 1f 44 00 00
+0x000000005ee29660:   0f 28 58 e0 0f 28 50 f0 0f 28 08 48 8d 49 40 0f
+0x000000005ee29670:   28 40 10 0f 29 59 a0 0f 29 51 b0 48 8d 40 40 0f 
+
+
+Register to memory mapping:
+
+RAX=0x0000000079c70060 is an unknown value
+RBX=0x0000000079c70040 is an unknown value
+RCX=0x000000004dc609e0 is an unknown value
+RDX=0x0000000079c70040 is an unknown value
+RSP=0x00000000025fcd98 is pointing into the stack for thread: 0x0000000002188000
+RBP=0x0000000000000800 is an unknown value
+RSI=0x0000000000000000 is an unknown value
+RDI=0x000000004dc609c0 is an unknown value
+R8 =0x0000000000000020 is an unknown value
+R9 =0x0000000000000006 is an unknown value
+R10=0x0000000000000010 is an unknown value
+R11=0x0000000000000006 is an unknown value
+R12=0x0000000000000000 is an unknown value
+R13=0x000000005ee46370 is an unknown value
+R14=0x00000000000000fe is an unknown value
+R15=0x0000000000000000 is an unknown value
+
+
+Stack: [0x0000000002500000,0x0000000002600000],  sp=0x00000000025fcd98,  free space=1011k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+C  [nvoglv64.DLL+0xa99660]
+
+Java frames: (J=compiled Java code, j=interpreted, Vv=VM code)
+J 1112  org.lwjgl.opengl.GL11.nglTexImage2D(IIIIIIIIJJ)V (0 bytes) @ 0x0000000002ce1d85 [0x0000000002ce1d00+0x85]
+J 1069 C1 org.lwjgl.opengl.GL11.glTexImage2D(IIIIIIIILjava/nio/ByteBuffer;)V (67 bytes) @ 0x0000000002cc3854 [0x0000000002cc2b00+0xd54]
+J 587 C2 factory.TextureFactory.loadTexture(Ljava/awt/image/BufferedImage;)I (243 bytes) @ 0x0000000002b75048 [0x0000000002b74480+0xbc8]
+J 1057 C1 factory.TextureFactory.proceduralTexture(Ljava/lang/String;)I (135 bytes) @ 0x0000000002cb5f9c [0x0000000002cb5540+0xa5c]
+J 1212 C1 gameWorldRender.renderGL()V (755 bytes) @ 0x0000000002d4051c [0x0000000002d32c80+0xd89c]
+j  gameWorldRender.start()V+78
+j  game.main([Ljava/lang/String;)V+29
+v  ~StubRoutines::call_stub
+j  sun.reflect.NativeMethodAccessorImpl.invoke0(Ljava/lang/reflect/Method;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+0
+j  sun.reflect.NativeMethodAccessorImpl.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+100
+j  sun.reflect.DelegatingMethodAccessorImpl.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+6
+j  java.lang.reflect.Method.invoke(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+56
+j  com.intellij.rt.execution.application.AppMain.main([Ljava/lang/String;)V+163
+v  ~StubRoutines::call_stub
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+  0x000000004c565000 JavaThread "Java2D Disposer" daemon [_thread_blocked, id=7904, stack(0x000000004d110000,0x000000004d210000)]
+  0x0000000026ed0800 JavaThread "Thread-0" [_thread_blocked, id=8040, stack(0x0000000028ee0000,0x0000000028fe0000)]
+  0x0000000026db8000 JavaThread "Monitor Ctrl-Break" daemon [_thread_in_native, id=7012, stack(0x0000000028d90000,0x0000000028e90000)]
+  0x0000000026c96000 JavaThread "Service Thread" daemon [_thread_blocked, id=7068, stack(0x0000000028a90000,0x0000000028b90000)]
+  0x0000000026c25800 JavaThread "C1 CompilerThread3" daemon [_thread_blocked, id=7272, stack(0x00000000287e0000,0x00000000288e0000)]
+  0x0000000026c25000 JavaThread "C2 CompilerThread2" daemon [_thread_blocked, id=7260, stack(0x0000000028300000,0x0000000028400000)]
+  0x0000000026c19000 JavaThread "C2 CompilerThread1" daemon [_thread_blocked, id=7608, stack(0x0000000028630000,0x0000000028730000)]
+  0x0000000026c11800 JavaThread "C2 CompilerThread0" daemon [_thread_blocked, id=2080, stack(0x0000000028450000,0x0000000028550000)]
+  0x0000000026c0e000 JavaThread "Attach Listener" daemon [_thread_blocked, id=6928, stack(0x00000000281d0000,0x00000000282d0000)]
+  0x0000000026c0c800 JavaThread "Signal Dispatcher" daemon [_thread_blocked, id=6152, stack(0x0000000027b10000,0x0000000027c10000)]
+  0x0000000025a4a800 JavaThread "Finalizer" daemon [_thread_blocked, id=4316, stack(0x0000000028040000,0x0000000028140000)]
+  0x0000000025a44800 JavaThread "Reference Handler" daemon [_thread_blocked, id=6316, stack(0x0000000027e20000,0x0000000027f20000)]
+=>0x0000000002188000 JavaThread "main" [_thread_in_native, id=7932, stack(0x0000000002500000,0x0000000002600000)]
+
+Other Threads:
+  0x0000000025a3f800 VMThread [stack: 0x0000000027c80000,0x0000000027d80000] [id=5460]
+  0x0000000026cb3000 WatcherThread [stack: 0x0000000028c50000,0x0000000028d50000] [id=6224]
+
+VM state:not at safepoint (normal execution)
+
+VM Mutex/Monitor currently owned by a thread: None
+
+Heap:
+ PSYoungGen      total 59904K, used 645K [0x0000000715980000, 0x000000071a080000, 0x00000007c0000000)
+  eden space 59392K, 0% used [0x0000000715980000,0x0000000715a01438,0x0000000719380000)
+  from space 512K, 25% used [0x0000000719400000,0x0000000719420000,0x0000000719480000)
+  to   space 6656K, 0% used [0x0000000719a00000,0x0000000719a00000,0x000000071a080000)
+ ParOldGen       total 349696K, used 2236K [0x00000005c0c00000, 0x00000005d6180000, 0x0000000715980000)
+  object space 349696K, 0% used [0x00000005c0c00000,0x00000005c0e2f1b8,0x00000005d6180000)
+ Metaspace       used 8807K, capacity 8919K, committed 9088K, reserved 1056768K
+  class space    used 835K, capacity 886K, committed 896K, reserved 1048576K
+
+Card table byte_map: [0x0000000011c90000,0x0000000012c90000] byte_map_base: 0x000000000ee8a000
+
+Marking Bits: (ParMarkBitMap*) 0x0000000062a0d490
+ Begin Bits: [0x00000000140c0000, 0x000000001c090000)
+ End Bits:   [0x000000001c090000, 0x0000000024060000)
+
+Polling page: 0x0000000000330000
+
+CodeCache: size=245760Kb used=4926Kb max_used=4966Kb free=240833Kb
+ bounds [0x00000000028d0000, 0x0000000002db0000, 0x00000000118d0000]
+ total_blobs=1819 nmethods=1294 adapters=439
+ compilation: enabled
+
+Compilation events (10 events):
+Event: 17.035 Thread 0x0000000026c25800 1301       1       java.awt.Image$1::getSurfaceManager (5 bytes)
+Event: 17.035 Thread 0x0000000026c25800 nmethod 1301 0x0000000002da3050 code [0x0000000002da31a0, 0x0000000002da32b0]
+Event: 17.035 Thread 0x0000000026c25800 1302       1       java.awt.Image$1::setSurfaceManager (6 bytes)
+Event: 17.035 Thread 0x0000000026c25800 nmethod 1302 0x0000000002da2d50 code [0x0000000002da2ea0, 0x0000000002da2fd0]
+Event: 18.000 Thread 0x0000000026c19000 1303       4       java.nio.charset.Charset::atBugLevel (44 bytes)
+Event: 18.001 Thread 0x0000000026c19000 nmethod 1303 0x0000000002da6ed0 code [0x0000000002da7000, 0x0000000002da7158]
+Event: 18.163 Thread 0x0000000026c11800 1304       4       java.lang.AbstractStringBuilder::append (40 bytes)
+Event: 18.165 Thread 0x0000000026c11800 nmethod 1304 0x0000000002da8590 code [0x0000000002da86e0, 0x0000000002da8a98]
+Event: 19.307 Thread 0x0000000026c25000 1305  s    4       java.util.Hashtable::put (104 bytes)
+Event: 19.311 Thread 0x0000000026c25000 nmethod 1305 0x0000000002da76d0 code [0x0000000002da7860, 0x0000000002da8068]
+
+GC Heap History (10 events):
+Event: 18.333 GC heap before
+{Heap before GC invocations=49 (full 0):
+ PSYoungGen      total 68096K, used 65074K [0x0000000715980000, 0x000000071a300000, 0x00000007c0000000)
+  eden space 61952K, 99% used [0x0000000715980000,0x00000007195eca88,0x0000000719600000)
+  from space 6144K, 52% used [0x0000000719d00000,0x000000071a020030,0x000000071a300000)
+  to   space 6656K, 0% used [0x0000000719600000,0x0000000719600000,0x0000000719c80000)
+ ParOldGen       total 349696K, used 2212K [0x00000005c0c00000, 0x00000005d6180000, 0x0000000715980000)
+  object space 349696K, 0% used [0x00000005c0c00000,0x00000005c0e291b8,0x00000005d6180000)
+ Metaspace       used 8807K, capacity 8919K, committed 9088K, reserved 1056768K
+  class space    used 835K, capacity 886K, committed 896K, reserved 1048576K
+Event: 18.334 GC heap after
+Heap after GC invocations=49 (full 0):
+ PSYoungGen      total 65024K, used 3232K [0x0000000715980000, 0x000000071a280000, 0x00000007c0000000)
+  eden space 61440K, 0% used [0x0000000715980000,0x0000000715980000,0x0000000719580000)
+  from space 3584K, 90% used [0x0000000719600000,0x0000000719928030,0x0000000719980000)
+  to   space 6656K, 0% used [0x0000000719c00000,0x0000000719c00000,0x000000071a280000)
+ ParOldGen       total 349696K, used 2220K [0x00000005c0c00000, 0x00000005d6180000, 0x0000000715980000)
+  object space 349696K, 0% used [0x00000005c0c00000,0x00000005c0e2b1b8,0x00000005d6180000)
+ Metaspace       used 8807K, capacity 8919K, committed 9088K, reserved 1056768K
+  class space    used 835K, capacity 886K, committed 896K, reserved 1048576K
+}
+Event: 18.565 GC heap before
+{Heap before GC invocations=50 (full 0):
+ PSYoungGen      total 65024K, used 64672K [0x0000000715980000, 0x000000071a280000, 0x00000007c0000000)
+  eden space 61440K, 100% used [0x0000000715980000,0x0000000719580000,0x0000000719580000)
+  from space 3584K, 90% used [0x0000000719600000,0x0000000719928030,0x0000000719980000)
+  to   space 6656K, 0% used [0x0000000719c00000,0x0000000719c00000,0x000000071a280000)
+ ParOldGen       total 349696K, used 2220K [0x00000005c0c00000, 0x00000005d6180000, 0x0000000715980000)
+  object space 349696K, 0% used [0x00000005c0c00000,0x00000005c0e2b1b8,0x00000005d6180000)
+ Metaspace       used 8807K, capacity 8919K, committed 9088K, reserved 1056768K
+  class space    used 835K, capacity 886K, committed 896K, reserved 1048576K
+Event: 18.567 GC heap after
+Heap after GC invocations=50 (full 0):
+ PSYoungGen      total 67072K, used 4256K [0x0000000715980000, 0x000000071a200000, 0x00000007c0000000)
+  eden space 60928K, 0% used [0x0000000715980000,0x0000000715980000,0x0000000719500000)
+  from space 6144K, 69% used [0x0000000719c00000,0x000000071a028040,0x000000071a200000)
+  to   space 6656K, 0% used [0x0000000719500000,0x0000000719500000,0x0000000719b80000)
+ ParOldGen       total 349696K, used 2228K [0x00000005c0c00000, 0x00000005d6180000, 0x0000000715980000)
+  object space 349696K, 0% used [0x00000005c0c00000,0x00000005c0e2d1b8,0x00000005d6180000)
+ Metaspace       used 8807K, capacity 8919K, committed 9088K, reserved 1056768K
+  class space    used 835K, capacity 886K, committed 896K, reserved 1048576K
+}
+Event: 18.801 GC heap before
+{Heap before GC invocations=51 (full 0):
+ PSYoungGen      total 67072K, used 65184K [0x0000000715980000, 0x000000071a200000, 0x00000007c0000000)
+  eden space 60928K, 100% used [0x0000000715980000,0x0000000719500000,0x0000000719500000)
+  from space 6144K, 69% used [0x0000000719c00000,0x000000071a028040,0x000000071a200000)
+  to   space 6656K, 0% used [0x0000000719500000,0x0000000719500000,0x0000000719b80000)
+ ParOldGen       total 349696K, used 2228K [0x00000005c0c00000, 0x00000005d6180000, 0x0000000715980000)
+  object space 349696K, 0% used [0x00000005c0c00000,0x00000005c0e2d1b8,0x00000005d6180000)
+ Metaspace       used 8807K, capacity 8919K, committed 9088K, reserved 1056768K
+  class space    used 835K, capacity 886K, committed 896K, reserved 1048576K
+Event: 18.802 GC heap after
+Heap after GC invocations=51 (full 0):
+ PSYoungGen      total 60928K, used 96K [0x0000000715980000, 0x000000071a180000, 0x00000007c0000000)
+  eden space 60416K, 0% used [0x0000000715980000,0x0000000715980000,0x0000000719480000)
+  from space 512K, 18% used [0x0000000719500000,0x0000000719518000,0x0000000719580000)
+  to   space 6656K, 0% used [0x0000000719b00000,0x0000000719b00000,0x000000071a180000)
+ ParOldGen       total 349696K, used 2236K [0x00000005c0c00000, 0x00000005d6180000, 0x0000000715980000)
+  object space 349696K, 0% used [0x00000005c0c00000,0x00000005c0e2f1b8,0x00000005d6180000)
+ Metaspace       used 8807K, capacity 8919K, committed 9088K, reserved 1056768K
+  class space    used 835K, capacity 886K, committed 896K, reserved 1048576K
+}
+Event: 19.059 GC heap before
+{Heap before GC invocations=52 (full 0):
+ PSYoungGen      total 60928K, used 59996K [0x0000000715980000, 0x000000071a180000, 0x00000007c0000000)
+  eden space 60416K, 99% used [0x0000000715980000,0x00000007193ff030,0x0000000719480000)
+  from space 512K, 18% used [0x0000000719500000,0x0000000719518000,0x0000000719580000)
+  to   space 6656K, 0% used [0x0000000719b00000,0x0000000719b00000,0x000000071a180000)
+ ParOldGen       total 349696K, used 2236K [0x00000005c0c00000, 0x00000005d6180000, 0x0000000715980000)
+  object space 349696K, 0% used [0x00000005c0c00000,0x00000005c0e2f1b8,0x00000005d6180000)
+ Metaspace       used 8807K, capacity 8919K, committed 9088K, reserved 1056768K
+  class space    used 835K, capacity 886K, committed 896K, reserved 1048576K
+Event: 19.059 GC heap after
+Heap after GC invocations=52 (full 0):
+ PSYoungGen      total 66048K, used 128K [0x0000000715980000, 0x000000071a100000, 0x00000007c0000000)
+  eden space 59904K, 0% used [0x0000000715980000,0x0000000715980000,0x0000000719400000)
+  from space 6144K, 2% used [0x0000000719b00000,0x0000000719b20000,0x000000071a100000)
+  to   space 6656K, 0% used [0x0000000719400000,0x0000000719400000,0x0000000719a80000)
+ ParOldGen       total 349696K, used 2236K [0x00000005c0c00000, 0x00000005d6180000, 0x0000000715980000)
+  object space 349696K, 0% used [0x00000005c0c00000,0x00000005c0e2f1b8,0x00000005d6180000)
+ Metaspace       used 8807K, capacity 8919K, committed 9088K, reserved 1056768K
+  class space    used 835K, capacity 886K, committed 896K, reserved 1048576K
+}
+Event: 19.358 GC heap before
+{Heap before GC invocations=53 (full 0):
+ PSYoungGen      total 66048K, used 60032K [0x0000000715980000, 0x000000071a100000, 0x00000007c0000000)
+  eden space 59904K, 100% used [0x0000000715980000,0x0000000719400000,0x0000000719400000)
+  from space 6144K, 2% used [0x0000000719b00000,0x0000000719b20000,0x000000071a100000)
+  to   space 6656K, 0% used [0x0000000719400000,0x0000000719400000,0x0000000719a80000)
+ ParOldGen       total 349696K, used 2236K [0x00000005c0c00000, 0x00000005d6180000, 0x0000000715980000)
+  object space 349696K, 0% used [0x00000005c0c00000,0x00000005c0e2f1b8,0x00000005d6180000)
+ Metaspace       used 8807K, capacity 8919K, committed 9088K, reserved 1056768K
+  class space    used 835K, capacity 886K, committed 896K, reserved 1048576K
+Event: 19.358 GC heap after
+Heap after GC invocations=53 (full 0):
+ PSYoungGen      total 59904K, used 128K [0x0000000715980000, 0x000000071a080000, 0x00000007c0000000)
+  eden space 59392K, 0% used [0x0000000715980000,0x0000000715980000,0x0000000719380000)
+  from space 512K, 25% used [0x0000000719400000,0x0000000719420000,0x0000000719480000)
+  to   space 6656K, 0% used [0x0000000719a00000,0x0000000719a00000,0x000000071a080000)
+ ParOldGen       total 349696K, used 2236K [0x00000005c0c00000, 0x00000005d6180000, 0x0000000715980000)
+  object space 349696K, 0% used [0x00000005c0c00000,0x00000005c0e2f1b8,0x00000005d6180000)
+ Metaspace       used 8807K, capacity 8919K, committed 9088K, reserved 1056768K
+  class space    used 835K, capacity 886K, committed 896K, reserved 1048576K
+}
+
+Deoptimization events (1 events):
+Event: 0.818 Thread 0x0000000002188000 Uncommon trap: reason=unloaded action=reinterpret pc=0x0000000002ae8c7c method=gameWorldRender.processPixels()V @ 76
+
+Internal exceptions (10 events):
+Event: 0.662 Thread 0x0000000002188000 Exception <a 'java/security/PrivilegedActionException'> (0x00000007173ecfe0) thrown at [D:\re\workspace\8-2-build-windows-amd64-cygwin\jdk8u25\1677\hotspot\src\share\vm\prims\jvm.cpp, line 1312]
+Event: 0.665 Thread 0x0000000002188000 Exception <a 'java/security/PrivilegedActionException'> (0x000000071740fe08) thrown at [D:\re\workspace\8-2-build-windows-amd64-cygwin\jdk8u25\1677\hotspot\src\share\vm\prims\jvm.cpp, line 1312]
+Event: 0.667 Thread 0x0000000002188000 Exception <a 'java/security/PrivilegedActionException'> (0x0000000717427540) thrown at [D:\re\workspace\8-2-build-windows-amd64-cygwin\jdk8u25\1677\hotspot\src\share\vm\prims\jvm.cpp, line 1312]
+Event: 0.682 Thread 0x0000000002188000 Exception <a 'java/security/PrivilegedActionException'> (0x0000000717434108) thrown at [D:\re\workspace\8-2-build-windows-amd64-cygwin\jdk8u25\1677\hotspot\src\share\vm\prims\jvm.cpp, line 1312]
+Event: 0.686 Thread 0x0000000002188000 Exception <a 'java/io/FileNotFoundException'> (0x000000071753b4b8) thrown at [D:\re\workspace\8-2-build-windows-amd64-cygwin\jdk8u25\1677\hotspot\src\share\vm\prims\jni.cpp, line 716]
+Event: 0.697 Thread 0x0000000002188000 Exception <a 'java/io/FileNotFoundException'> (0x000000071754c540) thrown at [D:\re\workspace\8-2-build-windows-amd64-cygwin\jdk8u25\1677\hotspot\src\share\vm\prims\jni.cpp, line 716]
+Event: 0.705 Thread 0x0000000002188000 Exception <a 'java/lang/ClassNotFoundException': java/lang/Null> (0x0000000717566bb0) thrown at [D:\re\workspace\8-2-build-windows-amd64-cygwin\jdk8u25\1677\hotspot\src\share\vm\classfile\systemDictionary.cpp, line 202]
+Event: 0.715 Thread 0x0000000002188000 Exception <a 'java/lang/NoSuchFieldError': method resolution failed> (0x0000000718535aa8) thrown at [D:\re\workspace\8-2-build-windows-amd64-cygwin\jdk8u25\1677\hotspot\src\share\vm\prims\methodHandles.cpp, line 1159]
+Event: 0.716 Thread 0x0000000002188000 Exception <a 'java/lang/NoSuchFieldError': method resolution failed> (0x0000000718544ad8) thrown at [D:\re\workspace\8-2-build-windows-amd64-cygwin\jdk8u25\1677\hotspot\src\share\vm\prims\methodHandles.cpp, line 1159]
+Event: 0.717 Thread 0x0000000002188000 Exception <a 'java/lang/NoSuchFieldError': method resolution failed> (0x0000000718547dc8) thrown at [D:\re\workspace\8-2-build-windows-amd64-cygwin\jdk8u25\1677\hotspot\src\share\vm\prims\methodHandles.cpp, line 1159]
+
+Events (10 events):
+Event: 18.802 Executing VM operation: ParallelGCFailedAllocation done
+Event: 19.059 Executing VM operation: ParallelGCFailedAllocation
+Event: 19.059 Executing VM operation: ParallelGCFailedAllocation done
+Event: 19.311 Thread 0x0000000026c25000 flushing nmethod 0x00000000029db990
+Event: 19.311 Thread 0x0000000026c25000 flushing nmethod 0x00000000029f3210
+Event: 19.311 Thread 0x0000000026c25000 flushing nmethod 0x00000000029fc4d0
+Event: 19.311 Thread 0x0000000026c25000 flushing nmethod 0x00000000029fcd90
+Event: 19.311 Thread 0x0000000026c25000 flushing nmethod 0x00000000029ff590
+Event: 19.357 Executing VM operation: ParallelGCFailedAllocation
+Event: 19.358 Executing VM operation: ParallelGCFailedAllocation done
+
+
+Dynamic libraries:
+0x000000013f1f0000 - 0x000000013f224000 	C:\Program Files\Java\jdk1.8.0_25\bin\java.exe
+0x0000000077230000 - 0x00000000773d9000 	C:\Windows\SYSTEM32\ntdll.dll
+0x0000000077010000 - 0x000000007712f000 	C:\Windows\system32\kernel32.dll
+0x000007fefc2d0000 - 0x000007fefc33c000 	C:\Windows\system32\KERNELBASE.dll
+0x000007fefe150000 - 0x000007fefe22b000 	C:\Windows\system32\ADVAPI32.dll
+0x000007fefde10000 - 0x000007fefdeaf000 	C:\Windows\system32\msvcrt.dll
+0x000007fefd600000 - 0x000007fefd61f000 	C:\Windows\SYSTEM32\sechost.dll
+0x000007fefdeb0000 - 0x000007fefdfdd000 	C:\Windows\system32\RPCRT4.dll
+0x0000000077130000 - 0x000000007722a000 	C:\Windows\system32\USER32.dll
+0x000007fefc780000 - 0x000007fefc7e7000 	C:\Windows\system32\GDI32.dll
+0x000007fefc770000 - 0x000007fefc77e000 	C:\Windows\system32\LPK.dll
+0x000007fefdfe0000 - 0x000007fefe0a9000 	C:\Windows\system32\USP10.dll
+0x000007fefaa90000 - 0x000007fefac84000 	C:\Windows\WinSxS\amd64_microsoft.windows.common-controls_6595b64144ccf1df_6.0.7601.17514_none_fa396087175ac9ac\COMCTL32.dll
+0x000007fefc440000 - 0x000007fefc4b1000 	C:\Windows\system32\SHLWAPI.dll
+0x000007fefe520000 - 0x000007fefe54e000 	C:\Windows\system32\IMM32.DLL
+0x000007fefd950000 - 0x000007fefda59000 	C:\Windows\system32\MSCTF.dll
+0x00000000694e0000 - 0x00000000695b2000 	C:\Program Files\Java\jdk1.8.0_25\jre\bin\msvcr100.dll
+0x0000000062230000 - 0x0000000062a8a000 	C:\Program Files\Java\jdk1.8.0_25\jre\bin\server\jvm.dll
+0x000007fef7b00000 - 0x000007fef7b09000 	C:\Windows\system32\WSOCK32.dll
+0x000007fefd900000 - 0x000007fefd94d000 	C:\Windows\system32\WS2_32.dll
+0x000007fefe6d0000 - 0x000007fefe6d8000 	C:\Windows\system32\NSI.dll
+0x000007fef9a80000 - 0x000007fef9abb000 	C:\Windows\system32\WINMM.dll
+0x0000000077400000 - 0x0000000077407000 	C:\Windows\system32\PSAPI.DLL
+0x0000000073ed0000 - 0x0000000073edf000 	C:\Program Files\Java\jdk1.8.0_25\jre\bin\verify.dll
+0x0000000073ea0000 - 0x0000000073ec8000 	C:\Program Files\Java\jdk1.8.0_25\jre\bin\java.dll
+0x00000000728f0000 - 0x0000000072906000 	C:\Program Files\Java\jdk1.8.0_25\jre\bin\zip.dll
+0x000007fefc870000 - 0x000007fefd5f8000 	C:\Windows\system32\SHELL32.dll
+0x000007fefe230000 - 0x000007fefe433000 	C:\Windows\system32\ole32.dll
+0x000007fefc080000 - 0x000007fefc08f000 	C:\Windows\system32\profapi.dll
+0x000007fef9820000 - 0x000007fef9830000 	C:\Program Files (x86)\JetBrains\IntelliJ IDEA Community Edition 14.0\bin\breakgen64.dll
+0x00000000725d0000 - 0x00000000725ea000 	C:\Program Files\Java\jdk1.8.0_25\jre\bin\net.dll
+0x000007fefb860000 - 0x000007fefb8b5000 	C:\Windows\system32\mswsock.dll
+0x000007fefb850000 - 0x000007fefb857000 	C:\Windows\System32\wship6.dll
+0x0000000180000000 - 0x0000000180051000 	C:\projects\game\lwjgl-2.9.1\lib\windows\lwjgl64.dll
+0x000007fee6b00000 - 0x000007fee6c1d000 	C:\Windows\system32\OPENGL32.dll
+0x000007fee7f00000 - 0x000007fee7f2d000 	C:\Windows\system32\GLU32.dll
+0x000007fee61d0000 - 0x000007fee62c1000 	C:\Windows\system32\DDRAW.dll
+0x000007fefa7e0000 - 0x000007fefa7e8000 	C:\Windows\system32\DCIMAN32.dll
+0x000007fefdc30000 - 0x000007fefde07000 	C:\Windows\system32\SETUPAPI.dll
+0x000007fefc3b0000 - 0x000007fefc3e6000 	C:\Windows\system32\CFGMGR32.dll
+0x000007fefe440000 - 0x000007fefe517000 	C:\Windows\system32\OLEAUT32.dll
+0x000007fefc410000 - 0x000007fefc42a000 	C:\Windows\system32\DEVOBJ.dll
+0x000007fefa5c0000 - 0x000007fefa5d8000 	C:\Windows\system32\dwmapi.dll
+0x000007fefb150000 - 0x000007fefb15c000 	C:\Windows\system32\VERSION.dll
+0x000007fefa540000 - 0x000007fefa596000 	C:\Windows\system32\uxtheme.dll
+0x000000005e390000 - 0x0000000060232000 	C:\Windows\system32\nvoglv64.DLL
+0x000007fefb2e0000 - 0x000007fefb2f1000 	C:\Windows\system32\WTSAPI32.dll
+0x000007fefc360000 - 0x000007fefc39a000 	C:\Windows\system32\WINTRUST.dll
+0x000007fefc0a0000 - 0x000007fefc20c000 	C:\Windows\system32\CRYPT32.dll
+0x000007fefc090000 - 0x000007fefc09f000 	C:\Windows\system32\MSASN1.dll
+0x000007fefb120000 - 0x000007fefb14d000 	C:\Windows\system32\ntmarta.dll
+0x000007fefda60000 - 0x000007fefdab2000 	C:\Windows\system32\WLDAP32.dll
+0x000007fefb400000 - 0x000007fefb43d000 	C:\Windows\system32\WINSTA.dll
+0x000007fefbf20000 - 0x000007fefbf2f000 	C:\Windows\system32\CRYPTBASE.dll
+0x000007fef8e50000 - 0x000007fef8eec000 	C:\Windows\system32\mscms.dll
+0x000007fefc2b0000 - 0x000007fefc2ce000 	C:\Windows\system32\USERENV.dll
+0x000007fee7eb0000 - 0x000007fee7ef2000 	C:\Windows\system32\icm32.dll
+0x000000006e650000 - 0x000000006e7e8000 	C:\Program Files\Java\jdk1.8.0_25\jre\bin\awt.dll
+0x000000006ef10000 - 0x000000006ef57000 	C:\Program Files\Java\jdk1.8.0_25\jre\bin\fontmanager.dll
+0x000000006ef90000 - 0x000000006efa1000 	C:\Program Files\Java\jdk1.8.0_25\jre\bin\nio.dll
+0x000000006b530000 - 0x000000006b571000 	C:\Program Files\Java\jdk1.8.0_25\jre\bin\t2k.dll
+0x000007fef7790000 - 0x000007fef78b5000 	C:\Windows\system32\dbghelp.dll
+
+VM Arguments:
+jvm_args: -Djava.library.path=C:\projects\game\lwjgl-2.9.1\lib\windows -Didea.launcher.port=7540 -Didea.launcher.bin.path=C:\Program Files (x86)\JetBrains\IntelliJ IDEA Community Edition 14.0\bin -Dfile.encoding=UTF-8 
+java_command: com.intellij.rt.execution.application.AppMain game
+java_class_path (initial): C:\Program Files\Java\jdk1.8.0_25\jre\lib\charsets.jar;C:\Program Files\Java\jdk1.8.0_25\jre\lib\deploy.jar;C:\Program Files\Java\jdk1.8.0_25\jre\lib\javaws.jar;C:\Program Files\Java\jdk1.8.0_25\jre\lib\jce.jar;C:\Program Files\Java\jdk1.8.0_25\jre\lib\jfr.jar;C:\Program Files\Java\jdk1.8.0_25\jre\lib\jfxswt.jar;C:\Program Files\Java\jdk1.8.0_25\jre\lib\jsse.jar;C:\Program Files\Java\jdk1.8.0_25\jre\lib\management-agent.jar;C:\Program Files\Java\jdk1.8.0_25\jre\lib\plugin.jar;C:\Program Files\Java\jdk1.8.0_25\jre\lib\resources.jar;C:\Program Files\Java\jdk1.8.0_25\jre\lib\rt.jar;C:\Program Files\Java\jdk1.8.0_25\jre\lib\ext\access-bridge-64.jar;C:\Program Files\Java\jdk1.8.0_25\jre\lib\ext\cldrdata.jar;C:\Program Files\Java\jdk1.8.0_25\jre\lib\ext\dnsns.jar;C:\Program Files\Java\jdk1.8.0_25\jre\lib\ext\jaccess.jar;C:\Program Files\Java\jdk1.8.0_25\jre\lib\ext\jfxrt.jar;C:\Program Files\Java\jdk1.8.0_25\jre\lib\ext\localedata.jar;C:\Program Files\Java\jdk1.8.0_25\jre\lib\ext\nashorn.jar;C:\Program Files\Java\jdk1.8.0_25\jre\lib\ext\sunec.jar;C:\Program Files\Java\jdk1.8.0_25\jre\lib\ext\sunjce_provider.jar;C:\Program Files\Java\jdk1.8.0_25\jre\lib\ext\sunmscapi.jar;C:\Program Files\Java\jdk1.8.0_25\jre\lib\ext\sunpkcs11.jar;C:\Program Files\Java\jdk1.8.0_25\jre\lib\ext\zipfs.jar;C:\projects\game\out\production\game;C:\projects\game\lwjgl-2.9.1\jar\AppleJavaExtensions.jar;C:\projects\game\lwjgl-2.9.1\jar\asm-debug-all.jar;C:\projects\game\lwjgl-2.9.1\jar\jinput.jar;C:\projects\game\lwjgl-2.9.1\jar\lwjgl.jar;C:\projects\game\lwjgl-2.9.1\jar\lwjgl-debug.jar;C:\projects\game\lwjgl-2.9.1\jar\lwjgl_test.jar;C:\projects\game\lwjgl-2.9.1\jar\lwjgl_util.jar;C:\projects\game\lwjgl-2.9.1\jar\lwjgl_util_applet.jar;C:\projects\game\lwjgl-2.9.1\jar\lzma.jar;C:\projects\game\JCSG-master\build\libs\JCSG-master.jar;C:\projects\game\lwjgl-2.9.1\jar\slick-util.jar;C:\Program Files (x86)\JetBrains\IntelliJ IDEA Community Edition 14.0\lib\idea_rt.jar
+Launcher Type: SUN_STANDARD
+
+Environment Variables:
+JAVA_HOME=C:\Program Files\Java\jdk1.8.0_25
+PATH=C:\ProgramData\Oracle\Java\javapath;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Users\user\AMD APP SDK\2.9\bin\x86_64;C:\Users\user\AMD APP SDK\2.9\bin\x86;C:\Program Files (x86)\AMD APP SDK\2.9\bin\x86_64;C:\Program Files (x86)\AMD APP SDK\2.9\bin\x86;C:\Program Files (x86)\Intel\iCLS Client\;C:\Program Files\Intel\iCLS Client\;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files\Microsoft SQL Server\110\Tools\Binn\;C:\Program Files\Microsoft Windows Performance Toolkit\;C:\Program Files\nodejs\;C:\Program Files\LuxRender;C:\Program Files\VCG\MeshLab;C:\Program Files (x86)\MySQL\MySQL Utilities 1.4\;C:\Program Files (x86)\MySQL\MySQL Utilities 1.4\Doctrine extensions for PHP\;C:\Program Files (x86)\QuickTime\QTSystem\;C:\Python27;C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcpackages;C:\Users\user\AppData\Roaming\npm;C:\Program Files\apfloat;C:\Program Files (x86)\Kiwix\kiwix\xulrunner;C:\mongodb\bin\;C:\projects\wikirandom\node_modules\forever\bin;C:\Program Files (x86)\JetBrains\WebStorm 7.0.3\jre\bin;C:\Program Files\apache-maven-3.2.2\bin;C:\aparapi;C:\Program Files\VCG\MeshLab;
+USERNAME=user
+OS=Windows_NT
+PROCESSOR_IDENTIFIER=Intel64 Family 6 Model 58 Stepping 9, GenuineIntel
+
+
+
+---------------  S Y S T E M  ---------------
+
+OS: Windows 7 , 64 bit Build 7601 Service Pack 1
+
+CPU:total 8 (4 cores per cpu, 2 threads per core) family 6 model 58 stepping 9, cmov, cx8, fxsr, mmx, sse, sse2, sse3, ssse3, sse4.1, sse4.2, popcnt, avx, aes, clmul, erms, ht, tsc, tscinvbit, tscinv
+
+Memory: 4k page, physical 33498820k(27235088k free), swap 66995776k(53139784k free)
+
+vm_info: Java HotSpot(TM) 64-Bit Server VM (25.25-b02) for windows-amd64 JRE (1.8.0_25-b18), built on Oct  7 2014 14:25:37 by "java_re" with MS VC++ 10.0 (VS2010)
+
+time: Fri Jan 23 16:42:25 2015
+elapsed time: 19 seconds (0d 0h 0m 19s)
+
