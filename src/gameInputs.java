@@ -15,11 +15,11 @@ public class gameInputs {
             int x = Mouse.getX();
             int y = Mouse.getY();
 
-            System.out.println("MOUSE DOWN @ X: " + x + " Y: " + y);
+            //System.out.println("MOUSE DOWN @ X: " + x + " Y: " + y);
         }
 
         if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
-            System.out.println("SPACE KEY IS DOWN");
+            //System.out.println("SPACE KEY IS DOWN");
         }
 
         while (Keyboard.next()) {

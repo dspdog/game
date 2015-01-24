@@ -2,20 +2,18 @@ import factory.TextureFactory;
 import utils.glHelper;
 import utils.time;
 
-import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 /**
  * Created by user on 1/23/2015.
  */
 public class gameConsole {
+
+    static String defaultHelpMsg = "Default help string!";
+
     static int consoleTexture = 0;
     static long lastConsoleUpdate = 0;
     static String statusString = "";
     static String inputString = "";
-    static String commandString = "";
+    static String commandString =  defaultHelpMsg + "\n";
     static long updatePeriodMS = 100;
 
     static long startTime = time.getTime();
@@ -27,6 +25,11 @@ public class gameConsole {
 
     public static void submitCommand(String cmd){
         commandString+=cmd+"\n";
+        commandString+=parseCommand(cmd) + "\n";
+    }
+
+    private static String parseCommand(String cmd){
+        return "Unrecognized command: " + cmd + ". " + defaultHelpMsg;
     }
 
     private static void updateInputString(){
@@ -52,7 +55,7 @@ public class gameConsole {
                 newStr=newStr.concat(splitData[i] + "\n");
             }
         }
-        
+
         return newStr;
     }
 

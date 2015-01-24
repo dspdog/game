@@ -377,8 +377,10 @@ public class gameWorldRender {
 
         public void updateVBOs(){
             if(isTree){
-                VBOHandles = GeometryFactory.treeVBOQuadHandles(myTree);
-                vertices = myTree.vertices;
+                if(myTree!=null){
+                    VBOHandles = GeometryFactory.treeVBOQuadHandles(myTree);
+                    vertices = myTree.vertices;
+                }
             }
         }
     }
