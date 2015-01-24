@@ -61,6 +61,15 @@ public class TextureFactory {
         return loadTexture(img);
     }
 
+    /*
+        //Texture Loader example:
+        try {
+            myTexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("./res/myball.png")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+     */
+
     static public void drawOutlinedText(String str, Graphics2D g2d){
         g2d.setFont(new Font("Monospaced", Font.PLAIN, 14));
 

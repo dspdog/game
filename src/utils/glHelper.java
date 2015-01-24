@@ -55,10 +55,6 @@ public class glHelper {
         gluPerspective(fov, ((float)width) / ((float)height), 0.01f, 5000f);
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
-
-        //glEnable(GL_DEPTH_TEST);
-        //glDepthFunc(GL_LEQUAL);
-        //glDepthFunc(GL_NEVER);
     }
 
     public static void prepare2D(int width, int height){ //see http://gamedev.stackexchange.com/questions/18468/making-a-hud-gui-with-opengl-lwjgl
@@ -67,9 +63,5 @@ public class glHelper {
         gluOrtho2D(0, width, height, 0.0f);
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
-
-        //glTranslatef(0.375f, 0.375f, 0.0f); //?
-
-        //glDisable(GL_DEPTH_TEST);
     }
 }

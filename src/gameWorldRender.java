@@ -33,6 +33,10 @@ public class gameWorldRender {
     private int myFPS = 0;
     private int myWidth;
     private int myHeight;
+
+    private int myFBOWidth;
+    private int myFBOHeight;
+
     private float myFOV;
 
     private String mySelection = "";
@@ -57,10 +61,13 @@ public class gameWorldRender {
         myFOV = 75;
         myWidth = 1024;
         myHeight = 1024;
+
+        myFBOHeight = 512;
+        myFBOWidth = 512;
+
         myLogic=gl;
         handlesFound=false;
         startTime=time.getTime();
-
     }
 
     void updateFPS() {
@@ -94,9 +101,7 @@ public class gameWorldRender {
             e.printStackTrace();
             System.exit(0);
         }
-
         initGL();
-        //bindShaders();
 
         while (!Display.isCloseRequested()) {
             update();
@@ -105,8 +110,6 @@ public class gameWorldRender {
             //Display.sync(60); // cap fps to 60fps
         }
 
-        //releaseShaders();
-        myTexture.release();
         myLogic.end();
         Display.destroy();
         System.exit(1);
@@ -128,11 +131,11 @@ public class gameWorldRender {
     void initGL() {
         glHelper.prepare3D(myWidth, myHeight, myFOV);
 
-        try {
+        /*try {
             myTexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("./res/myball.png")));
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
 
         myScene = new scene();
         //myScene.addWorldObject(new WorldObject(myTexture));
@@ -140,7 +143,11 @@ public class gameWorldRender {
         myScene.addWorldObject(new WorldObject(myLogic.theTree));
         //myScene.addWorldObject(new WorldObject((x, y) -> (float)(1f-(SimplexNoise.noise(x/20f,y/20f)+1f)*(SimplexNoise.noise(x/20f,y/20f)+1f))*10f));
 
+        initScreenCapture();
 
+    }
+
+    private void initScreenCapture(){
         //http://wiki.lwjgl.org/index.php?title=Render_to_Texture_with_Frame_Buffer_Objects_%28FBO%29
         // init our fbo
 
@@ -153,17 +160,16 @@ public class gameWorldRender {
         // initialize color texture
         glBindTexture(GL_TEXTURE_2D, colorTextureID);                                   // Bind the colorbuffer texture
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);               // make it linear filterd
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 512, 512, 0,GL_RGBA, GL_INT, (java.nio.ByteBuffer) null);  // Create the texture data
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, myFBOWidth, myFBOHeight, 0,GL_RGBA, GL_INT, (java.nio.ByteBuffer) null);  // Create the texture data
         glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT,GL_COLOR_ATTACHMENT0_EXT,GL_TEXTURE_2D, colorTextureID, 0); // attach it to the framebuffer
 
 
         // initialize depth renderbuffer
         glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, depthRenderBufferID);                // bind the depth renderbuffer
-        glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL14.GL_DEPTH_COMPONENT24, 512, 512); // get the data space for it
+        glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL14.GL_DEPTH_COMPONENT24, myFBOWidth, myFBOHeight); // get the data space for it
         glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,GL_DEPTH_ATTACHMENT_EXT,GL_RENDERBUFFER_EXT, depthRenderBufferID); // bind it to the renderbuffer
 
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);                                    // Swithch back to normal framebuffer rendering
-
 
         ////////////////////////////////////////////////////////
 
@@ -175,13 +181,10 @@ public class gameWorldRender {
         glBufferDataARB(GL_PIXEL_PACK_BUFFER_ARB, 512*512*3, GL_STREAM_READ_ARB);
 
         glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, 0);
-
-        //System.out.println("PBO1 " + pboIds.get(0) + " PBO2 " + pboIds.get(1));
-
     }
 
     private IntBuffer pboIds = BufferUtils.createIntBuffer(2);
-    private ByteBuffer pixels = BufferUtils.createByteBuffer(512 * 512 * 3);
+    private ByteBuffer pixels = BufferUtils.createByteBuffer(myFBOWidth * myFBOHeight * 3);
 
     void renderGL() {
 
@@ -193,7 +196,7 @@ public class gameWorldRender {
 
         // FBO render pass
 
-        glViewport (0, 0, 512, 512);                                    // set The Current Viewport to the fbo size
+        glViewport (0, 0, myFBOWidth, myFBOHeight);                                    // set The Current Viewport to the fbo size
 
         glBindTexture(GL_TEXTURE_2D, 0);                                // unlink textures because if we dont it all is gonna fail
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, framebufferID);        // switch to rendering on our FBO
@@ -246,7 +249,7 @@ public class gameWorldRender {
         // read pixels from framebuffer to PBO
         // glReadPixels() should return immediately.
         glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, pboIds.get(frame_index));
-        glReadPixels(0, 512, 512, 512, GL_RGB, GL_UNSIGNED_BYTE, 0); //anchor point for coords is LOWER LEFT
+        glReadPixels(0, 0, 512, 512, GL_RGB, GL_UNSIGNED_BYTE, 0); //anchor point for coords is LOWER LEFT
 
         // map the PBO to process its data by CPU
         glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, pboIds.get(frame_nextIndex));
