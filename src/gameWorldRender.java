@@ -10,6 +10,7 @@ import org.newdawn.slick.opengl.TextureLoader;
 import shapes.tree;
 import utils.ShaderHelper;
 import utils.glHelper;
+import utils.time;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -58,12 +59,12 @@ public class gameWorldRender {
         myHeight = 1024;
         myLogic=gl;
         handlesFound=false;
-        startTime=getTime();
+        startTime=time.getTime();
 
     }
 
     void updateFPS() {
-        if (getTime() - lastFPS > 1000) {
+        if (time.getTime() - lastFPS > 1000) {
             myFPS = fps;
             fps = 0;
             lastFPS += 1000;
@@ -80,14 +81,10 @@ public class gameWorldRender {
         gameConsole.setConsoleString(console);
     }
 
-    long getTime() {
-        return (Sys.getTime() * 1000) / Sys.getTimerResolution();
-    }
-
     public void start() {
         frame_index = 0;
         frame_nextIndex = 0;
-        lastFPS = getTime(); //initialise lastFPS by setting to current Time
+        lastFPS = time.getTime(); //initialise lastFPS by setting to current Time
 
         try {
             Display.setDisplayMode(new DisplayMode(myWidth, myHeight));
@@ -234,25 +231,14 @@ public class gameWorldRender {
 
         glPopMatrix();
 
+        GeometryFactory.shaderOverlay(colorTextureID, myWidth, myHeight);
 
-
-
-
-        glHelper.prepare2D(myWidth, myHeight);
-        ShaderHelper.bindShaders();
-        GL13.glActiveTexture(GL13.GL_TEXTURE0);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, colorTextureID);
-
-        GeometryFactory.plane2D(colorTextureID, 512, 0, 0);
-        ShaderHelper.releaseShaders();
         /*glDrawBuffer(GL_FRONT);
         glAccum(GL_ACCUM, 1f);
         glDrawBuffer(GL_BACK);
 
         glAccum(GL_RETURN, 0.1f);//push bach to draw buffer
         */
-        updateConsoleString();
-        gameConsole.draw(myWidth, myHeight, 512, 256);
 
         // set the target framebuffer to read
         glReadBuffer(GL_FRONT);
@@ -273,10 +259,9 @@ public class gameWorldRender {
         glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, 0);
 
 
+        gameConsole.draw(myWidth, myHeight, 512, 256, 0, 0, 0.1f);
+
         sampleScreen();
-
-
-        //glReadPixels(0, 0, 512, 512, GL_LUMINANCE, GL_INT, pixels);
     }
 
     void cameraTransform(){
@@ -326,6 +311,10 @@ public class gameWorldRender {
         }
         //myLogic.theTree.saveToFile("ok");
         mySurfaceTotal = (_total / 3_000_000f);
+
+        updateConsoleString();
+
+
     }
 
 
@@ -350,7 +339,7 @@ public class gameWorldRender {
                 }else if (wo.isTree){
                     if(myLogic.lastGameLogic - lastVBOUpdate > 1){
                         wo.updateVBOs();
-                        lastVBOUpdate=getTime();
+                        lastVBOUpdate=time.getTime();
                     }
                     GeometryFactory.drawQuadsByVBOHandles(wo.vertices, wo.VBOHandles);
                 }

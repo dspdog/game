@@ -3,6 +3,7 @@ package utils;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
 import org.lwjgl.util.vector.Vector3f;
 
 import java.nio.FloatBuffer;
@@ -25,6 +26,11 @@ public class glHelper {
         IntBuffer ib = BufferUtils.createIntBuffer(1);
         glReadPixels(x,y, 1, 1, GL_STENCIL_INDEX, GL_UNSIGNED_INT, ib);
         return ib.get(0);
+    }
+
+    public static void enableTransparency(){
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
     }
 
     public static void updateCamVectors(){//http://www.gamedev.net/topic/397751-how-to-get-camera-pos/

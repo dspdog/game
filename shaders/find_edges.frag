@@ -46,7 +46,7 @@ float IsEdge(in vec2 coords){
 void main()
 {
   vec4 color = vec4(0.0,0.0,0.0,1.0);
-  float edge = IsEdge(gl_TexCoord[0].xy);
-  color.rgb = vec3(edge, edge, edge);
+  float edge = 1.0-IsEdge(gl_TexCoord[0].xy);
+  color.rgba = vec4(edge, edge, edge, 1.0-edge);
   gl_FragColor = color;
 }

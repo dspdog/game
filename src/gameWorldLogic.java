@@ -1,6 +1,7 @@
 import org.lwjgl.Sys;
 import shapes.tree;
 import utils.glHelper;
+import utils.time;
 
 public class gameWorldLogic implements Runnable {
 
@@ -21,7 +22,7 @@ public class gameWorldLogic implements Runnable {
 
         //theTree.updateCSG();
         //cm.generateTris(theTree);
-        lastGameLogic = getTime();
+        lastGameLogic = time.getTime();
     }
 
     public void end(){
@@ -48,9 +49,5 @@ public class gameWorldLogic implements Runnable {
                 e.printStackTrace();
             }
         }
-    }
-
-    long getTime() {
-        return (Sys.getTime() * 1000) / Sys.getTimerResolution();
     }
 }

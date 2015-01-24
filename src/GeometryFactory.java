@@ -1,11 +1,13 @@
 import eu.mihosoft.vrl.v3d.CSG;
 import eu.mihosoft.vrl.v3d.Polygon;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL13;
 import org.newdawn.slick.opengl.*;
 import org.lwjgl.opengl.GL11;
 
 import shapes.tree;
 import utils.CubeMarcher;
+import utils.ShaderHelper;
 import utils.glHelper;
 
 import java.nio.FloatBuffer;
@@ -83,30 +85,40 @@ public class GeometryFactory {
     }
 
 
-    static void plane2D(int tex, int size, int x, int y){
-        plane2D(tex, size, size, x, y);
+    static void shaderOverlay(int tex, int width, int height){
+        glHelper.prepare2D(width, height);
+        ShaderHelper.bindShaders();
+        GL13.glActiveTexture(GL13.GL_TEXTURE0);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, tex);
+        GeometryFactory.plane2D(tex, width, height, 0, 0, 0, true);
+        ShaderHelper.releaseShaders();
     }
 
-    static void plane2D(int tex, int width, int height, int x, int y){
+    static void plane2D(int tex, int size, float x, float y){
+        plane2D(tex, size, size, x, y);
+    }
+    static void plane2D(int tex, int width, int height, float x, float y){ plane2D(tex,width,height,x,y,0);}
+    static void plane2D(int tex, int width, int height, float x, float y, float z){ plane2D(tex,width,height,x,y,z,false);}
+    static void plane2D(int tex, int width, int height, float x, float y, float z, boolean reverseY){
         glEnable(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, tex);
         glBegin(GL11.GL_QUADS);
 
-        glTexCoord2f(0, 0);
+        glTexCoord2f(0, reverseY ? 1 : 0);
         glColor3f(1, 1, 1);
-        glVertex3f(x, y, 0);
+        glVertex3f(x, y, z);
 
-        glTexCoord2f(1, 0);
+        glTexCoord2f(1, reverseY ? 1 : 0);
         glColor3f(1, 1, 1);
-        glVertex3f(width+x, y, 0);
+        glVertex3f(width+x, y, z);
 
-        glTexCoord2f(1, 1);
+        glTexCoord2f(1, reverseY ? 0 : 1);
         glColor3f(1, 1, 1);
-        glVertex3f(width+x, height+y, 0);
+        glVertex3f(width+x, height+y, z);
 
-        glTexCoord2f(0, 1);
+        glTexCoord2f(0, reverseY ? 0 : 1);
         glColor3f(1, 1, 1);
-        glVertex3f(x, height+y, 0);
+        glVertex3f(x, height+y,z);
 
         glEnd();
         glDisable(GL_TEXTURE_2D);
