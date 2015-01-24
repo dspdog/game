@@ -1,20 +1,14 @@
 import eu.mihosoft.vrl.v3d.CSG;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
-import org.lwjgl.Sys;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.*;
 import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.opengl.Texture;
-import org.newdawn.slick.opengl.TextureLoader;
 import shapes.tree;
-import utils.ShaderHelper;
 import utils.glHelper;
 import utils.time;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -82,10 +76,10 @@ public class gameWorldRender {
 
     private float mySurfaceTotal = 0;
     private void updateConsoleString(){
-        String console = "FPS: " + myFPS +
+        String consoleStatus = "FPS: " + myFPS +
                         "\nSURFACE: " + mySurfaceTotal +
                         "\nSELECTED: " + mySelection;
-        gameConsole.setConsoleString(console);
+        gameConsole.setStatusString(consoleStatus);
     }
 
     public void start() {
@@ -262,7 +256,7 @@ public class gameWorldRender {
         glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, 0);
 
 
-        gameConsole.draw(myWidth, myHeight, 512, 256, 0, 0, 0.1f);
+        gameConsole.draw(myWidth, myHeight, myWidth, 256, 0, 0, 0.1f);
 
     }
 
@@ -374,14 +368,6 @@ public class gameWorldRender {
         boolean isPlane = false;
         boolean isTree = false;
 
-        public WorldObject(CSG csg){
-            name="CSG_" + stencilId;
-            isCSG=true;
-            myCSG = csg;
-            csg.getTriangles();
-            VBOHandles = GeometryFactory.csgVBOHandles(csg);
-        }
-
         public WorldObject(tree tree){
             name="TREE_" + stencilId;
             isTree=true;
@@ -394,19 +380,6 @@ public class gameWorldRender {
                 VBOHandles = GeometryFactory.treeVBOQuadHandles(myTree);
                 vertices = myTree.vertices;
             }
-        }
-
-        public WorldObject(Texture texture){
-            name="TEX_" + stencilId;
-            isPlane = true;
-            myTexture = texture;
-        }
-
-        public WorldObject(GeometryFactory.gridFunction d){
-            name="GRID_" + stencilId;
-            isGrid=true;
-            myFunction = d;
-            VBOHandles = GeometryFactory.gridVBOHandles(d);
         }
     }
 }

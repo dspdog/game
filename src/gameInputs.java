@@ -5,6 +5,10 @@ import org.lwjgl.input.Mouse;
  * Created by user on 1/23/2015.
  */
 public class gameInputs {
+
+    static boolean consoleIsEnabled = false;
+    static String inputString = "";
+
     static public void pollInputs() { //adapted from http://ninjacave.com/lwjglbasics2
 
         if (Mouse.isButtonDown(0)) {
@@ -20,25 +24,27 @@ public class gameInputs {
 
         while (Keyboard.next()) {
             if (Keyboard.getEventKeyState()) {
-                if (Keyboard.getEventKey() == Keyboard.KEY_A) {
-                    System.out.println("A Key Pressed");
-                }
-                if (Keyboard.getEventKey() == Keyboard.KEY_S) {
-                    System.out.println("S Key Pressed");
-                }
-                if (Keyboard.getEventKey() == Keyboard.KEY_D) {
-                    System.out.println("D Key Pressed");
+                if (Keyboard.getEventKey() == Keyboard.KEY_GRAVE ) {
+                    consoleIsEnabled = !consoleIsEnabled;
+                }else{
+                    if(consoleIsEnabled){
+                        if (Keyboard.getEventKey() == Keyboard.KEY_BACK ) { //CONSOLE BACKSPACE
+                            inputString=inputString.substring(0, inputString.length()-1);
+                        }else{
+                            if (Keyboard.getEventKey() == Keyboard.KEY_RETURN ) { //CONSOLE SUBMIT (RETURN KEY)
+                                gameConsole.submitCommand(inputString);
+                                inputString="";
+                            }else{
+                                inputString+=(Keyboard.getEventCharacter()); //CONSOLE INPUT
+                            }
+
+                        }
+                    }
                 }
             } else {
-                if (Keyboard.getEventKey() == Keyboard.KEY_A) {
-                    System.out.println("A Key Released");
-                }
-                if (Keyboard.getEventKey() == Keyboard.KEY_S) {
-                    System.out.println("S Key Released");
-                }
-                if (Keyboard.getEventKey() == Keyboard.KEY_D) {
-                    System.out.println("D Key Released");
-                }
+                //if (Keyboard.getEventKey() == Keyboard.KEY_A) {
+                //    System.out.println("A Key Released");
+                //}
             }
         }
     }

@@ -50,12 +50,19 @@ public class TextureFactory {
         return null;
         //
     }
-
-    static public int stringToTexture(String str, int width, int height){  //http://www.java-gaming.org/index.php?topic=25516.0
+    
+    //draw the console given a string to display
+    static public int consoleTexture(String str, int width, int height, boolean background){  //http://www.java-gaming.org/index.php?topic=25516.0
         //Generate a small test image by drawing to a BufferedImage
         //It's of course also possible to just load an image using ImageIO.load()
         BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = img.createGraphics();
+
+        if(background){
+            g2d.setColor(new Color(0.25f,0.25f,0.25f,0.75f));
+            g2d.fillRect(0,0,width,height);
+        }
+
         drawOutlinedText(str, g2d);
 
         return loadTexture(img);
