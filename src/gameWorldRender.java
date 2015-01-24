@@ -231,7 +231,7 @@ public class gameWorldRender {
         //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
         cameraTransform();
         myScene.drawScene();
-
+        sampleScreen();
         glPopMatrix();
 
         GeometryFactory.shaderOverlay(colorTextureID, myWidth, myHeight);
@@ -264,7 +264,6 @@ public class gameWorldRender {
 
         gameConsole.draw(myWidth, myHeight, 512, 256, 0, 0, 0.1f);
 
-        sampleScreen();
     }
 
     void cameraTransform(){
@@ -391,9 +390,13 @@ public class gameWorldRender {
         }
 
         public void updateVBOs(){
-            if(isTree){
-                VBOHandles = GeometryFactory.treeVBOQuadHandles(myTree);
-                vertices = myTree.vertices;
+            try{
+                if(isTree){
+                    VBOHandles = GeometryFactory.treeVBOQuadHandles(myTree);
+                    vertices = myTree.vertices;
+                }
+            }catch (Exception e){
+
             }
         }
 

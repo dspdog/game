@@ -40,7 +40,7 @@ float IsEdge(in vec2 coords){
           abs(pix[2]-pix[6])
            )/4.;
 
-  return threshold(0.25,0.4,clamp(1.8*delta,0.0,1.0));
+  return threshold(0.25,0.3,clamp(1.8*delta,0.0,1.0));
 }
 
 void main()

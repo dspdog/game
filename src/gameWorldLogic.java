@@ -23,6 +23,8 @@ public class gameWorldLogic implements Runnable {
         //theTree.updateCSG();
         //cm.generateTris(theTree);
         lastGameLogic = time.getTime();
+
+        gameInputs.pollInputs();
     }
 
     public void end(){
