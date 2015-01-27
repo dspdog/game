@@ -1,5 +1,6 @@
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import utils.StringHelper;
 
 /**
  * Created by user on 1/23/2015.
@@ -29,10 +30,11 @@ public class gameInputs {
                 }else{
                     if(consoleIsEnabled){
                         if (Keyboard.getEventKey() == Keyboard.KEY_BACK ) { //CONSOLE BACKSPACE
+                            if(inputString.length()>0)
                             inputString=inputString.substring(0, inputString.length()-1);
                         }else{
                             if (Keyboard.getEventKey() == Keyboard.KEY_RETURN ) { //CONSOLE SUBMIT (RETURN KEY)
-                                gameConsole.submitCommand(inputString);
+                                if(!inputString.equals("")){gameConsole.submitCommand(inputString);}
                                 inputString="";
                             }else{
                                 inputString+=(Keyboard.getEventCharacter()); //CONSOLE INPUT
@@ -46,6 +48,8 @@ public class gameInputs {
                 //    System.out.println("A Key Released");
                 //}
             }
+
+            inputString = StringHelper.stripNonPrinting(inputString);
         }
     }
 }

@@ -3,7 +3,6 @@ package factory;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 
@@ -13,7 +12,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.ByteBuffer;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -50,23 +48,6 @@ public class TextureFactory {
         return null;
         //
     }
-    
-    //draw the console given a string to display
-    static public int consoleTexture(String str, int width, int height, boolean background){  //http://www.java-gaming.org/index.php?topic=25516.0
-        //Generate a small test image by drawing to a BufferedImage
-        //It's of course also possible to just load an image using ImageIO.load()
-        BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d = img.createGraphics();
-
-        if(background){
-            g2d.setColor(new Color(0.25f,0.25f,0.25f,0.75f));
-            g2d.fillRect(0,0,width,height);
-        }
-
-        drawOutlinedText(str, g2d);
-
-        return loadTexture(img);
-    }
 
     /*
         //Texture Loader example:
@@ -77,36 +58,16 @@ public class TextureFactory {
         }
      */
 
-    static public void drawOutlinedText(String str, Graphics2D g2d){
-        g2d.setFont(new Font("Monospaced", Font.PLAIN, 14));
+    static public int bufferedImgTex(int width, int height){  //http://www.java-gaming.org/index.php?topic=25516.0
+        //Generate a small test image by drawing to a BufferedImage
+        //It's of course also possible to just load an image using ImageIO.load()
+        BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = img.createGraphics();
 
-        String[] splitData = str.split("\n");
-        int yOffset=0;
-        int pixelPerLine = 14;
+        g2d.setColor(new Color(0.25f,0.25f,0.25f,0.75f));
+        g2d.fillRect(0,0,width,height);
 
-        int baseX = 4;
-        int baseY = 18;
-
-        g2d.setColor(Color.black); //drop shadow
-
-        for(int x=0; x<2; x++){
-            for(int y=0; y<2; y++){
-                if(!(x==0 && y==0)){
-                    yOffset=0;
-                    for (String eachSplit : splitData) {
-                        g2d.drawString(eachSplit, baseX+x, baseY+yOffset+y);
-                        yOffset+=pixelPerLine;
-                    }
-                }
-            }
-        }
-
-        g2d.setColor(Color.white); //text
-        yOffset=0;
-        for (String eachSplit : splitData) {
-            g2d.drawString(eachSplit, baseX, baseY+yOffset);
-            yOffset+=pixelPerLine;
-        }
+        return loadTexture(img);
     }
 
     private static final int BYTES_PER_PIXEL = 4;
