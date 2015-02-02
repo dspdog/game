@@ -11,36 +11,11 @@ import java.awt.image.BufferedImage;
  */
 public class gameConsole {
 
-    static private String theCmds[][] = {
-            {"persp", "perspective mode", "Perspective mode enabled! Use FOV to change field of view."},
-            {"ortho", "orthogonal mode", "Ortho mode enabled! Use PERSP to enable perspective mode."},
-            {"fov",   "field of view", "Field of view now __X"},
-            {"top", "top view", "Now viewing top view"},
-            {"side", "side view", "Now viewing side view"},
-            {"front", "front view", "Now viewing front view"},
-            {"orbit", "orbit camera mode", "Orbit camera mode enabled"},
-            {"fly", "flying camera mode", "Flying camera mode enabled"},
-            {"speed", "camera speed", "Camera speed now __X"},
-            {"sync", "frame limiter", "Frame limit now __X"},
-            {"unsync", "disable frame limiter", "Frame limiter disabled"},
-            {"save", "save state", "State saved."},
-            {"load", "load state", "State loaded."},
-            {"shader", "pixel shader", "Now using __X shader"},
-            {"details", "toggle render details", "Render details display toggled"},
-            {"reset", "reset state", "Everything reset."}
-    };
-
-    static final String errorCode = "<ERROR>";
-    static final String confirmCode = "<CONFIRM>";
-    static final String submitCode = "<SUBMITTED>";
-
-    static String defaultHelpMsg = "Type HELP to see a list of commands.";
-
     static int consoleTexture = 0;
     static long lastConsoleUpdate = 0;
     static String statusString = "";
     static String inputString = "";
-    static String commandString =  defaultHelpMsg + "\n";
+
     static long updatePeriodMS = 100;
 
     static long startTime = time.getTime();
@@ -48,42 +23,6 @@ public class gameConsole {
     public static void setStatusString(String newString){statusString = newString;}
     public static void setInputString(String newString){
         inputString = newString;
-    }
-
-    public static void submitCommand(String cmd){
-        commandString+= submitCode + ">" + cmd+"\n";
-        commandString+=parseCommand(cmd) + "\n";
-    }
-
-    private static String parseCommand(String cmd){
-        String[] splitData = cmd.split(" ");
-
-        String theCmd = cmd.toLowerCase();
-        String theParam = " ";
-
-        if(splitData.length>1){ //multi-arg commands
-            theCmd = splitData[0];
-            theParam = splitData[1];
-        }
-
-        for(int i=0; i<theCmds.length; i++){
-            String cmdTitle = theCmds[i][0];
-            String cmdDesc = theCmds[i][1];
-            String cmdConfirmation = theCmds[i][2].replace("__X", theParam);
-
-            if(theCmd.equals(cmdTitle)){
-
-                if(theParam.equals(" ") && theCmds[i][2].contains("__X")){ //if user types wrong number of params
-                    return "Missing parameter. Use " + cmdTitle + " X to set " + cmdDesc + " to X";
-                }
-
-                //TRY-CATCH TO ACTUALLY CHANGE STUFF
-
-                return confirmCode + cmdConfirmation;
-            }
-        }
-
-        return errorCode + "Unrecognized command: " + cmd + ". " + defaultHelpMsg;
     }
 
     private static void updateInputString(){
@@ -104,7 +43,7 @@ public class gameConsole {
         updateInputString();
         if (time.getTime() - lastConsoleUpdate > updatePeriodMS) {
             lastConsoleUpdate = time.getTime();
-            String theString = statusString + "\n" + (gameInputs.consoleIsEnabled ? "\n" + StringHelper.getLastXLines(commandString, 12) : "") + inputString;
+            String theString = statusString + "\n" + (gameInputs.consoleIsEnabled ? "\n" + StringHelper.getLastXLines(gameCommands.commandString, 12) : "") + inputString;
             consoleTexture = getConsoleTexture(theString, consoleWidth, consoleHeight, gameInputs.consoleIsEnabled);
         }
         glHelper.enableTransparency();
@@ -142,9 +81,9 @@ public class gameConsole {
         Color submittedColor = Color.gray;
         Color cmdLineColor = Color.white;
 
-        String errorCode = gameConsole.errorCode;
-        String confirmCode = gameConsole.confirmCode;
-        String submitCode = gameConsole.submitCode;
+        String errorCode = gameCommands.errorCode;
+        String confirmCode = gameCommands.confirmCode;
+        String submitCode = gameCommands.submitCode;
 
         g2d.setColor(shadowColor); //drop shadow
 

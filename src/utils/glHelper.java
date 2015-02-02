@@ -2,8 +2,7 @@ package utils;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
+import org.lwjgl.opengl.*;
 import org.lwjgl.util.vector.Vector3f;
 
 import java.nio.FloatBuffer;
@@ -31,6 +30,7 @@ public class glHelper {
     public static void enableTransparency(){
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
     }
 
     public static void updateCamVectors(){//http://www.gamedev.net/topic/397751-how-to-get-camera-pos/
@@ -49,10 +49,15 @@ public class glHelper {
         cameraZVector.normalise();
     }
 
-    public static void prepare3D(int width, int height, float fov){ //see http://gamedev.stackexchange.com/questions/18468/making-a-hud-gui-with-opengl-lwjgl
+    public static void prepare3D(int width, int height, float fov, boolean useOrtho){ //see http://gamedev.stackexchange.com/questions/18468/making-a-hud-gui-with-opengl-lwjgl
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        gluPerspective(fov, ((float)width) / ((float)height), 0.01f, 5000f);
+        if(useOrtho){
+            GL11.glOrtho(0, width, 0, height, 1000, -1000);
+            GL11.glTranslatef(width/2, height/2,0);
+        }else{
+            gluPerspective(fov, ((float)width) / ((float)height), 0.01f, 5000f);
+        }
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
     }

@@ -10,15 +10,20 @@ public class gameWorldLogic implements Runnable {
 
     tree theTree;
 
+
+
     public gameWorldLogic(){
 
     }
 
     void updateGameLogic(){
+
+        float dt = time.getDtMS()*0.1f;
+
         tree.cameraXVector.set(glHelper.cameraXVector);
         tree.cameraYVector.set(glHelper.cameraYVector);
         tree.cameraZVector.set(glHelper.cameraZVector);
-        theTree.perturb(false, false, 0.1250f*4f);
+        theTree.perturb(false, false, 0.1250f*dt);
 
         //theTree.updateCSG();
         //cm.generateTris(theTree);

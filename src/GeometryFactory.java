@@ -84,7 +84,6 @@ public class GeometryFactory {
         glDisable(GL_TEXTURE_2D);
     }
 
-
     static void shaderOverlay(int tex, int width, int height){
         glHelper.prepare2D(width, height);
         ShaderHelper.bindShaders();

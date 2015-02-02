@@ -10,11 +10,14 @@ public class gameInputs {
     static boolean consoleIsEnabled = false;
     static String inputString = "";
 
-    static public void pollInputs() { //adapted from http://ninjacave.com/lwjglbasics2
+    static float mouseX =0;
+    static float mouseY =0;
 
+    static public void pollInputs() { //adapted from http://ninjacave.com/lwjglbasics2
+        mouseX = Mouse.getX();
+        mouseY = Mouse.getY();
         if (Mouse.isButtonDown(0)) {
-            int x = Mouse.getX();
-            int y = Mouse.getY();
+
 
             //System.out.println("MOUSE DOWN @ X: " + x + " Y: " + y);
         }
@@ -34,7 +37,7 @@ public class gameInputs {
                             inputString=inputString.substring(0, inputString.length()-1);
                         }else{
                             if (Keyboard.getEventKey() == Keyboard.KEY_RETURN ) { //CONSOLE SUBMIT (RETURN KEY)
-                                if(!inputString.equals("")){gameConsole.submitCommand(inputString);}
+                                if(!inputString.equals("")){gameCommands.submitCommand(inputString);}
                                 inputString="";
                             }else{
                                 inputString+=(Keyboard.getEventCharacter()); //CONSOLE INPUT

@@ -21,17 +21,24 @@ import static org.lwjgl.opengl.EXTFramebufferObject.*;
 import static org.lwjgl.opengl.ARBPixelBufferObject.*;
 public class gameWorldRender {
 
-    private int fps;
-    private long lastFPS;
-    private long startTime;
-    private int myFPS = 0;
-    private int myWidth;
-    private int myHeight;
+    public static int fps;
+    public static long lastFPS;
+    public static long startTime;
+    public static int mySyncFPS;
+    public static int myFPS = 0;
+    public static int myWidth;
+    public static int myHeight;
+
+    public static boolean doFBOPass;
+    public static boolean doProcessPixels;
+    public static boolean doShaderOverlay;
+    public static boolean doWireFrame;
 
     private int myFBOWidth;
     private int myFBOHeight;
 
-    private float myFOV;
+    public static float myFOV;
+    public static boolean useOrtho;
 
     private String mySelection = "";
 
@@ -40,6 +47,9 @@ public class gameWorldRender {
     private int frame_index;// = (index + 1) % 2;
     private int frame_nextIndex;// = (index + 1) % 2;
 
+    public static float rotationx = 0;
+    public static float rotationy = 0;
+    public static float rotationz = 0;
 
     long lastPrint=0;
 
@@ -55,6 +65,13 @@ public class gameWorldRender {
         myFOV = 75;
         myWidth = 1024;
         myHeight = 1024;
+
+        useOrtho=false;
+
+        doProcessPixels=true;
+        doShaderOverlay=true;
+        doFBOPass=true;
+        doWireFrame=false;
 
         myFBOHeight = 512;
         myFBOWidth = 512;
@@ -101,7 +118,7 @@ public class gameWorldRender {
             update();
             renderGL();
             Display.update();
-            //Display.sync(60); // cap fps to 60fps
+            Display.sync(mySyncFPS); // cap fps to 60fps
         }
 
         myLogic.end();
@@ -123,7 +140,7 @@ public class gameWorldRender {
     private int depthRenderBufferID;
 
     void initGL() {
-        glHelper.prepare3D(myWidth, myHeight, myFOV);
+        glHelper.prepare3D(myWidth, myHeight, myFOV, useOrtho);
 
         /*try {
             myTexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("./res/myball.png")));
@@ -186,30 +203,25 @@ public class gameWorldRender {
         frame_nextIndex = (frame_index + 1) % 2;
 
         glEnable(GL_DEPTH_TEST);
-        glHelper.prepare3D(myWidth, myHeight, myFOV);
+        glHelper.prepare3D(myWidth, myHeight, myFOV, useOrtho);
+        glBindTexture(GL_TEXTURE_2D, 0);
 
-        // FBO render pass
-
-        glViewport (0, 0, myFBOWidth, myFBOHeight);                                    // set The Current Viewport to the fbo size
-
-        glBindTexture(GL_TEXTURE_2D, 0);                                // unlink textures because if we dont it all is gonna fail
-        glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, framebufferID);        // switch to rendering on our FBO
-
-        glClearColor (0.0f, 0.0f, 1.0f, 1.0f);
-        glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);            // Clear Screen And Depth Buffer on the fbo to red
-        cameraTransform();
-
-        myScene.drawScene();
-
-
-
+        if(doFBOPass){
+            // FBO render pass
+            glViewport (0, 0, myFBOWidth, myFBOHeight);                                    // set The Current Viewport to the fbo size
+            glBindTexture(GL_TEXTURE_2D, 0);                                // unlink textures because if we dont it all is gonna fail
+            glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, framebufferID);        // switch to rendering on our FBO
+            glClearColor (0.0f, 0.0f, 1.0f, 1.0f);
+            glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);            // Clear Screen And Depth Buffer on the fbo to red
+            cameraTransform();
+            myScene.drawScene();
+        }
 
         // Normal render pass, draw cube with texture
-        glViewport (0, 0, myWidth, myHeight);
+        glViewport(0, 0, myWidth, myHeight);
         glEnable(GL_TEXTURE_2D);                                        // enable texturing
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);                    // switch to rendering on the framebuffer
-        glClearColor (0.5f, 0.5f, 0.5f, 0.5f);
-        glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);            // Clear Screen And Depth Buffer on the framebuffer to black
+        glClearColor(0.5f, 0.5f, 0.5f, 1f);
 
         //glBindTexture(GL_TEXTURE_2D, colorTextureID);                   // bind our FBO texture
 
@@ -221,14 +233,17 @@ public class gameWorldRender {
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_STENCIL_TEST);
         glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-
-        //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+        if(doWireFrame){glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );}
         cameraTransform();
         myScene.drawScene();
         sampleScreen();
         glPopMatrix();
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-        GeometryFactory.shaderOverlay(colorTextureID, myWidth, myHeight);
+        if(doShaderOverlay){
+            GeometryFactory.shaderOverlay(colorTextureID, myWidth, myHeight);
+        }
+
 
         /*glDrawBuffer(GL_FRONT);
         glAccum(GL_ACCUM, 1f);
@@ -237,23 +252,27 @@ public class gameWorldRender {
         glAccum(GL_RETURN, 0.1f);//push bach to draw buffer
         */
 
-        // set the target framebuffer to read
-        glReadBuffer(GL_FRONT);
+        if(doProcessPixels){
 
-        // read pixels from framebuffer to PBO
-        // glReadPixels() should return immediately.
-        glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, pboIds.get(frame_index));
-        glReadPixels(0, 0, 512, 512, GL_RGB, GL_UNSIGNED_BYTE, 0); //anchor point for coords is LOWER LEFT
+            // set the target framebuffer to read
+            glReadBuffer(GL_FRONT);
 
-        // map the PBO to process its data by CPU
-        glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, pboIds.get(frame_nextIndex));
-        pixels = ARBBufferObject.glMapBufferARB(GL_PIXEL_PACK_BUFFER_ARB, GL_READ_ONLY_ARB, 512*512*3, null);
-        processPixels();
-        glUnmapBufferARB(GL_PIXEL_PACK_BUFFER_ARB);
+            // read pixels from framebuffer to PBO
+            // glReadPixels() should return immediately.
+            glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, pboIds.get(frame_index));
+            glReadPixels(0, 0, 512, 512, GL_RGB, GL_UNSIGNED_BYTE, 0); //anchor point for coords is LOWER LEFT
+
+            // map the PBO to process its data by CPU
+            glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, pboIds.get(frame_nextIndex));
+            pixels = ARBBufferObject.glMapBufferARB(GL_PIXEL_PACK_BUFFER_ARB, GL_READ_ONLY_ARB, 512*512*3, null);
+            processPixels();
+            glUnmapBufferARB(GL_PIXEL_PACK_BUFFER_ARB);
 
 
-        // back to conventional pixel operation
-        glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, 0);
+            // back to conventional pixel operation
+            glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, 0);
+        }
+
 
 
         gameConsole.draw(myWidth, myHeight, myWidth, 256, 0, 0, 0.1f);
@@ -261,8 +280,9 @@ public class gameWorldRender {
     }
 
     void cameraTransform(){
-        double rotationx = 90f- 180f * Mouse.getY()/myHeight;
-        double rotationy = Mouse.getX();
+        rotationx = 90f- 180f * gameInputs.mouseY /myHeight;
+        rotationy = gameInputs.mouseX;
+        rotationz = 0;
 
         int scroll = Mouse.getDWheel();
 
@@ -281,6 +301,7 @@ public class gameWorldRender {
         glPushMatrix();
         glScalef(zoom, zoom, zoom);
         glTranslatef(centerPt.x, centerPt.y, centerPt.z);
+        glRotatef((float) rotationz, 0f, 0f, 1f);
         glRotatef((float) rotationy, 0f, 1f, 0f);
         glRotatef((float) rotationx, 1f, 0f, 0f);
         glTranslatef(-centerPt.x, -centerPt.y, -centerPt.z);
@@ -309,8 +330,6 @@ public class gameWorldRender {
         mySurfaceTotal = (_total / 3_000_000f);
 
         updateConsoleString();
-
-
     }
 
 
