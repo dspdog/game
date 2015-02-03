@@ -1,3 +1,4 @@
+import factory.GeometryFactory;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Mouse;
@@ -15,7 +16,7 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.util.glu.GLU.*;
 import static org.lwjgl.opengl.EXTFramebufferObject.*;
 import static org.lwjgl.opengl.ARBPixelBufferObject.*;
-public class gameWorldRender {
+public class RenderThread {
 
     public static int fps;
     public static long lastFPS;
@@ -51,13 +52,13 @@ public class gameWorldRender {
 
     public static long lastVBOUpdate=0;
 
-    private gameWorldLogic myLogic;
+    private LogicThread myLogic;
 
     private float scrollPos = 1.0f;
 
     private boolean handlesFound = false;
 
-    public gameWorldRender(gameWorldLogic gl){
+    public RenderThread(LogicThread gl){
         myFOV = 75;
         myWidth = 1024;
         myHeight = 1024;
@@ -305,7 +306,7 @@ public class gameWorldRender {
     }
 
     void sampleScreen(){
-        int stencilValue = glHelper.sampleStencil(Mouse.getX(), Mouse.getY());
+        int stencilValue = glHelper.sampleStencil((int)gameInputs.mouseX, (int)gameInputs.mouseY);
         if(myScene.idsMap.containsKey(stencilValue+"")){
             mySelection = myScene.idsMap.get(stencilValue+"").name;
         }else{

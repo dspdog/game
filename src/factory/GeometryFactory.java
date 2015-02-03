@@ -1,3 +1,5 @@
+package factory;
+
 import eu.mihosoft.vrl.v3d.CSG;
 import eu.mihosoft.vrl.v3d.Polygon;
 import org.lwjgl.BufferUtils;
@@ -32,7 +34,7 @@ public class GeometryFactory {
         glEnd();
     }
 
-    static void plane(Texture tex){
+    public static void plane(Texture tex){
         glEnable(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, tex.getTextureID());
         int size = 250;
@@ -84,7 +86,7 @@ public class GeometryFactory {
         glDisable(GL_TEXTURE_2D);
     }
 
-    static void shaderOverlay(int tex, int width, int height){
+    public static void shaderOverlay(int tex, int width, int height){
         glHelper.prepare2D(width, height);
         ShaderHelper.bindShaders();
         GL13.glActiveTexture(GL13.GL_TEXTURE0);
@@ -93,12 +95,12 @@ public class GeometryFactory {
         ShaderHelper.releaseShaders();
     }
 
-    static void plane2D(int tex, int size, float x, float y){
-        plane2D(tex, size, size, x, y);
-    }
-    static void plane2D(int tex, int width, int height, float x, float y){ plane2D(tex,width,height,x,y,0);}
-    static void plane2D(int tex, int width, int height, float x, float y, float z){ plane2D(tex,width,height,x,y,z,false);}
-    static void plane2D(int tex, int width, int height, float x, float y, float z, boolean reverseY){
+    public static void plane2D(int tex, int size, float x, float y){
+             plane2D(tex, size, size, x, y);
+         }
+    public static void plane2D(int tex, int width, int height, float x, float y){ plane2D(tex,width,height,x,y,0);}
+    public static void plane2D(int tex, int width, int height, float x, float y, float z){ plane2D(tex,width,height,x,y,z,false);}
+    public static void plane2D(int tex, int width, int height, float x, float y, float z, boolean reverseY){
         glEnable(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, tex);
         glBegin(GL11.GL_QUADS);
@@ -153,7 +155,7 @@ public class GeometryFactory {
         glDisable(GL_TEXTURE_2D);
     }
 
-    static int[] treeVBOLineHandles(shapes.tree theTree){
+    public static int[] treeVBOLineHandles(shapes.tree theTree){
         int vbo_vertex_handle = glGenBuffers();
         glBindBuffer(GL_ARRAY_BUFFER, vbo_vertex_handle);
         glBufferData(GL_ARRAY_BUFFER, tree.vertex_data, GL_STATIC_DRAW);
@@ -167,7 +169,7 @@ public class GeometryFactory {
         return new int[]{vbo_vertex_handle,vbo_color_handle};
     }
 
-    static int[] treeVBOQuadHandles(shapes.tree theTree){
+    public static int[] treeVBOQuadHandles(shapes.tree theTree){
         int vbo_vertex_handle = glGenBuffers();
         glBindBuffer(GL_ARRAY_BUFFER, vbo_vertex_handle);
         glBufferData(GL_ARRAY_BUFFER, tree.vertex_data2, GL_STATIC_DRAW);
@@ -262,7 +264,7 @@ public class GeometryFactory {
         return color_data;
     }
 
-    interface gridFunction{
+    public interface gridFunction{
         float getValue(int x, int y);
     }
 
@@ -376,7 +378,7 @@ public class GeometryFactory {
         glDisableClientState(GL_VERTEX_ARRAY);
     }
 
-    static void drawTrisByVBOHandles(int triangles, int[] handles){
+    public static void drawTrisByVBOHandles(int triangles, int[] handles){
         int vertex_size = 3; // X, Y, Z,
         int color_size = 3; // R, G, B,
 
@@ -398,7 +400,7 @@ public class GeometryFactory {
         glDisableClientState(GL_VERTEX_ARRAY);
     }
 
-    static void drawQuadsByVBOHandles(int quads, int[] handles){
+    public static void drawQuadsByVBOHandles(int quads, int[] handles){
         int vertex_size = 3; // X, Y, Z,
         int color_size = 3; // R, G, B,
 

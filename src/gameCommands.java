@@ -1,5 +1,3 @@
-import utils.glHelper;
-
 /**
  * Created by user on 1/31/2015.
  */
@@ -47,32 +45,32 @@ public class gameCommands {
     public static void runCmd(String cmd, String param){
         switch(cmd){
             case "persp":
-                gameWorldRender.useOrtho = false;
+                RenderThread.useOrtho = false;
                 break;
             case "ortho":
-                gameWorldRender.useOrtho = true;
+                RenderThread.useOrtho = true;
                 break;
             case "fov":
-                gameWorldRender.myFOV=Float.valueOf(param);
+                RenderThread.myFOV=Float.valueOf(param);
                 break;
             case "sync":
-                gameWorldRender.mySyncFPS=Integer.valueOf(param);
+                RenderThread.mySyncFPS=Integer.valueOf(param);
                 break;
             case "overlay":
-                gameWorldRender.doShaderOverlay= param.equalsIgnoreCase("on");
-                System.out.println(gameWorldRender.doShaderOverlay);
+                RenderThread.doShaderOverlay= param.equalsIgnoreCase("on");
+                System.out.println(RenderThread.doShaderOverlay);
                 break;
             case "pixels":
-                gameWorldRender.doProcessPixels= param.equalsIgnoreCase("on");
-                System.out.println(gameWorldRender.doProcessPixels);
+                RenderThread.doProcessPixels= param.equalsIgnoreCase("on");
+                System.out.println(RenderThread.doProcessPixels);
                 break;
             case "fbo":
-                gameWorldRender.doFBOPass= param.equalsIgnoreCase("on");
-                System.out.println(gameWorldRender.doFBOPass);
+                RenderThread.doFBOPass= param.equalsIgnoreCase("on");
+                System.out.println(RenderThread.doFBOPass);
                 break;
             case "wireframe":
-                gameWorldRender.doWireFrame= param.equalsIgnoreCase("on");
-                System.out.println(gameWorldRender.doWireFrame);
+                RenderThread.doWireFrame= param.equalsIgnoreCase("on");
+                System.out.println(RenderThread.doWireFrame);
                 break;
         }
     }

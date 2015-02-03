@@ -1,3 +1,4 @@
+import factory.GeometryFactory;
 import factory.TextureFactory;
 import utils.StringHelper;
 import utils.glHelper;

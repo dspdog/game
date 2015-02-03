@@ -3,7 +3,7 @@ import shapes.tree;
 import utils.glHelper;
 import utils.time;
 
-public class gameWorldLogic implements Runnable {
+public class LogicThread implements Runnable {
 
     private boolean running = false;
     public static long lastGameLogic;
@@ -12,7 +12,7 @@ public class gameWorldLogic implements Runnable {
 
 
 
-    public gameWorldLogic(){
+    public LogicThread(){
 
     }
 

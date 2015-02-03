@@ -1,3 +1,4 @@
+import factory.GeometryFactory;
 import utils.glHelper;
 import utils.time;
 
@@ -16,6 +17,7 @@ class gameScene {
         glHelper.updateCamVectors();
         for(worldObject wo : objs){
             glStencilFunc(GL_ALWAYS, wo.stencilId + 1, -1);
+
             if(wo.isCSG){
                 GeometryFactory.drawTrisByVBOHandles(wo.myCSG.numTriangles, wo.VBOHandles);
             }else if(wo.isGrid){
@@ -24,12 +26,14 @@ class gameScene {
             }else if (wo.isPlane){
                 GeometryFactory.plane(wo.myTexture);
             }else if (wo.isTree){
-                if(gameWorldLogic.lastGameLogic -  gameWorldRender.lastVBOUpdate > 1){
+                if(LogicThread.lastGameLogic -  RenderThread.lastVBOUpdate > 1){
                     wo.updateVBOs();
-                    gameWorldRender.lastVBOUpdate= time.getTime();
+                    RenderThread.lastVBOUpdate= time.getTime();
                 }
                 GeometryFactory.drawQuadsByVBOHandles(wo.vertices, wo.VBOHandles);
             }
+            
+
         }
     }
 

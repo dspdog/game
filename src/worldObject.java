@@ -1,4 +1,5 @@
 import eu.mihosoft.vrl.v3d.CSG;
+import factory.GeometryFactory;
 import org.newdawn.slick.opengl.Texture;
 import shapes.tree;
 
