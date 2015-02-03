@@ -6,7 +6,7 @@ import utils.time;
 public class gameWorldLogic implements Runnable {
 
     private boolean running = false;
-    long lastGameLogic;
+    public static long lastGameLogic;
 
     tree theTree;
 

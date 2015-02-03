@@ -1,19 +1,15 @@
-import eu.mihosoft.vrl.v3d.CSG;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.*;
 import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.opengl.Texture;
-import shapes.tree;
 import utils.glHelper;
 import utils.time;
 
+
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.util.glu.GLU.*;
@@ -53,7 +49,7 @@ public class gameWorldRender {
 
     long lastPrint=0;
 
-    private long lastVBOUpdate=0;
+    public static long lastVBOUpdate=0;
 
     private gameWorldLogic myLogic;
 
@@ -133,7 +129,7 @@ public class gameWorldRender {
     }
 
     private Texture myTexture;
-    private scene myScene;
+    private gameScene myScene;
 
     private int framebufferID;
     private int colorTextureID;
@@ -148,10 +144,10 @@ public class gameWorldRender {
             e.printStackTrace();
         }*/
 
-        myScene = new scene();
+        myScene = new gameScene();
         //myScene.addWorldObject(new WorldObject(myTexture));
         //myLogic.theTree.updateCSG();
-        myScene.addWorldObject(new WorldObject(myLogic.theTree));
+        myScene.addWorldObject(new worldObject(myLogic.theTree));
         //myScene.addWorldObject(new WorldObject((x, y) -> (float)(1f-(SimplexNoise.noise(x/20f,y/20f)+1f)*(SimplexNoise.noise(x/20f,y/20f)+1f))*10f));
 
         initScreenCapture();
@@ -280,6 +276,7 @@ public class gameWorldRender {
     }
 
     void cameraTransform(){
+        //TODO camera obj --> set POV
         rotationx = 90f- 180f * gameInputs.mouseY /myHeight;
         rotationy = gameInputs.mouseX;
         rotationz = 0;
@@ -336,71 +333,4 @@ public class gameWorldRender {
 
 
 
-    class scene{
-        private ArrayList<WorldObject> objs;
-        public Map<String, WorldObject> idsMap = new HashMap<>();
-
-        public void drawScene(){
-            glHelper.updateCamVectors();
-            for(WorldObject wo : objs){
-                glStencilFunc(GL_ALWAYS, wo.stencilId + 1, -1);
-                if(wo.isCSG){
-                    GeometryFactory.drawTrisByVBOHandles(wo.myCSG.numTriangles, wo.VBOHandles);
-                }else if(wo.isGrid){
-                    GeometryFactory.drawTrisByVBOHandles(256*256*2, wo.VBOHandles);
-                    //GeometryFactory.drawFunctionGrid(wo.myFunction);
-                }else if (wo.isPlane){
-                    GeometryFactory.plane(wo.myTexture);
-                }else if (wo.isTree){
-                    if(myLogic.lastGameLogic - lastVBOUpdate > 1){
-                        wo.updateVBOs();
-                        lastVBOUpdate=time.getTime();
-                    }
-                    GeometryFactory.drawQuadsByVBOHandles(wo.vertices, wo.VBOHandles);
-                }
-            }
-        }
-
-        public scene(){
-            objs = new ArrayList<>();
-        }
-
-        public void addWorldObject(WorldObject wo){
-            objs.add(wo);
-            idsMap.put((wo.stencilId+1)+"", wo);
-        }
-    }
-
-    public class WorldObject{ //have this handle all the interactions w/ geometryfactory...
-        CSG myCSG;
-        tree myTree;
-        Texture myTexture;
-        GeometryFactory.gridFunction myFunction;
-        int[] VBOHandles;
-
-        String name="";
-
-        int stencilId = (int)(System.currentTimeMillis()%255); //for stencil buffer
-        int vertices = 0;
-        boolean isCSG = false;
-        boolean isGrid = false;
-        boolean isPlane = false;
-        boolean isTree = false;
-
-        public WorldObject(tree tree){
-            name="TREE_" + stencilId;
-            isTree=true;
-            myTree = tree;
-            VBOHandles = GeometryFactory.treeVBOLineHandles(tree);
-        }
-
-        public void updateVBOs(){
-            if(isTree){
-                if(myTree!=null){
-                    VBOHandles = GeometryFactory.treeVBOQuadHandles(myTree);
-                    vertices = myTree.vertices;
-                }
-            }
-        }
-    }
 }

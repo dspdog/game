@@ -26,11 +26,13 @@ public class gameCommands {
             {"fbo", "fbo pass on/off", "fbo pass __X"},
             {"wireframe", "wireframe mode on/off", "wireframe mode __X"},
 
+
+            {"orbit", "orbit camera mode", "Orbit camera mode enabled"},
+            {"fly", "flying camera mode", "Flying camera mode enabled"},
+            //next 3 require "fly" mode
             {"top", "top view", "Now viewing top view"},
             {"side", "side view", "Now viewing side view"},
             {"front", "front view", "Now viewing front view"},
-            {"orbit", "orbit camera mode", "Orbit camera mode enabled"},
-            {"fly", "flying camera mode", "Flying camera mode enabled"},
             {"speed", "camera speed", "Camera speed now __X"},
             {"timescale", "time multiplier", "time speed now __Xx"},
             {"save", "save state", "State saved."},
