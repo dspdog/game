@@ -32,7 +32,7 @@ class gameScene {
                 }
                 GeometryFactory.drawQuadsByVBOHandles(wo.vertices, wo.VBOHandles);
             }
-            
+
 
         }
     }

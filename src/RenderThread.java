@@ -65,9 +65,9 @@ public class RenderThread {
 
         useOrtho=false;
 
-        doProcessPixels=true;
-        doShaderOverlay=true;
-        doFBOPass=true;
+        doProcessPixels=false;
+        doShaderOverlay=false;
+        doFBOPass=false;
         doWireFrame=false;
 
         myFBOHeight = 512;
@@ -272,6 +272,7 @@ public class RenderThread {
 
 
 
+        updateConsoleString();
         gameConsole.draw(myWidth, myHeight, myWidth, 256, 0, 0, 0.1f);
 
     }
@@ -327,7 +328,6 @@ public class RenderThread {
         //myLogic.theTree.saveToFile("ok");
         mySurfaceTotal = (_total / 3_000_000f);
 
-        updateConsoleString();
     }
 
 
