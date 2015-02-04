@@ -212,6 +212,8 @@ public class GeometryFactory {
 
     public static int[] csgVBOHandles(CSG csg){
 
+        csg.getTriangles();
+
         int vbo_vertex_handle = glGenBuffers();
         glBindBuffer(GL_ARRAY_BUFFER, vbo_vertex_handle);
         glBufferData(GL_ARRAY_BUFFER, getCSGVertexData(csg), GL_STATIC_DRAW);
@@ -226,6 +228,7 @@ public class GeometryFactory {
     }
 
     static FloatBuffer getCSGVertexData(CSG csg){
+
         final FloatBuffer vertex_data = BufferUtils.createFloatBuffer(csg.numTriangles*9);
         for(Polygon poly : csg.getPolygons()){
             for(int v=1; v<poly.vertices.size()-1; v++){
@@ -245,6 +248,7 @@ public class GeometryFactory {
     }
 
     static FloatBuffer getCSGColorData(CSG csg){
+        System.out.println("TRIANGLES " + csg.numTriangles);
         final FloatBuffer color_data = BufferUtils.createFloatBuffer(csg.numTriangles*9);
         for(Polygon poly : csg.getPolygons()){
             for(int v=1; v<poly.vertices.size()-1; v++){

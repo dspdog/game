@@ -1,3 +1,5 @@
+import eu.mihosoft.vrl.v3d.*;
+import factory.CSGFactory;
 import factory.GeometryFactory;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
@@ -102,6 +104,7 @@ public class RenderThread {
 
 
 
+        gameScene.addWorldObject(new worldObject(CSGFactory.arrow()));
 
         gameScene.addWorldObject(new worldObject(myLogic.theTree));
         initScreenCapture();
