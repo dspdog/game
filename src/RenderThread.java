@@ -48,15 +48,11 @@ public class RenderThread {
     public static float rotationy = 0;
     public static float rotationz = 0;
 
-    long lastPrint=0;
-
     public static long lastVBOUpdate=0;
 
     private LogicThread myLogic;
 
     private float scrollPos = 1.0f;
-
-    private boolean handlesFound = false;
 
     public RenderThread(LogicThread gl){
         myFOV = 75;
@@ -74,8 +70,12 @@ public class RenderThread {
         myFBOWidth = 512;
 
         myLogic=gl;
-        handlesFound=false;
+
         startTime=time.getTime();
+
+
+        myScene = new gameScene();
+
     }
 
     void updateFPS() {
@@ -89,12 +89,6 @@ public class RenderThread {
     }
 
     private float mySurfaceTotal = 0;
-    private void updateConsoleString(){
-        String consoleStatus = "FPS: " + myFPS +
-                        "\nSURFACE: " + mySurfaceTotal +
-                        "\nSELECTED: " + mySelection;
-        gameConsole.setStatusString(consoleStatus);
-    }
 
     public void start() {
         frame_index = 0;
@@ -109,7 +103,14 @@ public class RenderThread {
             e.printStackTrace();
             System.exit(0);
         }
-        initGL();
+
+
+
+        myScene.addWorldObject(new worldObject(myLogic.theTree));
+        initScreenCapture();
+
+
+
 
         while (!Display.isCloseRequested()) {
             update();
@@ -130,30 +131,11 @@ public class RenderThread {
     }
 
     private Texture myTexture;
-    private gameScene myScene;
+    public gameScene myScene;
 
     private int framebufferID;
     private int colorTextureID;
     private int depthRenderBufferID;
-
-    void initGL() {
-        glHelper.prepare3D(myWidth, myHeight, myFOV, useOrtho);
-
-        /*try {
-            myTexture = TextureLoader.getTexture("PNG", new FileInputStream(new File("./res/myball.png")));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-
-        myScene = new gameScene();
-        //myScene.addWorldObject(new WorldObject(myTexture));
-        //myLogic.theTree.updateCSG();
-        myScene.addWorldObject(new worldObject(myLogic.theTree));
-        //myScene.addWorldObject(new WorldObject((x, y) -> (float)(1f-(SimplexNoise.noise(x/20f,y/20f)+1f)*(SimplexNoise.noise(x/20f,y/20f)+1f))*10f));
-
-        initScreenCapture();
-
-    }
 
     private void initScreenCapture(){
         //http://wiki.lwjgl.org/index.php?title=Render_to_Texture_with_Frame_Buffer_Objects_%28FBO%29
@@ -241,13 +223,18 @@ public class RenderThread {
             GeometryFactory.shaderOverlay(colorTextureID, myWidth, myHeight);
         }
 
+        /*glDrawBuffer(GL_BACK);
+        glAccum(GL_ACCUM, 0.10f); //adding the current frame to the buffer
+        glAccum(GL_RETURN, 0.490f); //Drawing last frame, saved in buffer
+        glAccum(GL_MULT, 0.79f ); //make current frame in buffer dim
+*/
 
-        /*glDrawBuffer(GL_FRONT);
-        glAccum(GL_ACCUM, 1f);
-        glDrawBuffer(GL_BACK);
+        //glDrawBuffer(GL_FRONT);
+        //glAccum(GL_ACCUM, 0.1f);
+        //glDrawBuffer(GL_BACK);
 
-        glAccum(GL_RETURN, 0.1f);//push bach to draw buffer
-        */
+        //glAccum(GL_RETURN, 0.01f);//push bach to draw buffer
+
 
         if(doProcessPixels){
 
@@ -270,9 +257,11 @@ public class RenderThread {
             glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, 0);
         }
 
+        String consoleStatus = "FPS: " + myFPS +
+                            "\nSURFACE: " + mySurfaceTotal +
+                            "\nSELECTED: " + mySelection;
+        gameConsole.setStatusString(consoleStatus);
 
-
-        updateConsoleString();
         gameConsole.draw(myWidth, myHeight, myWidth, 256, 0, 0, 0.1f);
 
     }

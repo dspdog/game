@@ -10,7 +10,7 @@ public class LogicThread implements Runnable {
 
     tree theTree;
 
-
+    public gameScene myScene;
 
     public LogicThread(){
 
@@ -30,6 +30,10 @@ public class LogicThread implements Runnable {
         lastGameLogic = time.getTime();
 
         gameInputs.pollInputs();
+
+        if(myScene!=null){
+            myScene.updateLogic(dt);
+        }
     }
 
     public void end(){

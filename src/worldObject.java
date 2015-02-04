@@ -1,25 +1,32 @@
 import eu.mihosoft.vrl.v3d.CSG;
 import factory.GeometryFactory;
+import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.opengl.Texture;
 import shapes.tree;
+import utils.RandomHelper;
+import utils.glHelper;
 
-public class worldObject { //have this handle all the interactions w/ geometryfactory...
-    CSG myCSG;
+public class worldObject {
+
+    Vector3f position;
+    Vector3f rotation;
+
     tree myTree;
-    Texture myTexture;
-    GeometryFactory.gridFunction myFunction;
-    int[] VBOHandles;
 
+    int[] VBOHandles;
     String name="";
 
     int stencilId = (int)(System.currentTimeMillis()%255); //for stencil buffer
     int vertices = 0;
-    boolean isCSG = false;
-    boolean isGrid = false;
-    boolean isPlane = false;
     boolean isTree = false;
 
+    public worldObject(){
+        position = RandomHelper.randomPosition(100);
+        rotation = RandomHelper.randomRotation();
+    }
+
     public worldObject(tree tree){
+        this();
         name="TREE_" + stencilId;
         isTree=true;
         myTree = tree;
@@ -33,5 +40,13 @@ public class worldObject { //have this handle all the interactions w/ geometryfa
                 vertices = myTree.vertices;
             }
         }
+    }
+
+    public void logic(float dt){
+
+    }
+
+    public void move(float dt){
+
     }
 }

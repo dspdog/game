@@ -10,9 +10,11 @@ public class gameCommands {
     static final String confirmCode = "<CONFIRM>";
     static final String submitCode = "<SUBMITTED>";
 
-
     //TODO tree presets - perturb strength - rnd shapes...
     //TODO autosave
+    //TODO depth of field
+    //TODO presets - fastest / highest quality etc
+    //TODO non-overlaid shader ("post" shader)
 
     static public String theCmds[][] = {
             {"persp", "perspective mode", "Perspective mode enabled! Use FOV to change field of view."},
