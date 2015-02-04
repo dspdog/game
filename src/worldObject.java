@@ -8,6 +8,7 @@ import utils.glHelper;
 
 public class worldObject {
 
+    Vector3f velocity;
     Vector3f position;
     Vector3f rotation;
 
@@ -23,6 +24,7 @@ public class worldObject {
     public worldObject(){
         position = RandomHelper.randomPosition(100);
         rotation = RandomHelper.randomRotation();
+        velocity = new Vector3f(0,0,0);
     }
 
     public worldObject(tree tree){
@@ -47,6 +49,6 @@ public class worldObject {
     }
 
     public void move(float dt){
-
+        position.translate(velocity.x*dt, velocity.y*dt, velocity.z*dt);
     }
 }

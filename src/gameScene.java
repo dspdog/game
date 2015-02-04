@@ -10,10 +10,10 @@ import static org.lwjgl.opengl.GL11.GL_ALWAYS;
 import static org.lwjgl.opengl.GL11.glStencilFunc;
 
 class gameScene {
-    private ArrayList<worldObject> objs;
-    public Map<String, worldObject> idsMap = new HashMap<>();
+    private static ArrayList<worldObject> objs = new ArrayList<>();
+    public static Map<String, worldObject> idsMap = new HashMap<>();
 
-    public void drawScene(){
+    public static void drawScene(){
         glHelper.updateCamVectors();
         for(worldObject wo : objs){
             glStencilFunc(GL_ALWAYS, wo.stencilId + 1, -1);
@@ -37,7 +37,7 @@ class gameScene {
         }
     }
 
-    public void updateLogic(float dt){
+    public static void updateLogic(float dt){
         for(worldObject wo : objs){
             wo.logic(dt);
             wo.move(dt);
@@ -49,7 +49,7 @@ class gameScene {
         objs = new ArrayList<>();
     }
 
-    public void addWorldObject(worldObject wo){
+    public static void addWorldObject(worldObject wo){
         objs.add(wo);
         idsMap.put((wo.stencilId+1)+"", wo);
     }

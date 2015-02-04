@@ -72,10 +72,6 @@ public class RenderThread {
         myLogic=gl;
 
         startTime=time.getTime();
-
-
-        myScene = new gameScene();
-
     }
 
     void updateFPS() {
@@ -106,7 +102,8 @@ public class RenderThread {
 
 
 
-        myScene.addWorldObject(new worldObject(myLogic.theTree));
+
+        gameScene.addWorldObject(new worldObject(myLogic.theTree));
         initScreenCapture();
 
 
@@ -131,7 +128,6 @@ public class RenderThread {
     }
 
     private Texture myTexture;
-    public gameScene myScene;
 
     private int framebufferID;
     private int colorTextureID;
@@ -193,7 +189,7 @@ public class RenderThread {
             glClearColor (0.0f, 0.0f, 1.0f, 1.0f);
             glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);            // Clear Screen And Depth Buffer on the fbo to red
             cameraTransform();
-            myScene.drawScene();
+            gameScene.drawScene();
         }
 
         // Normal render pass, draw cube with texture
@@ -214,7 +210,7 @@ public class RenderThread {
         glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
         if(doWireFrame){glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );}
         cameraTransform();
-        myScene.drawScene();
+        gameScene.drawScene();
         sampleScreen();
         glPopMatrix();
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -297,8 +293,8 @@ public class RenderThread {
 
     void sampleScreen(){
         int stencilValue = glHelper.sampleStencil((int)gameInputs.mouseX, (int)gameInputs.mouseY);
-        if(myScene.idsMap.containsKey(stencilValue+"")){
-            mySelection = myScene.idsMap.get(stencilValue+"").name;
+        if(gameScene.idsMap.containsKey(stencilValue+"")){
+            mySelection = gameScene.idsMap.get(stencilValue+"").name;
         }else{
             mySelection = "NONE";
         }
