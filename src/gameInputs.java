@@ -33,13 +33,7 @@ public class gameInputs {
         MOVING_DOWN=Keyboard.isKeyDown(Keyboard.KEY_E);
         
         if (Mouse.isButtonDown(0)) {
-
-
             //System.out.println("MOUSE DOWN @ X: " + x + " Y: " + y);
-        }
-
-        if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
-            //System.out.println("SPACE KEY IS DOWN");
         }
 
         while (Keyboard.next()) {

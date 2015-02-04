@@ -13,13 +13,19 @@ public class worldObject {
     Vector3f rotation;
 
     tree myTree;
+    CSG myCSG;
 
     int[] VBOHandles;
     String name="";
 
     int stencilId = (int)(System.currentTimeMillis()%255); //for stencil buffer
     int vertices = 0;
-    boolean isTree = false;
+
+    WOType myType = WOType.NONE;
+
+    public enum WOType {
+        NONE, CSG, TREE
+    }
 
     public worldObject(){
         position = RandomHelper.randomPosition(100);
@@ -30,22 +36,31 @@ public class worldObject {
     public worldObject(tree tree){
         this();
         name="TREE_" + stencilId;
-        isTree=true;
+        myType=WOType.TREE;
         myTree = tree;
-        VBOHandles = GeometryFactory.treeVBOLineHandles(tree);
+        updateVBOs();
+    }
+
+    public worldObject(CSG csg){
+        this();
+        name="CSG_" + stencilId;
+        myType=WOType.CSG;
+        myCSG = csg;
+        updateVBOs();
     }
 
     public void updateVBOs(){
-        if(isTree){
-            if(myTree!=null){
-                VBOHandles = GeometryFactory.treeVBOQuadHandles(myTree);
-                vertices = myTree.vertices;
-            }
+        switch (myType){
+            case TREE:
+                if(myTree!=null){
+                    VBOHandles = GeometryFactory.treeVBOQuadHandles(myTree);
+                    vertices = myTree.vertices;
+                }
+                break;
+            case CSG:
+                VBOHandles = GeometryFactory.csgVBOHandles(myCSG);
+                break;
         }
-    }
-
-    public void logic(float dt){
-
     }
 
     public void move(float dt){

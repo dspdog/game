@@ -210,7 +210,7 @@ public class GeometryFactory {
         }
     }
 
-    static int[] csgVBOHandles(CSG csg){
+    public static int[] csgVBOHandles(CSG csg){
 
         int vbo_vertex_handle = glGenBuffers();
         glBindBuffer(GL_ARRAY_BUFFER, vbo_vertex_handle);

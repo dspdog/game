@@ -41,10 +41,13 @@ public class gameConsole {
     }
 
     public static void draw(int screenwidth, int screenheight, int consoleWidth, int consoleHeight, float x, float y, float z){
+
+        int lines_To_Draw = 24;
+
         updateInputString();
         if (time.getTime() - lastConsoleUpdate > updatePeriodMS) {
             lastConsoleUpdate = time.getTime();
-            String theString = statusString + "\n" + (gameInputs.consoleIsEnabled ? "\n" + StringHelper.getLastXLines(gameCommands.commandString, 12) : "") + inputString;
+            String theString = statusString + "\n" + (gameInputs.consoleIsEnabled ? "\n" + StringHelper.getLastXLines(gameCommands.commandString, lines_To_Draw) : "") + inputString;
             consoleTexture = getConsoleTexture(theString, consoleWidth, consoleHeight, gameInputs.consoleIsEnabled);
         }
         glHelper.enableTransparency();
@@ -77,7 +80,7 @@ public class gameConsole {
         int baseY = 18;
 
         Color shadowColor = Color.black;
-        Color errorColor = Color.red.darker();
+        Color errorColor = Color.orange;
         Color confirmColor = Color.yellow;
         Color submittedColor = Color.gray;
         Color cmdLineColor = Color.white;

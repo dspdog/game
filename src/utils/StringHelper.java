@@ -27,12 +27,21 @@ public class StringHelper {
         String[] splitData = str.split("\n");
 
         for(int i=0; i<splitData.length; i++){
-            if(splitData.length-i<=12){
+            if(splitData.length-i<=x){
                 newStr=newStr.concat(splitData[i] + "\n");
             }
         }
 
         return newStr;
     }
+
+    public static String padRight(String s, int n) {
+        return String.format("%1$-" + n + "s", s);
+    }
+
+    public static String padLeft(String s, int n) {
+        return String.format("%1$" + n + "s", s);
+    }
+
 
 }

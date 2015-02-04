@@ -1,3 +1,5 @@
+import utils.StringHelper;
+
 /**
  * Created by user on 1/31/2015.
  */
@@ -44,7 +46,7 @@ public class gameCommands {
             {"help", "help file", "help file"}
     };
 
-    public static void runCmd(String cmd, String param){
+    public static String runCmd(String cmd, String param){
         switch(cmd){
             case "persp":
                 RenderThread.useOrtho = false;
@@ -74,7 +76,22 @@ public class gameCommands {
                 RenderThread.doWireFrame= param.equalsIgnoreCase("on");
                 System.out.println(RenderThread.doWireFrame);
                 break;
+            case "help":
+                return printHelp();
         }
+        return "";
+    }
+
+    public static String printHelp(){
+        String helpString = "";
+
+        for(int i=0; i<theCmds.length; i++) {
+            String cmdTitle = theCmds[i][0];
+            String cmdDesc = theCmds[i][1];
+            helpString += StringHelper.padLeft(cmdTitle + " - ", 16) + cmdDesc + "\n";
+        }
+
+        return helpString;
     }
 
     public static void submitCommand(String cmd){
@@ -105,7 +122,12 @@ public class gameCommands {
                 }
 
                 try{
-                    runCmd(theCmd, theParam);
+                    if(theCmd.equalsIgnoreCase("help")){
+                        return runCmd(theCmd, theParam);
+                    }else{
+                        runCmd(theCmd, theParam);
+                    }
+
                 }catch (Exception e){
                     e.printStackTrace();
                 }

@@ -18,32 +18,20 @@ class gameScene {
         for(worldObject wo : objs){
             glStencilFunc(GL_ALWAYS, wo.stencilId + 1, -1);
 
-            /*if(wo.isCSG){
-                GeometryFactory.drawTrisByVBOHandles(wo.myCSG.numTriangles, wo.VBOHandles);
-            }else if(wo.isGrid){
-                GeometryFactory.drawTrisByVBOHandles(256*256*2, wo.VBOHandles);
-                //GeometryFactory.drawFunctionGrid(wo.myFunction);
-            }else if (wo.isPlane){
-                GeometryFactory.plane(wo.myTexture);
-            }else*/ if (wo.isTree){
-                if(LogicThread.lastGameLogic -  RenderThread.lastVBOUpdate > 1){
-                    wo.updateVBOs();
-                    RenderThread.lastVBOUpdate= time.getTime();
-                }
-                GeometryFactory.drawQuadsByVBOHandles(wo.vertices, wo.VBOHandles);
+            switch (wo.myType){
+                case TREE:
+                    if(LogicThread.lastGameLogic -  RenderThread.lastVBOUpdate > 1){
+                        wo.updateVBOs();
+                        RenderThread.lastVBOUpdate= time.getTime();
+                    }
+                    GeometryFactory.drawQuadsByVBOHandles(wo.vertices, wo.VBOHandles);
+                    break;
+                case CSG:
+                    GeometryFactory.drawTrisByVBOHandles(wo.myCSG.numTriangles, wo.VBOHandles);
+                    break;
             }
-
-
         }
     }
-
-    public static void updateLogic(float dt){
-        for(worldObject wo : objs){
-            wo.logic(dt);
-            wo.move(dt);
-        }
-    }
-
 
     public gameScene(){
         objs = new ArrayList<>();

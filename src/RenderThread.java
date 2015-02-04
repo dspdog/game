@@ -258,7 +258,7 @@ public class RenderThread {
                             "\nSELECTED: " + mySelection;
         gameConsole.setStatusString(consoleStatus);
 
-        gameConsole.draw(myWidth, myHeight, myWidth, 256, 0, 0, 0.1f);
+        gameConsole.draw(myWidth, myHeight, myWidth, 420, 0, 0, 0.1f);
 
     }
 

@@ -28,7 +28,6 @@ public class LogicThread implements Runnable {
         lastGameLogic = time.getTime();
 
         gameInputs.pollInputs();
-        gameScene.updateLogic(dt);
     }
 
     public void end(){
