@@ -95,5 +95,8 @@
     </orderEntry>
     <orderEntry type="library" name="JCSG-master" level="project" />
     <orderEntry type="library" name="slick-util" level="project" />
+    <orderEntry type="library" name="commons-net-3.3" level="project" />
+    <orderEntry type="library" name="commons-lang3-3.3.2-javadoc" level="project" />
+    <orderEntry type="library" name="commons-lang3-3.3.2" level="project" />
   </component>
 </module>

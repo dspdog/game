@@ -1,9 +1,11 @@
 import eu.mihosoft.vrl.v3d.CSG;
 import factory.GeometryFactory;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.opengl.Texture;
 import shapes.tree;
 import utils.RandomHelper;
+import org.apache.commons.*;
 import utils.glHelper;
 
 public class worldObject {
@@ -19,6 +21,7 @@ public class worldObject {
     String name="";
 
     int stencilId = (int)(System.currentTimeMillis()%255); //for stencil buffer
+    public String randomName =  RandomStringUtils.randomAlphanumeric(5).toUpperCase();
     int vertices = 0;
 
     WOType myType = WOType.NONE;
@@ -35,7 +38,7 @@ public class worldObject {
 
     public worldObject(tree tree){
         this();
-        name="TREE_" + stencilId;
+        name="TREE_" + randomName;
         myType=WOType.TREE;
         myTree = tree;
         rotation=new Vector3f(0,0,0);
@@ -45,7 +48,7 @@ public class worldObject {
 
     public worldObject(CSG csg){
         this();
-        name="CSG_" + stencilId;
+        name="CSG_" + randomName;
         myType=WOType.CSG;
         myCSG = csg;
         updateVBOs();
@@ -68,4 +71,6 @@ public class worldObject {
     public void move(float dt){
         position.translate(velocity.x*dt, velocity.y*dt, velocity.z*dt);
     }
+
+
 }
