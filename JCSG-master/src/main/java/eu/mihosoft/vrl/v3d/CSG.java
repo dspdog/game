@@ -125,20 +125,24 @@ public class CSG {
         int tris=0;
         for(Polygon poly : this.getPolygons()){
             tris-=2; //it's not a triangle until its 3 verts...
-            for(Vertex vert : poly.vertices){
-                if(vert.normal.magnitude()==0){
-                    //TODO get normals
+            int numVerts = poly.vertices.size();
+            for(int i=0; i<numVerts; i++){
+                Vertex vert = poly.vertices.get(i);
+                if(vert.normal.magnitude()==0){ //correct the normal vector
 
-                    //random normal:
-                    vert.normal.x = Math.random();
-                    vert.normal.y = Math.random();
-                    vert.normal.z = Math.random();
+                    Vector3d nextVert = poly.vertices.get((i+1)%numVerts).pos.minus(vert.pos);
+                    Vector3d prevVert = poly.vertices.get((i+(numVerts-1))%numVerts).pos.minus(vert.pos);
+
+                    Vector3d normal = nextVert.cross(prevVert).normalized();//.times(0.5).plus(new Vector3d(0.5,0.5,0.5));
+
+                    vert.normal=normal;
                 }
                 tris++;
             }
         }
         numTriangles = tris;
     }
+
 
     /**
      * Constructs a CSG from the specified {@link Polygon} instances.
