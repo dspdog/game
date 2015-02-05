@@ -110,8 +110,11 @@ public class RenderThread {
         }
 
         cameraObj = new worldObject(CSGFactory.arrow());
-
         gameScene.addWorldObject(cameraObj);
+
+        for(int i=0; i<100; i++){
+            gameScene.addWorldObject(new worldObject(CSGFactory.arrow()));
+        }
 
         gameScene.addWorldObject(new worldObject(myLogic.theTree));
         initScreenCapture();

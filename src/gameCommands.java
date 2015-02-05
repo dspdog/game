@@ -28,6 +28,11 @@ public class gameCommands {
             {"fbo", "fbo pass on/off", "fbo pass __X"},
             {"wireframe", "wireframe mode on/off", "wireframe mode __X"},
 
+            {"speed", "camera speed", "Camera speed now __X"},
+            {"timescale", "time multiplier", "time speed now __Xx"},
+            {"save", "save state", "State saved."},
+            {"load", "load state", "State loaded."},
+            {"shader", "shader edges/normals/dof/plain", "Now using __X shader"},
 
             {"orbit", "orbit camera mode", "Orbit camera mode enabled"},
             {"fly", "flying camera mode", "Flying camera mode enabled"},
@@ -35,11 +40,6 @@ public class gameCommands {
             {"top", "top view", "Now viewing top view"},
             {"side", "side view", "Now viewing side view"},
             {"front", "front view", "Now viewing front view"},
-            {"speed", "camera speed", "Camera speed now __X"},
-            {"timescale", "time multiplier", "time speed now __Xx"},
-            {"save", "save state", "State saved."},
-            {"load", "load state", "State loaded."},
-            {"shader", "shader edges/normals/dof/plain", "Now using __X shader"},
 
             {"details", "toggle render details", "Render details display toggled"},
             {"reset", "reset state", "Everything reset."},

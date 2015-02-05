@@ -38,6 +38,8 @@ public class worldObject {
         name="TREE_" + stencilId;
         myType=WOType.TREE;
         myTree = tree;
+        rotation=new Vector3f(0,0,0);
+        position=new Vector3f(0,0,0);
         updateVBOs();
     }
 

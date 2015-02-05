@@ -14,7 +14,7 @@ public class RandomHelper {
     }
 
     static public Vector3f randomRotation(){
-        float scale = 2f*(float)Math.PI;
+        float scale = 360; //2f*(float)Math.PI;
         return new Vector3f(
                 (float)(Math.random()*scale),
                 (float)(Math.random()*scale),

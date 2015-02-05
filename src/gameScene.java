@@ -18,6 +18,9 @@ class gameScene {
             glStencilFunc(GL_ALWAYS, wo.stencilId + 1, -1);
 
             glTranslatef(wo.position.x,wo.position.y,wo.position.z);
+            glRotatef(wo.rotation.x,1,0,0);
+            glRotatef(wo.rotation.y,0,1,0);
+            glRotatef(wo.rotation.z,0,0,1);
             switch (wo.myType){
                 case TREE:
                     if(LogicThread.lastGameLogic -  RenderThread.lastVBOUpdate > 1){
@@ -30,6 +33,9 @@ class gameScene {
                     GeometryFactory.drawTrisByVBOHandles(wo.myCSG.numTriangles, wo.VBOHandles);
                     break;
             }
+            glRotatef(-wo.rotation.x,1,0,0);
+            glRotatef(-wo.rotation.y,0,1,0);
+            glRotatef(-wo.rotation.z,0,0,1);
             glTranslatef(-wo.position.x,-wo.position.y,-wo.position.z);
 
             //glPopMatrix();
