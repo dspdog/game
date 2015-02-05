@@ -1,4 +1,3 @@
-import eu.mihosoft.vrl.v3d.*;
 import factory.CSGFactory;
 import factory.GeometryFactory;
 import org.lwjgl.BufferUtils;
@@ -15,7 +14,6 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.util.glu.GLU.*;
 import static org.lwjgl.opengl.EXTFramebufferObject.*;
 import static org.lwjgl.opengl.ARBPixelBufferObject.*;
 public class RenderThread {
@@ -28,16 +26,22 @@ public class RenderThread {
     public static int myWidth;
     public static int myHeight;
 
+    public static worldObject cameraObj;
+
     public static boolean doFBOPass;
     public static boolean doProcessPixels;
     public static boolean doShaderOverlay;
     public static boolean doWireFrame;
+
+    public static boolean doOrbitCamera;
 
     private int myFBOWidth;
     private int myFBOHeight;
 
     public static float myFOV;
     public static boolean useOrtho;
+
+    public static Vector3f poi;
 
     private String mySelection = "";
 
@@ -49,6 +53,9 @@ public class RenderThread {
     public static float rotationx = 0;
     public static float rotationy = 0;
     public static float rotationz = 0;
+
+    static Vector3f cameraPos = new Vector3f(50,50,50);
+
 
     public static long lastVBOUpdate=0;
 
@@ -62,7 +69,7 @@ public class RenderThread {
         myHeight = 1024;
 
         useOrtho=false;
-
+        doOrbitCamera=true;
         doProcessPixels=false;
         doShaderOverlay=false;
         doFBOPass=false;
@@ -102,9 +109,9 @@ public class RenderThread {
             System.exit(0);
         }
 
+        cameraObj = new worldObject(CSGFactory.arrow());
 
-
-        gameScene.addWorldObject(new worldObject(CSGFactory.arrow()));
+        gameScene.addWorldObject(cameraObj);
 
         gameScene.addWorldObject(new worldObject(myLogic.theTree));
         initScreenCapture();
@@ -267,7 +274,10 @@ public class RenderThread {
 
     void cameraTransform(){
         //TODO camera obj --> set POV
-        rotationx = 90f- 180f * gameInputs.mouseY /myHeight;
+
+        poi = cameraPos;
+
+        rotationx = 180f * gameInputs.mouseY /myHeight;
         rotationy = gameInputs.mouseX;
         rotationz = 0;
 
@@ -279,19 +289,22 @@ public class RenderThread {
             scrollPos*=1.05f;
         }
 
-        Vector3f centerPt = new Vector3f(50,50,50);
-
         float zoom = 5f*scrollPos;
 
         glLoadIdentity();
-        gluLookAt(500,500,500,centerPt.x,centerPt.y,centerPt.z,0,1,0);
+        //gluLookAt(500+poi.x,500+poi.y,500+poi.z, poi.x, poi.y, poi.z,0,1,0);
         glPushMatrix();
         glScalef(zoom, zoom, zoom);
-        glTranslatef(centerPt.x, centerPt.y, centerPt.z);
+
         glRotatef((float) rotationz, 0f, 0f, 1f);
         glRotatef((float) rotationy, 0f, 1f, 0f);
         glRotatef((float) rotationx, 1f, 0f, 0f);
-        glTranslatef(-centerPt.x, -centerPt.y, -centerPt.z);
+
+        glTranslatef(poi.x, poi.y, poi.z);
+//
+
+
+        //glTranslatef(-poi.x, -poi.y, -poi.z);
     }
 
     void sampleScreen(){

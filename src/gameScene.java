@@ -6,8 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.lwjgl.opengl.GL11.GL_ALWAYS;
-import static org.lwjgl.opengl.GL11.glStencilFunc;
+import static org.lwjgl.opengl.GL11.*;
 
 class gameScene {
     private static ArrayList<worldObject> objs = new ArrayList<>();
@@ -18,6 +17,7 @@ class gameScene {
         for(worldObject wo : objs){
             glStencilFunc(GL_ALWAYS, wo.stencilId + 1, -1);
 
+            glTranslatef(wo.position.x,wo.position.y,wo.position.z);
             switch (wo.myType){
                 case TREE:
                     if(LogicThread.lastGameLogic -  RenderThread.lastVBOUpdate > 1){
@@ -30,6 +30,9 @@ class gameScene {
                     GeometryFactory.drawTrisByVBOHandles(wo.myCSG.numTriangles, wo.VBOHandles);
                     break;
             }
+            glTranslatef(-wo.position.x,-wo.position.y,-wo.position.z);
+
+            //glPopMatrix();
         }
     }
 

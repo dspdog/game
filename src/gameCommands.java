@@ -48,6 +48,12 @@ public class gameCommands {
 
     public static String runCmd(String cmd, String param){
         switch(cmd){
+            case "fly":
+                RenderThread.doOrbitCamera = false;
+                break;
+            case "orbit":
+                RenderThread.doOrbitCamera = true;
+                break;
             case "persp":
                 RenderThread.useOrtho = false;
                 break;

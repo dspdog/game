@@ -8,9 +8,9 @@ import utils.glHelper;
 
 public class worldObject {
 
-    Vector3f velocity;
-    Vector3f position;
-    Vector3f rotation;
+    Vector3f velocity = new Vector3f();
+    Vector3f position = new Vector3f();
+    Vector3f rotation = new Vector3f();
 
     tree myTree;
     CSG myCSG;

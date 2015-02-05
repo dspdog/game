@@ -197,7 +197,8 @@ public class GeometryFactory {
         return new int[]{vbo_vertex_handle,vbo_color_handle};
     }
 
-    static void drawCSG(CSG csg){
+    public static void drawCSG(CSG csg){
+
         for(Polygon poly : csg.getPolygons()){
             glBegin(GL_TRIANGLE_FAN); //http://stackoverflow.com/questions/8043923/gl-triangle-fan-explanation
             glColor3f((float)poly.vertices.get(0).normal.x, (float)poly.vertices.get(0).normal.y, (float)poly.vertices.get(0).normal.z);
@@ -248,6 +249,7 @@ public class GeometryFactory {
     }
 
     static FloatBuffer getCSGColorData(CSG csg){
+
         System.out.println("TRIANGLES " + csg.numTriangles);
         final FloatBuffer color_data = BufferUtils.createFloatBuffer(csg.numTriangles*9);
         for(Polygon poly : csg.getPolygons()){

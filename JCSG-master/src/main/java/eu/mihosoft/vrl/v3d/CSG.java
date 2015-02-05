@@ -121,10 +121,19 @@ public class CSG {
         return csg;
     }
 
-    public void getTriangles(){ //hacky
+    public void getTriangles(){
         int tris=0;
         for(Polygon poly : this.getPolygons()){
-            for(int v=1; v<poly.vertices.size()-1; v++){
+            tris-=2; //it's not a triangle until its 3 verts...
+            for(Vertex vert : poly.vertices){
+                if(vert.normal.magnitude()==0){
+                    //TODO get normals
+
+                    //random normal:
+                    vert.normal.x = Math.random();
+                    vert.normal.y = Math.random();
+                    vert.normal.z = Math.random();
+                }
                 tris++;
             }
         }
