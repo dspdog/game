@@ -284,20 +284,20 @@ public class RenderThread {
         rotationy = gameInputs.mouseX;
         rotationz = 0;
 
-        int scroll = Mouse.getDWheel();
+       /* int scroll = Mouse.getDWheel();
 
         if(scroll<0){
             scrollPos*=0.95f;
         }else if(scroll>0){
             scrollPos*=1.05f;
-        }
+        }*/
 
-        float zoom = 5f*scrollPos;
+        //float zoom = 5f*scrollPos;
 
         glLoadIdentity();
         //gluLookAt(500+poi.x,500+poi.y,500+poi.z, poi.x, poi.y, poi.z,0,1,0);
         glPushMatrix();
-        glScalef(zoom, zoom, zoom);
+        //glScalef(zoom, zoom, zoom);
 
         glRotatef((float) rotationz, 0f, 0f, 1f);
         glRotatef((float) rotationy, 0f, 1f, 0f);
