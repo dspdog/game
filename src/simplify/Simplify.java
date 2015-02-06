@@ -1,3 +1,5 @@
+//http://voxels.blogspot.com/2014/05/quadric-mesh-simplification-with-source.html
+
 package simplify;
 
 import org.lwjgl.util.vector.Vector3f;
@@ -9,6 +11,143 @@ public class Simplify {
 	ArrayList<Triangle> triangles = new ArrayList<>();
 	ArrayList<Vertex> vertices = new ArrayList<>();
 	ArrayList<Ref> refs = new ArrayList<>();
+
+	// compact triangles, compute edge error and build reference list
+
+	public void update_mesh(int iteration){
+		if(iteration>0) // compact triangles
+		{
+			int dst=0;
+
+			for(int i=0; i<triangles.size(); i++){
+				if(!triangles.get(i).deleted)
+				{
+					triangles.set(dst, triangles.get(i));
+					dst++;
+				}
+			}
+			triangles.subList(dst, triangles.size()).clear();
+		}
+
+		//
+		// Init Quadrics by Plane & Edge Errors
+		//
+		// required at the beginning ( iteration == 0 )
+		// recomputing during the simplification is not required,
+		// but mostly improves the result for closed meshes
+		//
+		if( iteration == 0 ) {
+			for(int i=0; i<vertices.size(); i++){
+				vertices.get(i).q=new SymetricMatrix(0.0f);
+			}
+
+			for(int i=0; i<triangles.size(); i++) {
+				Triangle t=triangles.get(i);
+				Vector3f n = new Vector3f();;
+				Vector3f[] p = new Vector3f[3];
+
+				for(int j=0; j<3; j++){
+					p[j]=vertices.get(t.v[j]).p;
+				}
+
+				n = Vector3f.cross(p[1].translate(-p[0].x, -p[0].y, -p[0].z), p[2].translate(-p[0].x, -p[0].y, -p[0].z), n).normalise(n);
+
+				t.n=n;
+
+				for(int j=0; j<3; j++){
+					vertices.get(t.v[j]).q =
+							vertices.get(t.v[j]).q.summedWith(
+									new SymetricMatrix(n.x, n.y, n.z,
+									-Vector3f.dot(n, p[0])));
+				}
+			}
+
+			for(int i=0; i<triangles.size(); i++){
+				// Calc Edge Error
+				Triangle t=triangles.get(i);
+				Vector3f p=new Vector3f();
+
+				for(int j=0; j<3; j++){
+					t.err[j]=calculate_error(t.v[j],t.v[(j+1)%3],p);
+				}
+				t.err[3]=Math.min(t.err[0], Math.min(t.err[1], t.err[2]));
+			}
+		}
+
+		// Init Reference ID list
+		for(int i=0; i<vertices.size(); i++) {
+			vertices.get(i).tstart=0;
+			vertices.get(i).tcount=0;
+		}
+		for(int i=0; i<triangles.size(); i++) {
+			Triangle t=triangles.get(i);
+			for(int j=0; j<3; j++){
+				vertices.get(t.v[j]).tcount++;
+			}
+		}
+		int tstart=0;
+		for(int i=0; i<vertices.size(); i++) {
+			Vertex v=vertices.get(i);
+			v.tstart=tstart;
+			tstart+=v.tcount;
+			v.tcount=0;
+		}
+
+		// Write References
+		refs = new ArrayList<>(triangles.size()*3);
+		for(int i=0; i<triangles.size(); i++) {
+			Triangle t=triangles.get(i);
+			for(int j=0; j<3; j++){
+				Vertex v=vertices.get(t.v[j]);
+				refs.get(v.tstart+v.tcount).tid=i;
+				refs.get(v.tstart+v.tcount).tvertex=j;
+				v.tcount++;
+			}
+		}
+
+		// Identify boundary : vertices[].border=0,1
+		if( iteration == 0 )
+		{
+			ArrayList<Integer> vcount,vids;
+
+			for(int i=0; i<vertices.size(); i++) {
+				vertices.get(i).border=0;
+			}
+
+
+			for(int i=0; i<vertices.size(); i++) {
+				Vertex v=vertices.get(i);
+				vcount = new ArrayList<Integer>();
+				vids = new ArrayList<Integer>();
+
+				for(int j=0; j<v.tcount; j++) {
+					int k=refs.get(v.tstart+j).tid;
+					Triangle t=triangles.get(k);
+					for(int h=0; h<3; h++)
+					{
+						int ofs=0,id=t.v[h];
+						while(ofs<vcount.size())
+						{
+							if(vids.get(ofs)==id)break;
+							ofs++;
+						}
+						if(ofs==vcount.size())
+						{
+							vcount.add(1);
+							vids.add(id);
+						}
+						else
+							vcount.set(ofs, vcount.get(ofs)+1);
+					}
+				}
+				for(int j=0;j<vcount.size(); j++){
+					if(vcount.get(j)==1){
+						vertices.get(vids.get(j)).border=1;
+					}
+				}
+			}
+		}
+	}
 
 
 	// Check if a triangle flips when this edge is removed
@@ -45,7 +184,6 @@ public class Simplify {
 		return false;
 	}
 
-
 	// Update triangle connections and edge error after a edge is collapsed
 
 	void update_triangles(int i0,Vertex v,ArrayList<Boolean> deleted,int deleted_triangles)
@@ -58,13 +196,13 @@ public class Simplify {
 			if(t.deleted)continue;
 			if(deleted.get(k))
 			{
-				t.deleted=true;
+				t.deleted = true;
 				deleted_triangles++;
 				continue;
 			}
 			t.v[r.tvertex]=i0;
-			t.dirty=true;
-			t.err[0]=calculate_error(t.v[0],t.v[1],p);
+			t.dirty = true;
+			t.err[0] = calculate_error(t.v[0],t.v[1],p);
 			t.err[1]=calculate_error(t.v[1],t.v[2],p);
 			t.err[2]=calculate_error(t.v[2],t.v[0],p);
 			t.err[3]=Math.min(t.err[0], Math.min(t.err[1], t.err[2]));
@@ -156,7 +294,7 @@ public class Simplify {
 		return error;
 	}
 
-	// Global Variables & Strctures
+	// Global Variables & Structures
 
 	class Triangle{
 		boolean deleted;

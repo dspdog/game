@@ -12,6 +12,16 @@ public class SymetricMatrix {
     }
 
     SymetricMatrix(	double m11, double m12, double m13, double m14,
+                                      double m22, double m23, double m24,
+                                      double m33, double m34,
+                                      double m44) {
+        m[0] = m11;  m[1] = m12;  m[2] = m13;  m[3] = m14;
+        m[4] = m22;  m[5] = m23;  m[6] = m24;
+        m[7] = m33;  m[8] = m34;
+        m[9] = m44;
+    }
+
+    SymetricMatrix SymetricMatrix(	double m11, double m12, double m13, double m14,
                        double m22, double m23, double m24,
                        double m33, double m34,
                        double m44) {
@@ -19,11 +29,23 @@ public class SymetricMatrix {
         m[4] = m22;  m[5] = m23;  m[6] = m24;
         m[7] = m33;  m[8] = m34;
         m[9] = m44;
+
+        return this;
     }
 
     // Make plane
 
-    SymetricMatrix(double a,double b,double c,double d)
+    SymetricMatrix SymetricMatrix(double a,double b,double c,double d)
+    {
+        m[0] = a*a;  m[1] = a*b;  m[2] = a*c;  m[3] = a*d;
+        m[4] = b*b;  m[5] = b*c;  m[6] = b*d;
+        m[7 ] =c*c; m[8 ] = c*d;
+        m[9 ] = d*d;
+
+        return this;
+    }
+
+    public SymetricMatrix(double a,double b,double c,double d)
     {
         m[0] = a*a;  m[1] = a*b;  m[2] = a*c;  m[3] = a*d;
         m[4] = b*b;  m[5] = b*c;  m[6] = b*d;
