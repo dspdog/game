@@ -12,6 +12,129 @@ public class Simplify {
 	ArrayList<Vertex> vertices = new ArrayList<>();
 	ArrayList<Ref> refs = new ArrayList<>();
 
+	//
+	// Main simplification function
+	//
+	// target_count  : target nr. of triangles
+	// agressiveness : sharpness to increase the threashold.
+	//                 5..8 are good numbers
+	//                 more iterations yield higher quality
+	//
+	void simplify_mesh(int target_count, double agressiveness) //aggressiveness 7
+	{
+		// init
+		//printf("%s - start\n",__FUNCTION__);
+		long timeStart=System.currentTimeMillis();
+
+		for(int i=0; i<triangles.size(); i++){
+			triangles.get(i).deleted=false;
+		}
+
+		// main iteration loop
+
+		int deleted_triangles=0;
+		ArrayList<Boolean> deleted0, deleted1;
+		int triangle_count=triangles.size();
+
+		for(int iteration=0; iteration<100; iteration++)
+		{
+			// target number of triangles reached ? Then break
+			System.out.println("ITERATION" + iteration);
+			//printf("iteration %d - triangles %d\n",iteration,triangle_count-deleted_triangles);
+			if(triangle_count-deleted_triangles<=target_count)break;
+
+			// update mesh once in a while
+			if(iteration%5==0)
+			{
+				update_mesh(iteration);
+			}
+
+			// clear dirty flag
+			for(int i=0; i<triangles.size(); i++){
+				triangles.get(i).dirty=false;
+			}
+
+			//
+			// All triangles with edges below the threshold will be removed
+			//
+			// The following numbers works well for most models.
+			// If it does not, try to adjust the 3 parameters
+			//
+			double threshold = 0.000000001*Math.pow((double) (iteration + 3), agressiveness);
+
+			// remove vertices & mark deleted triangles
+			for(int i=0; i<triangles.size(); i++){
+				Triangle t=triangles.get(i);
+				if(t.err[3]>threshold) continue;
+				if(t.deleted) continue;
+				if(t.dirty) continue;
+
+				for(int j=0; j<3; j++){
+					if(t.err[j]<threshold)
+					{
+						int i0=t.v[ j     ]; Vertex v0 = vertices.get(i0);
+						int i1=t.v[(j+1)%3]; Vertex v1 = vertices.get(i1);
+
+						// Border check
+						if(v0.border != v1.border)  continue;
+
+						// Compute vertex to collapse to
+						Vector3f p = new Vector3f(0,0,0);
+						calculate_error(i0,i1,p);
+
+						deleted0 = new ArrayList<Boolean>(v0.tcount); // normals temporarily
+						deleted1 = new ArrayList<Boolean>(v1.tcount); // normals temporarily
+
+						// dont remove if flipped
+						if( flipped(p,i0,i1,v0,v1,deleted0) ) continue;
+						if( flipped(p,i1,i0,v1,v0,deleted1) ) continue;
+
+						// not flipped, so remove edge
+						v0.p=p;
+						v0.q=v1.q.summedWith(v0.q);
+						int tstart=refs.size();
+
+						update_triangles(i0,v0,deleted0,deleted_triangles);
+						update_triangles(i0,v1,deleted1,deleted_triangles);
+
+						int tcount=refs.size()-tstart;
+
+						if(tcount<=v0.tcount)
+						{
+							// save ram
+							if(tcount>0){
+								refs.set(v0.tstart, refs.get(tstart));
+								//memcpy(&refs[v0.tstart],&refs[tstart],tcount*sizeof(Ref));
+							}
+						}
+						else
+							// append
+							v0.tstart=tstart;
+
+						v0.tcount=tcount;
+						break;
+					}
+
+				}
+				}
+
+		}
+
+		// clean up mesh
+		compact_mesh();
+
+		// ready
+		long timeEnd=System.currentTimeMillis();
+		/*printf("%s - %d/%d %d%% removed in %d ms\n",__FUNCTION__,
+				triangle_count-deleted_triangles,
+				triangle_count,deleted_triangles*100/triangle_count,
+				timeEnd-timeStart);*/
+
+	}
+
+
+
+
 	// compact triangles, compute edge error and build reference list
 
 	public void update_mesh(int iteration){
@@ -152,7 +275,7 @@ public class Simplify {
 
 	// Check if a triangle flips when this edge is removed
 
-	boolean flipped(Vector3f p,int i0,int i1,Vertex v0,Vertex v1,ArrayList<Integer> deleted)
+	boolean flipped(Vector3f p,int i0,int i1,Vertex v0,Vertex v1,ArrayList<Boolean> deleted)
 	{
 		int bordercount=0;
 
@@ -167,7 +290,7 @@ public class Simplify {
 			if(id1==i1 || id2==i1) // delete ?
 			{
 				bordercount++;
-				deleted.set(k,1);
+				deleted.set(k,true);
 				continue;
 			}
 			Vector3f d1 = new Vector3f(vertices.get(id1).p.x-p.x,vertices.get(id1).p.y-p.y,vertices.get(id1).p.z-p.z); d1 = d1.normalise(d1);
@@ -177,7 +300,7 @@ public class Simplify {
 			Vector3f n= new Vector3f();
 			Vector3f.cross(d1,d2,n);
 			n = n.normalise(n);
-			deleted.set(k,0);
+			deleted.set(k,false);
 			if(Vector3f.dot(n, t.n)<0.2) return true;
 		}
 

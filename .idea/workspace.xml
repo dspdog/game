@@ -81,36 +81,14 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="gameScene.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="gameScene.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/gameScene.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="935">
+            <state vertical-scroll-proportion="0.4479889" vertical-offset="0" max-vertical-offset="935">
               <caret line="19" column="50" selection-start-line="19" selection-start-column="50" selection-end-line="19" selection-end-column="50" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Simplify.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/simplify/Simplify.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-13.714286" vertical-offset="2115" max-vertical-offset="5831">
-              <caret line="147" column="0" selection-start-line="147" selection-start-column="0" selection-end-line="147" selection-end-column="0" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Simplif2y.h" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/simplify/Simplif2y.h">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.82828283" vertical-offset="1772" max-vertical-offset="2465">
-              <caret line="138" column="0" selection-start-line="138" selection-start-column="0" selection-end-line="138" selection-end-column="0" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -233,8 +211,8 @@
         <option value="$PROJECT_DIR$/src/RenderThread.java" />
         <option value="$PROJECT_DIR$/src/worldObject.java" />
         <option value="$PROJECT_DIR$/src/simplify/SymetricMatrix.java" />
-        <option value="$PROJECT_DIR$/src/simplify/Simplify.java" />
         <option value="$PROJECT_DIR$/src/simplify/Simplif2y.h" />
+        <option value="$PROJECT_DIR$/src/simplify/Simplify.java" />
       </list>
     </option>
   </component>
@@ -1027,16 +1005,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/gameScene.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="935">
-          <caret line="19" column="50" selection-start-line="19" selection-start-column="50" selection-end-line="19" selection-end-column="50" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://C:/Program Files/Java/jdk1.8.0_25/src.zip!/java/util/ArrayList.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.33287102" vertical-offset="6645" max-vertical-offset="23715">
@@ -1071,19 +1039,21 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/simplify/Simplify.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-13.714286" vertical-offset="2115" max-vertical-offset="5831">
-          <caret line="147" column="0" selection-start-line="147" selection-start-column="0" selection-end-line="147" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.23578364" vertical-offset="0" max-vertical-offset="7922">
+          <caret line="10" column="54" selection-start-line="10" selection-start-column="54" selection-end-line="10" selection-end-column="54" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/simplify/Simplif2y.h">
+    <entry file="file://$PROJECT_DIR$/src/gameScene.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.82828283" vertical-offset="1772" max-vertical-offset="2465">
-          <caret line="138" column="0" selection-start-line="138" selection-start-column="0" selection-end-line="138" selection-end-column="0" />
-          <folding />
+        <state vertical-scroll-proportion="0.4479889" vertical-offset="0" max-vertical-offset="935">
+          <caret line="19" column="50" selection-start-line="19" selection-start-column="50" selection-end-line="19" selection-end-column="50" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
