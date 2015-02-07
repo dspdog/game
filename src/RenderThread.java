@@ -42,7 +42,6 @@ public class RenderThread {
     public static float myFOV;
     public static boolean useOrtho;
 
-    public static Vector3f poi;
 
     private String mySelection = "";
 
@@ -288,7 +287,7 @@ public class RenderThread {
     void cameraTransform(){
         //TODO camera obj --> set POV
 
-        poi = cameraPos;
+        gameScene.poi = cameraPos;
 
         rotationx = -180f * gameInputs.mouseY /myHeight;
         rotationy = gameInputs.mouseX;
@@ -313,7 +312,7 @@ public class RenderThread {
         glRotatef((float) rotationy, 0f, 1f, 0f);
         glRotatef((float) rotationx, 1f, 0f, 0f);
 
-        glTranslatef(poi.x, poi.y, poi.z);
+        glTranslatef(gameScene.poi.x, gameScene.poi.y, gameScene.poi.z);
 //
 
 

@@ -1,17 +1,20 @@
 import factory.GeometryFactory;
+import org.lwjgl.util.vector.Vector3f;
 import utils.glHelper;
 import utils.time;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static org.lwjgl.opengl.GL11.*;
 
 class gameScene {
-    private static ArrayList<worldObject> objs = new ArrayList<>();
+    private static CopyOnWriteArrayList<worldObject> objs = new CopyOnWriteArrayList<>();
     public static Map<String, worldObject> idsMap = new HashMap<>();
 
+    public static Vector3f poi;
     static float coordsScale=5.0f;
 
     public static void drawScene(){
@@ -43,8 +46,24 @@ class gameScene {
         }
     }
 
+    public static void logicScene(float dt){
+        for(worldObject wo : objs){
+           switch (wo.myType){
+                case TREE:
+                    wo.myTree.perturb(false, false, 01.250f*dt);
+                    break;
+                case CSG:
+                    //static CSG - do nothing
+                    break;
+                case CSGProgram:
+                    wo.myCSGProg.iterate(dt);
+                    break;
+            }
+        }
+    }
+
     public gameScene(){
-        objs = new ArrayList<>();
+        objs = new CopyOnWriteArrayList<>();
     }
 
     public static void addWorldObject(worldObject wo){

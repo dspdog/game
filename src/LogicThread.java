@@ -24,18 +24,17 @@ public class LogicThread implements Runnable {
         tree.cameraYVector.set(glHelper.cameraYVector);
         tree.cameraZVector.set(glHelper.cameraZVector);
 
-        //if(frame%10==0)
-        theTree.perturb(false, false, 01.250f*dt);
+        gameScene.logicScene(dt);
 
-        //theTree.updateCSG();
-        //cm.generateTris(theTree);
         lastGameLogic = time.getTime();
 
+        handleKeyboardInput(dt);
+    }
+
+    void handleKeyboardInput(float dt){
         gameInputs.pollInputs();
 
-        Vector3f poi = RenderThread.poi;
-
-
+        Vector3f poi = gameScene.poi;
 
         float speed = dt;
         if(gameInputs.TURBO){speed*=5;}
