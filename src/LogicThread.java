@@ -35,6 +35,8 @@ public class LogicThread implements Runnable {
 
 
         float speed = dt;
+        if(gameInputs.TURBO){speed*=5;}
+
         if(gameInputs.MOVING_FORWARD){
             poi.translate(
                     glHelper.cameraZVector.x*speed,

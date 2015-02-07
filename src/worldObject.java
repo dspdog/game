@@ -54,6 +54,11 @@ public class worldObject {
         updateVBOs();
     }
 
+    public worldObject setPos(Vector3f pos){
+        position.set(pos);
+        return this;
+    }
+
     public void updateVBOs(){
         switch (myType){
             case TREE:

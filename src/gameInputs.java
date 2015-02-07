@@ -19,6 +19,7 @@ public class gameInputs {
     static boolean MOVING_BACKWARD=false;
     static boolean MOVING_UP=false;
     static boolean MOVING_DOWN=false;
+    static boolean TURBO=false;
 
     static public void pollInputs() { //adapted from http://ninjacave.com/lwjglbasics2
         mouseX = Mouse.getX();
@@ -31,7 +32,9 @@ public class gameInputs {
 
         MOVING_UP=Keyboard.isKeyDown(Keyboard.KEY_Q);
         MOVING_DOWN=Keyboard.isKeyDown(Keyboard.KEY_E);
-        
+
+        TURBO=Keyboard.isKeyDown(Keyboard.KEY_LSHIFT);
+
         if (Mouse.isButtonDown(0)) {
             //System.out.println("MOUSE DOWN @ X: " + x + " Y: " + y);
         }
