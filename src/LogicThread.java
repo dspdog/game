@@ -10,19 +10,22 @@ public class LogicThread implements Runnable {
     public static long lastGameLogic;
 
     tree theTree;
+    long frame=0;
 
     public LogicThread(){
 
     }
 
     void updateGameLogic(){
-
+        frame++;
         float dt = time.getDtMS()*0.1f;
 
         tree.cameraXVector.set(glHelper.cameraXVector);
         tree.cameraYVector.set(glHelper.cameraYVector);
         tree.cameraZVector.set(glHelper.cameraZVector);
-        theTree.perturb(false, false, 0.1250f*dt);
+
+        //if(frame%10==0)
+        theTree.perturb(false, false, 01.250f*dt);
 
         //theTree.updateCSG();
         //cm.generateTris(theTree);

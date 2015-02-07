@@ -1,3 +1,4 @@
+import eu.mihosoft.vrl.v3d.Sphere;
 import factory.CSGFactory;
 import factory.GeometryFactory;
 import org.lwjgl.BufferUtils;
@@ -109,14 +110,7 @@ public class RenderThread {
             System.exit(0);
         }
 
-        cameraObj = new worldObject(CSGFactory.arrow());
-        gameScene.addWorldObject(cameraObj);
-
-        for(int i=0; i<1000; i++){
-            gameScene.addWorldObject(new worldObject(CSGFactory.arrow()).setPos(new Vector3f((i%25)*10,i,0)));
-        }
-
-        gameScene.addWorldObject(new worldObject(myLogic.theTree));
+        buildWorld();
         initScreenCapture();
 
 
@@ -134,7 +128,23 @@ public class RenderThread {
         System.exit(1);
     }
 
+    void buildWorld(){
 
+        cameraObj = new worldObject(CSGFactory.arrow());
+        gameScene.addWorldObject(cameraObj);
+
+        for(int i=0; i<1000; i++){
+            gameScene.addWorldObject(new worldObject(CSGFactory.arrow()).setPos(new Vector3f((i%25)*10,i,0)));
+        }
+
+        gameScene.addWorldObject(new worldObject(myLogic.theTree)); //arrow world
+
+        //gameScene.addWorldObject(new worldObject(new Sphere(25,5,5).toCSG()));
+
+        CSGProgram myProg = new CSGProgram();
+
+        gameScene.addWorldObject(new worldObject(myProg));
+    }
 
     void update() {
         updateFPS();

@@ -16,6 +16,7 @@ public class worldObject {
 
     tree myTree;
     CSG myCSG;
+    CSGProgram myCSGProg;
 
     int[] VBOHandles;
     String name="";
@@ -27,7 +28,7 @@ public class worldObject {
     WOType myType = WOType.NONE;
 
     public enum WOType {
-        NONE, CSG, TREE
+        NONE, CSG, CSGProgram, TREE
     }
 
     public worldObject(){
@@ -54,6 +55,15 @@ public class worldObject {
         updateVBOs();
     }
 
+    public worldObject(CSGProgram csg){
+        this();
+        name="CSGProg_" + randomName;
+        myType=WOType.CSGProgram;
+        myCSGProg = csg;
+        updateVBOs();
+    }
+
+
     public worldObject setPos(Vector3f pos){
         position.set(pos);
         return this;
@@ -69,6 +79,9 @@ public class worldObject {
                 break;
             case CSG:
                 VBOHandles = GeometryFactory.csgVBOHandles(myCSG);
+                break;
+            case CSGProgram:
+                VBOHandles = GeometryFactory.csgVBOHandles(myCSGProg.toCSG());
                 break;
         }
     }

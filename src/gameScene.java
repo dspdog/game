@@ -35,6 +35,9 @@ class gameScene {
                 case CSG:
                     GeometryFactory.drawTrisByVBOHandles(wo.myCSG.numTriangles, wo.VBOHandles);
                     break;
+                case CSGProgram:
+                    GeometryFactory.drawTrisByVBOHandles(wo.myCSGProg.myCSG.numTriangles, wo.VBOHandles);
+                    break;
             }
             glPopMatrix();
         }
