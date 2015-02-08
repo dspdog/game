@@ -42,22 +42,13 @@ public class SimplifyCSG {
 
         tris=0;
         for(Polygon poly : csg.getPolygons()){
-            for(int v=1; v<poly.vertices.size()-1; v++){
-                Vector3f pos0 = new Vector3f((float)poly.vertices.get(0).pos.x,
-                                             (float)poly.vertices.get(0).pos.y,
-                                             (float)poly.vertices.get(0).pos.z);
-                Vector3f posv = new Vector3f((float)poly.vertices.get(v).pos.x,
-                                             (float)poly.vertices.get(v).pos.y,
-                                             (float)poly.vertices.get(v).pos.z);
-                Vector3f posv1 = new Vector3f((float)poly.vertices.get(v+1).pos.x,
-                                             (float)poly.vertices.get(v+1).pos.y,
-                                             (float)poly.vertices.get(v+1).pos.z);
+            for(int v=1; v<poly.vertices.size()-1; v++){//super basic poly-to-triangles function. doesnt affect triangles, turns quads into 2 tris, etc...
+                int index0 = uniqueVerts.get(getVertexString(poly.vertices.get(0))).index;
+                int indexv = uniqueVerts.get(getVertexString(poly.vertices.get(v))).index;
+                int indexv1 = uniqueVerts.get(getVertexString(poly.vertices.get(v+1))).index;
+                simply.triangles.add(simply.getTriangle(index0, indexv, indexv1));
                 tris++;
             }
-
-           // for(Vertex vertex : poly.vertices){
-            //    Simplify.Vertex vert = (Simplify.Vertex)uniqueVerts.get(getVertexString(vertex));
-            //    int index = vert.index;
 
         }
 
@@ -72,4 +63,5 @@ public class SimplifyCSG {
                 Float.toString(Math.round(vertex.pos.y*roundToNearesth)/roundToNearesth) +
                 Float.toString(Math.round(vertex.pos.z*roundToNearesth)/roundToNearesth);
     }
+
 }

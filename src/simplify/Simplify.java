@@ -425,6 +425,12 @@ public class Simplify {
 		return v;
 	}
 
+	public Triangle getTriangle(int v0, int v1, int v2){
+		Triangle tri = new Triangle();
+		tri.v = new int[]{v0,v1,v2};
+		return tri;
+	}
+
 	// Global Variables & Structures
 
 	class Triangle{
