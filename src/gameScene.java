@@ -15,9 +15,11 @@ class gameScene {
     public static Map<String, worldObject> idsMap = new HashMap<>();
 
     public static Vector3f poi;
+    public static long numTris = 0;
     static float coordsScale=5.0f;
 
     public static void drawScene(){
+        int tris = 0;
         glHelper.updateCamVectors();
         for(worldObject wo : objs){
             glStencilFunc(GL_ALWAYS, wo.stencilId + 1, -1);
@@ -29,21 +31,28 @@ class gameScene {
             glRotatef(wo.rotation.z,0,0,1);
             switch (wo.myType){
                 case TREE:
+                   /* if(LogicThread.lastGameLogic -  RenderThread.lastVBOUpdate > 1){
+                        wo.updateVBOs();
+                        RenderThread.lastVBOUpdate= time.getTime();
+                    }
+                    GeometryFactory.drawQuadsByVBOHandles(wo.vertices, wo.VBOHandles);*/
+                    break;
+                case CSG:
+                    tris+=wo.myCSG.numTriangles;
+                    GeometryFactory.drawTrisByVBOHandles(wo.myCSG.numTriangles, wo.VBOHandles);
+                    break;
+                case CSGProgram:
+                    tris+=wo.myCSGProg.myCSG.numTriangles;
                     if(LogicThread.lastGameLogic -  RenderThread.lastVBOUpdate > 1){
                         wo.updateVBOs();
                         RenderThread.lastVBOUpdate= time.getTime();
                     }
-                    GeometryFactory.drawQuadsByVBOHandles(wo.vertices, wo.VBOHandles);
-                    break;
-                case CSG:
-                    GeometryFactory.drawTrisByVBOHandles(wo.myCSG.numTriangles, wo.VBOHandles);
-                    break;
-                case CSGProgram:
                     GeometryFactory.drawTrisByVBOHandles(wo.myCSGProg.myCSG.numTriangles, wo.VBOHandles);
                     break;
             }
             glPopMatrix();
         }
+        numTris=tris;
     }
 
     public static void logicScene(float dt){

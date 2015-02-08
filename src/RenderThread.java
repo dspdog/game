@@ -131,13 +131,13 @@ public class RenderThread {
 
         cameraObj = new worldObject(CSGFactory.arrow());
         gameScene.addWorldObject(cameraObj);
-
+/*
         for(int i=0; i<1000; i++){
             gameScene.addWorldObject(new worldObject(CSGFactory.arrow()).setPos(new Vector3f((i%25)*10,i,0)));
         }
 
         gameScene.addWorldObject(new worldObject(myLogic.theTree)); //arrow world
-
+*/
         //gameScene.addWorldObject(new worldObject(new Sphere(25,5,5).toCSG()));
 
         CSGProgram myProg = new CSGProgram();
@@ -276,11 +276,12 @@ public class RenderThread {
         }
 
         String consoleStatus = "FPS: " + myFPS +
+                            "\nPOLYS: " + gameScene.numTris+
                             "\nSURFACE: " + mySurfaceTotal +
                             "\nSELECTED: " + mySelection;
         gameConsole.setStatusString(consoleStatus);
 
-        gameConsole.draw(myWidth, myHeight, myWidth, 420, 0, 0, 0.1f);
+        gameConsole.draw(myWidth, myHeight, myWidth, 430, 0, 0, 0.1f);
 
     }
 
@@ -289,9 +290,9 @@ public class RenderThread {
 
         gameScene.poi = cameraPos;
 
-        rotationx = -180f * gameInputs.mouseY /myHeight;
-        rotationy = gameInputs.mouseX;
-        rotationz = 0;
+        rotationx = myLogic.rotationx; //-180f * gameInputs.mouseY /myHeight;
+        rotationy = myLogic.rotationy; //gameInputs.mouseX;
+        rotationz = myLogic.rotationz;;
 
        /* int scroll = Mouse.getDWheel();
 

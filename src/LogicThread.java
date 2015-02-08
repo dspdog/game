@@ -12,6 +12,10 @@ public class LogicThread implements Runnable {
     tree theTree;
     long frame=0;
 
+    float rotationx=0;
+    float rotationy=0;
+    float rotationz=0;
+
     public LogicThread(){
 
     }
@@ -28,12 +32,20 @@ public class LogicThread implements Runnable {
 
         lastGameLogic = time.getTime();
 
+        handleMouseInput(dt);
         handleKeyboardInput(dt);
+    }
+
+    void handleMouseInput(float dt){
+        if(gameInputs.consoleIsEnabled)return; //skip rest of function if console is open
+        rotationx = -180f * gameInputs.mouseY / RenderThread.myHeight;
+        rotationy = gameInputs.mouseX;
+        rotationz = 0;
     }
 
     void handleKeyboardInput(float dt){
         gameInputs.pollInputs();
-
+        if(gameInputs.consoleIsEnabled)return; //skip rest of function if console is open
         Vector3f poi = gameScene.poi;
 
         float speed = dt;
