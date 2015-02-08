@@ -4,6 +4,7 @@ import eu.mihosoft.vrl.v3d.CSG;
 import eu.mihosoft.vrl.v3d.Polygon;
 import eu.mihosoft.vrl.v3d.Vertex;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -65,7 +66,7 @@ public class SimplifyCSG {
                 }
             }
         }
-        
+
         int maxTris=0;
         for(mySimplify.Vertex vert : simply.vertices){
             if(vert.triangles.size() > maxTris){
@@ -75,7 +76,23 @@ public class SimplifyCSG {
 
         System.out.println("Simplifier: Verts - " + vertsNonUnique + " VertsUnique - " + vertsUnique + " Polys " + polys + " Tris " + tris + " Skipped " + skipped + " MaxConx " + maxTris);
 
-        //TODO perform some decimations...
+        for(int i=0; i<100; i++){
+            ArrayList<mySimplify.Vertex> connections = null; //TODO get random edge (rnd triangle-->rnd side)
+            mySimplify.Vertex newVertex = null; //TODO get median or something
+
+            replaceVertsWithVert(connections, newVertex);
+        }
+
+        //TODO update original CSG...
+        
+        //csg.fromPolygons()
+    }
+
+    public static void replaceVertsWithVert(ArrayList<mySimplify.Vertex> verts, mySimplify.Vertex newVert){
+        //add vert to list
+        //go thru all triangles in verts.triangles as oldVert --> Tri
+            //remove oldVert, add vert to Tri
+            //mark oldVert as removed
     }
 
     public static String getVertexString(Vertex vertex){
