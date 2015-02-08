@@ -3,11 +3,8 @@ package simplify;
 import eu.mihosoft.vrl.v3d.CSG;
 import eu.mihosoft.vrl.v3d.Polygon;
 import eu.mihosoft.vrl.v3d.Vertex;
-import org.lwjgl.util.vector.Vector3f;
-import simplify.Simplify;
 
 import java.util.HashMap;
-import java.util.HashSet;
 
 /**
  * Created by user on 2/8/2015.
@@ -23,8 +20,9 @@ public class SimplifyCSG {
 
         int tris=0;
 
-        Simplify simply = new Simplify();
-        HashMap<String, Simplify.Vertex> uniqueVerts = new HashMap<>();
+        mySimplify simply = new mySimplify();
+
+        HashMap<String, mySimplify.Vertex> uniqueVerts = new HashMap<>();
         for(Polygon poly : csg.getPolygons()){
             polys++;
             for(Vertex vertex : poly.vertices){
@@ -34,7 +32,7 @@ public class SimplifyCSG {
         }
 
 
-        for(Simplify.Vertex vertex : uniqueVerts.values()){
+        for(mySimplify.Vertex vertex : uniqueVerts.values()){
             vertex.index = vertsUnique;
             vertsUnique++;
             simply.vertices.add(vertex);
@@ -46,6 +44,11 @@ public class SimplifyCSG {
                 int index0 = uniqueVerts.get(getVertexString(poly.vertices.get(0))).index;
                 int indexv = uniqueVerts.get(getVertexString(poly.vertices.get(v))).index;
                 int indexv1 = uniqueVerts.get(getVertexString(poly.vertices.get(v+1))).index;
+
+               // if(tris==0){
+               //     System.out.println("INDEXES " + index0 + " " + indexv + " " + indexv1);
+               // }
+
                 simply.triangles.add(simply.getTriangle(index0, indexv, indexv1));
                 tris++;
             }
@@ -53,8 +56,6 @@ public class SimplifyCSG {
         }
 
         System.out.println("Simplifier: Verts - " + vertsNonUnique + " VertsUnique - " + vertsUnique + " Polys " + polys + " Tris " + tris);
-
-        //get list of Triangles based on Unique Vertices list
     }
 
     public static String getVertexString(Vertex vertex){

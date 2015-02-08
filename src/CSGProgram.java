@@ -13,7 +13,8 @@ import utils.time;
 public class CSGProgram {
     long myIteration=0;
     long lifetimeMs = 2000;
-    long minPeriodMs = 100;
+    long minIterationPeriodMs = 100;
+    long minSimplifyPeriodMs = 1000;
 
     float radius = 25f;
     int quality = 4;
@@ -23,6 +24,7 @@ public class CSGProgram {
 
     long startTime = time.getTime();
     long lastBuildTime = 0;
+    long lastSimplifyTime = 0;
 
     CSG toCSG(){
         return myCSG;
@@ -31,7 +33,7 @@ public class CSGProgram {
     public void iterate(float dt){
         //build up the CSG...
         if( time.getTime() - startTime < lifetimeMs){
-            if(time.getTime() - lastBuildTime > minPeriodMs) {
+            if(time.getTime() - lastBuildTime > minIterationPeriodMs) {
 
                 CSG addition = new Sphere(center.plus(new Vector3d(myIteration*5,0,0)), radius, quality, quality).toCSG();
                 myCSG = myCSG.union(addition);
@@ -40,7 +42,11 @@ public class CSGProgram {
 
             }
         }else{
-            SimplifyCSG.simplifyCSG(myCSG);
+            if(time.getTime() - lastSimplifyTime > minSimplifyPeriodMs) {
+                SimplifyCSG.simplifyCSG(myCSG);
+                lastSimplifyTime = time.getTime();
+            }
+
         }
 
     }

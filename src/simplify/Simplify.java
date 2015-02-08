@@ -34,13 +34,13 @@ public class Simplify {
 		// main iteration loop
 
 		int deleted_triangles=0;
-		ArrayList<Boolean> deleted0, deleted1;
+		//ArrayList<Boolean> deleted0, deleted1;
 		int triangle_count=triangles.size();
 
 		for(int iteration=0; iteration<100; iteration++)
 		{
 			// target number of triangles reached ? Then break
-			System.out.println("ITERATION" + iteration);
+			//System.out.println("ITERATION" + iteration);
 			//printf("iteration %d - triangles %d\normal",iteration,triangle_count-deleted_triangles);
 			if(triangle_count-deleted_triangles<=target_count)break;
 
@@ -71,8 +71,7 @@ public class Simplify {
 				if(t.dirty) continue;
 
 				for(int j=0; j<3; j++){
-					if(t.err[j]<threshold)
-					{
+					if(t.err[j]<threshold) {
 						int i0=t.v[ j     ]; Vertex v0 = vertices.get(i0);
 						int i1=t.v[(j+1)%3]; Vertex v1 = vertices.get(i1);
 
@@ -83,8 +82,15 @@ public class Simplify {
 						Vector3f p = new Vector3f(0,0,0);
 						calculate_error(i0,i1,p);
 
-						deleted0 = new ArrayList<Boolean>(v0.tcount); // normals temporarily
-						deleted1 = new ArrayList<Boolean>(v1.tcount); // normals temporarily
+						ArrayList<Boolean> deleted0 = new ArrayList<Boolean>(v0.tcount); // normals temporarily
+						ArrayList<Boolean> deleted1 = new ArrayList<Boolean>(v1.tcount); // normals temporarily
+
+						for(int d=0; d<v0.tcount; d++){
+							deleted0.add(false);
+						}
+						for(int d=0; d<v1.tcount; d++){
+							deleted1.add(false);
+						}
 
 						// dont remove if flipped
 						if( flipped(p,i0,i1,v0,v1,deleted0) ) continue;
@@ -120,7 +126,7 @@ public class Simplify {
 				}
 
 		}
-
+		System.out.println("deleted?" + deleted_triangles);
 		// clean up mesh
 		compact_mesh();
 
@@ -219,6 +225,11 @@ public class Simplify {
 
 		// Write References
 		refs = new ArrayList<>(triangles.size()*3);
+
+		for(int r=0; r<triangles.size()*3; r++){
+			refs.add(new Ref());
+		}
+
 		for(int i=0; i<triangles.size(); i++) {
 			Triangle t=triangles.get(i);
 			for(int j=0; j<3; j++){
@@ -282,7 +293,7 @@ public class Simplify {
 
 		for(int k=0; k<v0.tcount; k++){
 			Triangle t=triangles.get(refs.get(v0.tstart+k).tid);
-			if(t.deleted)continue;
+			if(t.deleted)return false;
 
 			int s=refs.get(v0.tstart+k).tvertex;
 			int id1=t.v[(s+1)%3];
@@ -292,7 +303,7 @@ public class Simplify {
 			{
 				bordercount++;
 				deleted.set(k,true);
-				continue;
+				return false;
 			}
 			Vector3f d1 = new Vector3f(vertices.get(id1).p.x-p.x,vertices.get(id1).p.y-p.y,vertices.get(id1).p.z-p.z); d1 = d1.normalise(d1);
 			Vector3f d2 = new Vector3f(vertices.get(id2).p.x-p.x,vertices.get(id2).p.y-p.y,vertices.get(id2).p.z-p.z); d2 = d2.normalise(d2);
@@ -336,6 +347,7 @@ public class Simplify {
 
 	void compact_mesh(){
 		int dst=0;
+		int numDeleted=0;
 		for(int i=0; i< vertices.size(); i++) {
 			vertices.get(i).tcount=0;
 		}
@@ -348,8 +360,12 @@ public class Simplify {
 				for(int j=0; j<3; j++){
 					vertices.get(t.v[j]).tcount=1;
 				}
+			}else{
+				numDeleted++;
 			}
 		}
+
+		System.out.println(numDeleted +" Deleted");
 
 		triangles.subList(dst, triangles.size()).clear(); //triangles.resize(dst);//remove everything after dst
 
@@ -389,7 +405,7 @@ public class Simplify {
 		// compute interpolated vertex
 
 		SymetricMatrix q = vertices.get(id_v1).q.summedWith(vertices.get(id_v2).q);
-		boolean   border = vertices.get(id_v1).border==1 & vertices.get(id_v2).border==1;
+		boolean   border = vertices.get(id_v1).border>0 & vertices.get(id_v2).border>0;
 		double error=0;
 		double det = q.det(0, 1, 2, 1, 4, 5, 2, 5, 7);
 
@@ -411,9 +427,9 @@ public class Simplify {
 			double error2 = vertex_error(q, p2.x,p2.y,p2.z);
 			double error3 = vertex_error(q, p3.x,p3.y,p3.z);
 			error = Math.min(error1, Math.min(error2, error3));
-			if (error1 == error) p_result=p1;
-			if (error2 == error) p_result=p2;
-			if (error3 == error) p_result=p3;
+			if (Math.abs(error1 - error)<0.000001) p_result=p1;
+			if (Math.abs(error2 - error)<0.000001) p_result=p2;
+			if (Math.abs(error3 - error)<0.000001) p_result=p3;
 		}
 		return error;
 	}
@@ -461,12 +477,6 @@ public class Simplify {
 			tcount=0;
 			border=0;
 		}
-
-
-
-		//public void setIndex(int i){
-		//	index=i;
-		//}
 	}
 
 	class Ref{
