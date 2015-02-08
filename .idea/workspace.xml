@@ -108,8 +108,8 @@
       <file leaf-file-name="SimplifyCSG.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/simplify/SimplifyCSG.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.63829786" vertical-offset="740" max-vertical-offset="1479">
-              <caret line="70" column="0" selection-start-line="70" selection-start-column="0" selection-end-line="70" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.4212766" vertical-offset="842" max-vertical-offset="1598">
+              <caret line="67" column="8" selection-start-line="67" selection-start-column="8" selection-end-line="67" selection-end-column="8" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -1091,8 +1091,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/simplify/SimplifyCSG.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.63829786" vertical-offset="740" max-vertical-offset="1479">
-          <caret line="70" column="0" selection-start-line="70" selection-start-column="0" selection-end-line="70" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.4212766" vertical-offset="842" max-vertical-offset="1598">
+          <caret line="67" column="8" selection-start-line="67" selection-start-column="8" selection-end-line="67" selection-end-column="8" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

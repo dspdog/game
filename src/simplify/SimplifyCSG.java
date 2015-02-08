@@ -65,8 +65,15 @@ public class SimplifyCSG {
                 }
             }
         }
+        
+        int maxTris=0;
+        for(mySimplify.Vertex vert : simply.vertices){
+            if(vert.triangles.size() > maxTris){
+                maxTris = vert.triangles.size();
+            }
+        }
 
-        System.out.println("Simplifier: Verts - " + vertsNonUnique + " VertsUnique - " + vertsUnique + " Polys " + polys + " Tris " + tris + " Skipped " + skipped);
+        System.out.println("Simplifier: Verts - " + vertsNonUnique + " VertsUnique - " + vertsUnique + " Polys " + polys + " Tris " + tris + " Skipped " + skipped + " MaxConx " + maxTris);
 
         //TODO perform some decimations...
     }
