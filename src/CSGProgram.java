@@ -2,6 +2,8 @@ import eu.mihosoft.vrl.v3d.CSG;
 import eu.mihosoft.vrl.v3d.Sphere;
 import eu.mihosoft.vrl.v3d.Vector3d;
 import org.lwjgl.util.vector.Vector3f;
+import simplify.Simplify;
+import simplify.SimplifyCSG;
 import utils.RandomHelper;
 import utils.time;
 
@@ -26,16 +28,20 @@ public class CSGProgram {
         return myCSG;
     }
 
-
     public void iterate(float dt){
         //build up the CSG...
-        if(time.getTime() - lastBuildTime > minPeriodMs && time.getTime() - startTime < lifetimeMs) {
+        if( time.getTime() - startTime < lifetimeMs){
+            if(time.getTime() - lastBuildTime > minPeriodMs) {
 
-            CSG addition = new Sphere(center.plus(new Vector3d(myIteration*5,0,0)), radius, quality, quality).toCSG();
-            myCSG = myCSG.union(addition);
-            lastBuildTime = time.getTime();
-            myIteration++;
+                CSG addition = new Sphere(center.plus(new Vector3d(myIteration*5,0,0)), radius, quality, quality).toCSG();
+                myCSG = myCSG.union(addition);
+                lastBuildTime = time.getTime();
+                myIteration++;
 
+            }
+        }else{
+            SimplifyCSG.simplifyCSG(myCSG);
         }
+
     }
 }

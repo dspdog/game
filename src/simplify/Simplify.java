@@ -2,6 +2,7 @@
 
 package simplify;
 
+import eu.mihosoft.vrl.v3d.Vertex;
 import org.lwjgl.util.vector.Vector3f;
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public class Simplify {
 	void simplify_mesh(int target_count, double agressiveness) //aggressiveness 7
 	{
 		// init
-		//printf("%s - start\n",__FUNCTION__);
+		//printf("%s - start\normal",__FUNCTION__);
 		long timeStart=System.currentTimeMillis();
 
 		for(int i=0; i<triangles.size(); i++){
@@ -40,7 +41,7 @@ public class Simplify {
 		{
 			// target number of triangles reached ? Then break
 			System.out.println("ITERATION" + iteration);
-			//printf("iteration %d - triangles %d\n",iteration,triangle_count-deleted_triangles);
+			//printf("iteration %d - triangles %d\normal",iteration,triangle_count-deleted_triangles);
 			if(triangle_count-deleted_triangles<=target_count)break;
 
 			// update mesh once in a while
@@ -125,7 +126,7 @@ public class Simplify {
 
 		// ready
 		long timeEnd=System.currentTimeMillis();
-		/*printf("%s - %d/%d %d%% removed in %d ms\n",__FUNCTION__,
+		/*printf("%s - %d/%d %d%% removed in %d ms\normal",__FUNCTION__,
 				triangle_count-deleted_triangles,
 				triangle_count,deleted_triangles*100/triangle_count,
 				timeEnd-timeStart);*/
@@ -166,22 +167,22 @@ public class Simplify {
 
 			for(int i=0; i<triangles.size(); i++) {
 				Triangle t=triangles.get(i);
-				Vector3f n = new Vector3f();;
+				Vector3f normal = new Vector3f();
 				Vector3f[] p = new Vector3f[3];
 
 				for(int j=0; j<3; j++){
 					p[j]=vertices.get(t.v[j]).p;
 				}
 
-				n = Vector3f.cross(p[1].translate(-p[0].x, -p[0].y, -p[0].z), p[2].translate(-p[0].x, -p[0].y, -p[0].z), n).normalise(n);
+				normal = Vector3f.cross(p[1].translate(-p[0].x, -p[0].y, -p[0].z), p[2].translate(-p[0].x, -p[0].y, -p[0].z), normal).normalise(normal);
 
-				t.n=n;
+				t.normal =normal;
 
 				for(int j=0; j<3; j++){
 					vertices.get(t.v[j]).q =
 							vertices.get(t.v[j]).q.summedWith(
-									new SymetricMatrix(n.x, n.y, n.z,
-									-Vector3f.dot(n, p[0])));
+									new SymetricMatrix(normal.x, normal.y, normal.z,
+									-Vector3f.dot(normal, p[0])));
 				}
 			}
 
@@ -301,7 +302,7 @@ public class Simplify {
 			Vector3f.cross(d1,d2,n);
 			n = n.normalise(n);
 			deleted.set(k,false);
-			if(Vector3f.dot(n, t.n)<0.2) return true;
+			if(Vector3f.dot(n, t.normal)<0.2) return true;
 		}
 
 		return false;
@@ -417,6 +418,13 @@ public class Simplify {
 		return error;
 	}
 
+
+	public Vertex fromVertex(eu.mihosoft.vrl.v3d.Vertex vertex){
+		Vertex v = new Vertex();
+		v.p = new Vector3f((float)vertex.pos.x,(float)vertex.pos.y,(float)vertex.pos.z);
+		return v;
+	}
+
 	// Global Variables & Structures
 
 	class Triangle{
@@ -424,7 +432,7 @@ public class Simplify {
 		boolean dirty;
 		int v[];
 		double err[];
-		Vector3f n;
+		Vector3f normal;
 
 		public Triangle(){
 			deleted=false;
@@ -434,11 +442,12 @@ public class Simplify {
 		}
 	}
 
-	class Vertex{
+	public class Vertex{
 		Vector3f p;
 		int tstart=0;
 		int tcount=0;
 		int border=0;
+		int index=-1;
 		SymetricMatrix q;
 
 		public Vertex(){
@@ -446,6 +455,12 @@ public class Simplify {
 			tcount=0;
 			border=0;
 		}
+
+
+
+		//public void setIndex(int i){
+		//	index=i;
+		//}
 	}
 
 	class Ref{
