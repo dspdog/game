@@ -22,6 +22,8 @@ public class SimplifyCSG {
 
         mySimplify simply = new mySimplify();
 
+        //GETTING UNIQUE VERTICES...
+
         HashMap<String, mySimplify.Vertex> uniqueVerts = new HashMap<>();
         for(Polygon poly : csg.getPolygons()){
             polys++;
@@ -31,31 +33,42 @@ public class SimplifyCSG {
             }
         }
 
-
         for(mySimplify.Vertex vertex : uniqueVerts.values()){
             vertex.index = vertsUnique;
             vertsUnique++;
             simply.vertices.add(vertex);
         }
 
+        //DEFINING TRIANGLES IN TERMS OF UNIQUE VERT INDICES...
+        //+setting triangles-per-vertex
+
         tris=0;
+        int skipped=0;
         for(Polygon poly : csg.getPolygons()){
             for(int v=1; v<poly.vertices.size()-1; v++){//super basic poly-to-triangles function. doesnt affect triangles, turns quads into 2 tris, etc...
                 int index0 = uniqueVerts.get(getVertexString(poly.vertices.get(0))).index;
                 int indexv = uniqueVerts.get(getVertexString(poly.vertices.get(v))).index;
                 int indexv1 = uniqueVerts.get(getVertexString(poly.vertices.get(v+1))).index;
 
-               // if(tris==0){
-               //     System.out.println("INDEXES " + index0 + " " + indexv + " " + indexv1);
-               // }
+                mySimplify.Triangle tri = simply.getTriangle(index0, indexv, indexv1);
+                if(tri.myArea()>0.001f){
+                    simply.triangles.add(tri);
+                    tri.myIndex=tris;
+                    tris++;
 
-                simply.triangles.add(simply.getTriangle(index0, indexv, indexv1));
-                tris++;
+                    //UPDATE THE VERTS TO HAVE REFS TO THIS TRIANGLE
+                    simply.vertices.get(index0).triangles.add(tri);
+                    simply.vertices.get(indexv).triangles.add(tri);
+                    simply.vertices.get(indexv1).triangles.add(tri);
+                }else{
+                    skipped++;
+                }
             }
-
         }
 
-        System.out.println("Simplifier: Verts - " + vertsNonUnique + " VertsUnique - " + vertsUnique + " Polys " + polys + " Tris " + tris);
+        System.out.println("Simplifier: Verts - " + vertsNonUnique + " VertsUnique - " + vertsUnique + " Polys " + polys + " Tris " + tris + " Skipped " + skipped);
+
+        //TODO perform some decimations...
     }
 
     public static String getVertexString(Vertex vertex){

@@ -17,7 +17,7 @@ public class CSGProgram {
     long minSimplifyPeriodMs = 1000;
 
     float radius = 25f;
-    int quality = 4;
+    int quality = 8;
 
     Vector3d center = new Vector3d(0,0,0);
     CSG myCSG = new Sphere(center, radius,quality,quality).toCSG();
