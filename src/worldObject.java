@@ -7,6 +7,7 @@ import shapes.tree;
 import utils.RandomHelper;
 import org.apache.commons.*;
 import utils.glHelper;
+import utils.time;
 
 public class worldObject {
 
@@ -17,6 +18,7 @@ public class worldObject {
     tree myTree;
     CSG myCSG;
     CSGProgram myCSGProg;
+    long lastVBOUpdate=0;
 
     int[] VBOHandles;
     String name="";
@@ -84,6 +86,7 @@ public class worldObject {
                 VBOHandles = GeometryFactory.csgVBOHandles(myCSGProg.toCSG());
                 break;
         }
+        lastVBOUpdate= time.getTime();
     }
 
     public void move(float dt){

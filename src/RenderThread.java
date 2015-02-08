@@ -81,6 +81,8 @@ public class RenderThread {
         myLogic=gl;
 
         startTime=time.getTime();
+
+        GeometryFactory.doSparkle=true;
     }
 
     void updateFPS() {

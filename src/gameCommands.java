@@ -1,3 +1,4 @@
+import factory.GeometryFactory;
 import utils.StringHelper;
 
 /**
@@ -27,6 +28,7 @@ public class gameCommands {
             {"pixels", "pixel integrator on/off", "pixel integrator __X"},
             {"fbo", "fbo pass on/off", "fbo pass __X"},
             {"wireframe", "wireframe mode on/off", "wireframe mode __X"},
+            {"sparkle", "sparkle mode on/off", "sparkle mode __X"},
 
             {"speed", "camera speed", "Camera speed now __X"},
             {"timescale", "time multiplier", "time speed now __Xx"},
@@ -69,6 +71,10 @@ public class gameCommands {
             case "overlay":
                 RenderThread.doShaderOverlay= param.equalsIgnoreCase("on");
                 System.out.println(RenderThread.doShaderOverlay);
+                break;
+            case "sparkle":
+                GeometryFactory.doSparkle= param.equalsIgnoreCase("on");
+                System.out.println(GeometryFactory.doSparkle);
                 break;
             case "pixels":
                 RenderThread.doProcessPixels= param.equalsIgnoreCase("on");

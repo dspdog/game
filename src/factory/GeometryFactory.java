@@ -19,6 +19,8 @@ import static org.lwjgl.opengl.GL15.*;
 
 public class GeometryFactory {
 
+    public static boolean doSparkle=true;
+
     static void plane(){
 
         int size = 250;
@@ -198,7 +200,7 @@ public class GeometryFactory {
     }
 
     public static void drawCSG(CSG csg){
-        csg.getTriangles();
+        csg.getTriangles(doSparkle);
         for(Polygon poly : csg.getPolygons()){
             glBegin(GL_TRIANGLE_FAN); //http://stackoverflow.com/questions/8043923/gl-triangle-fan-explanation
             glColor3f((float)poly.vertices.get(0).normal.x, (float)poly.vertices.get(0).normal.y, (float)poly.vertices.get(0).normal.z);
@@ -212,7 +214,7 @@ public class GeometryFactory {
     }
 
     public static int[] csgVBOHandles(CSG csg){
-        csg.getTriangles();
+        csg.getTriangles(doSparkle);
         int vbo_vertex_handle = glGenBuffers();
         glBindBuffer(GL_ARRAY_BUFFER, vbo_vertex_handle);
         glBufferData(GL_ARRAY_BUFFER, getCSGVertexData(csg), GL_STATIC_DRAW);

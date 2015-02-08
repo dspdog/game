@@ -121,7 +121,7 @@ public class CSG {
         return csg;
     }
 
-    public void getTriangles(){
+    public void getTriangles(boolean shakeNormals){
         int tris=0;
         for(Polygon poly : this.getPolygons()){
             tris-=2; //it's not a triangle until its 3 verts...
@@ -137,6 +137,13 @@ public class CSG {
 
                     vert.normal=normal;
                 }
+
+                if(shakeNormals){
+                    Vector3d normal = new Vector3d(vert.normal.x,vert.normal.y,vert.normal.z);
+                    normal = normal.plus(new Vector3d(Math.random(), Math.random(), Math.random()).plus(new Vector3d(-0.5,-0.5,-0.5)).times(1)).normalized();
+                    vert.normal=normal;
+                }
+
                 tris++;
             }
         }

@@ -31,7 +31,7 @@ class gameScene {
             glRotatef(wo.rotation.z,0,0,1);
             switch (wo.myType){
                 case TREE:
-                   /* if(LogicThread.lastGameLogic -  RenderThread.lastVBOUpdate > 1){
+                    /*if(LogicThread.lastGameLogic -  RenderThread.lastVBOUpdate > 1){ //TODO use wo.lastVBOUpdate instead of RenderThread
                         wo.updateVBOs();
                         RenderThread.lastVBOUpdate= time.getTime();
                     }
@@ -43,9 +43,9 @@ class gameScene {
                     break;
                 case CSGProgram:
                     tris+=wo.myCSGProg.myCSG.numTriangles;
-                    if(LogicThread.lastGameLogic -  RenderThread.lastVBOUpdate > 1){
+                    if(wo.myCSGProg.lastBuildTime>wo.lastVBOUpdate){
                         wo.updateVBOs();
-                        RenderThread.lastVBOUpdate= time.getTime();
+                        wo.lastVBOUpdate= time.getTime();
                     }
                     GeometryFactory.drawTrisByVBOHandles(wo.myCSGProg.myCSG.numTriangles, wo.VBOHandles);
                     break;
