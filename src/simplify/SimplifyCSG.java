@@ -131,8 +131,16 @@ public class SimplifyCSG {
                     (float)(Math.random()*brownScale),
                     (float)(Math.random()*brownScale),
                     (float)(Math.random()*brownScale)) ;*/
-            if(!randomVert.hasHole){
-                randomVert.pos = randomVert.getNeighborVertsAverage();
+
+            if(!randomVert.hasHole){//skip non-manifold edges
+
+                for(mySimplify.Vertex neighbor : randomVert.getNeighborVertsWithoutHoles()){//replace random vert with one of its neighboring verts (edge contract)
+                    replaceVertWithVert(randomVert,neighbor,simply); //TODO replace smallest dist vert?
+                    break;
+                }
+
+                //randomVert.pos = randomVert.getNeighborVertsAverage();
+
             }
                     //=randomVert.getNeighborVertsAverage();
 

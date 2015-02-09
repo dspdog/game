@@ -46,7 +46,7 @@ public class CSGProgram {
             }
         }else{
             if(time.getTime() - lastSimplifyTime > minSimplifyPeriodMs) {
-                //myCSG = SimplifyCSG.simplifyCSG(myCSG);
+                myCSG = SimplifyCSG.simplifyCSG(myCSG);
                 lastSimplifyTime = time.getTime();
             }
 

@@ -113,6 +113,20 @@ public class mySimplify {
 			return neighborsNextToHoles;
 		}
 
+		public HashSet<Vertex> getNeighborVertsWithoutHoles(){
+			HashSet<Vertex> neighborsNotNextToHoles = new HashSet<>();
+			for(Triangle tri : triangles){
+				for(Vertex v : tri.verts){
+					if(!v.hasHole)
+						neighborsNotNextToHoles.add(v);
+				}
+			}
+
+			neighborsNotNextToHoles.remove(this);
+
+			return neighborsNotNextToHoles;
+		}
+
 		public HashSet<Vertex> getNeighborVerts(){
 			HashSet<Vertex> neighbors = new HashSet<>();
 			for(Triangle tri : triangles){
