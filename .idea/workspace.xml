@@ -95,34 +95,14 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="mySimplify.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/simplify/mySimplify.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="500" max-vertical-offset="1377">
-              <caret line="59" column="33" selection-start-line="59" selection-start-column="33" selection-end-line="59" selection-end-column="33" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="SimplifyCSG.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/simplify/SimplifyCSG.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.55460995" vertical-offset="1071" max-vertical-offset="1887">
-              <caret line="86" column="8" selection-start-line="86" selection-start-column="8" selection-end-line="86" selection-end-column="8" />
+            <state vertical-scroll-proportion="0.44756278" vertical-offset="1363" max-vertical-offset="2244">
+              <caret line="98" column="31" selection-start-line="98" selection-start-column="31" selection-end-line="98" selection-end-column="31" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Vertex.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/JCSG-master/src/main/java/eu/mihosoft/vrl/v3d/Vertex.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-9.678572" vertical-offset="2075" max-vertical-offset="2856">
-              <caret line="184" column="38" selection-start-line="184" selection-start-column="38" selection-end-line="184" selection-end-column="38" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -1065,8 +1045,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/JCSG-master/src/main/java/eu/mihosoft/vrl/v3d/Vertex.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-9.678572" vertical-offset="2075" max-vertical-offset="2856">
+        <state vertical-scroll-proportion="0.39275363" vertical-offset="2075" max-vertical-offset="2856">
           <caret line="184" column="38" selection-start-line="184" selection-start-column="38" selection-end-line="184" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/simplify/mySimplify.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33333334" vertical-offset="501" max-vertical-offset="1411">
+          <caret line="46" column="32" selection-start-line="46" selection-start-column="32" selection-end-line="46" selection-end-column="32" />
           <folding />
         </state>
       </provider>
@@ -1081,18 +1069,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/simplify/mySimplify.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="500" max-vertical-offset="1377">
-          <caret line="59" column="33" selection-start-line="59" selection-start-column="33" selection-end-line="59" selection-end-column="33" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/simplify/SimplifyCSG.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.55460995" vertical-offset="1071" max-vertical-offset="1887">
-          <caret line="86" column="8" selection-start-line="86" selection-start-column="8" selection-end-line="86" selection-end-column="8" />
+        <state vertical-scroll-proportion="0.44756278" vertical-offset="1363" max-vertical-offset="2244">
+          <caret line="98" column="31" selection-start-line="98" selection-start-column="31" selection-end-line="98" selection-end-column="31" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
