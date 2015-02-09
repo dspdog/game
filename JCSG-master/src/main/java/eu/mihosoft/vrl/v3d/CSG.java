@@ -140,7 +140,8 @@ public class CSG {
 
                 if(shakeNormals){
                     Vector3d normal = new Vector3d(vert.normal.x,vert.normal.y,vert.normal.z);
-                    normal = normal.plus(new Vector3d(Math.random(), Math.random(), Math.random()).plus(new Vector3d(-0.5,-0.5,-0.5)).times(1)).normalized();
+                    float _scale = 1.0f;
+                    normal = normal.plus(new Vector3d(Math.random(), Math.random(), Math.random()).plus(new Vector3d(-0.5,-0.5,-0.5)).times(1*_scale)).normalized();
                     vert.normal=normal;
                 }
 

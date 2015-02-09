@@ -37,7 +37,9 @@ public class mySimplify {
 		boolean deleted=false;
 
 		public Polygon asPoly(){
-			return new Polygon(verts.get(0).asV3Dvertex(), verts.get(1).asV3Dvertex(), verts.get(2).asV3Dvertex());
+			Polygon poly = new Polygon(verts.get(0).asV3Dvertex(), verts.get(1).asV3Dvertex(), verts.get(2).asV3Dvertex());
+			//poly.getStorage().set("hole",verts.get(0).hasHole || verts.get(1).hasHole || verts.get(2).hasHole);
+			return poly;
 		}
 
 		public Triangle(){
@@ -84,9 +86,31 @@ public class mySimplify {
 		Vector3f pos;
 		int index=-1;
 		boolean deleted=false;
+		boolean hasHole=false;
 
 		public eu.mihosoft.vrl.v3d.Vertex asV3Dvertex(){
 			return new eu.mihosoft.vrl.v3d.Vertex(new Vector3d(pos.x, pos.y, pos.z), new Vector3d(0, 0, 0));
+		}
+
+		public boolean updateHole(){
+			if(numNeighborVerts() != numNeighborTris()){
+				hasHole=true;
+			}
+			return hasHole;
+		}
+
+		public HashSet<Vertex> getNeighborVertsWithHoles(){
+			HashSet<Vertex> neighborsNextToHoles = new HashSet<>();
+			for(Triangle tri : triangles){
+				for(Vertex v : tri.verts){
+					if(v.hasHole)
+					neighborsNextToHoles.add(v);
+				}
+			}
+
+			neighborsNextToHoles.remove(this);
+
+			return neighborsNextToHoles;
 		}
 
 		public HashSet<Vertex> getNeighborVerts(){

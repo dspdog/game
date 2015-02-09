@@ -17,7 +17,7 @@ public class CSGProgram {
     long minSimplifyPeriodMs = 300;
 
     float radius = 25f;
-    int quality = 8;
+    int quality = 4;
 
     Vector3d center = new Vector3d(0,0,0);
     CSG myCSG = new Sphere(center, radius,quality,quality).toCSG();
@@ -37,6 +37,7 @@ public class CSGProgram {
 
                 CSG addition = new Sphere(center.plus(new Vector3d(myIteration*5,0,0)), radius, quality, quality).toCSG();
                 myCSG = myCSG.union(addition);
+
                 lastBuildTime = time.getTime();
                 myIteration++;
 

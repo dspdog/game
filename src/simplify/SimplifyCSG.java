@@ -73,19 +73,50 @@ public class SimplifyCSG {
             }
         }
 
+        ArrayList<mySimplify.Vertex> vertsOnHoles = new ArrayList<mySimplify.Vertex>();
+
         int maxTris=0;
+        int holes = 0;
         for(mySimplify.Vertex vert : simply.vertices){
             if(vert.triangles.size() > maxTris){
                 maxTris = vert.triangles.size();
             }
+
+            //detect holes - if # neighbor tris != # neighbor verts
+
+            if(vert.updateHole()){
+                vertsOnHoles.add(vert);
+                holes++;
+            }
         }
+
+        for(mySimplify.Vertex vert : vertsOnHoles){//use these verts like polys to fill the holes
+            //System.out.println(vert.getNeighborVertsWithHoles().size() + " NEIGHBS W HOLES");
+            if(vert.hasHole){//might be changed by this loop...
+                mySimplify.Vertex _prevVert=null;
+                int num=0;
+                for(mySimplify.Vertex _vert : vert.getNeighborVertsWithHoles()){
+                    if(num>0){
+                        mySimplify.Triangle newTri = simply.getTriangle(vert.index, _vert.index, _prevVert.index);
+                        //simply.triangles.add(newTri);
+                    }
+                    _prevVert=_vert;
+                    num++;
+                }
+            }
+
+
+
+        }
+
+        //getNeighborVertsWithHoles
 
         System.out.println("Simplifier: Verts - " + vertsNonUnique + " VertsUnique - " + vertsUnique + " Polys " + polys + " Tris " + tris + " Skipped " + skipped + " MaxConx " + maxTris);
 
         mySimplify.Vertex randomVert;
         int iterations = 1000;
         int vertsDeleted=0;
-        int holes = 0;
+
 
         for(int i=0; i<iterations; i++){
             do{
@@ -93,15 +124,19 @@ public class SimplifyCSG {
             while(randomVert.deleted); //skip deleted verts
 
             float brownScale = 1/10f;
+/*
+            if(randomVert.hasHole)brownScale=0;
+
             randomVert.pos.translate(
                     (float)(Math.random()*brownScale),
                     (float)(Math.random()*brownScale),
-                    (float)(Math.random()*brownScale)) ;//=randomVert.getNeighborVertsAverage();
-
-            //TODO detect holes - if # neighbor tris != # neighbor verts
-            if(randomVert.numNeighborVerts() != randomVert.numNeighborTris()){
-                holes++;
+                    (float)(Math.random()*brownScale)) ;*/
+            if(!randomVert.hasHole){
+                randomVert.pos = randomVert.getNeighborVertsAverage();
             }
+                    //=randomVert.getNeighborVertsAverage();
+
+
         }
 
         System.out.println("HOLES: "  + holes);
