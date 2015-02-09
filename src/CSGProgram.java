@@ -1,5 +1,6 @@
 import eu.mihosoft.vrl.v3d.CSG;
 import eu.mihosoft.vrl.v3d.Sphere;
+import eu.mihosoft.vrl.v3d.Transform;
 import eu.mihosoft.vrl.v3d.Vector3d;
 import org.lwjgl.util.vector.Vector3f;
 import simplify.Simplify;
@@ -12,12 +13,12 @@ import utils.time;
  */
 public class CSGProgram {
     long myIteration=0;
-    long lifetimeMs = 2000;
+    long lifetimeMs = 10000;
     long minIterationPeriodMs = 100;
-    long minSimplifyPeriodMs = 300;
+    long minSimplifyPeriodMs = 1000;
 
     float radius = 25f;
-    int quality = 4;
+    int quality = 5;
 
     Vector3d center = new Vector3d(0,0,0);
     CSG myCSG = new Sphere(center, radius,quality,quality).toCSG();
@@ -34,8 +35,9 @@ public class CSGProgram {
         //build up the CSG...
         if( time.getTime() - startTime < lifetimeMs){
             if(time.getTime() - lastBuildTime > minIterationPeriodMs) {
-
-                CSG addition = new Sphere(center.plus(new Vector3d(myIteration*5,0,0)), radius, quality, quality).toCSG();
+                float scale = 20f;
+                center = center.plus(RandomHelper.randomBrownian(scale).minus(new Vector3d(scale/2,scale/2,scale/2)));
+                CSG addition = new Sphere(center, radius, quality, quality).toCSG();
                 myCSG = myCSG.union(addition);
 
                 lastBuildTime = time.getTime();
@@ -44,7 +46,7 @@ public class CSGProgram {
             }
         }else{
             if(time.getTime() - lastSimplifyTime > minSimplifyPeriodMs) {
-                myCSG = SimplifyCSG.simplifyCSG(myCSG);
+                //myCSG = SimplifyCSG.simplifyCSG(myCSG);
                 lastSimplifyTime = time.getTime();
             }
 

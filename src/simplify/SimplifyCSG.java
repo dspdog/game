@@ -114,7 +114,7 @@ public class SimplifyCSG {
         System.out.println("Simplifier: Verts - " + vertsNonUnique + " VertsUnique - " + vertsUnique + " Polys " + polys + " Tris " + tris + " Skipped " + skipped + " MaxConx " + maxTris);
 
         mySimplify.Vertex randomVert;
-        int iterations = 1000;
+        int iterations = 0;
         int vertsDeleted=0;
 
 
