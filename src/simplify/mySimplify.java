@@ -102,6 +102,27 @@ public class mySimplify {
 			return neighbors;
 		}
 
+		public Vector3f getNeighborVertsAverage(){
+
+			Vector3f total= new Vector3f(pos.x,pos.y,pos.z);
+			float scaleDown=1.0f;
+			HashSet<Vertex> neighbors = getNeighborVerts();
+			for(Vertex vert : neighbors){
+				total.translate(vert.pos.x,vert.pos.y,vert.pos.z);
+				scaleDown++;
+			}
+
+			return new Vector3f(total.x/scaleDown, total.y/scaleDown, total.z/scaleDown);
+		}
+
+		public int numNeighborTris(){
+			return triangles.size();
+		}
+
+		public int numNeighborVerts(){
+			return getNeighborVerts().size();
+		}
+
 		public Vertex(){
 
 		}

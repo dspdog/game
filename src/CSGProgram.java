@@ -14,7 +14,7 @@ public class CSGProgram {
     long myIteration=0;
     long lifetimeMs = 2000;
     long minIterationPeriodMs = 100;
-    long minSimplifyPeriodMs = 3000;
+    long minSimplifyPeriodMs = 300;
 
     float radius = 25f;
     int quality = 8;

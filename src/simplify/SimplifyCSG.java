@@ -14,6 +14,9 @@ import java.util.List;
  * Created by user on 2/8/2015.
  */
 public class SimplifyCSG {
+
+    public static double zeroAreaThresh = -1f;
+
     public static CSG simplifyCSG(CSG csg){ //TODO make this a CSG-with-LOD class?
 
         //building vertex-index list....
@@ -55,7 +58,7 @@ public class SimplifyCSG {
                 int indexv1 = uniqueVerts.get(getVertexString(poly.vertices.get(v+1))).index;
 
                 mySimplify.Triangle tri = simply.getTriangle(index0, indexv, indexv1);
-                if(tri.myArea()>0.001f){
+                if(tri.myArea()>zeroAreaThresh){
                     simply.triangles.add(tri);
                     tri.myIndex=tris;
                     tris++;
@@ -80,27 +83,34 @@ public class SimplifyCSG {
         System.out.println("Simplifier: Verts - " + vertsNonUnique + " VertsUnique - " + vertsUnique + " Polys " + polys + " Tris " + tris + " Skipped " + skipped + " MaxConx " + maxTris);
 
         mySimplify.Vertex randomVert;
-        int iterations = 100;
+        int iterations = 1000;
         int vertsDeleted=0;
+        int holes = 0;
 
         for(int i=0; i<iterations; i++){
             do{
                 randomVert = simply.vertices.get((int)(Math.random()*simply.vertices.size()));}
             while(randomVert.deleted); //skip deleted verts
 
-            for(mySimplify.Vertex vert : randomVert.getNeighborVerts()){
-                //dont delete verts, just slide them around
+            float brownScale = 1/10f;
+            randomVert.pos.translate(
+                    (float)(Math.random()*brownScale),
+                    (float)(Math.random()*brownScale),
+                    (float)(Math.random()*brownScale)) ;//=randomVert.getNeighborVertsAverage();
 
-                //slide vert to be mean of neighbors?
+            //TODO detect holes - if # neighbor tris != # neighbor verts
+            if(randomVert.numNeighborVerts() != randomVert.numNeighborTris()){
+                holes++;
             }
-
         }
+
+        System.out.println("HOLES: "  + holes);
 
         //Create new CSG from triangles...
         ArrayList<Polygon> polyList = new ArrayList<Polygon>();
 
         for(mySimplify.Triangle triangle : simply.triangles){
-            if(triangle.myArea()>0.001f && !triangle.deleted){
+            if(triangle.myArea()>zeroAreaThresh && !triangle.deleted){
                 polyList.add(triangle.asPoly()); //TODO vertex normals
             }
         }
