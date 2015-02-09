@@ -79,9 +79,6 @@ public class SimplifyCSG {
 
         System.out.println("Simplifier: Verts - " + vertsNonUnique + " VertsUnique - " + vertsUnique + " Polys " + polys + " Tris " + tris + " Skipped " + skipped + " MaxConx " + maxTris);
 
-        //Decimation
-
-        /*random verts removal:
         mySimplify.Vertex randomVert;
         int iterations = 100;
         int vertsDeleted=0;
@@ -91,32 +88,12 @@ public class SimplifyCSG {
                 randomVert = simply.vertices.get((int)(Math.random()*simply.vertices.size()));}
             while(randomVert.deleted); //skip deleted verts
 
-            int index = randomVert.index;
-            for(mySimplify.Triangle connectedTriangle : randomVert.triangles){
-                if(connectedTriangle.myArea()<0.0001 || connectedTriangle.deleted)continue; //skip deleted/zero-area triangle
+            for(mySimplify.Vertex vert : randomVert.getNeighborVerts()){
+                //dont delete verts, just slide them around
 
-                int rndIndex = (int)(Math.random()*3);
-                mySimplify.Vertex randomConnectedVert = connectedTriangle.verts.get(rndIndex);
-                if(index==randomConnectedVert.index){randomConnectedVert = connectedTriangle.verts.get((rndIndex+1)%3);}
-                if(index==randomConnectedVert.index){randomConnectedVert = connectedTriangle.verts.get((rndIndex+2)%3);}
-                replaceVertWithVert(randomVert, randomConnectedVert, simply);
-                vertsDeleted++;
-                break; //exit loop once we've found a proper triangle and replaced a vert
+                //slide vert to be mean of neighbors?
             }
-        }
-        System.out.println(vertsDeleted + " verts deleted!");
-        */
 
-        mySimplify.Vertex randomVert;
-        int iterations = 100;
-        int vertsDeleted=0;
-
-        for(int i=0; i<iterations; i++){
-            do{
-                randomVert = simply.vertices.get((int)(Math.random()*simply.vertices.size()));}
-            while(randomVert.deleted); //skip deleted verts
-            
-            //dont delete verts, just slide them around
         }
 
         //Create new CSG from triangles...

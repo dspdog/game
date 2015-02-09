@@ -89,6 +89,19 @@ public class mySimplify {
 			return new eu.mihosoft.vrl.v3d.Vertex(new Vector3d(pos.x, pos.y, pos.z), new Vector3d(0, 0, 0));
 		}
 
+		public HashSet<Vertex> getNeighborVerts(){
+			HashSet<Vertex> neighbors = new HashSet<>();
+			for(Triangle tri : triangles){
+				for(Vertex v : tri.verts){
+					neighbors.add(v);
+				}
+			}
+
+			neighbors.remove(this);
+
+			return neighbors;
+		}
+
 		public Vertex(){
 
 		}
