@@ -2,16 +2,19 @@ package simplify;
 
 import eu.mihosoft.vrl.v3d.CSG;
 import eu.mihosoft.vrl.v3d.Polygon;
+import eu.mihosoft.vrl.v3d.Sphere;
 import eu.mihosoft.vrl.v3d.Vertex;
+import factory.CSGFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by user on 2/8/2015.
  */
 public class SimplifyCSG {
-    public static void simplifyCSG(CSG csg){
+    public static CSG simplifyCSG(CSG csg){ //TODO make this a CSG-with-LOD class?
 
         //building vertex-index list....
 
@@ -76,9 +79,13 @@ public class SimplifyCSG {
 
         System.out.println("Simplifier: Verts - " + vertsNonUnique + " VertsUnique - " + vertsUnique + " Polys " + polys + " Tris " + tris + " Skipped " + skipped + " MaxConx " + maxTris);
 
+        //Decimation
+
+        /*random verts removal:
         mySimplify.Vertex randomVert;
         int iterations = 100;
         int vertsDeleted=0;
+
         for(int i=0; i<iterations; i++){
             do{
                 randomVert = simply.vertices.get((int)(Math.random()*simply.vertices.size()));}
@@ -86,26 +93,50 @@ public class SimplifyCSG {
 
             int index = randomVert.index;
             for(mySimplify.Triangle connectedTriangle : randomVert.triangles){
-                if(connectedTriangle.myArea()<0.001 || connectedTriangle.deleted)continue; //skip deleted/zero-area triangle
+                if(connectedTriangle.myArea()<0.0001 || connectedTriangle.deleted)continue; //skip deleted/zero-area triangle
 
-                mySimplify.Vertex randomConnectedVert = connectedTriangle.verts.get(0);
-                if(index==randomConnectedVert.index){randomConnectedVert = connectedTriangle.verts.get(1);}
-                if(index==randomConnectedVert.index){randomConnectedVert = connectedTriangle.verts.get(2);}
+                int rndIndex = (int)(Math.random()*3);
+                mySimplify.Vertex randomConnectedVert = connectedTriangle.verts.get(rndIndex);
+                if(index==randomConnectedVert.index){randomConnectedVert = connectedTriangle.verts.get((rndIndex+1)%3);}
+                if(index==randomConnectedVert.index){randomConnectedVert = connectedTriangle.verts.get((rndIndex+2)%3);}
                 replaceVertWithVert(randomVert, randomConnectedVert, simply);
                 vertsDeleted++;
                 break; //exit loop once we've found a proper triangle and replaced a vert
             }
         }
         System.out.println(vertsDeleted + " verts deleted!");
-        //TODO update original CSG...
+        */
 
-        //csg.fromPolygons()
+        mySimplify.Vertex randomVert;
+        int iterations = 100;
+        int vertsDeleted=0;
+
+        for(int i=0; i<iterations; i++){
+            do{
+                randomVert = simply.vertices.get((int)(Math.random()*simply.vertices.size()));}
+            while(randomVert.deleted); //skip deleted verts
+            
+            //dont delete verts, just slide them around
+        }
+
+        //Create new CSG from triangles...
+        ArrayList<Polygon> polyList = new ArrayList<Polygon>();
+
+        for(mySimplify.Triangle triangle : simply.triangles){
+            if(triangle.myArea()>0.001f && !triangle.deleted){
+                polyList.add(triangle.asPoly()); //TODO vertex normals
+            }
+        }
+
+        return CSG.fromPolygons(polyList);
     }
 
     public static void replaceVertWithVert(mySimplify.Vertex oldVert, mySimplify.Vertex newVert, mySimplify simply){
         //add vert to list (unless it already exists)
-            //simply.vertices.add(newVert);
-            //newVert.index = simply.vertices.size()-1;
+        if(!simply.vertices.contains(newVert)){
+            simply.vertices.add(newVert);
+            newVert.index = simply.vertices.size()-1;
+        }
 
         oldVert.deleted=true; //mark oldVert as removed
 

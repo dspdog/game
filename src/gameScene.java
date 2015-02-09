@@ -43,7 +43,7 @@ class gameScene {
                     break;
                 case CSGProgram:
                     tris+=wo.myCSGProg.myCSG.numTriangles;
-                    if(wo.myCSGProg.lastBuildTime>wo.lastVBOUpdate){
+                    if(wo.myCSGProg.lastBuildTime>wo.lastVBOUpdate || wo.myCSGProg.lastSimplifyTime>wo.lastVBOUpdate){
                         wo.updateVBOs();
                         wo.lastVBOUpdate= time.getTime();
                     }

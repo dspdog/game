@@ -2,10 +2,14 @@
 
 package simplify;
 
+import eu.mihosoft.vrl.v3d.Polygon;
+import eu.mihosoft.vrl.v3d.Vector3d;
+import eu.mihosoft.vrl.v3d.Vertex;
 import org.lwjgl.util.vector.Vector3f;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class mySimplify {
 
@@ -27,24 +31,34 @@ public class mySimplify {
 	// Global Variables & Structures
 
 	class Triangle{
-		ArrayList<mySimplify.Vertex> verts = new ArrayList<>();
+		CopyOnWriteArrayList<Vertex> verts = new CopyOnWriteArrayList<>();
 		Vector3f normal;
 		int myIndex=-1;
+		boolean deleted=false;
+
+		public Polygon asPoly(){
+			return new Polygon(verts.get(0).asV3Dvertex(), verts.get(1).asV3Dvertex(), verts.get(2).asV3Dvertex());
+		}
 
 		public Triangle(){
 		}
 
 		public void setVerts(int v0, int v1, int v2){
-			verts = new ArrayList<>();
+			verts = new CopyOnWriteArrayList<>();
 			verts.add(vertices.get(v0));
 			verts.add(vertices.get(v1));
 			verts.add(vertices.get(v2));
 		}
 
 		public float myArea(){
+
+			for(Vertex v : verts){
+				if(v.deleted){verts.remove(v);}
+			}
+
 			if(verts.size()<3){
-				System.out.println("tri doesnt have 3 verts?");
-				return 0;
+				//System.out.println("tri doesnt have 3 verts?");
+				return -1; //degenerate triangle
 			}else{
 				float sideA = dist(vertices.get(0), vertices.get(1));
 				float sideB = dist(vertices.get(1), vertices.get(2));
@@ -69,6 +83,11 @@ public class mySimplify {
 
 		Vector3f pos;
 		int index=-1;
+		boolean deleted=false;
+
+		public eu.mihosoft.vrl.v3d.Vertex asV3Dvertex(){
+			return new eu.mihosoft.vrl.v3d.Vertex(new Vector3d(pos.x, pos.y, pos.z), new Vector3d(0, 0, 0));
+		}
 
 		public Vertex(){
 

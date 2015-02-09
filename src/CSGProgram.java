@@ -14,7 +14,7 @@ public class CSGProgram {
     long myIteration=0;
     long lifetimeMs = 2000;
     long minIterationPeriodMs = 100;
-    long minSimplifyPeriodMs = 1000;
+    long minSimplifyPeriodMs = 3000;
 
     float radius = 25f;
     int quality = 8;
@@ -43,7 +43,7 @@ public class CSGProgram {
             }
         }else{
             if(time.getTime() - lastSimplifyTime > minSimplifyPeriodMs) {
-                SimplifyCSG.simplifyCSG(myCSG);
+                myCSG = SimplifyCSG.simplifyCSG(myCSG);
                 lastSimplifyTime = time.getTime();
             }
 
