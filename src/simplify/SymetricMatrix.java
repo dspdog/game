@@ -5,6 +5,10 @@ public class SymetricMatrix {
     double m[] = new double[10];
     // Constructor
 
+    SymetricMatrix() {
+        this(0);
+    }
+
     SymetricMatrix(double c) {
         for(int i=0; i<10; i++){
             m[i]=c;

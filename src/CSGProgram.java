@@ -1,19 +1,22 @@
-import eu.mihosoft.vrl.v3d.CSG;
-import eu.mihosoft.vrl.v3d.Sphere;
-import eu.mihosoft.vrl.v3d.Transform;
-import eu.mihosoft.vrl.v3d.Vector3d;
+import eu.mihosoft.vrl.v3d.*;
 import org.lwjgl.util.vector.Vector3f;
 import simplify.Simplify;
 import simplify.SimplifyCSG;
 import utils.RandomHelper;
 import utils.time;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * Created by user on 2/7/2015.
  */
 public class CSGProgram {
     long myIteration=0;
-    long lifetimeMs = 10000;
+    long lifetimeMs = 1000;
     long minIterationPeriodMs = 100;
     long minSimplifyPeriodMs = 1000;
 
@@ -42,7 +45,6 @@ public class CSGProgram {
 
                 lastBuildTime = time.getTime();
                 myIteration++;
-
             }
         }else{
             if(time.getTime() - lastSimplifyTime > minSimplifyPeriodMs) {

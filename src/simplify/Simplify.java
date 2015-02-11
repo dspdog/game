@@ -2,16 +2,15 @@
 
 package simplify;
 
-import eu.mihosoft.vrl.v3d.Vertex;
 import org.lwjgl.util.vector.Vector3f;
 
 import java.util.ArrayList;
 
 public class Simplify {
 
-	ArrayList<Triangle> triangles = new ArrayList<>();
-	ArrayList<Vertex> vertices = new ArrayList<>();
-	ArrayList<Ref> refs = new ArrayList<>();
+	static ArrayList<Triangle> triangles = new ArrayList<>();
+	static ArrayList<Vertex> vertices = new ArrayList<>();
+	static ArrayList<Ref> refs = new ArrayList<>();
 
 	//
 	// Main simplification function
@@ -21,39 +20,56 @@ public class Simplify {
 	//                 5..8 are good numbers
 	//                 more iterations yield higher quality
 	//
+
+	static void unDeleteAllTriangles(){for(Triangle triangle : triangles){triangle.deleted=false;}}
+
+	static void unDirtyAllTriangles(){for(Triangle triangle : triangles){triangle.dirty=false;}}
+
+	static void resetVertexMatrices(){for(Vertex vertex : vertices){vertex.q=new SymetricMatrix(0.0f);}}
+
+	static void calculateTriangleEdgeErrors(){
+		for(Triangle triangle : triangles){
+			Vector3f p=new Vector3f(); //unused
+			for(int j=0; j<3; j++){
+				triangle.err[j]=calculate_error(triangle.vertexIndex[j],triangle.vertexIndex[(j+1)%3],p);
+			}
+			triangle.minimumErr=Math.min(triangle.err[0], Math.min(triangle.err[1], triangle.err[2]));
+		}
+	}
+
+	static void calculateTriangleNormals(){ //also updates vertex matrices
+		for(Triangle triangle : triangles) {
+			Vector3f normal = new Vector3f();
+			Vector3f[] vertexPos = new Vector3f[3];
+			for(int j=0; j<3; j++){vertexPos[j]=vertices.get(triangle.vertexIndex[j]).p;}
+			normal = Vector3f.cross(vertexPos[1].translate(-vertexPos[0].x, -vertexPos[0].y, -vertexPos[0].z), vertexPos[2].translate(-vertexPos[0].x, -vertexPos[0].y, -vertexPos[0].z), normal).normalise(normal);
+			triangle.normal = normal;
+
+			for(int j=0; j<3; j++){
+				vertices.get(triangle.vertexIndex[j]).q =
+						vertices.get(triangle.vertexIndex[j]).q.summedWith(
+								new SymetricMatrix(normal.x, normal.y, normal.z,
+										-Vector3f.dot(normal, vertexPos[0])));
+			}
+		}
+	}
+
 	void simplify_mesh(int target_count, double agressiveness) //aggressiveness 7
 	{
-		// init
-		//printf("%s - start\normal",__FUNCTION__);
-		long timeStart=System.currentTimeMillis();
-
-		for(int i=0; i<triangles.size(); i++){
-			triangles.get(i).deleted=false;
-		}
+		unDeleteAllTriangles();
 
 		// main iteration loop
 
 		int deleted_triangles=0;
-		//ArrayList<Boolean> deleted0, deleted1;
+		ArrayList<Boolean> deleted0, deleted1;
 		int triangle_count=triangles.size();
 
-		for(int iteration=0; iteration<100; iteration++)
-		{
-			// target number of triangles reached ? Then break
-			//System.out.println("ITERATION" + iteration);
-			//printf("iteration %d - triangles %d\normal",iteration,triangle_count-deleted_triangles);
-			if(triangle_count-deleted_triangles<=target_count)break;
+		for(int iteration=0; iteration<100; ++iteration) {
+			boolean enoughDeleted = triangle_count-deleted_triangles<=target_count;
+			if(enoughDeleted)break;
 
-			// update mesh once in a while
-			if(iteration%5==0)
-			{
-				update_mesh(iteration);
-			}
-
-			// clear dirty flag
-			for(int i=0; i<triangles.size(); i++){
-				triangles.get(i).dirty=false;
-			}
+			if(iteration%5==0){update_mesh(iteration);}
+			unDirtyAllTriangles();
 
 			//
 			// All triangles with edges below the threshold will be removed
@@ -61,34 +77,33 @@ public class Simplify {
 			// The following numbers works well for most models.
 			// If it does not, try to adjust the 3 parameters
 			//
-			double threshold = 0.000000001*Math.pow((double) (iteration + 3), agressiveness);
+			double threshold = 0.000000001*Math.pow((double) (iteration + 3), agressiveness); //what is this magic?
 
 			// remove vertices & mark deleted triangles
-			for(int i=0; i<triangles.size(); i++){
-				Triangle t=triangles.get(i);
-				if(t.err[3]>threshold) continue;
-				if(t.deleted) continue;
-				if(t.dirty) continue;
+			for(Triangle triangle : triangles){
+				if(triangle.minimumErr>threshold) continue;
+				if(triangle.deleted) continue;
+				if(triangle.dirty) continue;
 
 				for(int j=0; j<3; j++){
-					if(t.err[j]<threshold) {
-						int i0=t.v[ j     ]; Vertex v0 = vertices.get(i0);
-						int i1=t.v[(j+1)%3]; Vertex v1 = vertices.get(i1);
+					if(triangle.err[j]<threshold) {
+						int i0=triangle.vertexIndex[ j     ]; Vertex v0 = vertices.get(i0);
+						int i1=triangle.vertexIndex[(j+1)%3]; Vertex v1 = vertices.get(i1);
 
 						// Border check
-						if(v0.border != v1.border)  continue;
+						if(v0.isOnABorder != v1.isOnABorder)  continue;
 
 						// Compute vertex to collapse to
 						Vector3f p = new Vector3f(0,0,0);
 						calculate_error(i0,i1,p);
 
-						ArrayList<Boolean> deleted0 = new ArrayList<Boolean>(v0.tcount); // normals temporarily
-						ArrayList<Boolean> deleted1 = new ArrayList<Boolean>(v1.tcount); // normals temporarily
+						deleted0 = new ArrayList<Boolean>(v0.triangleReferenceCount); // normals temporarily
+						deleted1 = new ArrayList<Boolean>(v1.triangleReferenceCount); // normals temporarily
 
-						for(int d=0; d<v0.tcount; d++){
+						for(int d=0; d<v0.triangleReferenceCount; d++){
 							deleted0.add(false);
 						}
-						for(int d=0; d<v1.tcount; d++){
+						for(int d=0; d<v1.triangleReferenceCount; d++){
 							deleted1.add(false);
 						}
 
@@ -106,19 +121,19 @@ public class Simplify {
 
 						int tcount=refs.size()-tstart;
 
-						if(tcount<=v0.tcount)
+						if(tcount<=v0.triangleReferenceCount)
 						{
 							// save ram
 							if(tcount>0){
-								refs.set(v0.tstart, refs.get(tstart));
-								//memcpy(&refs[v0.tstart],&refs[tstart],tcount*sizeof(Ref));
+								refs.set(v0.triangleReferenceStart, refs.get(tstart));
+								//memcpy(&refs[v0.triangleReferenceStart],&refs[triangleReferenceStart],triangleReferenceCount*sizeof(Ref));
 							}
 						}
 						else
 							// append
-							v0.tstart=tstart;
+							v0.triangleReferenceStart =tstart;
 
-						v0.tcount=tcount;
+						v0.triangleReferenceCount =tcount;
 						break;
 					}
 
@@ -145,14 +160,13 @@ public class Simplify {
 	// compact triangles, compute edge error and build reference list
 
 	public void update_mesh(int iteration){
-		if(iteration>0) // compact triangles
-		{
+		if(iteration>0) { // compact triangles
 			int dst=0;
 
 			for(int i=0; i<triangles.size(); i++){
-				if(!triangles.get(i).deleted)
-				{
-					triangles.set(dst, triangles.get(i));
+				Triangle _tri = triangles.get(i);
+				if(!_tri.deleted) {
+					triangles.set(dst, _tri);
 					dst++;
 				}
 			}
@@ -167,117 +181,83 @@ public class Simplify {
 		// but mostly improves the result for closed meshes
 		//
 		if( iteration == 0 ) {
-			for(int i=0; i<vertices.size(); i++){
-				vertices.get(i).q=new SymetricMatrix(0.0f);
-			}
-
-			for(int i=0; i<triangles.size(); i++) {
-				Triangle t=triangles.get(i);
-				Vector3f normal = new Vector3f();
-				Vector3f[] p = new Vector3f[3];
-
-				for(int j=0; j<3; j++){
-					p[j]=vertices.get(t.v[j]).p;
-				}
-
-				normal = Vector3f.cross(p[1].translate(-p[0].x, -p[0].y, -p[0].z), p[2].translate(-p[0].x, -p[0].y, -p[0].z), normal).normalise(normal);
-
-				t.normal =normal;
-
-				for(int j=0; j<3; j++){
-					vertices.get(t.v[j]).q =
-							vertices.get(t.v[j]).q.summedWith(
-									new SymetricMatrix(normal.x, normal.y, normal.z,
-									-Vector3f.dot(normal, p[0])));
-				}
-			}
-
-			for(int i=0; i<triangles.size(); i++){
-				// Calc Edge Error
-				Triangle t=triangles.get(i);
-				Vector3f p=new Vector3f();
-
-				for(int j=0; j<3; j++){
-					t.err[j]=calculate_error(t.v[j],t.v[(j+1)%3],p);
-				}
-				t.err[3]=Math.min(t.err[0], Math.min(t.err[1], t.err[2]));
-			}
+			resetVertexMatrices();
+			calculateTriangleNormals();
+			calculateTriangleEdgeErrors();
 		}
 
 		// Init Reference ID list
-		for(int i=0; i<vertices.size(); i++) {
-			vertices.get(i).tstart=0;
-			vertices.get(i).tcount=0;
+
+		for(Vertex vertex : vertices){
+			vertex.triangleReferenceStart =0;
+			vertex.triangleReferenceCount =0;
 		}
-		for(int i=0; i<triangles.size(); i++) {
-			Triangle t=triangles.get(i);
+
+		for(Triangle triangle : triangles) { //first pass for triangleReferenceCount
 			for(int j=0; j<3; j++){
-				vertices.get(t.v[j]).tcount++;
+				vertices.get(triangle.vertexIndex[j]).triangleReferenceCount++;
 			}
 		}
+
 		int tstart=0;
-		for(int i=0; i<vertices.size(); i++) {
-			Vertex v=vertices.get(i);
-			v.tstart=tstart;
-			tstart+=v.tcount;
-			v.tcount=0;
+		for(Vertex vertex : vertices){
+			vertex.triangleReferenceStart =tstart;
+			tstart += vertex.triangleReferenceCount;
+			vertex.triangleReferenceCount =0;
 		}
 
 		// Write References
-		refs = new ArrayList<>(triangles.size()*3);
+		refs = new ArrayList<>();//triangles.size()*3);
 
 		for(int r=0; r<triangles.size()*3; r++){
 			refs.add(new Ref());
 		}
 
 		for(int i=0; i<triangles.size(); i++) {
-			Triangle t=triangles.get(i);
+			Triangle triangle=triangles.get(i);
 			for(int j=0; j<3; j++){
-				Vertex v=vertices.get(t.v[j]);
-				refs.get(v.tstart+v.tcount).tid=i;
-				refs.get(v.tstart+v.tcount).tvertex=j;
-				v.tcount++;
+				Vertex vertex=vertices.get(triangle.vertexIndex[j]);
+				refs.get(vertex.triangleReferenceStart + vertex.triangleReferenceCount).triangleIndex = i;
+				refs.get(vertex.triangleReferenceStart + vertex.triangleReferenceCount).vertex0or1or2 = j;
+				vertex.triangleReferenceCount++;
 			}
 		}
 
-		// Identify boundary : vertices[].border=0,1
+		// Identify boundary : vertices[].isOnABorder=0,1
 		if( iteration == 0 )
 		{
 			ArrayList<Integer> vcount,vids;
 
-			for(int i=0; i<vertices.size(); i++) {
-				vertices.get(i).border=0;
+			for(Vertex vertex : vertices){
+				vertex.isOnABorder =false;
 			}
 
 
-			for(int i=0; i<vertices.size(); i++) {
-				Vertex v=vertices.get(i);
+			for(Vertex vertex : vertices){
 				vcount = new ArrayList<Integer>();
 				vids = new ArrayList<Integer>();
 
-				for(int j=0; j<v.tcount; j++) {
-					int k=refs.get(v.tstart+j).tid;
+				for(int j=0; j<vertex.triangleReferenceCount; j++) {
+					int k=refs.get(vertex.triangleReferenceStart +j).triangleIndex;
 					Triangle t=triangles.get(k);
-					for(int h=0; h<3; h++)
-					{
-						int ofs=0,id=t.v[h];
-						while(ofs<vcount.size())
-						{
+					for(int h=0; h<3; h++) {
+						int ofs=0,id=t.vertexIndex[h];
+						while(ofs<vcount.size()) {
 							if(vids.get(ofs)==id)break;
 							ofs++;
 						}
-						if(ofs==vcount.size())
-						{
+						if(ofs==vcount.size()) {
 							vcount.add(1);
 							vids.add(id);
 						}
-						else
+						else{
 							vcount.set(ofs, vcount.get(ofs)+1);
+						}
 					}
 				}
 				for(int j=0;j<vcount.size(); j++){
 					if(vcount.get(j)==1){
-						vertices.get(vids.get(j)).border=1;
+						vertices.get(vids.get(j)).isOnABorder =true;
 					}
 				}
 			}
@@ -291,13 +271,13 @@ public class Simplify {
 	{
 		int bordercount=0;
 
-		for(int k=0; k<v0.tcount; k++){
-			Triangle t=triangles.get(refs.get(v0.tstart+k).tid);
+		for(int k=0; k<v0.triangleReferenceCount; k++){
+			Triangle t=triangles.get(refs.get(v0.triangleReferenceStart +k).triangleIndex);
 			if(t.deleted)return false;
 
-			int s=refs.get(v0.tstart+k).tvertex;
-			int id1=t.v[(s+1)%3];
-			int id2=t.v[(s+2)%3];
+			int s=refs.get(v0.triangleReferenceStart +k).vertex0or1or2;
+			int id1=t.vertexIndex[(s+1)%3];
+			int id2=t.vertexIndex[(s+2)%3];
 
 			if(id1==i1 || id2==i1) // delete ?
 			{
@@ -321,44 +301,42 @@ public class Simplify {
 
 	// Update triangle connections and edge error after a edge is collapsed
 
-	void update_triangles(int i0,Vertex v,ArrayList<Boolean> deleted,int deleted_triangles)
+	void update_triangles(int i0,Vertex vertex, ArrayList<Boolean> deleted,int deleted_triangles)
 	{
 		Vector3f p=new Vector3f();
-		for(int k=0; k<v.tcount; k++)
+		for(int k=0; k<vertex.triangleReferenceCount; k++)
 		{
-			Ref r=refs.get(v.tstart+k);
-			Triangle t=triangles.get(r.tid);
-			if(t.deleted)continue;
-			if(deleted.get(k))
-			{
-				t.deleted = true;
+			Ref ref=refs.get(vertex.triangleReferenceStart +k);
+			Triangle triangle=triangles.get(ref.triangleIndex);
+
+			if(triangle.deleted)continue;
+			if(deleted.get(k)) {
+				triangle.deleted = true;
 				deleted_triangles++;
 				continue;
 			}
-			t.v[r.tvertex]=i0;
-			t.dirty = true;
-			t.err[0] = calculate_error(t.v[0],t.v[1],p);
-			t.err[1]=calculate_error(t.v[1],t.v[2],p);
-			t.err[2]=calculate_error(t.v[2],t.v[0],p);
-			t.err[3]=Math.min(t.err[0], Math.min(t.err[1], t.err[2]));
-			refs.add(r);
+			triangle.vertexIndex[ref.vertex0or1or2]=i0;
+			triangle.dirty = true;
+			triangle.err[0] = calculate_error(triangle.vertexIndex[0],triangle.vertexIndex[1],p);
+			triangle.err[1] = calculate_error(triangle.vertexIndex[1],triangle.vertexIndex[2],p);
+			triangle.err[2] = calculate_error(triangle.vertexIndex[2],triangle.vertexIndex[0],p);
+			triangle.minimumErr=Math.min(triangle.err[0], Math.min(triangle.err[1], triangle.err[2]));
+			refs.add(ref);
 		}
 	}
 
 	void compact_mesh(){
 		int dst=0;
 		int numDeleted=0;
-		for(int i=0; i< vertices.size(); i++) {
-			vertices.get(i).tcount=0;
+		for(Vertex vertex : vertices){
+			vertex.triangleReferenceCount =0;
 		}
-		for(int i=0; i< triangles.size(); i++) {
-			if(!triangles.get(i).deleted) {
-				Triangle t=triangles.get(i);
-				triangles.set(dst,t); //[dst]=t;
+		for(Triangle triangle : triangles){
+			if(!triangle.deleted) {
+				triangles.set(dst,triangle); //[dst]=t;
 				dst++;
-
 				for(int j=0; j<3; j++){
-					vertices.get(t.v[j]).tcount=1;
+					vertices.get(triangle.vertexIndex[j]).triangleReferenceCount =1;
 				}
 			}else{
 				numDeleted++;
@@ -370,19 +348,18 @@ public class Simplify {
 		triangles.subList(dst, triangles.size()).clear(); //triangles.resize(dst);//remove everything after dst
 
 		dst=0;
-		for(int i=0; i< vertices.size(); i++) {
-			if(vertices.get(i).tcount>0) {
-				vertices.get(i).tstart=dst;
-				vertices.get(dst).p=vertices.get(i).p;
+
+		for(Vertex vertex : vertices){
+			if(vertex.triangleReferenceCount >0) {
+				vertex.triangleReferenceStart =dst;
+				vertices.get(dst).p=vertex.p;
 				dst++;
 			}
 		}
 
-		for(int i=0; i< triangles.size(); i++) {
-			Triangle t=triangles.get(i);
-
+		for(Triangle triangle : triangles){
 			for(int j=0; j<3; j++){
-				t.v[j]=vertices.get(t.v[j]).tstart;
+				triangle.vertexIndex[j]=vertices.get(triangle.vertexIndex[j]).triangleReferenceStart;
 			}
 		}
 
@@ -391,21 +368,24 @@ public class Simplify {
 
 	// Error between vertex and Quadric
 
-	double vertex_error(SymetricMatrix q, double x, double y, double z)
+	static double vertex_error(SymetricMatrix q, double x, double y, double z)
 	{
 		return   q.m[0]*x*x + 2*q.m[1]*x*y + 2*q.m[2]*x*z + 2*q.m[3]*x + q.m[4]*y*y
 				+ 2*q.m[5]*y*z + 2*q.m[6]*y + q.m[7]*z*z + 2*q.m[8]*z + q.m[9];
 	}
 
-
 	// Error for one edge
 
-	double calculate_error(int id_v1, int id_v2, Vector3f p_result)
+	static double calculate_error(int vertex_index1, int vertex_index2, Vector3f p_result){
+		return calculate_error(vertices.get(vertex_index1), vertices.get(vertex_index2), p_result);
+	}
+
+	static double calculate_error(Vertex v1, Vertex v2, Vector3f p_result)
 	{
 		// compute interpolated vertex
 
-		SymetricMatrix q = vertices.get(id_v1).q.summedWith(vertices.get(id_v2).q);
-		boolean   border = vertices.get(id_v1).border>0 & vertices.get(id_v2).border>0;
+		SymetricMatrix q = v1.q.summedWith(v2.q);
+		boolean   border = v1.isOnABorder & v2.isOnABorder ;
 		double error=0;
 		double det = q.det(0, 1, 2, 1, 4, 5, 2, 5, 7);
 
@@ -420,8 +400,8 @@ public class Simplify {
 		else
 		{
 			// det = 0 -> try to find best result
-			Vector3f p1=vertices.get(id_v1).p;
-			Vector3f p2=vertices.get(id_v2).p;
+			Vector3f p1=v1.p;
+			Vector3f p2=v2.p;
 			Vector3f p3=new Vector3f((p1.x+p2.x)/2, (p1.y+p2.y)/2, (p1.z+p2.z)/2); //(p1+p2)/2;
 			double error1 = vertex_error(q, p1.x,p1.y,p1.z);
 			double error2 = vertex_error(q, p2.x,p2.y,p2.z);
@@ -434,58 +414,47 @@ public class Simplify {
 		return error;
 	}
 
-
-	public Vertex fromVertex(eu.mihosoft.vrl.v3d.Vertex vertex){
-		Vertex v = new Vertex();
-		v.p = new Vector3f((float)vertex.pos.x,(float)vertex.pos.y,(float)vertex.pos.z);
-		return v;
-	}
-
-	public Triangle getTriangle(int v0, int v1, int v2){
-		Triangle tri = new Triangle();
-		tri.v = new int[]{v0,v1,v2};
-		return tri;
-	}
-
 	// Global Variables & Structures
 
 	class Triangle{
 		boolean deleted;
 		boolean dirty;
-		int v[];
+		int vertexIndex[];
 		double err[];
+		double minimumErr;
 		Vector3f normal;
 
 		public Triangle(){
 			deleted=false;
 			dirty=false;
-			v = new int[3];
-			err = new double[4];
+			vertexIndex = new int[3];
+			err = new double[3];
+			minimumErr = 999999;
 		}
 	}
 
 	public class Vertex{
 		Vector3f p;
-		int tstart=0;
-		int tcount=0;
-		int border=0;
+		int triangleReferenceStart =0;
+		int triangleReferenceCount =0;
+		boolean isOnABorder =false;
 		int index=-1;
 		SymetricMatrix q;
 
 		public Vertex(){
-			tstart=0;
-			tcount=0;
-			border=0;
+			triangleReferenceStart =0;
+			triangleReferenceCount =0;
+			isOnABorder =false;
 		}
 	}
 
 	class Ref{
-		int tid=0;
-		int tvertex=0;
+		int triangleIndex =0;
+		int vertex0or1or2 =0;
 
 		public Ref(){
-			tid=0;
-			tvertex=0;
+			triangleIndex =0;
+			vertex0or1or2 =0;
 		}
 	}
 }
