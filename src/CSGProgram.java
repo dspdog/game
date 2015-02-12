@@ -31,7 +31,7 @@ public class CSGProgram {
         if( time.getTime() - startTime < lifetimeMs){
             if(time.getTime() - lastBuildTime > minIterationPeriodMs) {
                 float scale = 20f;
-                center = center.plus(RandomHelper.randomBrownian(scale).minus(new Vector3d(scale/2,scale/2,scale/2)));
+                center = center.plus(new Vector3d(scale/2,scale/2,scale/2));
                 CSG addition = new Sphere(center, radius, quality, quality).toCSG();
                 myCSG = myCSG.union(addition);
 
