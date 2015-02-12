@@ -1,31 +1,31 @@
 package simplify;
 
 //http://voxels.blogspot.com/2014/05/quadric-mesh-simplification-with-source.html
-public class SymetricMatrix {
+public class SymmetricMatrix {
     double m[] = new double[10];
     // Constructor
 
-    SymetricMatrix() {
+    SymmetricMatrix() {
         this(0);
     }
 
-    SymetricMatrix(double c) {
+    SymmetricMatrix(double c) {
         for(int i=0; i<10; i++){
             m[i]=c;
         }
     }
 
-    SymetricMatrix(	double m11, double m12, double m13, double m14,
-                                      double m22, double m23, double m24,
-                                      double m33, double m34,
-                                      double m44) {
+    SymmetricMatrix(double m11, double m12, double m13, double m14,
+                    double m22, double m23, double m24,
+                    double m33, double m34,
+                    double m44) {
         m[0] = m11;  m[1] = m12;  m[2] = m13;  m[3] = m14;
         m[4] = m22;  m[5] = m23;  m[6] = m24;
         m[7] = m33;  m[8] = m34;
         m[9] = m44;
     }
 
-    SymetricMatrix SymetricMatrix(	double m11, double m12, double m13, double m14,
+    SymmetricMatrix SymetricMatrix(	double m11, double m12, double m13, double m14,
                        double m22, double m23, double m24,
                        double m33, double m34,
                        double m44) {
@@ -39,7 +39,7 @@ public class SymetricMatrix {
 
     // Make plane
 
-    SymetricMatrix SymetricMatrix(double a,double b,double c,double d)
+    SymmetricMatrix SymetricMatrix(double a,double b,double c,double d)
     {
         m[0] = a*a;  m[1] = a*b;  m[2] = a*c;  m[3] = a*d;
         m[4] = b*b;  m[5] = b*c;  m[6] = b*d;
@@ -49,7 +49,7 @@ public class SymetricMatrix {
         return this;
     }
 
-    public SymetricMatrix(double a,double b,double c,double d)
+    public SymmetricMatrix(double a, double b, double c, double d)
     {
         m[0] = a*a;  m[1] = a*b;  m[2] = a*c;  m[3] = a*d;
         m[4] = b*b;  m[5] = b*c;  m[6] = b*d;
@@ -68,15 +68,15 @@ public class SymetricMatrix {
         return det;
     }
 
-    SymetricMatrix summedWith(SymetricMatrix n) //replaces + operator
+    SymmetricMatrix summedWith(SymmetricMatrix n) //replaces + operator
     {
-        return new SymetricMatrix( m[0]+n.m[0],   m[1]+n.m[1],   m[2]+n.m[2],   m[3]+n.m[3],
+        return new SymmetricMatrix( m[0]+n.m[0],   m[1]+n.m[1],   m[2]+n.m[2],   m[3]+n.m[3],
                 m[4]+n.m[4],   m[5]+n.m[5],   m[6]+n.m[6],
                 m[ 7]+n.m[ 7], m[ 8]+n.m[8 ],
                 m[ 9]+n.m[9 ]);
     }
 
-    SymetricMatrix add(SymetricMatrix n){
+    SymmetricMatrix add(SymmetricMatrix n){
         m[0]+=n.m[0];   m[1]+=n.m[1];   m[2]+=n.m[2];   m[3]+=n.m[3];
         m[4]+=n.m[4];   m[5]+=n.m[5];   m[6]+=n.m[6];   m[7]+=n.m[7];
         m[8]+=n.m[8];   m[9]+=n.m[9];

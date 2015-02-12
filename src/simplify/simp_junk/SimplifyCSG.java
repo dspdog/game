@@ -1,14 +1,11 @@
-package simplify;
+package simplify.simp_junk;
 
 import eu.mihosoft.vrl.v3d.CSG;
 import eu.mihosoft.vrl.v3d.Polygon;
-import eu.mihosoft.vrl.v3d.Sphere;
 import eu.mihosoft.vrl.v3d.Vertex;
-import factory.CSGFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by user on 2/8/2015.

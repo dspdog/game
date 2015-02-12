@@ -1,15 +1,7 @@
 import eu.mihosoft.vrl.v3d.*;
-import org.lwjgl.util.vector.Vector3f;
-import simplify.Simplify;
-import simplify.SimplifyCSG;
+import simplify.simp_junk.SimplifyCSG;
 import utils.RandomHelper;
 import utils.time;
-
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Created by user on 2/7/2015.

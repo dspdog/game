@@ -1,10 +1,9 @@
 //http://voxels.blogspot.com/2014/05/quadric-mesh-simplification-with-source.html
 
-package simplify;
+package simplify.simp_junk;
 
 import eu.mihosoft.vrl.v3d.Polygon;
 import eu.mihosoft.vrl.v3d.Vector3d;
-import eu.mihosoft.vrl.v3d.Vertex;
 import org.lwjgl.util.vector.Vector3f;
 
 import java.util.ArrayList;
