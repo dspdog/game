@@ -25,7 +25,7 @@ public class SimplifyHelper extends Simplify{
         for(Triangle triangle : triangles) {
             Vector3f normal = new Vector3f();
             Vector3f[] vertexPos = new Vector3f[3];
-            for(int j=0; j<3; j++){vertexPos[j]=vertices.get(triangle.vertexIndex[j]).p;}
+            for(int j=0; j<3; j++){vertexPos[j]=vertices.get(triangle.vertexIndex[j]).pos;}
             normal = Vector3f.cross(vertexPos[1].translate(-vertexPos[0].x, -vertexPos[0].y, -vertexPos[0].z), vertexPos[2].translate(-vertexPos[0].x, -vertexPos[0].y, -vertexPos[0].z), normal).normalise(normal);
             triangle.normal = normal;
 
@@ -150,8 +150,8 @@ public class SimplifyHelper extends Simplify{
         else
         {
             // det = 0 -> try to find best result
-            Vector3f p1=v1.p;
-            Vector3f p2=v2.p;
+            Vector3f p1=v1.pos;
+            Vector3f p2=v2.pos;
             Vector3f p3=new Vector3f((p1.x+p2.x)/2, (p1.y+p2.y)/2, (p1.z+p2.z)/2); //(p1+p2)/2;
             double error1 = vertex_error(q, p1.x,p1.y,p1.z);
             double error2 = vertex_error(q, p2.x,p2.y,p2.z);
@@ -212,8 +212,8 @@ public class SimplifyHelper extends Simplify{
                 deleted.set(k,true);
                 return false;
             }
-            Vector3f d1 = new Vector3f(vertices.get(id1).p.x-edgeErrVec.x,vertices.get(id1).p.y-edgeErrVec.y,vertices.get(id1).p.z-edgeErrVec.z); d1 = d1.normalise(d1);
-            Vector3f d2 = new Vector3f(vertices.get(id2).p.x-edgeErrVec.x,vertices.get(id2).p.y-edgeErrVec.y,vertices.get(id2).p.z-edgeErrVec.z); d2 = d2.normalise(d2);
+            Vector3f d1 = new Vector3f(vertices.get(id1).pos.x-edgeErrVec.x,vertices.get(id1).pos.y-edgeErrVec.y,vertices.get(id1).pos.z-edgeErrVec.z); d1 = d1.normalise(d1);
+            Vector3f d2 = new Vector3f(vertices.get(id2).pos.x-edgeErrVec.x,vertices.get(id2).pos.y-edgeErrVec.y,vertices.get(id2).pos.z-edgeErrVec.z); d2 = d2.normalise(d2);
             if(Math.abs(Vector3f.dot(d1, d2))>0.999) return true;
 
             Vector3f n= new Vector3f();

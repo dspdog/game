@@ -1,9 +1,7 @@
-import eu.mihosoft.vrl.v3d.Sphere;
 import factory.CSGFactory;
 import factory.GeometryFactory;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
-import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.*;
 import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.opengl.Texture;
@@ -13,6 +11,7 @@ import utils.time;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.text.DecimalFormat;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.EXTFramebufferObject.*;
@@ -235,7 +234,6 @@ public class RenderThread {
         if(doWireFrame){glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );}
         cameraTransform();
         gameScene.drawScene();
-        sampleScreen();
         glPopMatrix();
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
@@ -277,14 +275,21 @@ public class RenderThread {
             glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, 0);
         }
 
+        worldObject objectUnderMouse = worldObject_AtMouse();
+        boolean somethingIsSelected = objectUnderMouse instanceof worldObject;
+        DecimalFormat df5 = new DecimalFormat( "#,###,###,##0" );
+
         String consoleStatus = "FPS: " + myFPS +
-                            "\nPOLYS: " + gameScene.numTris+
-                            "\nSURFACE: " + mySurfaceTotal +
-                            "\nSELECTED: " + mySelection;
+                            "\nTRIS: " + (somethingIsSelected ? df5.format(objectUnderMouse.numTris) : "---") + //gameScene.getSelectedWorldObject().numTris+
+                            "\nPOLYS: " + (somethingIsSelected ? df5.format(objectUnderMouse.numPolys) : "---") +
+                            "\nVERTS: " + (somethingIsSelected ? df5.format(objectUnderMouse.numVerts) : "---") +
+                            "\nUniqVERTS: " + (somethingIsSelected ? df5.format(objectUnderMouse.numVertsUnique) : "---") +
+                            "\nSURFACE: " + (somethingIsSelected ? "???" : "---") +
+                            "\nVOLUME: " + (somethingIsSelected ? "???" : "---") +
+                            "\nNAME: " + (somethingIsSelected ? objectUnderMouse.name : "---");
         gameConsole.setStatusString(consoleStatus);
 
-        gameConsole.draw(myWidth, myHeight, myWidth, 430, 0, 0, 0.1f);
-
+        gameConsole.draw(myWidth, myHeight, myWidth, 1024, 0, 0, 0.1f, 0.25f);
     }
 
     void cameraTransform(){
@@ -322,12 +327,19 @@ public class RenderThread {
         //glTranslatef(-poi.x, -poi.y, -poi.z);
     }
 
-    void sampleScreen(){
+    //int oldStenVal = -1;
+
+    public worldObject worldObject_AtMouse(){
         int stencilValue = glHelper.sampleStencil((int)gameInputs.mouseX, (int)gameInputs.mouseY);
+        //if(stencilValue!=oldStenVal){
+        //    oldStenVal=stencilValue;
+        //    System.out.println("SAMPLE VAL" +stencilValue);
+        //}
+
         if(gameScene.idsMap.containsKey(stencilValue+"")){
-            mySelection = gameScene.idsMap.get(stencilValue+"").name;
+            return gameScene.idsMap.get(stencilValue+"");
         }else{
-            mySelection = "NONE";
+            return null;
         }
     }
 

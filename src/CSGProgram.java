@@ -1,6 +1,4 @@
 import eu.mihosoft.vrl.v3d.*;
-import simplify.simp_junk.SimplifyCSG;
-import utils.RandomHelper;
 import utils.time;
 
 /**
@@ -12,8 +10,10 @@ public class CSGProgram {
     long minIterationPeriodMs = 100;
     long minSimplifyPeriodMs = 1000;
 
+    worldObject myWorldObject= null;
+
     float radius = 25f;
-    int quality = 5;
+    int quality = 8;
 
     Vector3d center = new Vector3d(0,0,0);
     CSG myCSG = new Sphere(center, radius,quality,quality).toCSG();
@@ -40,11 +40,13 @@ public class CSGProgram {
             }
         }else{
             if(time.getTime() - lastSimplifyTime > minSimplifyPeriodMs) {
-                myCSG = SimplifyCSG.simplifyCSG(myCSG);
+                //myCSG = old_SimplifyCSG.simplifyCSG(myCSG);
                 lastSimplifyTime = time.getTime();
             }
-
         }
 
+        if(myWorldObject instanceof worldObject){
+            myWorldObject.getGeometryData();
+        }
     }
 }

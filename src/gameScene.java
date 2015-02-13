@@ -22,7 +22,7 @@ class gameScene {
         int tris = 0;
         glHelper.updateCamVectors();
         for(worldObject wo : objs){
-            glStencilFunc(GL_ALWAYS, wo.stencilId + 1, -1);
+            glStencilFunc(GL_ALWAYS, wo.stencilId, -1);
             glPushMatrix();
 
             glTranslatef(wo.position.x*coordsScale,wo.position.y*coordsScale,wo.position.z*coordsScale);
@@ -77,6 +77,6 @@ class gameScene {
 
     public static void addWorldObject(worldObject wo){
         objs.add(wo);
-        idsMap.put((wo.stencilId+1)+"", wo);
+        idsMap.put(wo.stencilId+"", wo);
     }
 }

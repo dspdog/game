@@ -151,6 +151,24 @@ public class CSG {
         numTriangles = tris;
     }
 
+/*
+orig:
+    public void getTriangles() {
+        int tris = 0;
+        Iterator var2 = this.getPolygons().iterator();
+
+        while(var2.hasNext()) {
+            Polygon poly = (Polygon)var2.next();
+
+            for(int v = 1; v < poly.vertices.size() - 1; ++v) {
+                ++tris;
+            }
+        }
+
+        this.numTriangles = tris;
+    }
+
+* */
 
     /**
      * Constructs a CSG from the specified {@link Polygon} instances.

@@ -1,0 +1,59 @@
+package simplify;
+
+import eu.mihosoft.vrl.v3d.*;
+import org.lwjgl.util.vector.Vector3f;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+/**
+ * Created by user on 2/12/2015.
+ */
+public class SimplifyCSG extends Simplify{
+
+    public static int vertsNonUnique = 0;
+    public static int vertsUnique = 0;
+    public static int polys = 0;
+
+    public static void loadCSG(CSG csg){
+
+        vertsNonUnique = 0;
+        vertsUnique = 0;
+        polys = 0;
+
+        vertices = new ArrayList<>();
+        triangles = new ArrayList<>();
+        refs = new ArrayList<>();
+
+        //building vertex-index list....
+
+        HashMap<String, Vertex> uniqueVerts = new HashMap<>();
+        for(Polygon poly : csg.getPolygons()){
+            polys++;
+            for(eu.mihosoft.vrl.v3d.Vertex _vertex : poly.vertices){
+                Vertex vertex = convertCSGVert2myVert(_vertex);
+                vertsNonUnique++;
+                uniqueVerts.put(getVertexString(vertex), vertex);
+            }
+        }
+
+        for(Vertex vertex : uniqueVerts.values()){
+            vertsUnique++;
+            vertices.add(vertex);
+        }
+    }
+
+    public static Vertex convertCSGVert2myVert(eu.mihosoft.vrl.v3d.Vertex _vertex){
+        Vertex res = new Vertex();
+        res.pos = new Vector3f((float)_vertex.pos.x, (float)_vertex.pos.y, (float)_vertex.pos.z);
+        return res;
+    }
+
+    public static String getVertexString(Vertex vertex){
+        float roundToNearesth = 10000.0f;
+        return  Float.toString(Math.round(vertex.pos.x*roundToNearesth)/roundToNearesth) +
+                Float.toString(Math.round(vertex.pos.y*roundToNearesth)/roundToNearesth) +
+                Float.toString(Math.round(vertex.pos.z*roundToNearesth)/roundToNearesth);
+    }
+
+}

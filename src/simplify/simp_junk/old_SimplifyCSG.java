@@ -10,7 +10,7 @@ import java.util.HashMap;
 /**
  * Created by user on 2/8/2015.
  */
-public class SimplifyCSG {
+public class old_SimplifyCSG {
 
     public static double zeroAreaThresh = -1f;
 

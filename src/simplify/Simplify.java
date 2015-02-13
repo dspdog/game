@@ -79,7 +79,7 @@ public class Simplify {
 						if( SimplifyHelper.flipped(edgeErrVec, v1Index, v0Index, v1, v0, deleted1) ) continue;
 
 						// not flipped, so remove edge
-						v0.p=edgeErrVec;
+						v0.pos =edgeErrVec;
 						v0.q=v1.q.summedWith(v0.q);
 						int tstart=refs.size();
 
@@ -175,7 +175,7 @@ public class Simplify {
 		for(Vertex vertex : vertices){
 			if(vertex.triangleReferenceCount >0) {
 				vertex.triangleReferenceStart =lastVertexIndex;
-				vertices.get(lastVertexIndex).p=vertex.p;
+				vertices.get(lastVertexIndex).pos =vertex.pos;
 				lastVertexIndex++;
 			}
 		}

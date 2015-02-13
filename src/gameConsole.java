@@ -40,7 +40,7 @@ public class gameConsole {
         inputString = str;
     }
 
-    public static void draw(int screenwidth, int screenheight, int consoleWidth, int consoleHeight, float x, float y, float z){
+    public static void draw(int screenwidth, int screenheight, int consoleWidth, int consoleHeight, float x, float y, float z, float alpha){
 
         int lines_To_Draw = 24;
 
@@ -48,19 +48,19 @@ public class gameConsole {
         if (time.getTime() - lastConsoleUpdate > updatePeriodMS) {
             lastConsoleUpdate = time.getTime();
             String theString = statusString + "\n" + (gameInputs.consoleIsEnabled ? "\n" + StringHelper.getLastXLines(gameCommands.commandString, lines_To_Draw) : "") + inputString;
-            consoleTexture = getConsoleTexture(theString, consoleWidth, consoleHeight, gameInputs.consoleIsEnabled);
+            consoleTexture = getConsoleTexture(theString, consoleWidth, consoleHeight, alpha, gameInputs.consoleIsEnabled);
         }
         glHelper.enableTransparency();
         glHelper.prepare2D(screenwidth, screenheight);
         GeometryFactory.plane2D(consoleTexture, consoleWidth, consoleHeight, x, y, z);
     }
 
-    static public int getConsoleTexture(String str, int width, int height, boolean background){  //http://www.java-gaming.org/index.php?topic=25516.0
+    static public int getConsoleTexture(String str, int width, int height, float alpha, boolean background){  //http://www.java-gaming.org/index.php?topic=25516.0
         BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = img.createGraphics();
 
         if(background){
-            g2d.setColor(new Color(0.25f,0.25f,0.25f,0.75f));
+            g2d.setColor(new Color(0.25f,0.25f,0.25f,alpha));
             g2d.fillRect(0,0,width,height);
         }
 

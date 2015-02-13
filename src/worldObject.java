@@ -2,11 +2,9 @@ import eu.mihosoft.vrl.v3d.CSG;
 import factory.GeometryFactory;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.lwjgl.util.vector.Vector3f;
-import org.newdawn.slick.opengl.Texture;
 import shapes.tree;
+import simplify.SimplifyCSG;
 import utils.RandomHelper;
-import org.apache.commons.*;
-import utils.glHelper;
 import utils.time;
 
 public class worldObject {
@@ -23,14 +21,44 @@ public class worldObject {
     int[] VBOHandles;
     String name="";
 
-    int stencilId = (int)(System.currentTimeMillis()%255); //for stencil buffer
+    int stencilId = 0;//(int)((System.currentTimeMillis()+Math.random()*1000)%255);
     public String randomName =  RandomStringUtils.randomAlphanumeric(5).toUpperCase();
     int vertices = 0;
+
+    int numTris = 0;
+    int numPolys = 0;
+    int numVerts = 0;
+    int numVertsUnique = 0;
 
     WOType myType = WOType.NONE;
 
     public enum WOType {
         NONE, CSG, CSGProgram, TREE
+    }
+
+    public void getGeometryData(){
+        switch (myType){
+            case TREE:
+                numTris = myTree.vertices/3; //? guessing
+                return;
+            case CSG:
+                numTris = myCSG.numTriangles;
+
+                SimplifyCSG.loadCSG(myCSG);
+                numPolys=SimplifyCSG.polys;
+                numVerts=SimplifyCSG.vertsNonUnique;
+                numVertsUnique=SimplifyCSG.vertsUnique;
+                return;
+            case CSGProgram:
+                numTris = myCSGProg.myCSG.numTriangles;
+
+                SimplifyCSG.loadCSG(myCSGProg.myCSG);
+                numPolys=SimplifyCSG.polys;
+                numVerts=SimplifyCSG.vertsNonUnique;
+                numVertsUnique=SimplifyCSG.vertsUnique;
+                return;
+        }
+        numTris=-1;
     }
 
     public worldObject(){
@@ -47,6 +75,8 @@ public class worldObject {
         rotation=new Vector3f(0,0,0);
         position=new Vector3f(0,0,0);
         updateVBOs();
+        getStencilId();
+        getGeometryData();
     }
 
     public worldObject(CSG csg){
@@ -55,6 +85,8 @@ public class worldObject {
         myType=WOType.CSG;
         myCSG = csg;
         updateVBOs();
+        getStencilId();
+        getGeometryData();
     }
 
     public worldObject(CSGProgram csg){
@@ -62,7 +94,10 @@ public class worldObject {
         name="CSGProg_" + randomName;
         myType=WOType.CSGProgram;
         myCSGProg = csg;
+        csg.myWorldObject = this;
         updateVBOs();
+        getStencilId();
+        getGeometryData();
     }
 
 
@@ -93,5 +128,8 @@ public class worldObject {
         position.translate(velocity.x*dt, velocity.y*dt, velocity.z*dt);
     }
 
-
+    public int getStencilId(){
+        stencilId = Math.abs(name.hashCode()%255);
+        return stencilId;
+    }
 }
