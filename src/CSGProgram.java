@@ -31,9 +31,9 @@ public class CSGProgram {
         if( time.getTime() - startTime < lifetimeMs){ //living
             if(time.getTime() - lastBuildTime > minIterationPeriodMs) {
                 float scale = 20f;
-                center = center.plus(new Vector3d(scale/2,scale/2,scale/2));
-                CSG addition = new Sphere(center, radius, quality, quality).toCSG();
-                myCSG = myCSG.union(addition);
+                //center = center.plus(new Vector3d(scale/2,scale/2,scale/2));
+                //CSG addition = new Sphere(center, radius, quality, quality).toCSG();
+                //myCSG = myCSG.union(addition);
 
                 lastBuildTime = time.getTime();
                 myIteration++;

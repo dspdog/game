@@ -5,7 +5,6 @@ import org.lwjgl.util.vector.Vector3f;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 
 /**
  * Created by user on 2/12/2015.
@@ -48,8 +47,8 @@ public class SimplifyCSG extends Simplify{
 
         //GETTING TRIS, ADDING TO ARRAY...
         for(Polygon poly : csg.getPolygons()){
-            for(int v = 1; v < poly.vertices.size() - 1; ++v) {
-                int v1 = uniqueVerts.get(getVertexString(convertCSGVert2myVert(poly.vertices.get(v-1)))).index;
+            for(int v = 1; v < poly.vertices.size() - 1; v++) {
+                int v1 = uniqueVerts.get(getVertexString(convertCSGVert2myVert(poly.vertices.get(0)))).index;
                 int v2 = uniqueVerts.get(getVertexString(convertCSGVert2myVert(poly.vertices.get(v)))).index;
                 int v3 = uniqueVerts.get(getVertexString(convertCSGVert2myVert(poly.vertices.get(v+1)))).index;
 
@@ -60,12 +59,37 @@ public class SimplifyCSG extends Simplify{
         }
     }
 
-    public static CSG simplifyCSG(CSG csg){ //TODO
-        CSG simplifiedCSG = new Sphere(5,10,10).toCSG();
-        simplify_mesh(17000, 7);
-
+    public static CSG simplifyCSG(CSG csg){
+        CSG simplifiedCSG = CSG.fromPolygons(polygonsFromTriangles());
+        simplify_mesh(10000, 7);
+        //simplifiedCSG.getTriangles(true);
         return simplifiedCSG;
         //System.out.println("LOADED CSG");
+    }
+
+    public static ArrayList<Polygon> polygonsFromTriangles(){
+        ArrayList<Polygon> polyList = new ArrayList<>();
+
+        for(Triangle triangle : triangles){
+            //if(triangle.deleted) System.out.println("Deleted tri?");
+            polyList.add(new Polygon(getCSGVertexListForMyTriangle(triangle)));
+        }
+
+        return polyList;
+    }
+
+    public static ArrayList<eu.mihosoft.vrl.v3d.Vertex> getCSGVertexListForMyTriangle(Triangle triangle){
+        ArrayList<eu.mihosoft.vrl.v3d.Vertex> list = new ArrayList<>();
+        list.add(convertmyVert2CSGVert(vertices.get(triangle.vertexIndex[0])));
+        list.add(convertmyVert2CSGVert(vertices.get(triangle.vertexIndex[1])));
+        list.add(convertmyVert2CSGVert(vertices.get(triangle.vertexIndex[2])));
+        return list;
+    }
+
+    public static eu.mihosoft.vrl.v3d.Vertex convertmyVert2CSGVert(Vertex _vertex){
+        Vector3d normal = new Vector3d(0,0,0); //TODO
+        eu.mihosoft.vrl.v3d.Vertex res = new eu.mihosoft.vrl.v3d.Vertex(new Vector3d(_vertex.pos.x, _vertex.pos.y,_vertex.pos.z), normal);
+        return res;
     }
 
     public static Vertex convertCSGVert2myVert(eu.mihosoft.vrl.v3d.Vertex _vertex){

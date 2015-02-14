@@ -94,7 +94,7 @@ public class Simplify {
 						{
 							// save ram
 							if(tcount>0){
-								for(int _i=1; _i<tcount; _i++){
+								for(int _i=0; _i<tcount; _i++){
 									refs.set(v0.triangleReferenceStart+_i, refs.get(tstart+_i)); //TODO is this right? (loop needed to emulate this memcpy?)
 								}
 								//memcpy(&refs[v0.triangleReferenceStart],&refs[triangleReferenceStart],triangleReferenceCount*sizeof(Ref));
@@ -113,7 +113,7 @@ public class Simplify {
 				}
 
 		}
-		System.out.println("deleted?" + deleted_triangles);
+		//System.out.println("deleted?" + deleted_triangles);
 		// clean up mesh
 		compact_mesh();
 	}
