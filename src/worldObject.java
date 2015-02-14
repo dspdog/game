@@ -29,6 +29,7 @@ public class worldObject {
     public String randomName =  RandomStringUtils.randomAlphanumeric(5).toUpperCase();
     int vertices = 0;
 
+    //GEOMETRY DATA
     int numTris = 0;
     int numPolys = 0;
     int numVerts = 0;
@@ -36,30 +37,28 @@ public class worldObject {
 
     WOType myType = WOType.NONE;
 
+    boolean VBODirty = true;
+    boolean isCSG = false;
+
     public enum WOType {
         NONE, CSG, CSGProgram, TREE
     }
 
-    public void getGeometryData(){
-        switch (myType){
+    public void updateGeometryData(){
+
+        if(isCSG){ //CSG types
+            SimplifyCSG.loadCSG(getCSG());
+            setCSG(SimplifyCSG.simplifyCSG(getCSG()));
+            VBODirty = true;
+            numPolys=SimplifyCSG.polys;
+            numVerts=SimplifyCSG.vertsNonUnique;
+            numVertsUnique=SimplifyCSG.vertsUnique;
+            return;
+        }
+
+        switch (myType){ //other types...
             case TREE:
                 numTris = myTree.vertices/3; //? guessing
-                return;
-            case CSG:
-                numTris = myCSG.numTriangles;
-
-                SimplifyCSG.loadCSG(myCSG);
-                numPolys=SimplifyCSG.polys;
-                numVerts=SimplifyCSG.vertsNonUnique;
-                numVertsUnique=SimplifyCSG.vertsUnique;
-                return;
-            case CSGProgram:
-                numTris = myCSGProg.myCSG.numTriangles;
-
-                SimplifyCSG.loadCSG(myCSGProg.myCSG);
-                numPolys=SimplifyCSG.polys;
-                numVerts=SimplifyCSG.vertsNonUnique;
-                numVertsUnique=SimplifyCSG.vertsUnique;
                 return;
         }
         numTris=-1;
@@ -78,32 +77,30 @@ public class worldObject {
         myTree = tree;
         rotation=new Vector3f(0,0,0);
         position=new Vector3f(0,0,0);
-        updateVBOs();
         getStencilId();
-        getGeometryData();
+        updateGeometryData();
     }
 
     public worldObject(CSG csg){
         this();
+        isCSG=true;
         name="CSG_" + randomName;
         myType=WOType.CSG;
         myCSG = csg;
-        updateVBOs();
         getStencilId();
-        getGeometryData();
+        updateGeometryData();
     }
 
     public worldObject(CSGProgram csg){
         this();
+        isCSG=true;
         name="CSGProg_" + randomName;
         myType=WOType.CSGProgram;
         myCSGProg = csg;
         csg.myWorldObject = this;
-        updateVBOs();
         getStencilId();
-        getGeometryData();
+        updateGeometryData();
     }
-
 
     public worldObject setPos(Vector3f pos){
         position.set(pos);
@@ -111,21 +108,23 @@ public class worldObject {
     }
 
     public void updateVBOs(){
-        switch (myType){
-            case TREE:
-                if(myTree!=null){
-                    VBOHandles = GeometryFactory.treeVBOQuadHandles(myTree);
-                    vertices = myTree.vertices;
+        if(VBODirty){
+            if(isCSG){
+                VBOHandles = GeometryFactory.csgVBOHandles(getCSG());
+                numTris = getCSG().numTriangles;
+            }else{
+                switch (myType){
+                    case TREE:
+                        if(myTree!=null){
+                            VBOHandles = GeometryFactory.treeVBOQuadHandles(myTree);
+                            vertices = myTree.vertices;
+                        }
+                        break;
                 }
-                break;
-            case CSG:
-                VBOHandles = GeometryFactory.csgVBOHandles(myCSG);
-                break;
-            case CSGProgram:
-                VBOHandles = GeometryFactory.csgVBOHandles(myCSGProg.toCSG());
-                break;
+            }
+            VBODirty =false;
+            lastVBOUpdate= time.getTime();
         }
-        lastVBOUpdate= time.getTime();
     }
 
     public void move(float dt){
@@ -133,37 +132,44 @@ public class worldObject {
     }
 
     public void save(){
-        boolean isCSG = myType == WOType.CSG || myType == WOType.CSGProgram;
-        try {
-            switch (myType){
-                case TREE:
-                    System.out.println("Cant save a tree :(");
-                    break;
-                case CSG:
-                    FileUtil.write(
-                            Paths.get("./savedObjects/" +name + ".stl"),
-                            myCSG.toStlString()
-                    );
-                    System.out.println("SAVED ./savedObjects/" +name + ".stl");
-                    break;
-                case CSGProgram:
-                    FileUtil.write(
-                            Paths.get("./savedObjects/" +name + ".stl"),
-                            myCSGProg.myCSG.toStlString()
-                    );
-                    System.out.println("SAVED " + name + ".stl");
-                    break;
-                default:
-                    System.out.println("SAVED ./savedObjects/" +name + ".stl");
+        if(isCSG){
+            try {
+                FileUtil.write(
+                        Paths.get("./savedObjects/" +name + ".stl"),
+                        getCSG().toStlString()
+                );
+                System.out.println("SAVED " + name + ".stl");
+            } catch (IOException ex) {
+                System.out.println(ex.getStackTrace());
+                //Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } catch (IOException ex) {
-            System.out.println(ex.getStackTrace());
-            //Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     public int getStencilId(){
         stencilId = Math.abs(name.hashCode()%255);
         return stencilId;
+    }
+
+    public CSG getCSG(){
+        switch (myType){
+            case CSG:
+                myCSG.getTriangles(true);
+                return myCSG;
+            case CSGProgram:
+                return myCSGProg.myCSG;
+        }
+        return null;
+    }
+
+    public void setCSG(CSG csg){
+        switch (myType){
+            case CSG:
+                myCSG = csg;
+                break;
+            case CSGProgram:
+                myCSGProg.myCSG = csg;
+                break;
+        }
     }
 }

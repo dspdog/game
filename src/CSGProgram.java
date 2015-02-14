@@ -1,9 +1,6 @@
 import eu.mihosoft.vrl.v3d.*;
 import utils.time;
 
-import java.io.IOException;
-import java.nio.file.Paths;
-
 /**
  * Created by user on 2/7/2015.
  */
@@ -42,13 +39,18 @@ public class CSGProgram {
                 myIteration++;
             }
         }else{ //dead
-            if(time.getTime() - lastSimplifyTime > minSimplifyPeriodMs) {
-                //myCSG = old_SimplifyCSG.simplifyCSG(myCSG);
-                lastSimplifyTime = time.getTime();
-            }
 
-            if(myWorldObject instanceof worldObject){
-                myWorldObject.getGeometryData();
+            if(time.getTime() - lastBuildTime > minIterationPeriodMs) {
+                lastBuildTime = time.getTime();
+
+                if(time.getTime() - lastSimplifyTime > minSimplifyPeriodMs) {
+                    //myCSG = old_SimplifyCSG.simplifyCSG(myCSG);
+                    lastSimplifyTime = time.getTime();
+                }
+
+                if(myWorldObject instanceof worldObject){
+                    myWorldObject.updateGeometryData();
+                }
             }
         }
 

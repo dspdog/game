@@ -58,9 +58,13 @@ public class SimplifyCSG extends Simplify{
                 triangles.add(triangle);
             }
         }
+    }
 
+    public static CSG simplifyCSG(CSG csg){ //TODO
+        CSG simplifiedCSG = new Sphere(5,10,10).toCSG();
         simplify_mesh(17000, 7);
 
+        return simplifiedCSG;
         //System.out.println("LOADED CSG");
     }
 

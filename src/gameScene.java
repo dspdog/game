@@ -15,7 +15,7 @@ class gameScene {
     public static Map<String, worldObject> idsMap = new HashMap<>();
 
     public static Vector3f poi;
-    public static long numTris = 0;
+    //public static long numTris = 0;
     static float coordsScale=5.0f;
 
     public static void drawScene(){
@@ -29,6 +29,8 @@ class gameScene {
             glRotatef(wo.rotation.x,1,0,0);
             glRotatef(wo.rotation.y,0,1,0);
             glRotatef(wo.rotation.z,0,0,1);
+            wo.updateVBOs();
+
             switch (wo.myType){
                 case TREE:
                     /*if(LogicThread.lastGameLogic -  RenderThread.lastVBOUpdate > 1){ //TODO use wo.lastVBOUpdate instead of RenderThread
@@ -38,21 +40,21 @@ class gameScene {
                     GeometryFactory.drawQuadsByVBOHandles(wo.vertices, wo.VBOHandles);*/
                     break;
                 case CSG:
-                    tris+=wo.myCSG.numTriangles;
+                    //tris+=wo.myCSG.numTriangles;
                     GeometryFactory.drawTrisByVBOHandles(wo.myCSG.numTriangles, wo.VBOHandles);
                     break;
                 case CSGProgram:
-                    tris+=wo.myCSGProg.myCSG.numTriangles;
-                    if(wo.myCSGProg.lastBuildTime>wo.lastVBOUpdate || wo.myCSGProg.lastSimplifyTime>wo.lastVBOUpdate){
+                    //tris+=wo.myCSGProg.myCSG.numTriangles;
+                    /*if(wo.myCSGProg.lastBuildTime>wo.lastVBOUpdate || wo.myCSGProg.lastSimplifyTime>wo.lastVBOUpdate){
                         wo.updateVBOs();
                         wo.lastVBOUpdate= time.getTime();
-                    }
+                    }*/
                     GeometryFactory.drawTrisByVBOHandles(wo.myCSGProg.myCSG.numTriangles, wo.VBOHandles);
                     break;
             }
             glPopMatrix();
         }
-        numTris=tris;
+       // numTris=tris;
     }
 
     public static void logicScene(float dt){
@@ -60,12 +62,14 @@ class gameScene {
            switch (wo.myType){
                 case TREE:
                     wo.myTree.perturb(false, false, 01.250f*dt);
+                    wo.VBODirty = true;
                     break;
                 case CSG:
                     //static CSG - do nothing
                     break;
                 case CSGProgram:
                     wo.myCSGProg.iterate(dt);
+                    wo.VBODirty = true;
                     break;
             }
         }
