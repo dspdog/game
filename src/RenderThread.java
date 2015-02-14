@@ -62,6 +62,8 @@ public class RenderThread {
 
     private float scrollPos = 1.0f;
 
+    DecimalFormat addCommas = new DecimalFormat( "#,###,###,##0" );
+
     public RenderThread(LogicThread gl){
         myFOV = 75;
         myWidth = 1024;
@@ -277,13 +279,12 @@ public class RenderThread {
 
         worldObject objectUnderMouse = worldObject_AtMouse();
         boolean somethingIsSelected = objectUnderMouse instanceof worldObject;
-        DecimalFormat df5 = new DecimalFormat( "#,###,###,##0" );
 
         String consoleStatus = "FPS: " + myFPS +
-                            "\nTRIS: " + (somethingIsSelected ? df5.format(objectUnderMouse.numTris) : "---") + //gameScene.getSelectedWorldObject().numTris+
-                            "\nPOLYS: " + (somethingIsSelected ? df5.format(objectUnderMouse.numPolys) : "---") +
-                            "\nVERTS: " + (somethingIsSelected ? df5.format(objectUnderMouse.numVerts) : "---") +
-                            "\nUniqVERTS: " + (somethingIsSelected ? df5.format(objectUnderMouse.numVertsUnique) : "---") +
+                            "\nTRIS: " + (somethingIsSelected ? addCommas.format(objectUnderMouse.numTris) : "---") + //gameScene.getSelectedWorldObject().numTris+
+                            "\nPOLYS: " + (somethingIsSelected ? addCommas.format(objectUnderMouse.numPolys) : "---") +
+                            "\nVERTS: " + (somethingIsSelected ? addCommas.format(objectUnderMouse.numVerts) : "---") +
+                            "\nUniqVERTS: " + (somethingIsSelected ? addCommas.format(objectUnderMouse.numVertsUnique) : "---") +
                             "\nSURFACE: " + (somethingIsSelected ? "???" : "---") +
                             "\nVOLUME: " + (somethingIsSelected ? "???" : "---") +
                             "\nNAME: " + (somethingIsSelected ? objectUnderMouse.name : "---");
