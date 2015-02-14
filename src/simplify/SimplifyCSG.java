@@ -5,6 +5,7 @@ import org.lwjgl.util.vector.Vector3f;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 /**
  * Created by user on 2/12/2015.
@@ -30,6 +31,7 @@ public class SimplifyCSG extends Simplify{
         HashMap<String, Vertex> uniqueVerts = new HashMap<>();
         for(Polygon poly : csg.getPolygons()){
             polys++;
+            //GETTING UNIQUE VERTS...
             for(eu.mihosoft.vrl.v3d.Vertex _vertex : poly.vertices){
                 Vertex vertex = convertCSGVert2myVert(_vertex);
                 vertsNonUnique++;
@@ -37,10 +39,26 @@ public class SimplifyCSG extends Simplify{
             }
         }
 
-        for(Vertex vertex : uniqueVerts.values()){
+        //PUTTING VERTS INTO ARRAY...
+        for(Vertex vertex : uniqueVerts.values()){ //as in CSG.java
             vertsUnique++;
             vertices.add(vertex);
+            vertex.index = vertices.size()-1;
         }
+
+        //GETTING TRIS, ADDING TO ARRAY...
+        for(Polygon poly : csg.getPolygons()){
+            for(int v = 1; v < poly.vertices.size() - 1; ++v) {
+                int v1 = uniqueVerts.get(getVertexString(convertCSGVert2myVert(poly.vertices.get(v-1)))).index;
+                int v2 = uniqueVerts.get(getVertexString(convertCSGVert2myVert(poly.vertices.get(v)))).index;
+                int v3 = uniqueVerts.get(getVertexString(convertCSGVert2myVert(poly.vertices.get(v+1)))).index;
+
+                Triangle triangle = new Triangle();
+                triangle.vertexIndex=new int[]{v1,v2,v3};
+                triangles.add(triangle);
+            }
+        }
+        System.out.println("LOADED CSG");
     }
 
     public static Vertex convertCSGVert2myVert(eu.mihosoft.vrl.v3d.Vertex _vertex){

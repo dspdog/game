@@ -12,6 +12,8 @@ class Vertex{
     boolean isOnABorder =false;
     SymmetricMatrix q;
 
+    int index; //index in csg vertex list
+
     public Vertex(){
         triangleReferenceStart =0;
         triangleReferenceCount =0;

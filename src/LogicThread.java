@@ -1,4 +1,3 @@
-import org.lwjgl.Sys;
 import org.lwjgl.util.vector.Vector3f;
 import shapes.tree;
 import utils.glHelper;
@@ -91,6 +90,15 @@ public class LogicThread implements Runnable {
                     -glHelper.cameraYVector.x*speed,
                     -glHelper.cameraYVector.y*speed,
                     -glHelper.cameraYVector.z*speed);
+        }
+
+        if(gameInputs.SAVE_CURRENT_OBJ){
+            gameInputs.SAVE_CURRENT_OBJ=false;
+            worldObject objectUnderMouse = RenderThread.worldObject_AtMouse();
+            boolean somethingIsSelected = objectUnderMouse instanceof worldObject;
+            if(somethingIsSelected){
+                objectUnderMouse.save();
+            }
         }
     }
 

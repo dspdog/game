@@ -20,6 +20,7 @@ public class gameInputs {
     static boolean MOVING_UP=false;
     static boolean MOVING_DOWN=false;
     static boolean TURBO=false;
+    static boolean SAVE_CURRENT_OBJ = false;
 
     static public void pollInputs() { //adapted from http://ninjacave.com/lwjglbasics2
         mouseX = Mouse.getX();
@@ -37,10 +38,12 @@ public class gameInputs {
 
         if (Mouse.isButtonDown(0)) {
             //System.out.println("MOUSE DOWN @ X: " + x + " Y: " + y);
+            SAVE_CURRENT_OBJ = true;
         }
 
         while (Keyboard.next()) {
             if (Keyboard.getEventKeyState()) {
+
                 if (Keyboard.getEventKey() == Keyboard.KEY_GRAVE ) {
                     consoleIsEnabled = !consoleIsEnabled;
                 }else{

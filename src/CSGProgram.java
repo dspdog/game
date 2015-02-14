@@ -1,6 +1,9 @@
 import eu.mihosoft.vrl.v3d.*;
 import utils.time;
 
+import java.io.IOException;
+import java.nio.file.Paths;
+
 /**
  * Created by user on 2/7/2015.
  */
@@ -49,4 +52,6 @@ public class CSGProgram {
             myWorldObject.getGeometryData();
         }
     }
+
+
 }

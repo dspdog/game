@@ -158,6 +158,8 @@ public class RenderThread {
     private int colorTextureID;
     private int depthRenderBufferID;
 
+    static int stencilValue;
+
     private void initScreenCapture(){
         //http://wiki.lwjgl.org/index.php?title=Render_to_Texture_with_Frame_Buffer_Objects_%28FBO%29
         // init our fbo
@@ -277,6 +279,8 @@ public class RenderThread {
             glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, 0);
         }
 
+        stencilValue = glHelper.sampleStencil((int)gameInputs.mouseX, (int)gameInputs.mouseY);
+
         worldObject objectUnderMouse = worldObject_AtMouse();
         boolean somethingIsSelected = objectUnderMouse instanceof worldObject;
 
@@ -328,15 +332,7 @@ public class RenderThread {
         //glTranslatef(-poi.x, -poi.y, -poi.z);
     }
 
-    //int oldStenVal = -1;
-
-    public worldObject worldObject_AtMouse(){
-        int stencilValue = glHelper.sampleStencil((int)gameInputs.mouseX, (int)gameInputs.mouseY);
-        //if(stencilValue!=oldStenVal){
-        //    oldStenVal=stencilValue;
-        //    System.out.println("SAMPLE VAL" +stencilValue);
-        //}
-
+    public static worldObject worldObject_AtMouse(){
         if(gameScene.idsMap.containsKey(stencilValue+"")){
             return gameScene.idsMap.get(stencilValue+"");
         }else{

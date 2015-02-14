@@ -1,4 +1,5 @@
 import eu.mihosoft.vrl.v3d.CSG;
+import eu.mihosoft.vrl.v3d.FileUtil;
 import factory.GeometryFactory;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.lwjgl.util.vector.Vector3f;
@@ -6,6 +7,9 @@ import shapes.tree;
 import simplify.SimplifyCSG;
 import utils.RandomHelper;
 import utils.time;
+
+import java.io.IOException;
+import java.nio.file.Paths;
 
 public class worldObject {
 
@@ -126,6 +130,36 @@ public class worldObject {
 
     public void move(float dt){
         position.translate(velocity.x*dt, velocity.y*dt, velocity.z*dt);
+    }
+
+    public void save(){
+        boolean isCSG = myType == WOType.CSG || myType == WOType.CSGProgram;
+        try {
+            switch (myType){
+                case TREE:
+                    System.out.println("Cant save a tree :(");
+                    break;
+                case CSG:
+                    FileUtil.write(
+                            Paths.get("./savedObjects/" +name + ".stl"),
+                            myCSG.toStlString()
+                    );
+                    System.out.println("SAVED ./savedObjects/" +name + ".stl");
+                    break;
+                case CSGProgram:
+                    FileUtil.write(
+                            Paths.get("./savedObjects/" +name + ".stl"),
+                            myCSGProg.myCSG.toStlString()
+                    );
+                    System.out.println("SAVED " + name + ".stl");
+                    break;
+                default:
+                    System.out.println("SAVED ./savedObjects/" +name + ".stl");
+            }
+        } catch (IOException ex) {
+            System.out.println(ex.getStackTrace());
+            //Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public int getStencilId(){
