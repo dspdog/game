@@ -31,7 +31,7 @@ public class CSGProgram {
 
     public void iterate(float dt){
         //build up the CSG...
-        if( time.getTime() - startTime < lifetimeMs){
+        if( time.getTime() - startTime < lifetimeMs){ //living
             if(time.getTime() - lastBuildTime > minIterationPeriodMs) {
                 float scale = 20f;
                 center = center.plus(new Vector3d(scale/2,scale/2,scale/2));
@@ -41,16 +41,18 @@ public class CSGProgram {
                 lastBuildTime = time.getTime();
                 myIteration++;
             }
-        }else{
+        }else{ //dead
             if(time.getTime() - lastSimplifyTime > minSimplifyPeriodMs) {
                 //myCSG = old_SimplifyCSG.simplifyCSG(myCSG);
                 lastSimplifyTime = time.getTime();
             }
+
+            if(myWorldObject instanceof worldObject){
+                myWorldObject.getGeometryData();
+            }
         }
 
-        if(myWorldObject instanceof worldObject){
-            myWorldObject.getGeometryData();
-        }
+
     }
 
 

@@ -12,6 +12,8 @@ public class Simplify {
 	static ArrayList<Vertex> vertices = new ArrayList<>();
 	static ArrayList<Ref> refs = new ArrayList<>();
 
+	static int deleted_triangles;
+
 	//
 	// Main simplification function
 	//
@@ -27,7 +29,7 @@ public class Simplify {
 
 		// main iteration loop
 
-		int deleted_triangles=0;
+		deleted_triangles=0;
 		ArrayList<Boolean> deleted0, deleted1;
 		int triangle_count=triangles.size();
 
@@ -83,8 +85,8 @@ public class Simplify {
 						v0.q=v1.q.summedWith(v0.q);
 						int tstart=refs.size();
 
-						SimplifyHelper.update_triangles(v0Index, v0, deleted0, deleted_triangles);
-						SimplifyHelper.update_triangles(v0Index, v1, deleted1, deleted_triangles);
+						SimplifyHelper.update_triangles(v0Index, v0, deleted0);
+						SimplifyHelper.update_triangles(v0Index, v1, deleted1);
 
 						int tcount=refs.size()-tstart;
 
@@ -92,13 +94,16 @@ public class Simplify {
 						{
 							// save ram
 							if(tcount>0){
-								refs.set(v0.triangleReferenceStart, refs.get(tstart));
+								for(int _i=1; _i<tcount; _i++){
+									refs.set(v0.triangleReferenceStart+_i, refs.get(tstart+_i)); //TODO is this right? (loop needed to emulate this memcpy?)
+								}
 								//memcpy(&refs[v0.triangleReferenceStart],&refs[triangleReferenceStart],triangleReferenceCount*sizeof(Ref));
 							}
 						}
-						else
+						else {
 							// append
-							v0.triangleReferenceStart =tstart;
+							v0.triangleReferenceStart = tstart;
+						}
 
 						v0.triangleReferenceCount =tcount;
 						break;
@@ -167,7 +172,7 @@ public class Simplify {
 			}
 		}
 
-		System.out.println(numDeleted + " Deleted");
+		//System.out.println(numDeleted + " compacted out");
 		ArrayUtils.resize(triangles, lastTriangleIndex);
 
 		int lastVertexIndex=0;

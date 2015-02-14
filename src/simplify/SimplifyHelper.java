@@ -168,7 +168,7 @@ public class SimplifyHelper extends Simplify{
 
     // Update triangle connections and edge error after a edge is collapsed
 
-    static void update_triangles(int i0,Vertex vertex, ArrayList<Boolean> deleted,int deleted_triangles)
+    static void update_triangles(int i0,Vertex vertex, ArrayList<Boolean> deleted)
     {
         Vector3f p=new Vector3f();
         for(int k=0; k<vertex.triangleReferenceCount; k++)

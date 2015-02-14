@@ -58,7 +58,10 @@ public class SimplifyCSG extends Simplify{
                 triangles.add(triangle);
             }
         }
-        System.out.println("LOADED CSG");
+
+        simplify_mesh(17000, 7);
+
+        //System.out.println("LOADED CSG");
     }
 
     public static Vertex convertCSGVert2myVert(eu.mihosoft.vrl.v3d.Vertex _vertex){

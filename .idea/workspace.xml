@@ -69,11 +69,23 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
+      <file leaf-file-name="CSGProgram.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/CSGProgram.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="229" max-vertical-offset="1071">
+              <caret line="50" column="37" selection-start-line="50" selection-start-column="37" selection-end-line="50" selection-end-column="37" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="worldObject.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/worldObject.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="1780" max-vertical-offset="2737">
-              <caret line="141" column="25" selection-start-line="141" selection-start-column="25" selection-end-line="141" selection-end-column="25" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="284" max-vertical-offset="2737">
+              <caret line="42" column="16" selection-start-line="42" selection-start-column="16" selection-end-line="42" selection-end-column="16" />
               <folding />
             </state>
           </provider>
@@ -92,8 +104,20 @@
       <file leaf-file-name="SimplifyCSG.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/simplify/SimplifyCSG.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.20958903" vertical-offset="663" max-vertical-offset="1411">
-              <caret line="48" column="42" selection-start-line="48" selection-start-column="42" selection-end-line="48" selection-end-column="42" />
+            <state vertical-scroll-proportion="0.3945869" vertical-offset="760" max-vertical-offset="1462">
+              <caret line="61" column="30" selection-start-line="61" selection-start-column="30" selection-end-line="61" selection-end-column="30" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Simplify.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/simplify/Simplify.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-18.071428" vertical-offset="2452" max-vertical-offset="3417">
+              <caret line="174" column="10" selection-start-line="174" selection-start-column="10" selection-end-line="174" selection-end-column="10" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -111,23 +135,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Simplify.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/simplify/Simplify.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-86.21429" vertical-offset="0" max-vertical-offset="3332">
-              <caret line="142" column="43" selection-start-line="142" selection-start-column="43" selection-end-line="142" selection-end-column="43" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="SimplifyHelper.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/simplify/SimplifyHelper.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="152" max-vertical-offset="3978">
-              <caret line="23" column="40" selection-start-line="23" selection-start-column="16" selection-end-line="23" selection-end-column="40" />
+            <state vertical-scroll-proportion="-8.178572" vertical-offset="3103" max-vertical-offset="3978">
+              <caret line="196" column="122" selection-start-line="196" selection-start-column="115" selection-end-line="196" selection-end-column="122" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -200,21 +212,21 @@
         <option value="$PROJECT_DIR$/src/simplify/simpOrig.cpp" />
         <option value="$PROJECT_DIR$/src/simplify/Triangle.java" />
         <option value="$PROJECT_DIR$/src/simplify/Ref.java" />
-        <option value="$PROJECT_DIR$/src/simplify/SimplifyHelper.java" />
         <option value="$PROJECT_DIR$/src/utils/ArrayUtils.java" />
-        <option value="$PROJECT_DIR$/src/simplify/Simplify.java" />
         <option value="$PROJECT_DIR$/src/simplify/SimplifyCSGHelper.java" />
         <option value="$PROJECT_DIR$/src/simplify/simp_junk/SimplifyCSG.java" />
         <option value="$PROJECT_DIR$/src/simplify/simp_junk/old_SimplifyCSG.java" />
         <option value="$PROJECT_DIR$/src/gameScene.java" />
         <option value="$PROJECT_DIR$/src/gameConsole.java" />
         <option value="$PROJECT_DIR$/JCSG-master/src/main/java/eu/mihosoft/vrl/v3d/CSG.java" />
-        <option value="$PROJECT_DIR$/src/CSGProgram.java" />
         <option value="$PROJECT_DIR$/src/RenderThread.java" />
         <option value="$PROJECT_DIR$/src/LogicThread.java" />
         <option value="$PROJECT_DIR$/src/gameInputs.java" />
         <option value="$PROJECT_DIR$/src/worldObject.java" />
         <option value="$PROJECT_DIR$/src/simplify/Vertex.java" />
+        <option value="$PROJECT_DIR$/src/CSGProgram.java" />
+        <option value="$PROJECT_DIR$/src/simplify/SimplifyHelper.java" />
+        <option value="$PROJECT_DIR$/src/simplify/Simplify.java" />
         <option value="$PROJECT_DIR$/src/simplify/SimplifyCSG.java" />
       </list>
     </option>
@@ -667,13 +679,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/utils/RandomHelper.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.23578364" vertical-offset="0" max-vertical-offset="721">
-          <caret line="10" column="41" selection-start-line="10" selection-start-column="27" selection-end-line="10" selection-end-column="41" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$PROJECT_DIR$/JCSG-master/build/libs/JCSG-master.jar!/eu/mihosoft/vrl/v3d/PropertyStorage.class">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.1424581" vertical-offset="0" max-vertical-offset="731">
@@ -922,14 +927,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="jar://$PROJECT_DIR$/JCSG-master/build/libs/JCSG-master.jar!/eu/mihosoft/vrl/v3d/CSG.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.25701624" vertical-offset="200" max-vertical-offset="10098">
-          <caret line="46" column="32" selection-start-line="46" selection-start-column="32" selection-end-line="46" selection-end-column="32" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$PROJECT_DIR$/JCSG-master/build/libs/JCSG-master.jar!/eu/mihosoft/vrl/v3d/FileUtil.class">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.14468086" vertical-offset="0" max-vertical-offset="765">
@@ -943,16 +940,6 @@
         <state vertical-scroll-proportion="-0.8150685" vertical-offset="1870" max-vertical-offset="2703">
           <caret line="76" column="60" selection-start-line="76" selection-start-column="60" selection-end-line="76" selection-end-column="60" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/CSGProgram.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="307" max-vertical-offset="1037">
-          <caret line="55" column="0" selection-start-line="55" selection-start-column="0" selection-end-line="55" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -972,14 +959,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/worldObject.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1780" max-vertical-offset="2737">
-          <caret line="141" column="25" selection-start-line="141" selection-start-column="25" selection-end-line="141" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/RenderThread.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="27.142857" vertical-offset="5214" max-vertical-offset="5916">
@@ -993,16 +972,6 @@
         <state vertical-scroll-proportion="2.7945206" vertical-offset="0" max-vertical-offset="20026">
           <caret line="168" column="5" selection-start-line="155" selection-start-column="3" selection-end-line="168" selection-end-column="5" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/simplify/SimplifyHelper.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="152" max-vertical-offset="3978">
-          <caret line="23" column="40" selection-start-line="23" selection-start-column="16" selection-end-line="23" selection-end-column="40" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1046,10 +1015,54 @@
         </state>
       </provider>
     </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_25/src.zip!/java/lang/StringBuilder.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-4.347945" vertical-offset="4058" max-vertical-offset="6936">
+          <caret line="75" column="19" selection-start-line="75" selection-start-column="19" selection-end-line="75" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/JCSG-master/build/libs/JCSG-master.jar!/eu/mihosoft/vrl/v3d/CSG.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="13.781388" vertical-offset="598" max-vertical-offset="10098">
+          <caret line="632" column="16" selection-start-line="632" selection-start-column="16" selection-end-line="632" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/CSGProgram.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="229" max-vertical-offset="1071">
+          <caret line="50" column="37" selection-start-line="50" selection-start-column="37" selection-end-line="50" selection-end-column="37" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/worldObject.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="284" max-vertical-offset="2737">
+          <caret line="42" column="16" selection-start-line="42" selection-start-column="16" selection-end-line="42" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/simplify/SimplifyHelper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-8.178572" vertical-offset="3103" max-vertical-offset="3978">
+          <caret line="196" column="122" selection-start-line="196" selection-start-column="115" selection-end-line="196" selection-end-column="122" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/simplify/Simplify.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-86.21429" vertical-offset="0" max-vertical-offset="3332">
-          <caret line="142" column="43" selection-start-line="142" selection-start-column="43" selection-end-line="142" selection-end-column="43" />
+        <state vertical-scroll-proportion="-18.071428" vertical-offset="2452" max-vertical-offset="3417">
+          <caret line="174" column="10" selection-start-line="174" selection-start-column="10" selection-end-line="174" selection-end-column="10" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -1058,8 +1071,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/simplify/SimplifyCSG.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.20958903" vertical-offset="663" max-vertical-offset="1411">
-          <caret line="48" column="42" selection-start-line="48" selection-start-column="42" selection-end-line="48" selection-end-column="42" />
+        <state vertical-scroll-proportion="0.3945869" vertical-offset="760" max-vertical-offset="1462">
+          <caret line="61" column="30" selection-start-line="61" selection-start-column="30" selection-end-line="61" selection-end-column="30" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
