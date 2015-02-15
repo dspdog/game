@@ -9,7 +9,7 @@ public class WorldFactory {
         gameScene.addWorldObject(new worldObject(CSGFactory.arrow()));
 
         for(int i=0; i<1000; i++){
-            gameScene.addWorldObject(new worldObject(CSGFactory.arrow()).setPos(new Vector3f((i%25)*10,i,0)));
+            gameScene.addWorldObject(new worldObject(CSGFactory.arrow()).setPos(new Vector3f((i%25)*10,0,i)));
         }
 
         CSGProgram myProg = new CSGProgram();

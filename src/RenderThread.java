@@ -194,6 +194,7 @@ public class RenderThread {
             glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);            // Clear Screen And Depth Buffer on the fbo to red
             cameraTransform();
             gameScene.drawScene();
+
         }
 
         // Normal render pass, draw cube with texture
@@ -279,18 +280,19 @@ public class RenderThread {
     }
 
     void cameraTransform(){//TODO camera obj --> set POV
+
         gameScene.poi = cameraPos;
 
-        rotationx = myLogic.rotationx;
-        rotationy = myLogic.rotationy;
+        rotationx = -myLogic.rotationx*180f;
+        rotationy = myLogic.rotationy*180f;
         rotationz = myLogic.rotationz;
 
         glLoadIdentity();
         glPushMatrix();
 
-        glRotatef((float) rotationz, 0f, 0f, 1f);
-        glRotatef((float) rotationy, 0f, 1f, 0f);
         glRotatef((float) rotationx, 1f, 0f, 0f);
+        glRotatef((float) rotationy, 0f, 1f, 0f);
+        glRotatef((float) rotationz, 0f, 0f, 1f);
 
         glTranslatef(gameScene.poi.x, gameScene.poi.y, gameScene.poi.z);
     }

@@ -54,6 +54,7 @@ class gameScene {
             }
             glPopMatrix();
         }
+        glPopMatrix();
        // numTris=tris;
     }
 

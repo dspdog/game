@@ -53,8 +53,8 @@ public class LogicThread implements Runnable {
 
     void handleMouseInput(float dt){
         if(gameInputs.consoleIsEnabled)return; //skip rest of function if console is open
-        rotationx = -180f * gameInputs.mouseY / RenderThread.myHeight;
-        rotationy = gameInputs.mouseX;
+        rotationx = 2f * (gameInputs.mouseY - RenderThread.myHeight/2)/RenderThread.myHeight;
+        rotationy = 2f * (gameInputs.mouseX - RenderThread.myWidth/2)/RenderThread.myWidth;
         rotationz = 0;
     }
 
