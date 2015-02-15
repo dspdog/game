@@ -290,9 +290,27 @@ public class RenderThread {
         glLoadIdentity();
         glPushMatrix();
 
-        glRotatef((float) rotationx, 1f, 0f, 0f);
-        glRotatef((float) rotationy, 0f, 1f, 0f);
-        glRotatef((float) rotationz, 0f, 0f, 1f);
+        //glRotatef((float) rotationx, 1f, 0f, 0f);
+        //glRotatef((float) rotationy, 0f, 1f, 0f);
+
+        //glRotatef((float) rotationz, 0f, 0f, 1f);
+
+        glHelper.updateCamVectors();
+        glRotatef((float) rotationy,
+                glHelper.cameraYVector.normalise(glHelper.cameraYVector).x,
+                glHelper.cameraYVector.normalise(glHelper.cameraYVector).y,
+                glHelper.cameraYVector.normalise(glHelper.cameraYVector).z);
+        glHelper.updateCamVectors();
+        glRotatef((float) rotationx,
+                glHelper.cameraXVector.normalise(glHelper.cameraXVector).x,
+                glHelper.cameraXVector.normalise(glHelper.cameraXVector).y,
+                glHelper.cameraXVector.normalise(glHelper.cameraXVector).z);
+        glHelper.updateCamVectors();
+        glRotatef((float) rotationz,
+                glHelper.cameraZVector.normalise(glHelper.cameraZVector).x,
+                glHelper.cameraZVector.normalise(glHelper.cameraZVector).y,
+                glHelper.cameraZVector.normalise(glHelper.cameraZVector).z); //TODO reinit world rotation after z-rotation
+        glHelper.updateCamVectors();
 
         glTranslatef(gameScene.poi.x, gameScene.poi.y, gameScene.poi.z);
     }

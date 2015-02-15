@@ -55,7 +55,6 @@ public class LogicThread implements Runnable {
         if(gameInputs.consoleIsEnabled)return; //skip rest of function if console is open
         rotationx = 2f * (gameInputs.mouseY - RenderThread.myHeight/2)/RenderThread.myHeight;
         rotationy = 2f * (gameInputs.mouseX - RenderThread.myWidth/2)/RenderThread.myWidth;
-        rotationz = 0;
     }
 
     void handleKeyboardInput(float dt){
@@ -65,6 +64,14 @@ public class LogicThread implements Runnable {
 
         float speed = dt;
         if(gameInputs.TURBO){speed*=5;}
+
+        if(gameInputs.SPINNING_CW){
+            rotationz+=speed;
+        }
+
+        if(gameInputs.SPINNING_CCW){
+            rotationz-=speed;
+        }
 
         if(gameInputs.MOVING_FORWARD){
             poi.translate(

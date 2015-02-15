@@ -19,6 +19,10 @@ public class gameInputs {
     static boolean MOVING_BACKWARD=false;
     static boolean MOVING_UP=false;
     static boolean MOVING_DOWN=false;
+
+    static boolean SPINNING_CW=false;
+    static boolean SPINNING_CCW=false;
+
     static boolean TURBO=false;
     static boolean SAVE_CURRENT_OBJ = false;
 
@@ -33,6 +37,9 @@ public class gameInputs {
 
         MOVING_UP=Keyboard.isKeyDown(Keyboard.KEY_Q);
         MOVING_DOWN=Keyboard.isKeyDown(Keyboard.KEY_E);
+
+        SPINNING_CW=Keyboard.isKeyDown(Keyboard.KEY_R);
+        SPINNING_CCW=Keyboard.isKeyDown(Keyboard.KEY_F);
 
         TURBO=Keyboard.isKeyDown(Keyboard.KEY_LSHIFT);
 
