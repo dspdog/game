@@ -309,7 +309,7 @@ public class RenderThread {
         glRotatef((float) rotationz,
                 glHelper.cameraZVector.normalise(glHelper.cameraZVector).x,
                 glHelper.cameraZVector.normalise(glHelper.cameraZVector).y,
-                glHelper.cameraZVector.normalise(glHelper.cameraZVector).z); //TODO reinit world rotation after z-rotation
+                glHelper.cameraZVector.normalise(glHelper.cameraZVector).z); //TODO reinit mouse orientation
         glHelper.updateCamVectors();
 
         glTranslatef(gameScene.poi.x, gameScene.poi.y, gameScene.poi.z);
