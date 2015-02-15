@@ -51,7 +51,7 @@ public class LogicThread implements Runnable {
         updateFPS();
     }
 
-    void handleMouseInput(float dt){ //TODO rotate according to Z-rotation
+    void handleMouseInput(float dt){
         if(gameInputs.consoleIsEnabled)return; //skip rest of function if console is open
         rotationx = 2f * (gameInputs.mouseY - RenderThread.myHeight/2)/RenderThread.myHeight;
         rotationy = 2f * (gameInputs.mouseX - RenderThread.myWidth/2)/RenderThread.myWidth;
@@ -144,7 +144,7 @@ public class LogicThread implements Runnable {
         while(running){
             try {
                 updateGameLogic();
-                Thread.sleep(1);
+                Thread.sleep(10);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

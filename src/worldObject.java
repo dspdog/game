@@ -64,8 +64,8 @@ public class worldObject {
     }
 
     public worldObject(){
-        position = RandomHelper.randomPosition(100);
-        rotation = RandomHelper.randomRotation();
+        position = new Vector3f(0,0,0); //RandomHelper.randomPosition(100);
+        rotation = new Vector3f(0,0,0); //RandomHelper.randomRotation();
         velocity = new Vector3f(0,0,0);
     }
 
