@@ -42,8 +42,6 @@ public class RenderThread {
     public static boolean useOrtho;
 
 
-    private String mySelection = "";
-
     // "index" is used to read pixels from framebuffer to a PBO
     // "nextIndex" is used to update pixels in the other PBO
     private int frame_index;// = (index + 1) % 2;
@@ -90,7 +88,7 @@ public class RenderThread {
         if (time.getTime() - lastFPS > 1000) {
             myFPS = fps;
             fps = 0;
-            lastFPS += 1000;
+            lastFPS = time.getTime();
         }
 
         fps++;
@@ -284,7 +282,8 @@ public class RenderThread {
         worldObject objectUnderMouse = worldObject_AtMouse();
         boolean somethingIsSelected = objectUnderMouse instanceof worldObject;
 
-        String consoleStatus = "FPS: " + myFPS +
+        String consoleStatus ="RENDER FPS: " + myFPS +
+                            "\nLOGIC FPS: " + myLogic.myFPS +
                             "\nTRIS: " + (somethingIsSelected ? addCommas.format(objectUnderMouse.numTris) : "---") + //gameScene.getSelectedWorldObject().numTris+
                             "\nPOLYS: " + (somethingIsSelected ? addCommas.format(objectUnderMouse.numPolys) : "---") +
                             "\nVERTS: " + (somethingIsSelected ? addCommas.format(objectUnderMouse.numVerts) : "---") +
@@ -354,9 +353,4 @@ public class RenderThread {
         mySurfaceTotal = (_total / 3_000_000f);
 
     }
-
-
-
-
-
 }

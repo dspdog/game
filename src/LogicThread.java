@@ -5,6 +5,12 @@ import utils.time;
 
 public class LogicThread implements Runnable {
 
+    public static int fps = 0;
+    public static long lastFPS = 0;
+    public static long startTime = 0;
+    public static int mySyncFPS = 0;
+    public static int myFPS = 0;
+
     private boolean running = false;
     public static long lastGameLogic;
 
@@ -17,6 +23,15 @@ public class LogicThread implements Runnable {
 
     public LogicThread(){
 
+    }
+
+    void updateFPS() {
+        if (time.getTime() - lastFPS > 1000) {
+            myFPS = fps;
+            fps = 0;
+            lastFPS = time.getTime();
+        }
+        fps++;
     }
 
     void updateGameLogic(){
@@ -33,6 +48,7 @@ public class LogicThread implements Runnable {
 
         handleMouseInput(dt);
         handleKeyboardInput(dt);
+        updateFPS();
     }
 
     void handleMouseInput(float dt){
@@ -121,7 +137,7 @@ public class LogicThread implements Runnable {
         while(running){
             try {
                 updateGameLogic();
-                Thread.sleep(15);
+                Thread.sleep(1);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
