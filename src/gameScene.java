@@ -69,7 +69,6 @@ class gameScene {
                     break;
                 case CSGProgram:
                     wo.myCSGProg.iterate(dt);
-                    wo.VBODirty = true;
                     break;
             }
         }

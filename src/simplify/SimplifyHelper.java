@@ -23,19 +23,35 @@ public class SimplifyHelper extends Simplify{
 
     static void calculateTriangleNormals(){ //also updates vertex matrices
         for(Triangle triangle : triangles) {
-            Vector3f normal = new Vector3f();
+            //Vector3f normal = new Vector3f();
             Vector3f[] vertexPos = new Vector3f[3];
             for(int j=0; j<3; j++){vertexPos[j]=vertices.get(triangle.vertexIndex[j]).pos;}
-            normal = Vector3f.cross(vertexPos[1].translate(-vertexPos[0].x, -vertexPos[0].y, -vertexPos[0].z), vertexPos[2].translate(-vertexPos[0].x, -vertexPos[0].y, -vertexPos[0].z), normal).normalise(normal);
-            triangle.normal = normal;
 
+            Vector3f left = new Vector3f(); //vertexPos[1].translate(-vertexPos[0].x, -vertexPos[0].y, -vertexPos[0].z);
+            Vector3f right = new Vector3f(); //vertexPos[2].translate(-vertexPos[0].x, -vertexPos[0].y, -vertexPos[0].z);
+            Vector3f.add(vertexPos[1], inverseVec3f(vertexPos[0]), left);
+            Vector3f.add(vertexPos[2], inverseVec3f(vertexPos[0]), right);
+            Vector3f dest = new Vector3f();
+            Vector3f.cross(left, right, dest);
+            dest.normalise(dest);
+            triangle.normal=dest;
+        }
+    }
+
+    static private Vector3f inverseVec3f(Vector3f vec){
+        return new Vector3f(-vec.x, -vec.y, -vec.z);
+    }
+
+    static void calculateVertexMatrices(){
+        for(Triangle triangle : triangles) {
             for(int j=0; j<3; j++){
                 vertices.get(triangle.vertexIndex[j]).q =
                         vertices.get(triangle.vertexIndex[j]).q.summedWith(
-                                new SymmetricMatrix(normal.x, normal.y, normal.z,
-                                        -Vector3f.dot(normal, vertexPos[0])));
+                                new SymmetricMatrix(triangle.normal.x, triangle.normal.y, triangle.normal.z,
+                                        -Vector3f.dot(triangle.normal, vertices.get(triangle.vertexIndex[0]).pos)));
             }
         }
+
     }
 
     static void identifyBoundries(){

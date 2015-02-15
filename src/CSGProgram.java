@@ -1,4 +1,5 @@
 import eu.mihosoft.vrl.v3d.*;
+import simplify.SimplifyCSG;
 import utils.time;
 
 /**
@@ -13,7 +14,7 @@ public class CSGProgram {
     worldObject myWorldObject= null;
 
     float radius = 25f;
-    int quality = 8;
+    int quality = 32;
 
     Vector3d center = new Vector3d(0,0,0);
     CSG myCSG = new Sphere(center, radius,quality,quality).toCSG();
@@ -37,16 +38,24 @@ public class CSGProgram {
 
                 lastBuildTime = time.getTime();
                 myIteration++;
+                if(myWorldObject instanceof worldObject){
+                    myWorldObject.updateGeometryData();
+                }
             }
         }else{ //dead
 
-            if(time.getTime() - lastBuildTime > minIterationPeriodMs) {
+            if(time.getTime() - lastBuildTime > minSimplifyPeriodMs) {
+                System.out.println("SIMPLIFY!");
+                minSimplifyPeriodMs = 100000;
                 lastBuildTime = time.getTime();
 
-                if(time.getTime() - lastSimplifyTime > minSimplifyPeriodMs) {
-                    //myCSG = old_SimplifyCSG.simplifyCSG(myCSG);
+                //if(time.getTime() - lastSimplifyTime > minSimplifyPeriodMs) {
+                    SimplifyCSG.loadCSG(myCSG);
+                    if(myWorldObject instanceof worldObject){
+                        myWorldObject.setCSG(SimplifyCSG.simplifyCSG(myCSG));
+                    }
                     lastSimplifyTime = time.getTime();
-                }
+                //}
 
                 if(myWorldObject instanceof worldObject){
                     myWorldObject.updateGeometryData();

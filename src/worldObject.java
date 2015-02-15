@@ -47,8 +47,6 @@ public class worldObject {
     public void updateGeometryData(){
 
         if(isCSG){ //CSG types
-            SimplifyCSG.loadCSG(getCSG());
-            setCSG(SimplifyCSG.simplifyCSG(getCSG()));
             VBODirty = true;
             numPolys=SimplifyCSG.polys;
             numVerts=SimplifyCSG.vertsNonUnique;

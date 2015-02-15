@@ -33,7 +33,7 @@ public class Simplify {
 		ArrayList<Boolean> deleted0, deleted1;
 		int triangle_count=triangles.size();
 
-		for(int iteration=0; iteration<100; ++iteration) {
+		for(int iteration=0; iteration<1000; ++iteration) {
 			boolean enoughDeleted = triangle_count-deleted_triangles<=target_count;
 			if(enoughDeleted)break;
 
@@ -49,6 +49,7 @@ public class Simplify {
 			double threshold = 0.000000001*Math.pow((double) (iteration + 3), agressiveness); //what is this magic?
 
 			// remove vertices & mark deleted triangles
+
 			for(Triangle triangle : triangles){
 				if(triangle.minimumErr>threshold) continue;
 				if(triangle.deleted) continue;
@@ -94,7 +95,7 @@ public class Simplify {
 						{
 							// save ram
 							if(tcount>0){
-								for(int _i=0; _i<tcount; _i++){
+								for(int _i=1; _i<tcount; _i++){
 									refs.set(v0.triangleReferenceStart+_i, refs.get(tstart+_i)); //TODO is this right? (loop needed to emulate this memcpy?)
 								}
 								//memcpy(&refs[v0.triangleReferenceStart],&refs[triangleReferenceStart],triangleReferenceCount*sizeof(Ref));
@@ -146,6 +147,7 @@ public class Simplify {
 		if( iteration == 0 ) {
 			SimplifyHelper.resetVertexMatrices();
 			SimplifyHelper.calculateTriangleNormals();
+			SimplifyHelper.calculateVertexMatrices();
 			SimplifyHelper.calculateTriangleEdgeErrors();
 		}
 
