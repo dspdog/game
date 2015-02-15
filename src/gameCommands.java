@@ -73,8 +73,8 @@ public class gameCommands {
                 System.out.println(RenderThread.doShaderOverlay);
                 break;
             case "sparkle":
-                GeometryFactory.doSparkle= param.equalsIgnoreCase("on");
-                System.out.println(GeometryFactory.doSparkle);
+                GeometryFactory.doCSGSparkle= param.equalsIgnoreCase("on");
+                System.out.println(GeometryFactory.doCSGSparkle);
                 break;
             case "pixels":
                 RenderThread.doProcessPixels= param.equalsIgnoreCase("on");

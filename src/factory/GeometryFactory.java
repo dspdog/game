@@ -2,12 +2,15 @@ package factory;
 
 import eu.mihosoft.vrl.v3d.CSG;
 import eu.mihosoft.vrl.v3d.Polygon;
+import eu.mihosoft.vrl.v3d.Vector3d;
+import eu.mihosoft.vrl.v3d.Vertex;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL13;
 import org.newdawn.slick.opengl.*;
 import org.lwjgl.opengl.GL11;
 
 import shapes.tree;
+import utils.CSGUtils;
 import utils.CubeMarcher;
 import utils.ShaderHelper;
 import utils.glHelper;
@@ -18,9 +21,7 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
 
 public class GeometryFactory {
-
-    public static boolean doSparkle=true;
-
+    static public boolean doCSGSparkle = true;
     static void plane(){
 
         int size = 250;
@@ -200,7 +201,9 @@ public class GeometryFactory {
     }
 
     public static void drawCSG(CSG csg){
-        csg.getTriangles(doSparkle);
+        if(doCSGSparkle){
+            CSGUtils.shakeNormals(csg);}
+        csg.getTriangles();
         for(Polygon poly : csg.getPolygons()){
             glBegin(GL_TRIANGLE_FAN); //http://stackoverflow.com/questions/8043923/gl-triangle-fan-explanation
             glColor3f((float)poly.vertices.get(0).normal.x, (float)poly.vertices.get(0).normal.y, (float)poly.vertices.get(0).normal.z);
@@ -214,7 +217,9 @@ public class GeometryFactory {
     }
 
     public static int[] csgVBOHandles(CSG csg){
-        csg.getTriangles(doSparkle);
+        if(doCSGSparkle){
+            CSGUtils.shakeNormals(csg);}
+        csg.getTriangles();
         int vbo_vertex_handle = glGenBuffers();
         glBindBuffer(GL_ARRAY_BUFFER, vbo_vertex_handle);
         glBufferData(GL_ARRAY_BUFFER, getCSGVertexData(csg), GL_STATIC_DRAW);

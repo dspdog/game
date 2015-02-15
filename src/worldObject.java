@@ -47,6 +47,7 @@ public class worldObject {
     public void updateGeometryData(){
 
         if(isCSG){ //CSG types
+            SimplifyCSG.loadCSG(getCSG());
             VBODirty = true;
             numPolys=SimplifyCSG.polys;
             numVerts=SimplifyCSG.vertsNonUnique;
@@ -152,7 +153,7 @@ public class worldObject {
     public CSG getCSG(){
         switch (myType){
             case CSG:
-                myCSG.getTriangles(true);
+                myCSG.getTriangles();
                 return myCSG;
             case CSGProgram:
                 return myCSGProg.myCSG;

@@ -85,7 +85,7 @@ public class SimplifyCSG extends Simplify{
     }
 
     public static eu.mihosoft.vrl.v3d.Vertex convertmyVert2CSGVert(Vertex _vertex){
-        Vector3d normal = new Vector3d(0,0,0); //calculated by SimplifyHelper.calculateTriangleNormals
+        Vector3d normal = new Vector3d(0,0,0); //calculated later by SimplifyHelper.calculateTriangleNormals
         eu.mihosoft.vrl.v3d.Vertex res = new eu.mihosoft.vrl.v3d.Vertex(new Vector3d(_vertex.pos.x, _vertex.pos.y,_vertex.pos.z), normal);
         return res;
     }

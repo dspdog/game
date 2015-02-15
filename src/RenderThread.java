@@ -83,7 +83,7 @@ public class RenderThread {
 
         startTime=time.getTime();
 
-        GeometryFactory.doSparkle=true;
+        GeometryFactory.doCSGSparkle = true;
     }
 
     void updateFPS() {
