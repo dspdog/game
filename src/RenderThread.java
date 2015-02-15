@@ -110,11 +110,8 @@ public class RenderThread {
             System.exit(0);
         }
 
-        buildWorld();
+        WorldFactory.buildWorld();
         initScreenCapture();
-
-
-
 
         while (!Display.isCloseRequested()) {
             update();
@@ -126,24 +123,6 @@ public class RenderThread {
         myLogic.end();
         Display.destroy();
         System.exit(1);
-    }
-
-    void buildWorld(){
-
-        cameraObj = new worldObject(CSGFactory.arrow());
-        gameScene.addWorldObject(cameraObj);
-/*
-        for(int i=0; i<1000; i++){
-            gameScene.addWorldObject(new worldObject(CSGFactory.arrow()).setPos(new Vector3f((i%25)*10,i,0)));
-        }
-
-        gameScene.addWorldObject(new worldObject(myLogic.theTree)); //arrow world
-*/
-        //gameScene.addWorldObject(new worldObject(new Sphere(25,5,5).toCSG()));
-
-        CSGProgram myProg = new CSGProgram();
-
-        gameScene.addWorldObject(new worldObject(myProg));
     }
 
     void update() {
@@ -279,56 +258,41 @@ public class RenderThread {
 
         stencilValue = glHelper.sampleStencil((int)gameInputs.mouseX, (int)gameInputs.mouseY);
 
+        updateConsole();
+    }
+
+    void updateConsole(){
         worldObject objectUnderMouse = worldObject_AtMouse();
         boolean somethingIsSelected = objectUnderMouse instanceof worldObject;
 
         String consoleStatus ="RENDER FPS: " + myFPS +
-                            "\nLOGIC FPS: " + myLogic.myFPS +
-                            "\nTRIS: " + (somethingIsSelected ? addCommas.format(objectUnderMouse.numTris) : "---") + //gameScene.getSelectedWorldObject().numTris+
-                            "\nPOLYS: " + (somethingIsSelected ? addCommas.format(objectUnderMouse.numPolys) : "---") +
-                            "\nVERTS: " + (somethingIsSelected ? addCommas.format(objectUnderMouse.numVerts) : "---") +
-                            "\nUniqVERTS: " + (somethingIsSelected ? addCommas.format(objectUnderMouse.numVertsUnique) : "---") +
-                            "\nSURFACE: " + (somethingIsSelected ? "???" : "---") +
-                            "\nVOLUME: " + (somethingIsSelected ? "???" : "---") +
-                            "\nNAME: " + (somethingIsSelected ? objectUnderMouse.name : "---");
+                "\nLOGIC FPS: " + myLogic.myFPS +
+                "\nTRIS: " + (somethingIsSelected ? addCommas.format(objectUnderMouse.numTris) : "---") + //gameScene.getSelectedWorldObject().numTris+
+                "\nPOLYS: " + (somethingIsSelected ? addCommas.format(objectUnderMouse.numPolys) : "---") +
+                "\nVERTS: " + (somethingIsSelected ? addCommas.format(objectUnderMouse.numVerts) : "---") +
+                "\nUniqVERTS: " + (somethingIsSelected ? addCommas.format(objectUnderMouse.numVertsUnique) : "---") +
+                "\nSURFACE: " + (somethingIsSelected ? "???" : "---") +
+                "\nVOLUME: " + (somethingIsSelected ? "???" : "---") +
+                "\nNAME: " + (somethingIsSelected ? objectUnderMouse.name : "---");
         gameConsole.setStatusString(consoleStatus);
-
         gameConsole.draw(myWidth, myHeight, myWidth, 1024, 0, 0, 0.1f, 0.25f);
     }
 
-    void cameraTransform(){
-        //TODO camera obj --> set POV
-
+    void cameraTransform(){//TODO camera obj --> set POV
         gameScene.poi = cameraPos;
 
-        rotationx = myLogic.rotationx; //-180f * gameInputs.mouseY /myHeight;
-        rotationy = myLogic.rotationy; //gameInputs.mouseX;
-        rotationz = myLogic.rotationz;;
-
-       /* int scroll = Mouse.getDWheel();
-
-        if(scroll<0){
-            scrollPos*=0.95f;
-        }else if(scroll>0){
-            scrollPos*=1.05f;
-        }*/
-
-        //float zoom = 5f*scrollPos;
+        rotationx = myLogic.rotationx;
+        rotationy = myLogic.rotationy;
+        rotationz = myLogic.rotationz;
 
         glLoadIdentity();
-        //gluLookAt(500+poi.x,500+poi.y,500+poi.z, poi.x, poi.y, poi.z,0,1,0);
         glPushMatrix();
-        //glScalef(zoom, zoom, zoom);
 
         glRotatef((float) rotationz, 0f, 0f, 1f);
         glRotatef((float) rotationy, 0f, 1f, 0f);
         glRotatef((float) rotationx, 1f, 0f, 0f);
 
         glTranslatef(gameScene.poi.x, gameScene.poi.y, gameScene.poi.z);
-//
-
-
-        //glTranslatef(-poi.x, -poi.y, -poi.z);
     }
 
     public static worldObject worldObject_AtMouse(){
@@ -349,8 +313,6 @@ public class RenderThread {
             b=pixels.get();//B
             _total+=(r+g+b);
         }
-        //myLogic.theTree.saveToFile("ok");
         mySurfaceTotal = (_total / 3_000_000f);
-
     }
 }
