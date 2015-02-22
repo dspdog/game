@@ -30,8 +30,8 @@ public class gameInputs {
 
     static public void pollInputs() { //adapted from http://ninjacave.com/lwjglbasics2
 
-        //Mouse.setGrabbed(true);
-
+        Mouse.setGrabbed(true);
+        Mouse.setClipMouseCoordinatesToWindow(false);
         mouseX = Mouse.getX();
         mouseY = Mouse.getY();
 
