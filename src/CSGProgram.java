@@ -7,14 +7,14 @@ import utils.time;
  */
 public class CSGProgram {
     long myIteration=0;
-    long lifetimeMs = 1000;
-    long minIterationPeriodMs = 100;
+    long lifetimeMs = 10000;
+    long minIterationPeriodMs = 1000;
     long minSimplifyPeriodMs = 1000;
 
     worldObject myWorldObject= null;
 
     float radius = 25f;
-    int quality = 32;
+    int quality = 6;
 
     Vector3d center = new Vector3d(0,0,0);
     CSG myCSG = new Sphere(center, radius,quality,quality).toCSG();
@@ -32,9 +32,9 @@ public class CSGProgram {
         if( time.getTime() - startTime < lifetimeMs){ //living
             if(time.getTime() - lastBuildTime > minIterationPeriodMs) {
                 float scale = 20f;
-                //center = center.plus(new Vector3d(scale/2,scale/2,scale/2));
-                //CSG addition = new Sphere(center, radius, quality, quality).toCSG();
-                //myCSG = myCSG.union(addition);
+                center = center.plus(new Vector3d(scale/2,scale/2,scale/2));
+                CSG addition = new Sphere(center, radius, quality, quality).toCSG();
+                myCSG = myCSG.union(addition);
 
                 lastBuildTime = time.getTime();
                 myIteration++;
@@ -52,7 +52,7 @@ public class CSGProgram {
                 //if(time.getTime() - lastSimplifyTime > minSimplifyPeriodMs) {
                     SimplifyCSG.loadCSG(myCSG);
                     if(myWorldObject instanceof worldObject){
-                        myWorldObject.setCSG(SimplifyCSG.simplifyCSG(myCSG));
+                       // myWorldObject.setCSG(SimplifyCSG.simplifyCSG(myCSG));
                     }
                     lastSimplifyTime = time.getTime();
                 //}

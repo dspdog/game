@@ -262,7 +262,7 @@ public class RenderThread {
         updateConsole();
     }
 
-    void updateConsole(){
+    void updateConsole(){ //TODO move console texture generation to another thread (the "computations" thread?)
         worldObject objectUnderMouse = worldObject_AtMouse();
         boolean somethingIsSelected = objectUnderMouse instanceof worldObject;
 

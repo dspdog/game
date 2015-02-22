@@ -6,13 +6,13 @@ import org.lwjgl.util.vector.Vector3f;
  */
 public class WorldFactory {
     static void buildWorld(){
-        //gameScene.addWorldObject(new worldObject(CSGFactory.arrow()));
+        gameScene.addWorldObject(new worldObject(CSGFactory.arrow()));
 
-        for(int i=0; i<100; i++){
-            gameScene.addWorldObject(new worldObject(CSGFactory.arrow()).setPos(new Vector3f((i%25)*10,0,i)));
-        }
+        //for(int i=0; i<100; i++){
+        //    gameScene.addWorldObject(new worldObject(CSGFactory.arrow()).setPos(new Vector3f((i%25)*10,0,i)));
+        //}
 
-        CSGProgram myProg = new CSGProgram();
-        gameScene.addWorldObject(new worldObject(myProg));
+        //CSGProgram myProg = new CSGProgram();
+        //gameScene.addWorldObject(new worldObject(myProg));
     }
 }

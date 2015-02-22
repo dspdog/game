@@ -69,7 +69,7 @@ class gameScene {
                     //static CSG - do nothing
                     break;
                 case CSGProgram:
-                    //wo.myCSGProg.iterate(dt);
+                    wo.myCSGProg.iterate(dt);
                     break;
             }
         }
