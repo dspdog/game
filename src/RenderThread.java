@@ -114,7 +114,7 @@ public class RenderThread {
         WorldFactory.buildWorld();
         initScreenCapture();
 
-        while (!Display.isCloseRequested()) {
+        while (!Display.isCloseRequested() && !gameInputs.endProgram) {
             update();
             renderGL();
             Display.update();
@@ -122,6 +122,7 @@ public class RenderThread {
         }
 
         myLogic.end();
+        myComputeThread.end();
         Display.destroy();
         System.exit(1);
     }

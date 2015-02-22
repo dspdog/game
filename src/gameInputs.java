@@ -26,7 +26,12 @@ public class gameInputs {
     static boolean TURBO=false;
     static boolean SAVE_CURRENT_OBJ = false;
 
+    static boolean endProgram = false;
+
     static public void pollInputs() { //adapted from http://ninjacave.com/lwjglbasics2
+
+        //Mouse.setGrabbed(true);
+
         mouseX = Mouse.getX();
         mouseY = Mouse.getY();
 
@@ -42,6 +47,8 @@ public class gameInputs {
         SPINNING_CCW=Keyboard.isKeyDown(Keyboard.KEY_F);
 
         TURBO=Keyboard.isKeyDown(Keyboard.KEY_LSHIFT);
+
+        if(Keyboard.isKeyDown(Keyboard.KEY_ESCAPE))endProgram=true;
 
         if (Mouse.isButtonDown(0)) {
             //System.out.println("MOUSE DOWN @ X: " + x + " Y: " + y);
