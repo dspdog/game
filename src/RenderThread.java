@@ -1,4 +1,3 @@
-import factory.CSGFactory;
 import factory.GeometryFactory;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
@@ -17,6 +16,8 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.EXTFramebufferObject.*;
 import static org.lwjgl.opengl.ARBPixelBufferObject.*;
 public class RenderThread {
+
+    public static ComputationThread myComputeThread = null;
 
     public static int fps;
     public static long lastFPS;
@@ -56,13 +57,13 @@ public class RenderThread {
 
     public static long lastVBOUpdate=0;
 
-    private LogicThread myLogic;
+    private MovementThread myLogic;
 
     private float scrollPos = 1.0f;
 
     DecimalFormat addCommas = new DecimalFormat( "#,###,###,##0" );
 
-    public RenderThread(LogicThread gl){
+    public RenderThread(MovementThread gl){
         myFOV = 75;
         myWidth = 1024;
         myHeight = 1024;
@@ -267,7 +268,8 @@ public class RenderThread {
         boolean somethingIsSelected = objectUnderMouse instanceof worldObject;
 
         String consoleStatus ="RENDER FPS: " + myFPS +
-                "\nLOGIC FPS: " + myLogic.myFPS +
+                "\nMOVEMENT FPS: " + myLogic.myFPS +
+                "\nCOMPUTE FPS: " + myComputeThread.myFPS +
                 "\nTRIS: " + (somethingIsSelected ? addCommas.format(objectUnderMouse.numTris) : "---") + //gameScene.getSelectedWorldObject().numTris+
                 "\nPOLYS: " + (somethingIsSelected ? addCommas.format(objectUnderMouse.numPolys) : "---") +
                 "\nVERTS: " + (somethingIsSelected ? addCommas.format(objectUnderMouse.numVerts) : "---") +
@@ -276,7 +278,7 @@ public class RenderThread {
                 "\nVOLUME: " + (somethingIsSelected ? "???" : "---") +
                 "\nNAME: " + (somethingIsSelected ? objectUnderMouse.name : "---");
         gameConsole.setStatusString(consoleStatus);
-        gameConsole.draw(myWidth, myHeight, myWidth, 1024, 0, 0, 0.1f, 0.25f);
+        gameConsole.draw(myWidth, myHeight, 1024, 1024, 0, 0, 0.1f, 0.25f);
     }
 
     void cameraTransform(){//TODO camera obj --> set POV

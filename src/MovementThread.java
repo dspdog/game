@@ -3,7 +3,7 @@ import shapes.tree;
 import utils.glHelper;
 import utils.time;
 
-public class LogicThread implements Runnable {
+public class MovementThread implements Runnable {
 
     public static int fps = 0;
     public static long lastFPS = 0;
@@ -21,7 +21,7 @@ public class LogicThread implements Runnable {
     float rotationy=0;
     float rotationz=0;
 
-    public LogicThread(){
+    public MovementThread(){
 
     }
 
@@ -42,7 +42,7 @@ public class LogicThread implements Runnable {
         tree.cameraYVector.set(glHelper.cameraYVector);
         tree.cameraZVector.set(glHelper.cameraZVector);
 
-        gameScene.logicScene(dt);
+        //gameScene.logicScene(dt);
 
         lastGameLogic = time.getTime();
 
@@ -137,13 +137,15 @@ public class LogicThread implements Runnable {
 
     @Override
     public void run() {
-
+        long frame=0;
         initWorld();
-
         running=true;
+
         while(running){
             try {
+                frame++;
                 updateGameLogic();
+                //if(frame%10==0) //faster framerates
                 Thread.sleep(1);
             } catch (InterruptedException e) {
                 e.printStackTrace();
