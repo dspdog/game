@@ -8,13 +8,13 @@ import utils.time;
 public class CSGProgram {
     long myIteration=0;
     long lifetimeMs = 100000;
-    long minIterationPeriodMs = 1000;
+    long minIterationPeriodMs = 500;
     long minSimplifyPeriodMs = 1000;
 
     worldObject myWorldObject= null;
 
     float radius = 25f;
-    int quality = 6;
+    int quality = 4;
 
     Vector3d center = new Vector3d(0,0,0);
     CSG myCSG = new Sphere(center, radius,quality,quality).toCSG();
@@ -36,7 +36,8 @@ public class CSGProgram {
                 float scalez = (float)Math.random()*20f-10f;
                 center = center.plus(new Vector3d(scalex,scaley,scalez));
                 CSG addition = new Sphere(center, radius, quality, quality).toCSG();
-                myCSG = myCSG.union(addition);
+                CSG newCSG = myCSG.union(addition);
+                myCSG = newCSG;//.union(addition);
 
                 lastBuildTime = time.getTime();
                 myIteration++;

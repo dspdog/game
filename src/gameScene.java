@@ -49,7 +49,9 @@ class gameScene {
                         wo.updateVBOs();
                         wo.lastVBOUpdate= time.getTime();
                     }*/
-                    GeometryFactory.drawTrisByVBOHandles(wo.myCSGProg.myCSG.numTriangles, wo.VBOHandles);
+
+                    wo.oldTris = wo.myCSGProg.myCSG.numTriangles == 0 ? wo.oldTris : wo.myCSGProg.myCSG.numTriangles;
+                    GeometryFactory.drawTrisByVBOHandles(wo.oldTris, wo.VBOHandles);
                     break;
             }
             glPopMatrix();

@@ -31,6 +31,7 @@ public class worldObject {
 
     //GEOMETRY DATA
     int numTris = 0;
+    int oldTris = 0; //numTris non-zero
     int numPolys = 0;
     int numVerts = 0;
     int numVertsUnique = 0;
