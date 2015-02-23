@@ -30,8 +30,18 @@ public class gameInputs {
 
     static public void pollInputs() { //adapted from http://ninjacave.com/lwjglbasics2
 
-        Mouse.setGrabbed(true);
-        Mouse.setClipMouseCoordinatesToWindow(false);
+        //Mouse.setGrabbed(true);
+        //Mouse.setClipMouseCoordinatesToWindow(false);
+
+        if(consoleIsEnabled){
+            //Mouse.setCursorPosition(Mouse.getX()%RenderThread.myWidth, Mouse.getY()%RenderThread.myHeight);
+            Mouse.setClipMouseCoordinatesToWindow(true);
+            Mouse.setGrabbed(false);
+        }else{
+            Mouse.setClipMouseCoordinatesToWindow(false);
+            Mouse.setGrabbed(true);
+        }
+
         mouseX = Mouse.getX();
         mouseY = Mouse.getY();
 
@@ -57,7 +67,6 @@ public class gameInputs {
 
         while (Keyboard.next()) {
             if (Keyboard.getEventKeyState()) {
-
                 if (Keyboard.getEventKey() == Keyboard.KEY_GRAVE ) {
                     consoleIsEnabled = !consoleIsEnabled;
                 }else{

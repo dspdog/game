@@ -18,6 +18,10 @@ class gameScene {
     //public static long numTris = 0;
     static float coordsScale=5.0f;
 
+    public static void drawCursor(){
+        GeometryFactory.reticle(RenderThread.myWidth/2, RenderThread.myHeight/2);
+    }
+
     public static void drawScene(){
         int tris = 0;
         glHelper.updateCamVectors();

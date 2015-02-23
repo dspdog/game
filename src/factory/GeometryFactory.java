@@ -22,8 +22,8 @@ import static org.lwjgl.opengl.GL15.*;
 
 public class GeometryFactory {
     static public boolean doCSGSparkle = true;
-    static void plane(){
-
+    public static void plane(){
+        glHelper.prepare2D(1024, 1024);
         int size = 250;
         glBegin(GL11.GL_QUADS);
         glColor3f(0, 0, 0);
@@ -31,9 +31,26 @@ public class GeometryFactory {
         glColor3f(1, 0, 0);
         glVertex3f(size, 0, 0);
         glColor3f(1, 0, 1);
-        glVertex3f(size, 0, size);
+        glVertex3f(size, size, 0);
         glColor3f(0, 0, 1);
-        glVertex3f(0, 0, size);
+        glVertex3f(0, size, 0);
+        glEnd();
+    }
+
+    public static void reticle(int x, int y){
+        glHelper.prepare2D(1024, 1024);
+        int size = 12;
+        int centerX = x-size/2;
+        int centerY = y-size/2;
+        glBegin(GL11.GL_QUADS);
+        glColor3f(0, 0, 0);
+        glVertex3f(centerX, centerY, 0);
+        glColor3f(1, 0, 0);
+        glVertex3f(centerX+size, centerY, 0);
+        glColor3f(1, 0, 1);
+        glVertex3f(centerX+size, centerY+size, 0);
+        glColor3f(0, 0, 1);
+        glVertex3f(centerX, centerY+size, 0);
         glEnd();
     }
 

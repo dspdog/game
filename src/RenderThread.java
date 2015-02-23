@@ -216,6 +216,7 @@ public class RenderThread {
         if(doWireFrame){glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );}
         cameraTransform();
         gameScene.drawScene();
+
         glPopMatrix();
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
@@ -257,8 +258,12 @@ public class RenderThread {
             glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, 0);
         }
 
-        stencilValue = glHelper.sampleStencil((int)gameInputs.mouseX, (int)gameInputs.mouseY);
-
+        if(gameInputs.consoleIsEnabled){
+            stencilValue = glHelper.sampleStencil((int)gameInputs.mouseX, (int)gameInputs.mouseY);
+        }else{
+            stencilValue = glHelper.sampleStencil(myWidth/2, myHeight/2);
+        }
+        gameScene.drawCursor();
         updateConsole();
     }
 

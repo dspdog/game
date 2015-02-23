@@ -48,19 +48,25 @@ public class SimplifyCSG extends Simplify{
         //GETTING TRIS, ADDING TO ARRAY...
         for(Polygon poly : csg.getPolygons()){
             for(int v = 1; v < poly.vertices.size() - 1; v++) {
-                int v1 = uniqueVerts.get(getVertexString(convertCSGVert2myVert(poly.vertices.get(0)))).index;
-                int v2 = uniqueVerts.get(getVertexString(convertCSGVert2myVert(poly.vertices.get(v)))).index;
-                int v3 = uniqueVerts.get(getVertexString(convertCSGVert2myVert(poly.vertices.get(v+1)))).index;
 
                 Triangle triangle = new Triangle();
-                triangle.vertexIndex=new int[]{v1,v2,v3};
+
+                Vertex vert1 = uniqueVerts.get(getVertexString(convertCSGVert2myVert(poly.vertices.get(0)))).addTriangle(triangle);
+                Vertex vert2 = uniqueVerts.get(getVertexString(convertCSGVert2myVert(poly.vertices.get(v)))).addTriangle(triangle);
+                Vertex vert3 = uniqueVerts.get(getVertexString(convertCSGVert2myVert(poly.vertices.get(v+1)))).addTriangle(triangle);
+
+                triangle.vertexIndex=new int[]{vert1.index,vert2.index,vert3.index};
                 triangles.add(triangle);
             }
         }
     }
 
     public static CSG simplifyCSG(CSG csg){
-        simplify_mesh(1800, 7);
+        //simplify_mesh((int)(csg.numTriangles*0.9f), 7);
+
+        Vertex randomVertex = vertices.get((int)(Math.random()*vertsUnique));
+
+
         CSG simplifiedCSG = CSG.fromPolygons(polygonsFromTriangles());
         return simplifiedCSG;
     }

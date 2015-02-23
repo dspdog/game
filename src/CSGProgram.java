@@ -7,8 +7,8 @@ import utils.time;
  */
 public class CSGProgram {
     long myIteration=0;
-    long lifetimeMs = 100000;
-    long minIterationPeriodMs = 500;
+    long lifetimeMs = 10000;
+    long minIterationPeriodMs = 200;
     long minSimplifyPeriodMs = 1000;
 
     worldObject myWorldObject= null;
@@ -49,13 +49,13 @@ public class CSGProgram {
 
             if(time.getTime() - lastBuildTime > minSimplifyPeriodMs) {
                 System.out.println("SIMPLIFY!");
-                minSimplifyPeriodMs = 100000;
+                minSimplifyPeriodMs = 1000;
                 lastBuildTime = time.getTime();
 
                 //if(time.getTime() - lastSimplifyTime > minSimplifyPeriodMs) {
                     SimplifyCSG.loadCSG(myCSG);
                     if(myWorldObject instanceof worldObject){
-                       // myWorldObject.setCSG(SimplifyCSG.simplifyCSG(myCSG));
+                       myWorldObject.setCSG(SimplifyCSG.simplifyCSG(myCSG));
                     }
                     lastSimplifyTime = time.getTime();
                 //}
