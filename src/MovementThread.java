@@ -54,7 +54,7 @@ public class MovementThread implements Runnable {
     void handleMouseInput(float dt){
         if(gameInputs.consoleIsEnabled)return; //skip rest of function if console is open
         rotationx = 2f * (gameInputs.mouseY - RenderThread.myHeight/2)/RenderThread.myHeight;
-        rotationy = -2f * (gameInputs.mouseX - RenderThread.myWidth/2)/RenderThread.myWidth;
+        rotationy = 180f -2f * (gameInputs.mouseX - RenderThread.myWidth/2)/RenderThread.myWidth;
     }
 
     void handleKeyboardInput(float dt){

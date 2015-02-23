@@ -15,14 +15,30 @@ class Vertex{
     SymmetricMatrix q;
 
     HashSet<Triangle> trianglesContainingMe;
+    HashSet<Vertex> nextVerts; //edges containing this vertex
 
     int index; //index in csg vertex list
 
     public Vertex(){
         trianglesContainingMe = new HashSet<>();
+        nextVerts = new HashSet<>();
         triangleReferenceStart =0;
         triangleReferenceCount =0;
         isOnABorder =false;
+    }
+
+    public Vertex getNext(){ //random next edge
+        return (Vertex)nextVerts.toArray()[(int)Math.random()*nextVerts.size()];
+    }
+
+    public Vertex addNext(Vertex v){
+        nextVerts.add(v);
+        return this;
+    }
+
+    public Vertex removeNext(Vertex v){
+        nextVerts.remove(v);
+        return this;
     }
 
     public Vertex addTriangle(Triangle tri){

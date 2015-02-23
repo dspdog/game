@@ -55,6 +55,10 @@ public class SimplifyCSG extends Simplify{
                 Vertex vert2 = uniqueVerts.get(getVertexString(convertCSGVert2myVert(poly.vertices.get(v)))).addTriangle(triangle);
                 Vertex vert3 = uniqueVerts.get(getVertexString(convertCSGVert2myVert(poly.vertices.get(v+1)))).addTriangle(triangle);
 
+                vert1.addNext(vert2);
+                vert2.addNext(vert3);
+                vert3.addNext(vert1);
+
                 triangle.vertexIndex=new int[]{vert1.index,vert2.index,vert3.index};
                 triangles.add(triangle);
             }
@@ -65,7 +69,8 @@ public class SimplifyCSG extends Simplify{
         //simplify_mesh((int)(csg.numTriangles*0.9f), 7);
 
         Vertex randomVertex = vertices.get((int)(Math.random()*vertsUnique));
-
+        Vertex nextVertex = randomVertex.getNext();
+        //^ TODO COLLAPSE THAT EDGE ^
 
         CSG simplifiedCSG = CSG.fromPolygons(polygonsFromTriangles());
         return simplifiedCSG;
