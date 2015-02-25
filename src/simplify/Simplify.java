@@ -22,7 +22,7 @@ public class Simplify {
 	//                 5..8 are good numbers
 	//                 more iterations yield higher quality
 	//
-
+/*
 	static void simplify_mesh(int target_count, double agressiveness) //aggressiveness 7
 	{
 		SimplifyHelper.unDeleteAllTriangles();
@@ -120,7 +120,7 @@ public class Simplify {
 	}
 
 
-
+*/
 
 	// compact triangles, compute edge error and build reference list
 
@@ -145,16 +145,16 @@ public class Simplify {
 		// but mostly improves the result for closed meshes
 		//
 		if( iteration == 0 ) {
-			SimplifyHelper.resetVertexMatrices();
-			SimplifyHelper.calculateTriangleNormals();
-			SimplifyHelper.calculateVertexMatrices();
-			SimplifyHelper.calculateTriangleEdgeErrors();
+			//SimplifyHelper.resetVertexMatrices();
+			//SimplifyHelper.calculateTriangleNormals();
+			//SimplifyHelper.calculateVertexMatrices();
+			//SimplifyHelper.calculateTriangleEdgeErrors();
 		}
 
-		SimplifyHelper.setupRefs();
+		//SimplifyHelper.setupRefs();
 
 		if( iteration == 0 ) {
-			SimplifyHelper.identifyBoundries();
+		//	SimplifyHelper.identifyBoundries();
 		}
 	}
 
@@ -167,7 +167,7 @@ public class Simplify {
 				triangles.set(lastTriangleIndex,triangle);
 				lastTriangleIndex++;
 				for(int j=0; j<3; j++){
-					vertices.get(triangle.vertexIndex[j]).triangleReferenceCount =1;
+					//vertices.get(triangle.vertexIndex[j]).triangleReferenceCount =1;
 				}
 			}else{
 				numDeleted++;
@@ -189,7 +189,7 @@ public class Simplify {
 
 		for(Triangle triangle : triangles){
 			for(int j=0; j<3; j++){
-				triangle.vertexIndex[j]=vertices.get(triangle.vertexIndex[j]).triangleReferenceStart;
+				//triangle.vertexIndex[j]=vertices.get(triangle.vertexIndex[j]).triangleReferenceStart;
 			}
 		}
 		ArrayUtils.resize(vertices, lastVertexIndex);

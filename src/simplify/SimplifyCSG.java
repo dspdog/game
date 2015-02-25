@@ -17,6 +17,8 @@ public class SimplifyCSG extends Simplify{
 
     public static void loadCSG(CSG csg){
 
+        //TODO skip zero-area triangles
+
         vertsNonUnique = 0;
         vertsUnique = 0;
         polys = 0;
@@ -45,6 +47,7 @@ public class SimplifyCSG extends Simplify{
             vertex.index = vertices.size()-1;
         }
 
+        int skippedTris = 0;
         //GETTING TRIS, ADDING TO ARRAY...
         for(Polygon poly : csg.getPolygons()){
             for(int v = 1; v < poly.vertices.size() - 1; v++) {
@@ -55,21 +58,28 @@ public class SimplifyCSG extends Simplify{
                 Vertex vert2 = uniqueVerts.get(getVertexString(convertCSGVert2myVert(poly.vertices.get(v)))).addTriangle(triangle);
                 Vertex vert3 = uniqueVerts.get(getVertexString(convertCSGVert2myVert(poly.vertices.get(v+1)))).addTriangle(triangle);
 
+                //building edges
                 vert1.addNext(vert2);
                 vert2.addNext(vert3);
                 vert3.addNext(vert1);
 
-                triangle.vertexIndex=new int[]{vert1.index,vert2.index,vert3.index};
-                triangles.add(triangle);
+                triangle.verts=new Vertex[]{vert1,vert2,vert3};
+
+                if(triangle.myArea()>0.001){
+                    triangles.add(triangle);
+                }else{
+                    skippedTris++;
+                }
             }
         }
+        System.out.println("Skipped " + skippedTris + " tris");
     }
 
     public static CSG simplifyCSG(CSG csg){
         loadCSG(csg);
         System.out.println("simp");
 
-        int removedXVerts = 100;
+        int removedXVerts = 10;
 
         for(int i=0; i<removedXVerts; i++){
             Vertex randomVertex = vertices.get((int)(Math.random()*vertsUnique));
@@ -102,9 +112,9 @@ public class SimplifyCSG extends Simplify{
 
     public static ArrayList<eu.mihosoft.vrl.v3d.Vertex> getCSGVertexListForMyTriangle(Triangle triangle){
         ArrayList<eu.mihosoft.vrl.v3d.Vertex> list = new ArrayList<>();
-        list.add(convertmyVert2CSGVert(vertices.get(triangle.vertexIndex[0])));
-        list.add(convertmyVert2CSGVert(vertices.get(triangle.vertexIndex[1])));
-        list.add(convertmyVert2CSGVert(vertices.get(triangle.vertexIndex[2])));
+        list.add(convertmyVert2CSGVert(triangle.verts[0]));
+        list.add(convertmyVert2CSGVert(triangle.verts[1]));
+        list.add(convertmyVert2CSGVert(triangle.verts[2]));
         return list;
     }
 
