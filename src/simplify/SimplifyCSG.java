@@ -66,11 +66,24 @@ public class SimplifyCSG extends Simplify{
     }
 
     public static CSG simplifyCSG(CSG csg){
-        //simplify_mesh((int)(csg.numTriangles*0.9f), 7);
+        loadCSG(csg);
+        System.out.println("simp");
 
-        Vertex randomVertex = vertices.get((int)(Math.random()*vertsUnique));
-        Vertex nextVertex = randomVertex.getNext();
-        //^ TODO COLLAPSE THAT EDGE ^
+        int removedXVerts = 100;
+
+        for(int i=0; i<removedXVerts; i++){
+            Vertex randomVertex = vertices.get((int)(Math.random()*vertsUnique));
+            Vertex nextVertex = randomVertex.getNext();
+
+            Vector3f avPos = new Vector3f(
+                    (randomVertex.pos.x + nextVertex.pos.x)/2,
+                    (randomVertex.pos.y + nextVertex.pos.y)/2,
+                    (randomVertex.pos.z + nextVertex.pos.z)/2
+            );
+
+            randomVertex.pos.set(avPos.x, avPos.y, avPos.z);
+            nextVertex.pos.set(avPos.x, avPos.y, avPos.z);
+        }
 
         CSG simplifiedCSG = CSG.fromPolygons(polygonsFromTriangles());
         return simplifiedCSG;
