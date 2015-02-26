@@ -36,7 +36,9 @@ public class MovementThread implements Runnable {
 
     void updateGameLogic(){
         frame++;
-        float dt = time.getDtMS()*0.1f;
+        float dt = (float)time.getDtMSf()/1000f * 0.02f;
+
+        //System.out.println("dt" + dt);
 
         tree.cameraXVector.set(glHelper.cameraXVector);
         tree.cameraYVector.set(glHelper.cameraYVector);
@@ -58,6 +60,7 @@ public class MovementThread implements Runnable {
     }
 
     void handleKeyboardInput(float dt){
+
         gameInputs.pollInputs();
         if(gameInputs.consoleIsEnabled)return; //skip rest of function if console is open
         Vector3f poi = gameScene.poi;

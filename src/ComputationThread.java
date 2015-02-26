@@ -6,11 +6,11 @@ import utils.time;
 public class ComputationThread implements Runnable {
 
     public static int fps = 0;
-    public static long lastFPS = 0;
+    public static float lastFPS = 0;
     public static int myFPS = 0;
 
     private boolean running = false;
-    public static long lastGameLogic;
+    public static float lastGameLogic;
 
     long frame=0;
 

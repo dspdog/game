@@ -51,31 +51,42 @@ public class SimplifyCSG extends Simplify{
         //GETTING TRIS, ADDING TO ARRAY...
         for(Polygon poly : csg.getPolygons()){
             for(int v = 1; v < poly.vertices.size() - 1; v++) {
+                Triangle triangle = new Triangle(
+                        uniqueVerts.get(getVertexString(convertCSGVert2myVert(poly.vertices.get(0)))),
+                        uniqueVerts.get(getVertexString(convertCSGVert2myVert(poly.vertices.get(v)))),
+                        uniqueVerts.get(getVertexString(convertCSGVert2myVert(poly.vertices.get(v + 1))))
+                );
 
-                Triangle triangle = new Triangle();
-
-                Vertex vert1 = uniqueVerts.get(getVertexString(convertCSGVert2myVert(poly.vertices.get(0)))).addTriangle(triangle);
-                Vertex vert2 = uniqueVerts.get(getVertexString(convertCSGVert2myVert(poly.vertices.get(v)))).addTriangle(triangle);
-                Vertex vert3 = uniqueVerts.get(getVertexString(convertCSGVert2myVert(poly.vertices.get(v+1)))).addTriangle(triangle);
-
-                //building edges
-                vert1.addNext(vert2);
-                vert2.addNext(vert3);
-                vert3.addNext(vert1);
-
-                triangle.verts=new Vertex[]{vert1,vert2,vert3};
-
-                if(triangle.myArea()>0.001){
+                if(triangle.myAreaSquared()>0){
+                    //building edges
+                    triangle.verts[0].addNext(triangle.verts[1]).addTriangle(triangle);
+                    triangle.verts[1].addNext(triangle.verts[2]).addTriangle(triangle);
+                    triangle.verts[2].addNext(triangle.verts[0]).addTriangle(triangle);
                     triangles.add(triangle);
                 }else{
                     skippedTris++;
                 }
             }
         }
-        System.out.println("Skipped " + skippedTris + " tris");
+        System.out.println("Removed " + skippedTris + " tris");
     }
 
     public static CSG simplifyCSG(CSG csg){
+
+        //TODO order verts by size or err metric...
+
+        /*
+        //http://stackoverflow.com/questions/683041/java-how-do-i-use-a-priorityqueue
+        PriorityQueue<Patient> patientQueue = new PriorityQueue<Patient>(10, new Comparator<Patient>() {
+            public int compare(Patient patient1, Patient patient2) {
+                return (patient1.isEmergencyCase() == patient2.isEmergencyCase()) ? (Integer.valueOf(patient1.getId()).compareTo(patient2.getId()))
+                                                                                  : (patient1.isEmergencyCase() ? -1 : 1);
+            }
+        });
+
+        patientQueue.add(new Patient(1, "Patient1", false));
+         */
+
         loadCSG(csg);
         System.out.println("simp");
 
