@@ -1,5 +1,6 @@
 import eu.mihosoft.vrl.v3d.*;
 import simplify.SimplifyCSG;
+import utils.RandomHelper;
 import utils.time;
 
 /**
@@ -13,8 +14,8 @@ public class CSGProgram {
 
     worldObject myWorldObject= null;
 
-    float radius = 25f;
-    int quality = 4;
+    float radius = 10f;
+    int quality = 6;
 
     Vector3d center = new Vector3d(0,0,0);
     CSG myCSG = new Sphere(center, radius,quality,quality).toCSG();

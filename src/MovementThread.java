@@ -36,7 +36,7 @@ public class MovementThread implements Runnable {
 
     void updateGameLogic(){
         frame++;
-        float dt = (float)time.getDtMSf()/1000f * 0.02f;
+        float dt = (float)time.getDtMSf()/1000f/1000f;
 
         //System.out.println("dt" + dt);
 

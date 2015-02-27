@@ -12,29 +12,30 @@ import java.util.stream.Collectors;
 /**
  * Created by user on 2/12/2015.
  */
-public class SimplifyCSG extends Simplify{
+public final class SimplifyCSG{
 
     public static int vertsNonUnique = 0;
     public static int vertsUnique = 0;
     public static int polys = 0;
 
-    private static Comparator<Vertex> compareEdges = (v1, v2) -> v1.distance(v1.shortestEdge()) > v2.distance(v2.shortestEdge()) ? 1 : -1;
-    public static PriorityQueue<Vertex> vertsByEdgeLength = new PriorityQueue<Vertex>(10000, compareEdges);
+    static final ArrayList<Triangle> triangles = new ArrayList<>();
+    static final ArrayList<Vertex> vertices = new ArrayList<>();
+    private static final Comparator<Vertex> compareEdges = (v1, v2) -> v1.distance(v1.shortestEdge()) > v2.distance(v2.shortestEdge()) ? 1 : -1;
+    public static final PriorityQueue<Vertex> vertsByEdgeLength = new PriorityQueue<Vertex>(10000, compareEdges);
+    public static final HashMap<String, Vertex> uniqueVerts = new HashMap<>();
 
     public static void loadCSG(CSG csg){
-        vertsByEdgeLength.clear();
 
         vertsNonUnique = 0;
         vertsUnique = 0;
         polys = 0;
 
-        vertices = new ArrayList<>();
-        triangles = new ArrayList<>();
-        refs = new ArrayList<>();
+        vertsByEdgeLength.clear();
+        vertices.clear();
+        triangles.clear();
+        uniqueVerts.clear();
 
         //building vertex-index list....
-
-        HashMap<String, Vertex> uniqueVerts = new HashMap<>();
         for(Polygon poly : csg.getPolygons()){
             polys++;
             //GETTING UNIQUE VERTS...
@@ -52,29 +53,24 @@ public class SimplifyCSG extends Simplify{
             vertex.index = vertices.size()-1;
         }
 
-        int skippedTris = 0;
         //GETTING TRIS, ADDING TO ARRAY...
         for(Polygon poly : csg.getPolygons()){
-            for(int v = 1; v < poly.vertices.size() - 1; v++) {
+            int size = poly.vertices.size();
+            for(int v = 1; v < size - 1; v++) {
                 Triangle triangle = new Triangle(
-                        uniqueVerts.get(getVertexString(convertCSGVert2myVert(poly.vertices.get(0)))),
-                        uniqueVerts.get(getVertexString(convertCSGVert2myVert(poly.vertices.get(v)))),
-                        uniqueVerts.get(getVertexString(convertCSGVert2myVert(poly.vertices.get(v+1))))
+                    uniqueVerts.get(getVertexString(convertCSGVert2myVert(poly.vertices.get(0)))),
+                    uniqueVerts.get(getVertexString(convertCSGVert2myVert(poly.vertices.get(v)))),
+                    uniqueVerts.get(getVertexString(convertCSGVert2myVert(poly.vertices.get(v+1))))
                 );
-
                 if(triangle.myAreaSquared()>0){
                     //building edges
                     triangle.verts[0].addNext(triangle.verts[1]).addTriangle(triangle);
                     triangle.verts[1].addNext(triangle.verts[2]).addTriangle(triangle);
                     triangle.verts[2].addNext(triangle.verts[0]).addTriangle(triangle);
                     triangles.add(triangle);
-                    //trianglesByArea.add(triangle);
-                }else{
-                    skippedTris++;
                 }
             }
         }
-        //System.out.println("Removed " + skippedTris + " tris");
 
         //adding verts by edges now that edges have been built
         vertsByEdgeLength.addAll(uniqueVerts.values().stream().collect(Collectors.toList()));
@@ -83,22 +79,25 @@ public class SimplifyCSG extends Simplify{
     public static CSG simplifyCSG(CSG csg){
         loadCSG(csg);
 
-        int removedXVerts = 1000;
+        float minEdgeLength=1f;
+        int removedXVerts = 500;
 
         if(vertsByEdgeLength.size()>removedXVerts)
         for(int i=0; i<removedXVerts; i++){
-            Vertex randomVertex = vertsByEdgeLength.remove(); //vertices.get((int)(Math.random()*vertsUnique));
-            Vertex nextVertex = randomVertex.shortestEdge();
-
-            if(nextVertex!=null){
+            Vertex shortEdgeStart = vertsByEdgeLength.remove(); //vertices.get((int)(Math.random()*vertsUnique));
+            if(shortEdgeStart.isDirty)continue;
+            Vertex shortEdgeEnd = shortEdgeStart.shortestEdge();
+            if(shortEdgeEnd!=null && !shortEdgeEnd.isDirty){
+                if(shortEdgeStart.distance(shortEdgeEnd)>minEdgeLength)break;
+                shortEdgeStart.edgesDirty();
+                shortEdgeEnd.edgesDirty();
                 Vector3f avPos = new Vector3f(
-                        (randomVertex.pos.x + nextVertex.pos.x)/2,
-                        (randomVertex.pos.y + nextVertex.pos.y)/2,
-                        (randomVertex.pos.z + nextVertex.pos.z)/2
+                        (shortEdgeStart.pos.x + shortEdgeEnd.pos.x)/2,
+                        (shortEdgeStart.pos.y + shortEdgeEnd.pos.y)/2,
+                        (shortEdgeStart.pos.z + shortEdgeEnd.pos.z)/2
                 );
-
-                randomVertex.pos.set(avPos.x, avPos.y, avPos.z);
-                nextVertex.pos.set(avPos.x, avPos.y, avPos.z);
+                shortEdgeStart.pos.set(avPos.x, avPos.y, avPos.z);
+                shortEdgeEnd.pos.set(avPos.x, avPos.y, avPos.z);
             }
         }
         CSG simplifiedCSG = CSG.fromPolygons(polygonsFromTriangles());
@@ -137,10 +136,9 @@ public class SimplifyCSG extends Simplify{
     }
 
     public static String getVertexString(Vertex vertex){
-        float roundToNearesth = 1000000.0f;
-        return  Float.toString(Math.round(vertex.pos.x*roundToNearesth)/roundToNearesth) +
-                Float.toString(Math.round(vertex.pos.y*roundToNearesth)/roundToNearesth) +
-                Float.toString(Math.round(vertex.pos.z*roundToNearesth)/roundToNearesth);
+        float roundToNearesth = 100.0f;
+        return  Float.toString((int)(vertex.pos.x*roundToNearesth)/roundToNearesth) +
+                Float.toString((int)(vertex.pos.y*roundToNearesth)/roundToNearesth) +
+                Float.toString((int)(vertex.pos.z*roundToNearesth)/roundToNearesth);
     }
-
 }

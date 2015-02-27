@@ -12,6 +12,9 @@ class Vertex{
     int triangleReferenceStart =0; //index within Refs array - TriangleIndex*3 + 0/1/2
     int triangleReferenceCount =0;
     boolean isOnABorder =false;
+
+    boolean isDirty=false;
+
     SymmetricMatrix q;
 
     HashSet<Triangle> trianglesContainingMe;
@@ -25,6 +28,7 @@ class Vertex{
         triangleReferenceStart =0;
         triangleReferenceCount =0;
         isOnABorder =false;
+        isDirty=false;
     }
 
     public Vertex getNext(){ //random next edge
@@ -47,6 +51,13 @@ class Vertex{
             }
         }
         return shortestV;
+    }
+
+    public void edgesDirty(){
+        this.isDirty=true;
+        for(Vertex v : nextVerts){
+            v.isDirty=true;
+        }
     }
 
     public float distance(Vertex v){
