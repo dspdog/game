@@ -24,6 +24,7 @@ public class gameInputs {
     static boolean SPINNING_CCW=false;
 
     static boolean TURBO=false;
+    static boolean ANTI_TURBO=false;
     static boolean SAVE_CURRENT_OBJ = false;
 
     static boolean endProgram = false;
@@ -57,6 +58,7 @@ public class gameInputs {
         SPINNING_CCW=Keyboard.isKeyDown(Keyboard.KEY_F);
 
         TURBO=Keyboard.isKeyDown(Keyboard.KEY_LSHIFT);
+        ANTI_TURBO=Keyboard.isKeyDown(Keyboard.KEY_LCONTROL);
 
         if(Keyboard.isKeyDown(Keyboard.KEY_ESCAPE))endProgram=true;
 

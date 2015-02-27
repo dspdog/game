@@ -67,6 +67,7 @@ public class MovementThread implements Runnable {
 
         float speed = dt;
         if(gameInputs.TURBO){speed*=5;}
+        if(gameInputs.ANTI_TURBO){speed/=5;}
 
         if(gameInputs.SPINNING_CW){
             rotationz+=speed;

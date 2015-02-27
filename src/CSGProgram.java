@@ -9,7 +9,7 @@ public class CSGProgram {
     long myIteration=0;
     long lifetimeMs = 10000;
     long minIterationPeriodMs = 10;
-    long minSimplifyPeriodMs = 1000;
+    long minSimplifyPeriodMs = 100;
 
     worldObject myWorldObject= null;
 
@@ -49,7 +49,6 @@ public class CSGProgram {
 
             if(time.getTime() - lastBuildTime > minSimplifyPeriodMs) {
                 System.out.println("SIMPLIFY!");
-                minSimplifyPeriodMs = 1000;
                 lastBuildTime = time.getTime();
 
                 //if(time.getTime() - lastSimplifyTime > minSimplifyPeriodMs) {
