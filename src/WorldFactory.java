@@ -8,7 +8,7 @@ public class WorldFactory {
     static void buildWorld(){
         gameScene.addWorldObject(new worldObject(CSGFactory.arrow()));
 
-        for(int i=0; i<1000; i++){
+        for(int i=0; i<100; i++){
             gameScene.addWorldObject(new worldObject(CSGFactory.arrow()).setPos(new Vector3f((i%25)*10,0,i)));
         }
 

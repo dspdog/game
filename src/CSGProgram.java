@@ -8,7 +8,7 @@ import utils.time;
 public class CSGProgram {
     long myIteration=0;
     long lifetimeMs = 10000;
-    long minIterationPeriodMs = 200;
+    long minIterationPeriodMs = 10;
     long minSimplifyPeriodMs = 1000;
 
     worldObject myWorldObject= null;

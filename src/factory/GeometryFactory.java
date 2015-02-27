@@ -22,6 +22,7 @@ import static org.lwjgl.opengl.GL15.*;
 
 public class GeometryFactory {
     static public boolean doCSGSparkle = true;
+
     public static void plane(){
         glHelper.prepare2D(1024, 1024);
         int size = 250;
@@ -217,25 +218,10 @@ public class GeometryFactory {
         return new int[]{vbo_vertex_handle,vbo_color_handle};
     }
 
-    public static void drawCSG(CSG csg){
-        if(doCSGSparkle){
-            CSGUtils.shakeNormals(csg);}
-        csg.getTriangles();
-        for(Polygon poly : csg.getPolygons()){
-            glBegin(GL_TRIANGLE_FAN); //http://stackoverflow.com/questions/8043923/gl-triangle-fan-explanation
-            glColor3f((float)poly.vertices.get(0).normal.x, (float)poly.vertices.get(0).normal.y, (float)poly.vertices.get(0).normal.z);
-            glVertex3f((float)poly.vertices.get(0).pos.x, (float)poly.vertices.get(0).pos.y, (float)poly.vertices.get(0).pos.z);
-            for(int v=1; v<poly.vertices.size(); v++){
-                glColor3f((float)poly.vertices.get(v).normal.x, (float)poly.vertices.get(v).normal.y, (float)poly.vertices.get(v).normal.z);
-                glVertex3f((float)poly.vertices.get(v).pos.x, (float)poly.vertices.get(v).pos.y, (float)poly.vertices.get(v).pos.z);
-            }
-            glEnd();
-        }
-    }
-
     public static int[] csgVBOHandles(CSG csg){
         if(doCSGSparkle){
             CSGUtils.shakeNormals(csg);}
+
         csg.getTriangles();
         int vbo_vertex_handle = glGenBuffers();
         glBindBuffer(GL_ARRAY_BUFFER, vbo_vertex_handle);

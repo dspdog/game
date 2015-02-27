@@ -36,6 +36,27 @@ class Vertex{
         return this;
     }
 
+    public Vertex shortestEdge(){
+        float shortest=999999;
+        Vertex shortestV = null;
+        for(Vertex v : nextVerts){
+            float dist = this.distance(v);
+            if(dist<shortest){
+                shortest=dist;
+                shortestV=v;
+            }
+        }
+        return shortestV;
+    }
+
+    public float distance(Vertex v){
+        if(v==null) return 0; //TODO correct?
+        float x=this.pos.x-v.pos.x;
+        float y=this.pos.y-v.pos.y;
+        float z=this.pos.z-v.pos.z;
+        return (float)Math.sqrt(x*x+y*y+z*z);
+    }
+
     public Vertex removeNext(Vertex v){
         nextVerts.remove(v);
         return this;

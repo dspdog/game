@@ -4,7 +4,10 @@ import eu.mihosoft.vrl.v3d.*;
 import org.lwjgl.util.vector.Vector3f;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.PriorityQueue;
+import java.util.stream.Collectors;
 
 /**
  * Created by user on 2/12/2015.
@@ -15,9 +18,14 @@ public class SimplifyCSG extends Simplify{
     public static int vertsUnique = 0;
     public static int polys = 0;
 
+    //public static PriorityQueue<Triangle> trianglesByArea;
+    public static PriorityQueue<Vertex> vertsByEdgeLength;
+
+    private static Comparator<Vertex> compareEdges = (v1, v2) -> v1.distance(v1.shortestEdge()) > v2.distance(v2.shortestEdge()) ? 1 : -1;
+
     public static void loadCSG(CSG csg){
 
-        //TODO skip zero-area triangles
+        vertsByEdgeLength = new PriorityQueue<Vertex>(100000, compareEdges);
 
         vertsNonUnique = 0;
         vertsUnique = 0;
@@ -63,48 +71,46 @@ public class SimplifyCSG extends Simplify{
                     triangle.verts[1].addNext(triangle.verts[2]).addTriangle(triangle);
                     triangle.verts[2].addNext(triangle.verts[0]).addTriangle(triangle);
                     triangles.add(triangle);
+                    //trianglesByArea.add(triangle);
                 }else{
                     skippedTris++;
                 }
             }
         }
-        System.out.println("Removed " + skippedTris + " tris");
+        //System.out.println("Removed " + skippedTris + " tris");
+
+        //as in CSG.java
+//adding verts by edges now that edges have been built
+        vertsByEdgeLength.addAll(uniqueVerts.values().stream().collect(Collectors.toList()));
     }
 
     public static CSG simplifyCSG(CSG csg){
 
         //TODO order verts by size or err metric...
 
-        /*
-        //http://stackoverflow.com/questions/683041/java-how-do-i-use-a-priorityqueue
-        PriorityQueue<Patient> patientQueue = new PriorityQueue<Patient>(10, new Comparator<Patient>() {
-            public int compare(Patient patient1, Patient patient2) {
-                return (patient1.isEmergencyCase() == patient2.isEmergencyCase()) ? (Integer.valueOf(patient1.getId()).compareTo(patient2.getId()))
-                                                                                  : (patient1.isEmergencyCase() ? -1 : 1);
-            }
-        });
-
-        patientQueue.add(new Patient(1, "Patient1", false));
-         */
-
         loadCSG(csg);
-        System.out.println("simp");
+        //System.out.println("simp");
 
-        int removedXVerts = 10;
+        int removedXVerts = 1000;
 
+        if(vertsByEdgeLength.size()>removedXVerts)
         for(int i=0; i<removedXVerts; i++){
-            Vertex randomVertex = vertices.get((int)(Math.random()*vertsUnique));
-            Vertex nextVertex = randomVertex.getNext();
 
-            Vector3f avPos = new Vector3f(
-                    (randomVertex.pos.x + nextVertex.pos.x)/2,
-                    (randomVertex.pos.y + nextVertex.pos.y)/2,
-                    (randomVertex.pos.z + nextVertex.pos.z)/2
-            );
+            Vertex randomVertex = vertsByEdgeLength.remove(); //vertices.get((int)(Math.random()*vertsUnique));
+            Vertex nextVertex = randomVertex.shortestEdge();
 
-            randomVertex.pos.set(avPos.x, avPos.y, avPos.z);
-            nextVertex.pos.set(avPos.x, avPos.y, avPos.z);
-        }
+            //if(i<10)System.out.println("SHORT " + randomVertex.distance(nextVertex));
+            if(nextVertex!=null){
+                Vector3f avPos = new Vector3f(
+                        (randomVertex.pos.x + nextVertex.pos.x)/2,
+                        (randomVertex.pos.y + nextVertex.pos.y)/2,
+                        (randomVertex.pos.z + nextVertex.pos.z)/2
+                );
+
+                randomVertex.pos.set(avPos.x, avPos.y, avPos.z);
+                nextVertex.pos.set(avPos.x, avPos.y, avPos.z);
+            }
+         }
 
         CSG simplifiedCSG = CSG.fromPolygons(polygonsFromTriangles());
         return simplifiedCSG;
@@ -142,7 +148,7 @@ public class SimplifyCSG extends Simplify{
     }
 
     public static String getVertexString(Vertex vertex){
-        float roundToNearesth = 1000.0f;
+        float roundToNearesth = 100000.0f;
         return  Float.toString(Math.round(vertex.pos.x*roundToNearesth)/roundToNearesth) +
                 Float.toString(Math.round(vertex.pos.y*roundToNearesth)/roundToNearesth) +
                 Float.toString(Math.round(vertex.pos.z*roundToNearesth)/roundToNearesth);
