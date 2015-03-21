@@ -1,6 +1,3 @@
-import org.lwjgl.util.vector.Vector3f;
-import shapes.tree;
-import utils.glHelper;
 import utils.time;
 
 public class ComputationThread implements Runnable {
@@ -32,7 +29,7 @@ public class ComputationThread implements Runnable {
     void updateComputations(){
         frame++;
         float dt = time.getDtMS()*0.1f;
-        gameScene.logicScene(dt);
+        GameScene.logicScene(dt);
         lastGameLogic = time.getTime();
         updateFPS();
     }

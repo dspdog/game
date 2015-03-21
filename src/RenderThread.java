@@ -112,7 +112,7 @@ public class RenderThread {
         WorldFactory.buildWorld();
         initScreenCapture();
 
-        while (!Display.isCloseRequested() && !gameInputs.endProgram) {
+        while (!Display.isCloseRequested() && !GameInputs.endProgram) {
             update();
             renderGL();
             Display.update();
@@ -193,7 +193,7 @@ public class RenderThread {
             glClearColor (0.0f, 0.0f, 1.0f, 1.0f);
             glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);            // Clear Screen And Depth Buffer on the fbo to red
             cameraTransform();
-            gameScene.drawScene();
+            GameScene.drawScene();
 
         }
 
@@ -215,7 +215,7 @@ public class RenderThread {
         glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
         if(doWireFrame){glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );}
         cameraTransform();
-        gameScene.drawScene();
+        GameScene.drawScene();
 
         glPopMatrix();
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -258,12 +258,12 @@ public class RenderThread {
             glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, 0);
         }
 
-        if(gameInputs.consoleIsEnabled){
-            stencilValue = glHelper.sampleStencil((int)gameInputs.mouseX, (int)gameInputs.mouseY);
+        if(GameInputs.consoleIsEnabled){
+            stencilValue = glHelper.sampleStencil((int) GameInputs.mouseX, (int) GameInputs.mouseY);
         }else{
             stencilValue = glHelper.sampleStencil(myWidth/2, myHeight/2);
         }
-        gameScene.drawCursor();
+        GameScene.drawCursor();
         updateConsole();
     }
 
@@ -287,7 +287,7 @@ public class RenderThread {
 
     void cameraTransform(){//TODO camera obj --> set POV
 
-        gameScene.poi = cameraPos;
+        GameScene.poi = cameraPos;
 
         rotationx = -myLogic.rotationx*180f;
         rotationy = myLogic.rotationy*180f;
@@ -318,12 +318,12 @@ public class RenderThread {
                 glHelper.cameraZVector.normalise(glHelper.cameraZVector).z); //TODO reinit mouse orientation
         glHelper.updateCamVectors();
 
-        glTranslatef(gameScene.poi.x, gameScene.poi.y, gameScene.poi.z);
+        glTranslatef(GameScene.poi.x, GameScene.poi.y, GameScene.poi.z);
     }
 
     public static WorldObject worldObject_AtMouse(){
-        if(gameScene.idsMap.containsKey(stencilValue+"")){
-            return gameScene.idsMap.get(stencilValue+"");
+        if(GameScene.idsMap.containsKey(stencilValue+"")){
+            return GameScene.idsMap.get(stencilValue+"");
         }else{
             return null;
         }

@@ -3,10 +3,7 @@ package simplify;
 import eu.mihosoft.vrl.v3d.*;
 import org.lwjgl.util.vector.Vector3f;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.PriorityQueue;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -78,12 +75,14 @@ public final class SimplifyCSG{
         return myCSG;
     }
 
-    public static void updateVertsByEdgeLength(){
+    public static PriorityQueue<Vertex> getVertsByEdgeLength(){
         vertsByEdgeLength.clear();
         vertsByEdgeLength.addAll(uniqueVerts.values().stream().collect(Collectors.toList()));
+        return vertsByEdgeLength;
     }
 
-    public static int detectBorders(){
+    static int initialBorders = -1;
+    public static int removeBorders(Collection vertexList){
         int borderEdges=0;
 
         for(Triangle triangle : triangles){
@@ -92,22 +91,27 @@ public final class SimplifyCSG{
             Vertex edge3 = triangle.verts[2];
 
             if(edge1.isBorder(edge2)){
-                vertsByEdgeLength.remove(edge1);
-                vertsByEdgeLength.remove(edge2);
+                vertexList.remove(edge1);
+                vertexList.remove(edge2);
                 borderEdges++;
             }
 
             if(edge2.isBorder(edge3)){
-                vertsByEdgeLength.remove(edge3);
-                vertsByEdgeLength.remove(edge2);
+                vertexList.remove(edge3);
+                vertexList.remove(edge2);
                 borderEdges++;
             }
 
             if(edge3.isBorder(edge1)){
-                vertsByEdgeLength.remove(edge1);
-                vertsByEdgeLength.remove(edge3);
+                vertexList.remove(edge1);
+                vertexList.remove(edge3);
                 borderEdges++;
             }
+        }
+
+        if(initialBorders==-1){
+            initialBorders=borderEdges;
+            System.out.println("initial border edges " +  initialBorders);
         }
 
         System.out.println("border edges " +  borderEdges);
@@ -115,20 +119,19 @@ public final class SimplifyCSG{
     }
 
     public static CSG simplifyMyCSG(){
-        updateVertsByEdgeLength();
-        detectBorders();
+        PriorityQueue<Vertex> prioritizedVerts = getVertsByEdgeLength();
+        removeBorders(prioritizedVerts);
 
         float minEdgeLength=5f;
         int removalsPerIteration = 5000;
 
-        if(vertsByEdgeLength.size()>removalsPerIteration) //just in case the mesh doesnt have many vertices...
+        if(prioritizedVerts.size()>removalsPerIteration)
         for(int i=0; i<removalsPerIteration; i++){
-            Vertex shortEdgeStart = vertsByEdgeLength.remove(); //vertices.get((int)(Math.random()*vertsUnique));
-
+            Vertex shortEdgeStart = prioritizedVerts.remove();
             if(shortEdgeStart.isDirty)continue;
-
             Vertex shortEdgeEnd = shortEdgeStart.shortestEdge();
-            if(shortEdgeEnd!=null ){
+
+            if(shortEdgeEnd!=null){
                 boolean borderSkip = shortEdgeEnd.isOnABorder || shortEdgeStart.isOnABorder; //(shortEdgeStart.isOnABorder && !shortEdgeEnd.isOnABorder) || (!shortEdgeStart.isOnABorder && shortEdgeEnd.isOnABorder); //xor
                 if(!shortEdgeEnd.isDirty && !borderSkip){
                     if(shortEdgeStart.distance(shortEdgeEnd)>minEdgeLength)break;

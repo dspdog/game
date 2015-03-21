@@ -1,11 +1,10 @@
-package shapes;
+package shapes.tree;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.util.vector.Vector3f;
 
 import java.io.*;
 import java.nio.FloatBuffer;
-import java.util.ArrayList;
 import java.util.Random;
 
 public final class tree implements java.io.Serializable {

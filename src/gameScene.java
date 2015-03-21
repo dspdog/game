@@ -8,7 +8,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import static org.lwjgl.opengl.GL11.*;
 
-class gameScene {
+class GameScene {
     private static CopyOnWriteArrayList<WorldObject> objs = new CopyOnWriteArrayList<>();
     public static Map<String, WorldObject> idsMap = new HashMap<>();
 
@@ -68,7 +68,7 @@ class gameScene {
         }
     }
 
-    public gameScene(){
+    public GameScene(){
         objs = new CopyOnWriteArrayList<>();
     }
 

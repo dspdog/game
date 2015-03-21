@@ -3,7 +3,6 @@ import eu.mihosoft.vrl.v3d.FileUtil;
 import factory.GeometryFactory;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.lwjgl.util.vector.Vector3f;
-import shapes.tree;
 import simplify.SimplifyCSG;
 import utils.time;
 

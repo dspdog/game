@@ -1,7 +1,7 @@
 package utils;
 
 import org.lwjgl.BufferUtils;
-import shapes.tree;
+import shapes.tree.tree;
 
 import java.nio.FloatBuffer;
 import java.util.ArrayList;

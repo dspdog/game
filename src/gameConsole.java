@@ -28,9 +28,9 @@ public class gameConsole {
 
     private static void updateInputString(){
         String str = "";
-        if(gameInputs.consoleIsEnabled){
+        if(GameInputs.consoleIsEnabled){
             str+=">>>";
-            str+=gameInputs.inputString;
+            str+= GameInputs.inputString;
             if((time.getTime() - startTime)%500<250){ //blink at 2hz
                 str+="_";
             }
@@ -47,8 +47,8 @@ public class gameConsole {
         updateInputString();
         if (time.getTime() - lastConsoleUpdate > updatePeriodMS) {
             lastConsoleUpdate = time.getTime();
-            String theString = statusString + "\n" + (gameInputs.consoleIsEnabled ? "\n" + StringHelper.getLastXLines(gameCommands.commandString, lines_To_Draw) : "") + inputString;
-            consoleTexture = getConsoleTexture(theString, consoleWidth, consoleHeight, alpha, gameInputs.consoleIsEnabled);
+            String theString = statusString + "\n" + (GameInputs.consoleIsEnabled ? "\n" + StringHelper.getLastXLines(gameCommands.commandString, lines_To_Draw) : "") + inputString;
+            consoleTexture = getConsoleTexture(theString, consoleWidth, consoleHeight, alpha, GameInputs.consoleIsEnabled);
         }
         glHelper.enableTransparency();
         glHelper.prepare2D(screenwidth, screenheight);

@@ -2,14 +2,12 @@ package factory;
 
 import eu.mihosoft.vrl.v3d.CSG;
 import eu.mihosoft.vrl.v3d.Polygon;
-import eu.mihosoft.vrl.v3d.Vector3d;
-import eu.mihosoft.vrl.v3d.Vertex;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL13;
 import org.newdawn.slick.opengl.*;
 import org.lwjgl.opengl.GL11;
 
-import shapes.tree;
+import shapes.tree.tree;
 import utils.CSGUtils;
 import utils.CubeMarcher;
 import utils.ShaderHelper;
@@ -176,7 +174,7 @@ public class GeometryFactory {
         glDisable(GL_TEXTURE_2D);
     }
 
-    public static int[] treeVBOLineHandles(shapes.tree theTree){
+    public static int[] treeVBOLineHandles(tree theTree){
         int vbo_vertex_handle = glGenBuffers();
         glBindBuffer(GL_ARRAY_BUFFER, vbo_vertex_handle);
         glBufferData(GL_ARRAY_BUFFER, tree.vertex_data, GL_STATIC_DRAW);
@@ -190,7 +188,7 @@ public class GeometryFactory {
         return new int[]{vbo_vertex_handle,vbo_color_handle};
     }
 
-    public static int[] treeVBOQuadHandles(shapes.tree theTree){
+    public static int[] treeVBOQuadHandles(tree theTree){
         int vbo_vertex_handle = glGenBuffers();
         glBindBuffer(GL_ARRAY_BUFFER, vbo_vertex_handle);
         glBufferData(GL_ARRAY_BUFFER, tree.vertex_data2, GL_STATIC_DRAW);

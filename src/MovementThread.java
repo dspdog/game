@@ -1,5 +1,5 @@
 import org.lwjgl.util.vector.Vector3f;
-import shapes.tree;
+import shapes.tree.tree;
 import utils.glHelper;
 import utils.time;
 
@@ -14,6 +14,8 @@ public class MovementThread implements Runnable {
     private boolean running = false;
     public static long lastGameLogic;
 
+    WorldObject objectUnderMouse;
+    
     tree theTree;
     long frame=0;
 
@@ -54,74 +56,74 @@ public class MovementThread implements Runnable {
     }
 
     void handleMouseInput(float dt){
-        if(gameInputs.consoleIsEnabled)return; //skip rest of function if console is open
-        rotationx = 2f * (gameInputs.mouseY - RenderThread.myHeight/2)/RenderThread.myHeight;
-        rotationy = 180f -2f * (gameInputs.mouseX - RenderThread.myWidth/2)/RenderThread.myWidth;
+        if(GameInputs.consoleIsEnabled)return; //skip rest of function if console is open
+        rotationx = 2f * (GameInputs.mouseY - RenderThread.myHeight/2)/RenderThread.myHeight;
+        rotationy = 180f -2f * (GameInputs.mouseX - RenderThread.myWidth/2)/RenderThread.myWidth;
     }
 
     void handleKeyboardInput(float dt){
 
-        gameInputs.pollInputs();
-        if(gameInputs.consoleIsEnabled)return; //skip rest of function if console is open
-        Vector3f poi = gameScene.poi;
+        GameInputs.pollInputs();
+        if(GameInputs.consoleIsEnabled)return; //skip rest of function if console is open
+        Vector3f poi = GameScene.poi;
 
         float speed = dt;
-        if(gameInputs.TURBO){speed*=5;}
-        if(gameInputs.ANTI_TURBO){speed/=5;}
+        if(GameInputs.TURBO){speed*=5;}
+        if(GameInputs.ANTI_TURBO){speed/=5;}
 
-        if(gameInputs.SPINNING_CW){
+        if(GameInputs.SPINNING_CW){
             rotationz+=speed;
         }
 
-        if(gameInputs.SPINNING_CCW){
+        if(GameInputs.SPINNING_CCW){
             rotationz-=speed;
         }
 
-        if(gameInputs.MOVING_FORWARD){
+        if(GameInputs.MOVING_FORWARD){
             poi.translate(
                     glHelper.cameraZVector.x*speed,
                     glHelper.cameraZVector.y*speed,
                     glHelper.cameraZVector.z*speed);
         }
 
-        if(gameInputs.MOVING_BACKWARD){
+        if(GameInputs.MOVING_BACKWARD){
             poi.translate(
                     -glHelper.cameraZVector.x*speed,
                     -glHelper.cameraZVector.y*speed,
                     -glHelper.cameraZVector.z*speed);
         }
 
-        if(gameInputs.MOVING_RIGHT){
+        if(GameInputs.MOVING_RIGHT){
             poi.translate(
                     -glHelper.cameraXVector.x*speed,
                     -glHelper.cameraXVector.y*speed,
                     -glHelper.cameraXVector.z*speed);
         }
 
-        if(gameInputs.MOVING_LEFT){
+        if(GameInputs.MOVING_LEFT){
             poi.translate(
                     glHelper.cameraXVector.x*speed,
                     glHelper.cameraXVector.y*speed,
                     glHelper.cameraXVector.z*speed);
         }
 
-        if(gameInputs.MOVING_UP){
+        if(GameInputs.MOVING_UP){
             poi.translate(
                     glHelper.cameraYVector.x*speed,
                     glHelper.cameraYVector.y*speed,
                     glHelper.cameraYVector.z*speed);
         }
 
-        if(gameInputs.MOVING_DOWN){
+        if(GameInputs.MOVING_DOWN){
             poi.translate(
                     -glHelper.cameraYVector.x*speed,
                     -glHelper.cameraYVector.y*speed,
                     -glHelper.cameraYVector.z*speed);
         }
 
-        if(gameInputs.SAVE_CURRENT_OBJ){
-            gameInputs.SAVE_CURRENT_OBJ=false;
-            WorldObject objectUnderMouse = RenderThread.worldObject_AtMouse();
+        if(GameInputs.SAVE_CURRENT_OBJ){
+            GameInputs.SAVE_CURRENT_OBJ=false;
+            objectUnderMouse = RenderThread.worldObject_AtMouse();
             boolean somethingIsSelected = objectUnderMouse instanceof WorldObject;
             if(somethingIsSelected){
                 objectUnderMouse.save();

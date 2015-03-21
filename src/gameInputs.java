@@ -5,7 +5,7 @@ import utils.StringHelper;
 /**
  * Created by user on 1/23/2015.
  */
-public class gameInputs {
+public class GameInputs {
 
     static boolean consoleIsEnabled = false;
     static String inputString = "";
@@ -64,7 +64,7 @@ public class gameInputs {
 
         if (Mouse.isButtonDown(0)) {
             //System.out.println("MOUSE DOWN @ X: " + x + " Y: " + y);
-            SAVE_CURRENT_OBJ = true;
+            //SAVE_CURRENT_OBJ = true;
         }
 
         while (Keyboard.next()) {
