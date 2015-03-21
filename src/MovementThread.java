@@ -121,8 +121,8 @@ public class MovementThread implements Runnable {
 
         if(gameInputs.SAVE_CURRENT_OBJ){
             gameInputs.SAVE_CURRENT_OBJ=false;
-            worldObject objectUnderMouse = RenderThread.worldObject_AtMouse();
-            boolean somethingIsSelected = objectUnderMouse instanceof worldObject;
+            WorldObject objectUnderMouse = RenderThread.worldObject_AtMouse();
+            boolean somethingIsSelected = objectUnderMouse instanceof WorldObject;
             if(somethingIsSelected){
                 objectUnderMouse.save();
             }

@@ -24,7 +24,9 @@ public final class SimplifyCSG{
     public static final PriorityQueue<Vertex> vertsByEdgeLength = new PriorityQueue<Vertex>(10000, compareEdges);
     public static final HashMap<String, Vertex> uniqueVerts = new HashMap<>();
 
-    public static void loadCSG(CSG csg){
+    public static CSG myCSG = null;
+
+    public static CSG loadCSG(CSG csg){
 
         vertsNonUnique = 0;
         vertsUnique = 0;
@@ -72,36 +74,79 @@ public final class SimplifyCSG{
             }
         }
 
-        //adding verts by edges now that edges have been built
+        myCSG = csg;
+        return myCSG;
+    }
+
+    public static void updateVertsByEdgeLength(){
+        vertsByEdgeLength.clear();
         vertsByEdgeLength.addAll(uniqueVerts.values().stream().collect(Collectors.toList()));
     }
 
-    public static CSG simplifyCSG(CSG csg){
-        loadCSG(csg);
+    public static int detectBorders(){
+        int borderEdges=0;
 
-        float minEdgeLength=1f;
-        int removedXVerts = 500;
+        for(Triangle triangle : triangles){
+            Vertex edge1 = triangle.verts[0];
+            Vertex edge2 = triangle.verts[1];
+            Vertex edge3 = triangle.verts[2];
 
-        if(vertsByEdgeLength.size()>removedXVerts)
-        for(int i=0; i<removedXVerts; i++){
-            Vertex shortEdgeStart = vertsByEdgeLength.remove(); //vertices.get((int)(Math.random()*vertsUnique));
-            if(shortEdgeStart.isDirty)continue;
-            Vertex shortEdgeEnd = shortEdgeStart.shortestEdge();
-            if(shortEdgeEnd!=null && !shortEdgeEnd.isDirty){
-                if(shortEdgeStart.distance(shortEdgeEnd)>minEdgeLength)break;
-                shortEdgeStart.edgesDirty();
-                shortEdgeEnd.edgesDirty();
-                Vector3f avPos = new Vector3f(
-                        (shortEdgeStart.pos.x + shortEdgeEnd.pos.x)/2,
-                        (shortEdgeStart.pos.y + shortEdgeEnd.pos.y)/2,
-                        (shortEdgeStart.pos.z + shortEdgeEnd.pos.z)/2
-                );
-                shortEdgeStart.pos.set(avPos.x, avPos.y, avPos.z);
-                shortEdgeEnd.pos.set(avPos.x, avPos.y, avPos.z);
+            if(edge1.isBorder(edge2)){
+                vertsByEdgeLength.remove(edge1);
+                vertsByEdgeLength.remove(edge2);
+                borderEdges++;
+            }
+
+            if(edge2.isBorder(edge3)){
+                vertsByEdgeLength.remove(edge3);
+                vertsByEdgeLength.remove(edge2);
+                borderEdges++;
+            }
+
+            if(edge3.isBorder(edge1)){
+                vertsByEdgeLength.remove(edge1);
+                vertsByEdgeLength.remove(edge3);
+                borderEdges++;
             }
         }
+
+        System.out.println("border edges " +  borderEdges);
+        return borderEdges;
+    }
+
+    public static CSG simplifyMyCSG(){
+        updateVertsByEdgeLength();
+        detectBorders();
+
+        float minEdgeLength=5f;
+        int removalsPerIteration = 5000;
+
+        if(vertsByEdgeLength.size()>removalsPerIteration) //just in case the mesh doesnt have many vertices...
+        for(int i=0; i<removalsPerIteration; i++){
+            Vertex shortEdgeStart = vertsByEdgeLength.remove(); //vertices.get((int)(Math.random()*vertsUnique));
+
+            if(shortEdgeStart.isDirty)continue;
+
+            Vertex shortEdgeEnd = shortEdgeStart.shortestEdge();
+            if(shortEdgeEnd!=null ){
+                boolean borderSkip = shortEdgeEnd.isOnABorder || shortEdgeStart.isOnABorder; //(shortEdgeStart.isOnABorder && !shortEdgeEnd.isOnABorder) || (!shortEdgeStart.isOnABorder && shortEdgeEnd.isOnABorder); //xor
+                if(!shortEdgeEnd.isDirty && !borderSkip){
+                    if(shortEdgeStart.distance(shortEdgeEnd)>minEdgeLength)break;
+                    shortEdgeStart.edgesDirty();
+                    shortEdgeEnd.edgesDirty();
+                    Vector3f avPos = new Vector3f(
+                            (shortEdgeStart.pos.x + shortEdgeEnd.pos.x)/2,
+                            (shortEdgeStart.pos.y + shortEdgeEnd.pos.y)/2,
+                            (shortEdgeStart.pos.z + shortEdgeEnd.pos.z)/2
+                    );
+                    shortEdgeStart.pos.set(avPos.x, avPos.y, avPos.z);
+                    shortEdgeEnd.pos.set(avPos.x, avPos.y, avPos.z);
+                }
+            }
+        }
+
         CSG simplifiedCSG = CSG.fromPolygons(polygonsFromTriangles());
-        return simplifiedCSG;
+        return loadCSG(simplifiedCSG);
     }
 
     public static ArrayList<Polygon> polygonsFromTriangles(){

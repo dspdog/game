@@ -17,14 +17,16 @@ class Vertex{
 
     SymmetricMatrix q;
 
-    HashSet<Triangle> trianglesContainingMe;
-    HashSet<Vertex> nextVerts; //edges containing this vertex
+    HashSet<Triangle> myTriangles;
+    HashSet<Vertex> myEdges; //edges containing this vertex
+
+    Vertex shortestEdge = null; //pre-calculated shortest edge, reset when vertex dirty
 
     int index; //index in csg vertex list
 
     public Vertex(){
-        trianglesContainingMe = new HashSet<>();
-        nextVerts = new HashSet<>();
+        myTriangles = new HashSet<>();
+        myEdges = new HashSet<>();
         triangleReferenceStart =0;
         triangleReferenceCount =0;
         isOnABorder =false;
@@ -32,32 +34,60 @@ class Vertex{
     }
 
     public Vertex getNext(){ //random next edge
-        return (Vertex)nextVerts.toArray()[(int)Math.random()*nextVerts.size()];
+        return (Vertex) myEdges.toArray()[(int)Math.random()* myEdges.size()];
     }
 
     public Vertex addNext(Vertex v){
-        nextVerts.add(v);
+        myEdges.add(v);
         return this;
     }
 
     public Vertex shortestEdge(){
+        if(this.shortestEdge !=null){return this.shortestEdge;}
         float shortest=999999;
         Vertex shortestV = null;
-        for(Vertex v : nextVerts){
+        for(Vertex v : myEdges){
             float dist = this.distance(v);
             if(dist<shortest){
                 shortest=dist;
                 shortestV=v;
             }
         }
-        return shortestV;
+        this.shortestEdge = shortestV;
+        return this.shortestEdge;
     }
 
     public void edgesDirty(){
+        this.shortestEdge = null;
         this.isDirty=true;
-        for(Vertex v : nextVerts){
+        for(Vertex v : myEdges){
             v.isDirty=true;
         }
+    }
+
+    public boolean isBorder(Vertex edge){
+        boolean _isBorder = trianglesContainingThisEdge(edge).size()==1;
+        isOnABorder = _isBorder || isOnABorder;
+        return _isBorder;
+    }
+
+    public HashSet<Triangle> trianglesContainingThisEdge(Vertex edge){
+        //loop over edges of triangles that contain this vert or the other
+        HashSet<Triangle> trianglesWithMe = new HashSet<>();
+
+        for(Triangle triangle : myTriangles){
+            if(triangle.containsVertex(edge)){
+                trianglesWithMe.add(triangle);
+            }
+        }
+
+        for(Triangle triangle : edge.myTriangles){
+            if(triangle.containsVertex(this)){
+                trianglesWithMe.add(triangle);
+            }
+        }
+
+        return trianglesWithMe;
     }
 
     public float distance(Vertex v){
@@ -69,17 +99,17 @@ class Vertex{
     }
 
     public Vertex removeNext(Vertex v){
-        nextVerts.remove(v);
+        myEdges.remove(v);
         return this;
     }
 
     public Vertex addTriangle(Triangle tri){
-        trianglesContainingMe.add(tri);
+        myTriangles.add(tri);
         return this;
     }
 
     public Vertex removeTriangle(Triangle tri){
-        trianglesContainingMe.remove(tri);
+        myTriangles.remove(tri);
         return this;
     }
 }

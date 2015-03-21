@@ -41,5 +41,12 @@ class Triangle{
         float z = v1.pos.z-v2.pos.z;
         return x*x+y*y+z*z;
     }
+
+    public boolean containsVertex(Vertex needle){
+        for(Vertex haystack : verts){
+            if(haystack==needle)return true;
+        }
+        return false;
+    }
 }
 

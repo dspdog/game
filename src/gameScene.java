@@ -1,9 +1,7 @@
 import factory.GeometryFactory;
 import org.lwjgl.util.vector.Vector3f;
 import utils.glHelper;
-import utils.time;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -11,8 +9,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import static org.lwjgl.opengl.GL11.*;
 
 class gameScene {
-    private static CopyOnWriteArrayList<worldObject> objs = new CopyOnWriteArrayList<>();
-    public static Map<String, worldObject> idsMap = new HashMap<>();
+    private static CopyOnWriteArrayList<WorldObject> objs = new CopyOnWriteArrayList<>();
+    public static Map<String, WorldObject> idsMap = new HashMap<>();
 
     public static Vector3f poi;
     //public static long numTris = 0;
@@ -25,7 +23,7 @@ class gameScene {
     public static void drawScene(){
         int tris = 0;
         glHelper.updateCamVectors();
-        for(worldObject wo : objs){
+        for(WorldObject wo : objs){
             glStencilFunc(GL_ALWAYS, wo.stencilId, -1);
             glPushMatrix();
 
@@ -36,13 +34,6 @@ class gameScene {
             wo.updateVBOs();
 
             switch (wo.myType){
-                case TREE:
-                    /*if(LogicThread.lastGameLogic -  RenderThread.lastVBOUpdate > 1){ //TODO use wo.lastVBOUpdate instead of RenderThread
-                        wo.updateVBOs();
-                        RenderThread.lastVBOUpdate= time.getTime();
-                    }
-                    GeometryFactory.drawQuadsByVBOHandles(wo.vertices, wo.VBOHandles);*/
-                    break;
                 case CSG:
                     //tris+=wo.myCSG.numTriangles;
                     GeometryFactory.drawTrisByVBOHandles(wo.myCSG.numTriangles, wo.VBOHandles);
@@ -65,12 +56,8 @@ class gameScene {
     }
 
     public static void logicScene(float dt){
-        for(worldObject wo : objs){
+        for(WorldObject wo : objs){
            switch (wo.myType){
-                case TREE:
-                    wo.myTree.perturb(false, false, 01.250f*dt);
-                    wo.VBODirty = true;
-                    break;
                 case CSG:
                     //static CSG - do nothing
                     break;
@@ -85,7 +72,7 @@ class gameScene {
         objs = new CopyOnWriteArrayList<>();
     }
 
-    public static void addWorldObject(worldObject wo){
+    public static void addWorldObject(WorldObject wo){
         objs.add(wo);
         idsMap.put(wo.stencilId+"", wo);
     }

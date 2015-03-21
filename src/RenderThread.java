@@ -27,7 +27,7 @@ public class RenderThread {
     public static int myWidth;
     public static int myHeight;
 
-    public static worldObject cameraObj;
+    public static WorldObject cameraObj;
 
     public static boolean doFBOPass;
     public static boolean doProcessPixels;
@@ -268,8 +268,8 @@ public class RenderThread {
     }
 
     void updateConsole(){ //TODO move console texture generation to another thread (the "computations" thread?)
-        worldObject objectUnderMouse = worldObject_AtMouse();
-        boolean somethingIsSelected = objectUnderMouse instanceof worldObject;
+        WorldObject objectUnderMouse = worldObject_AtMouse();
+        boolean somethingIsSelected = objectUnderMouse instanceof WorldObject;
 
         String consoleStatus ="RENDER FPS: " + myFPS +
                 "\nMOVEMENT FPS: " + myLogic.myFPS +
@@ -321,7 +321,7 @@ public class RenderThread {
         glTranslatef(gameScene.poi.x, gameScene.poi.y, gameScene.poi.z);
     }
 
-    public static worldObject worldObject_AtMouse(){
+    public static WorldObject worldObject_AtMouse(){
         if(gameScene.idsMap.containsKey(stencilValue+"")){
             return gameScene.idsMap.get(stencilValue+"");
         }else{

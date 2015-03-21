@@ -5,19 +5,17 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.lwjgl.util.vector.Vector3f;
 import shapes.tree;
 import simplify.SimplifyCSG;
-import utils.RandomHelper;
 import utils.time;
 
 import java.io.IOException;
 import java.nio.file.Paths;
 
-public class worldObject {
+public class WorldObject {
 
     Vector3f velocity = new Vector3f();
     Vector3f position = new Vector3f();
     Vector3f rotation = new Vector3f();
 
-    tree myTree;
     CSG myCSG;
     CSGProgram myCSGProg;
     long lastVBOUpdate=0;
@@ -55,33 +53,16 @@ public class worldObject {
             numVertsUnique=SimplifyCSG.vertsUnique;
             return;
         }
-
-        switch (myType){ //other types...
-            case TREE:
-                numTris = myTree.vertices/3; //? guessing
-                return;
-        }
         numTris=-1;
     }
 
-    public worldObject(){
+    public WorldObject(){
         position = new Vector3f(0,0,0); //RandomHelper.randomPosition(100);
         rotation = new Vector3f(0,0,0); //RandomHelper.randomRotation();
         velocity = new Vector3f(0,0,0);
     }
 
-    public worldObject(tree tree){
-        this();
-        name="TREE_" + randomName;
-        myType=WOType.TREE;
-        myTree = tree;
-        rotation=new Vector3f(0,0,0);
-        position=new Vector3f(0,0,0);
-        getStencilId();
-        updateGeometryData();
-    }
-
-    public worldObject(CSG csg){
+    public WorldObject(CSG csg){
         this();
         isCSG=true;
         name="CSG_" + randomName;
@@ -91,7 +72,7 @@ public class worldObject {
         updateGeometryData();
     }
 
-    public worldObject(CSGProgram csg){
+    public WorldObject(CSGProgram csg){
         this();
         isCSG=true;
         name="CSGProg_" + randomName;
@@ -102,7 +83,7 @@ public class worldObject {
         updateGeometryData();
     }
 
-    public worldObject setPos(Vector3f pos){
+    public WorldObject setPos(Vector3f pos){
         position.set(pos);
         return this;
     }
@@ -112,15 +93,6 @@ public class worldObject {
             if(isCSG){
                 VBOHandles = GeometryFactory.csgVBOHandles(getCSG());
                 numTris = getCSG().numTriangles;
-            }else{
-                switch (myType){
-                    case TREE:
-                        if(myTree!=null){
-                            VBOHandles = GeometryFactory.treeVBOQuadHandles(myTree);
-                            vertices = myTree.vertices;
-                        }
-                        break;
-                }
             }
             VBODirty =false;
             lastVBOUpdate= time.getTime();

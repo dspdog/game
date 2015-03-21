@@ -1,18 +1,18 @@
 import eu.mihosoft.vrl.v3d.*;
 import simplify.SimplifyCSG;
-import utils.RandomHelper;
 import utils.time;
 
 /**
  * Created by user on 2/7/2015.
  */
 public class CSGProgram {
-    long myIteration=0;
-    long lifetimeMs = 10000;
-    long minIterationPeriodMs = 10;
-    long minSimplifyPeriodMs = 100;
+    final static long lifetimeMs = 2000;
+    final static long minIterationPeriodMs = 50;
+    final static long minSimplifyPeriodMs = 100;
 
-    worldObject myWorldObject= null;
+    long myIteration=0;
+
+    WorldObject myWorldObject= null;
 
     float radius = 10f;
     int quality = 6;
@@ -42,7 +42,7 @@ public class CSGProgram {
 
                 lastBuildTime = time.getTime();
                 myIteration++;
-                if(myWorldObject instanceof worldObject){
+                if(myWorldObject instanceof WorldObject){
                     myWorldObject.updateGeometryData();
                 }
             }
@@ -54,13 +54,13 @@ public class CSGProgram {
 
                 //if(time.getTime() - lastSimplifyTime > minSimplifyPeriodMs) {
                     SimplifyCSG.loadCSG(myCSG);
-                    if(myWorldObject instanceof worldObject){
-                       myWorldObject.setCSG(SimplifyCSG.simplifyCSG(myCSG));
+                    if(myWorldObject instanceof WorldObject){
+                        myCSG = SimplifyCSG.simplifyMyCSG();
                     }
                     lastSimplifyTime = time.getTime();
                 //}
 
-                if(myWorldObject instanceof worldObject){
+                if(myWorldObject instanceof WorldObject){
                     myWorldObject.updateGeometryData();
                 }
             }
