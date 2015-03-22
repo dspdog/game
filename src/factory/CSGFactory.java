@@ -41,6 +41,11 @@ public class CSGFactory {
         return cone;
     }
 
+    public static CSG uncone(double girth, double length, int slices){
+        CSG cone = new Cylinder(0.1, girth*2, length/2, slices).toCSG();
+        return cone;
+    }
+
     public static CSG roundArrow(){
         double girth = 3;
         double length = 40;
@@ -64,26 +69,31 @@ public class CSGFactory {
         return base.union(base2, base3);
     }
 
-    public static CSG boxedVersion(CSG _base){
-        double scale = 32 * 2;
-        CSG base = _base.transformed(Transform.unity().translate(-scale,-scale,-scale));
+    public static CSG boundingBox(CSG base, Bounds bounds){
+        Vector3d max = bounds.getMax();
+        Vector3d min = bounds.getMin();
 
-        CSG xEdge = base.transformed(Transform.unity().scaleX(-1)).union(base);
-        CSG yEdge = xEdge.transformed(Transform.unity().scaleY(-1)).union(xEdge);
-        CSG zEdge = yEdge.transformed(Transform.unity().scaleZ(-1)).union(yEdge);
-        return zEdge;
+        base = base.transformed(Transform.unity().scale(0.2));
+
+        CSG UpperNorthEast = base.transformed(Transform.unity().translate(max.x, max.y, max.z).scale(1, 1, 1));
+        CSG UpperNorthWest = base.transformed(Transform.unity().translate(min.x, max.y, max.z).scale(-1, 1, 1));
+        CSG UpperSouthEast = base.transformed(Transform.unity().translate(max.x, min.y, max.z).scale(1, -1, 1));
+        CSG UpperSouthWest = base.transformed(Transform.unity().translate(min.x, min.y, max.z).scale(-1, -1, 1));
+
+        CSG LowerNorthEast = base.transformed(Transform.unity().translate(max.x, max.y, min.z).scale(1, 1, -1));
+        CSG LowerNorthWest = base.transformed(Transform.unity().translate(min.x, max.y, min.z).scale(-1, 1, -1));
+        CSG LowerSouthEast = base.transformed(Transform.unity().translate(max.x, min.y, min.z).scale(1, -1, -1));
+        CSG LowerSouthWest = base.transformed(Transform.unity().translate(min.x, min.y, min.z).scale(-1, -1, -1));
+
+        return UpperNorthEast.union(UpperNorthWest, UpperSouthEast, UpperSouthWest, LowerNorthEast, LowerNorthWest, LowerSouthEast, LowerSouthWest);
     }
 
-    public static CSG cornersBox(){
-        return boxedVersion(xyzVersions(roundShaft())).transformed(Transform.unity().scale(0.1));
-    }
-
-    public static CSG pointyBox(){
+    public static CSG pointyBoxBounds(Bounds bounds){
         double girth = 3;
         double length = 32;
         int slices = 8;
-        CSG arrow = cone(girth, length, slices).transformed(Transform.unity().rot(45,-45,0));
-        return boxedVersion(arrow).transformed(Transform.unity().scale(0.1));
+        CSG arrow = uncone(girth, length, slices).transformed(Transform.unity().rot(45,-45,0));
+        return boundingBox(arrow, bounds);
     }
 
     public static CSG xyzArrows(){

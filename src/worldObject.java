@@ -134,6 +134,7 @@ public class WorldObject {
     }
 
     public void setCSG(CSG csg){
+        VBODirty = true;
         switch (myType){
             case CSG:
                 myCSG = csg;

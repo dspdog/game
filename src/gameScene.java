@@ -1,3 +1,4 @@
+import factory.CSGFactory;
 import factory.GeometryFactory;
 import org.lwjgl.util.vector.Vector3f;
 import utils.glHelper;
@@ -61,9 +62,10 @@ class GameScene {
 
         WorldObject objAtMouse = RenderThread.worldObject_AtMouse();
 
-        if(selectionObject!=null && objAtMouse!=null){
-            selectionObject.position.set(RenderThread.worldObject_AtMouse().position);
-            //System.out.println(selectionObject.name);
+        if(objAtMouse!=null && selectionObject != null && objAtMouse!=selectionObject){
+            //setSelectionObject(new WorldObject(CSGFactory.pointyBoxBounds(objAtMouse.getCSG().getBounds())));
+            selectionObject.setCSG(CSGFactory.pointyBoxBounds(objAtMouse.getCSG().getBounds()));
+            selectionObject.position.set(objAtMouse.position);
         }
 
         for(WorldObject wo : objs){
@@ -88,8 +90,10 @@ class GameScene {
     }
 
     public static void setSelectionObject(WorldObject wo){
+        if(selectionObject!=null){objs.remove(selectionObject);}
+
         selectionObject = wo;
-        objs.add(wo);
+        objs.add(selectionObject);
         idsMap.put(wo.stencilId+"", wo);
     }
 }

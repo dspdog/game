@@ -282,7 +282,7 @@ public class RenderThread {
                 "\nVOLUME: " + (somethingIsSelected ? "???" : "---") +
                 "\nNAME: " + (somethingIsSelected ? objectUnderMouse.name : "---");
         GameConsole.setStatusString(consoleStatus);
-        GameConsole.setPos(32,32);
+        GameConsole.setPos(4,4);
         GameConsole.setSize(512,512);
         GameConsole.draw(myWidth, myHeight, 0.25f);
     }
@@ -330,6 +330,14 @@ public class RenderThread {
             return null;
         }
     }
+
+    /*public static WorldObject overlayObject_AtMouse(){
+        if(GameScene.idsMap.containsKey(stencilValue+"")){
+            return GameScene.idsMap.get(stencilValue+"");
+        }else{
+            return null;
+        }
+    }*/
 
     void processPixels(){
         long _total = 0;
