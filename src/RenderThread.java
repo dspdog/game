@@ -258,11 +258,8 @@ public class RenderThread {
             glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, 0);
         }
 
-        if(GameInputs.consoleIsEnabled){
-            stencilValue = glHelper.sampleStencil((int) GameInputs.mouseX, (int) GameInputs.mouseY);
-        }else{
-            stencilValue = glHelper.sampleStencil(myWidth/2, myHeight/2);
-        }
+        stencilValue = glHelper.sampleStencil((int) GameInputs.cursorX, (int) GameInputs.cursorY);
+
         GameScene.drawCursor();
         updateConsole();
     }

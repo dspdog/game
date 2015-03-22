@@ -20,7 +20,7 @@ class GameScene {
     static float coordsScale=5.0f;
 
     public static void drawCursor(){
-        GeometryFactory.reticle(RenderThread.myWidth/2, RenderThread.myHeight/2);
+        GeometryFactory.reticle((int)GameInputs.cursorX, RenderThread.myHeight - (int)GameInputs.cursorY);
     }
 
     public static void drawScene(){

@@ -26,8 +26,8 @@ public class CSGFactory {
         return union;
     }
 
-    public static CSG arrow(){
-        float depth = 0.2f;
+    public static CSG house(){
+        float depth = 2f;
         float size = 12f;
         CSG base = Extrude.points(new Vector3d(0,0,depth),new Vector3d(1,1,0), new Vector3d(1,0,0), new Vector3d(0,0,0), new Vector3d(0,1,0)).transformed(Transform.unity().scale(size));
         CSG top = Extrude.points(new Vector3d(0,0,depth),new Vector3d(0,0,0), new Vector3d(-1,1,0), new Vector3d(1,1,0)).transformed(Transform.unity().scale(size).translate(0.5, -1,0));

@@ -7,8 +7,8 @@ import org.lwjgl.util.vector.Vector3f;
 public class WorldFactory {
     static void buildWorld(){
 
-        for(int i=5; i<100; i++){
-            GameScene.addWorldObject(new WorldObject(CSGFactory.arrow()).setPos(new Vector3f((i % 25) * 10, 0, i)));
+        for(int i=0; i<32; i++){
+            GameScene.addWorldObject(new WorldObject(CSGFactory.house()).setPos(new Vector3f((i % 25) * 10, 0, i)));
         }
 
         //new WorldObject(CSGFactory.cornersBox())

@@ -13,6 +13,8 @@ public class GameInputs {
 
     static float mouseX =0;
     static float mouseY =0;
+    static float cursorX =0;
+    static float cursorY =0;
 
     static boolean MOVING_LEFT=false;
     static boolean MOVING_RIGHT=false;
@@ -35,17 +37,16 @@ public class GameInputs {
     static Vector3f dragEnd = new Vector3f();
 
     static public void pollInputs() { //adapted from http://ninjacave.com/lwjglbasics2
-
-        //Mouse.setGrabbed(true);
-        //Mouse.setClipMouseCoordinatesToWindow(false);
+        Mouse.setGrabbed(true);
 
         if(consoleIsEnabled){
-            //Mouse.setCursorPosition(Mouse.getX()%RenderThread.myWidth, Mouse.getY()%RenderThread.myHeight);
             Mouse.setClipMouseCoordinatesToWindow(true);
-            Mouse.setGrabbed(false);
+            cursorX = Mouse.getX();
+            cursorY = Mouse.getY();
         }else{
             Mouse.setClipMouseCoordinatesToWindow(false);
-            Mouse.setGrabbed(true);
+            cursorX = RenderThread.myWidth/2;
+            cursorY = RenderThread.myHeight/2;
         }
 
         mouseX = Mouse.getX();
