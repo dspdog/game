@@ -4,6 +4,7 @@ import factory.GeometryFactory;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.lwjgl.util.vector.Vector3f;
 import simplify.SimplifyCSG;
+import utils.CSGUtils;
 import utils.time;
 
 import java.io.IOException;
@@ -90,7 +91,7 @@ public class WorldObject {
     public void updateVBOs(){
         if(VBODirty){
             if(isCSG){
-                VBOHandles = GeometryFactory.csgVBOHandles(getCSG());
+                VBOHandles = CSGUtils.csgVBOHandles(getCSG());
                 numTris = getCSG().numTriangles;
             }
             VBODirty =false;

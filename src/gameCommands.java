@@ -1,4 +1,5 @@
 import factory.GeometryFactory;
+import utils.CSGUtils;
 import utils.StringHelper;
 
 /**
@@ -73,8 +74,8 @@ public class gameCommands {
                 System.out.println(RenderThread.doShaderOverlay);
                 break;
             case "sparkle":
-                GeometryFactory.doCSGSparkle= param.equalsIgnoreCase("on");
-                System.out.println(GeometryFactory.doCSGSparkle);
+                CSGUtils.doCSGSparkle= param.equalsIgnoreCase("on");
+                System.out.println(CSGUtils.doCSGSparkle);
                 break;
             case "pixels":
                 RenderThread.doProcessPixels= param.equalsIgnoreCase("on");

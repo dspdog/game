@@ -19,8 +19,6 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
 
 public class GeometryFactory {
-    static public boolean doCSGSparkle = true;
-
     public static void plane(){
         glHelper.prepare2D(1024, 1024);
         int size = 250;
@@ -214,63 +212,6 @@ public class GeometryFactory {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
         return new int[]{vbo_vertex_handle,vbo_color_handle};
-    }
-
-    public static int[] csgVBOHandles(CSG csg){
-        if(doCSGSparkle){
-            CSGUtils.shakeNormals(csg);}
-
-        csg.getTriangles();
-        int vbo_vertex_handle = glGenBuffers();
-        glBindBuffer(GL_ARRAY_BUFFER, vbo_vertex_handle);
-        glBufferData(GL_ARRAY_BUFFER, getCSGVertexData(csg), GL_STATIC_DRAW);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-        int vbo_color_handle = glGenBuffers();
-        glBindBuffer(GL_ARRAY_BUFFER, vbo_color_handle);
-        glBufferData(GL_ARRAY_BUFFER, getCSGColorData(csg), GL_STATIC_DRAW);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-        return new int[]{vbo_vertex_handle,vbo_color_handle};
-    }
-
-    static FloatBuffer getCSGVertexData(CSG csg){
-        final FloatBuffer vertex_data = BufferUtils.createFloatBuffer(csg.numTriangles*9);
-        for(Polygon poly : csg.getPolygons()){
-            for(int v=1; v<poly.vertices.size()-1; v++){
-                vertex_data.put((float)poly.vertices.get(0).pos.x).
-                            put((float)poly.vertices.get(0).pos.y).
-                            put((float)poly.vertices.get(0).pos.z).
-                            put((float)poly.vertices.get(v).pos.x).
-                            put((float)poly.vertices.get(v).pos.y).
-                            put((float)poly.vertices.get(v).pos.z).
-                            put((float)poly.vertices.get(v+1).pos.x).
-                            put((float)poly.vertices.get(v+1).pos.y).
-                            put((float)poly.vertices.get(v+1).pos.z);
-            }
-        }
-        vertex_data.flip();
-        return vertex_data;
-    }
-
-    static FloatBuffer getCSGColorData(CSG csg){
-        final FloatBuffer color_data = BufferUtils.createFloatBuffer(csg.numTriangles*9);
-        for(Polygon poly : csg.getPolygons()){
-            for(int v=1; v<poly.vertices.size()-1; v++){
-                //fill up buffers
-                color_data.put((float)poly.vertices.get(0).normal.x).
-                        put((float)poly.vertices.get(0).normal.y).
-                        put((float)poly.vertices.get(0).normal.z).
-                        put((float)poly.vertices.get(v).normal.x).
-                        put((float)poly.vertices.get(v).normal.y).
-                        put((float)poly.vertices.get(v).normal.z).
-                        put((float)poly.vertices.get(v+1).normal.x).
-                        put((float)poly.vertices.get(v+1).normal.y).
-                        put((float)poly.vertices.get(v+1).normal.z);
-            }
-        }
-        color_data.flip();
-        return color_data;
     }
 
     public interface gridFunction{

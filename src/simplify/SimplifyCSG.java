@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 /**
  * Created by user on 2/12/2015.
  */
-public final class SimplifyCSG{
+public final class SimplifyCSG{ //TODO make this a wrapper class for CSG, not a singleton class
 
     public static int vertsNonUnique = 0;
     public static int vertsUnique = 0;
@@ -17,13 +17,15 @@ public final class SimplifyCSG{
 
     static final ArrayList<Triangle> triangles = new ArrayList<>();
     static final ArrayList<Vertex> vertices = new ArrayList<>();
-    private static final Comparator<Vertex> compareEdges = (v1, v2) -> v1.distance(v1.shortestEdge()) > v2.distance(v2.shortestEdge()) ? 1 : -1;
+    private static final Comparator<Vertex> compareEdges = (Vertex v1, Vertex v2) -> {
+        return v1.distance(v1.shortestEdge()) > v2.distance(v2.shortestEdge()) ? 1 : -1;
+    };
     public static final PriorityQueue<Vertex> vertsByEdgeLength = new PriorityQueue<Vertex>(10000, compareEdges);
     public static final HashMap<String, Vertex> uniqueVerts = new HashMap<>();
 
     public static CSG myCSG = null;
 
-    public static CSG loadCSG(CSG csg){
+    public static CSG loadCSG(CSG csg){ //TODO bake colors
 
         vertsNonUnique = 0;
         vertsUnique = 0;
@@ -173,8 +175,7 @@ public final class SimplifyCSG{
 
     public static eu.mihosoft.vrl.v3d.Vertex convertmyVert2CSGVert(Vertex _vertex){
         Vector3d normal = new Vector3d(0,0,0); //calculated later by SimplifyHelper.calculateTriangleNormals
-        eu.mihosoft.vrl.v3d.Vertex res = new eu.mihosoft.vrl.v3d.Vertex(new Vector3d(_vertex.pos.x, _vertex.pos.y,_vertex.pos.z), normal);
-        return res;
+        return new eu.mihosoft.vrl.v3d.Vertex(new Vector3d(_vertex.pos.x, _vertex.pos.y,_vertex.pos.z), normal);
     }
 
     public static Vertex convertCSGVert2myVert(eu.mihosoft.vrl.v3d.Vertex _vertex){
