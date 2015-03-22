@@ -1,5 +1,4 @@
 import eu.mihosoft.vrl.v3d.*;
-import simplify.SimplifyCSG;
 import utils.time;
 
 /**
@@ -53,9 +52,9 @@ public class CSGProgram {
                 lastBuildTime = time.getTime();
 
                 //if(time.getTime() - lastSimplifyTime > minSimplifyPeriodMs) {
-                    SimplifyCSG.loadCSG(myCSG);
+                    //SimplifyCSG.loadCSG(myCSG);
                     if(myWorldObject instanceof WorldObject){
-                        myCSG = SimplifyCSG.simplifyMyCSG();
+                        //myCSG = SimplifyCSG.simplifyMyCSG();
                     }
                     lastSimplifyTime = time.getTime();
                 //}

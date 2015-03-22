@@ -1,9 +1,8 @@
 import eu.mihosoft.vrl.v3d.CSG;
 import eu.mihosoft.vrl.v3d.FileUtil;
-import factory.GeometryFactory;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.lwjgl.util.vector.Vector3f;
-import simplify.SimplifyCSG;
+import simplify.SuperCSG;
 import utils.CSGUtils;
 import utils.time;
 
@@ -17,6 +16,7 @@ public class WorldObject {
     Vector3f rotation = new Vector3f();
 
     CSG myCSG;
+    SuperCSG mySuperCSG;
     CSGProgram myCSGProg;
     long lastVBOUpdate=0;
 
@@ -46,11 +46,12 @@ public class WorldObject {
     public void updateGeometryData(){
 
         if(isCSG){ //CSG types
-            SimplifyCSG.loadCSG(getCSG());
+            mySuperCSG = new SuperCSG(getCSG());
+
             VBODirty = true;
-            numPolys=SimplifyCSG.polys;
-            numVerts=SimplifyCSG.vertsNonUnique;
-            numVertsUnique=SimplifyCSG.vertsUnique;
+            numPolys= mySuperCSG.polys;
+            numVerts= mySuperCSG.vertsNonUnique;
+            numVertsUnique= mySuperCSG.vertsUnique;
             return;
         }
         numTris=-1;
@@ -68,6 +69,7 @@ public class WorldObject {
         name="CSG_" + randomName;
         myType=WOType.CSG;
         myCSG = csg;
+        mySuperCSG = new SuperCSG(csg);
         getStencilId();
         updateGeometryData();
     }
@@ -139,6 +141,7 @@ public class WorldObject {
         switch (myType){
             case CSG:
                 myCSG = csg;
+                mySuperCSG = new SuperCSG(csg);
                 break;
             case CSGProgram:
                 myCSGProg.myCSG = csg;

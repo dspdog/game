@@ -2,6 +2,7 @@ package simplify;
 
 import eu.mihosoft.vrl.v3d.*;
 import org.lwjgl.util.vector.Vector3f;
+import utils.CSGUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -9,23 +10,26 @@ import java.util.stream.Collectors;
 /**
  * Created by user on 2/12/2015.
  */
-public final class SimplifyCSG{ //TODO make this a wrapper class for CSG, not a singleton class
+public final class SuperCSG {
+    public int vertsNonUnique = 0;
+    public int vertsUnique = 0;
+    public int polys = 0;
 
-    public static int vertsNonUnique = 0;
-    public static int vertsUnique = 0;
-    public static int polys = 0;
-
-    static final ArrayList<Triangle> triangles = new ArrayList<>();
-    static final ArrayList<Vertex> vertices = new ArrayList<>();
+    public final ArrayList<Triangle> triangles = new ArrayList<>();
+    public final ArrayList<Vertex> vertices = new ArrayList<>();
     private static final Comparator<Vertex> compareEdges = (Vertex v1, Vertex v2) -> {
         return v1.distance(v1.shortestEdge()) > v2.distance(v2.shortestEdge()) ? 1 : -1;
     };
-    public static final PriorityQueue<Vertex> vertsByEdgeLength = new PriorityQueue<Vertex>(10000, compareEdges);
-    public static final HashMap<String, Vertex> uniqueVerts = new HashMap<>();
+    public final PriorityQueue<Vertex> vertsByEdgeLength = new PriorityQueue<Vertex>(10000, compareEdges);
+    public final HashMap<String, Vertex> uniqueVerts = new HashMap<>();
 
     public static CSG myCSG = null;
 
-    public static CSG loadCSG(CSG csg){ //TODO bake colors
+    public SuperCSG(CSG csg){
+        myCSG = loadCSG(csg);
+    }
+
+    public CSG loadCSG(CSG csg){
 
         vertsNonUnique = 0;
         vertsUnique = 0;
@@ -43,15 +47,13 @@ public final class SimplifyCSG{ //TODO make this a wrapper class for CSG, not a 
             for(eu.mihosoft.vrl.v3d.Vertex _vertex : poly.vertices){
                 Vertex vertex = convertCSGVert2myVert(_vertex);
                 vertsNonUnique++;
-                uniqueVerts.put(getVertexString(vertex), vertex);
+                if(uniqueVerts.put(getVertexString(vertex), vertex)==null){//place unique vert -- null means its the first with this value
+                    //PUTTING UNIQUE VERTS INTO ARRAY...
+                    vertsUnique++;
+                    vertices.add(vertex);
+                    vertex.index = vertices.size()-1;
+                }
             }
-        }
-
-        //PUTTING VERTS INTO ARRAY...
-        for(Vertex vertex : uniqueVerts.values()){ //as in CSG.java
-            vertsUnique++;
-            vertices.add(vertex);
-            vertex.index = vertices.size()-1;
         }
 
         //GETTING TRIS, ADDING TO ARRAY...
@@ -68,23 +70,30 @@ public final class SimplifyCSG{ //TODO make this a wrapper class for CSG, not a 
                     triangle.verts[0].addNext(triangle.verts[1]).addTriangle(triangle);
                     triangle.verts[1].addNext(triangle.verts[2]).addTriangle(triangle);
                     triangle.verts[2].addNext(triangle.verts[0]).addTriangle(triangle);
+                    triangle.getNormal();
+                    triangle.getArea();
                     triangles.add(triangle);
                 }
             }
+        }
+
+        //BAKING COLORS
+        for(Vertex vert : uniqueVerts.values()){
+            vert.getColor();
         }
 
         myCSG = csg;
         return myCSG;
     }
 
-    public static PriorityQueue<Vertex> getVertsByEdgeLength(){
+    public PriorityQueue<Vertex> getVertsByEdgeLength(){
         vertsByEdgeLength.clear();
         vertsByEdgeLength.addAll(uniqueVerts.values().stream().collect(Collectors.toList()));
         return vertsByEdgeLength;
     }
 
-    static int initialBorders = -1;
-    public static int removeBorders(Collection vertexList){
+    int initialBorders = -1;
+    public int removeBorders(Collection vertexList){
         int borderEdges=0;
 
         for(Triangle triangle : triangles){
@@ -120,7 +129,7 @@ public final class SimplifyCSG{ //TODO make this a wrapper class for CSG, not a 
         return borderEdges;
     }
 
-    public static CSG simplifyMyCSG(){
+    public CSG simplifyMyCSG(){
         PriorityQueue<Vertex> prioritizedVerts = getVertsByEdgeLength();
         removeBorders(prioritizedVerts);
 
@@ -154,7 +163,7 @@ public final class SimplifyCSG{ //TODO make this a wrapper class for CSG, not a 
         return loadCSG(simplifiedCSG);
     }
 
-    public static ArrayList<Polygon> polygonsFromTriangles(){
+    public ArrayList<Polygon> polygonsFromTriangles(){
         ArrayList<Polygon> polyList = new ArrayList<>();
 
         for(Triangle triangle : triangles){
@@ -165,7 +174,7 @@ public final class SimplifyCSG{ //TODO make this a wrapper class for CSG, not a 
         return polyList;
     }
 
-    public static ArrayList<eu.mihosoft.vrl.v3d.Vertex> getCSGVertexListForMyTriangle(Triangle triangle){
+    public ArrayList<eu.mihosoft.vrl.v3d.Vertex> getCSGVertexListForMyTriangle(Triangle triangle){
         ArrayList<eu.mihosoft.vrl.v3d.Vertex> list = new ArrayList<>();
         list.add(convertmyVert2CSGVert(triangle.verts[0]));
         list.add(convertmyVert2CSGVert(triangle.verts[1]));
@@ -173,18 +182,18 @@ public final class SimplifyCSG{ //TODO make this a wrapper class for CSG, not a 
         return list;
     }
 
-    public static eu.mihosoft.vrl.v3d.Vertex convertmyVert2CSGVert(Vertex _vertex){
+    public eu.mihosoft.vrl.v3d.Vertex convertmyVert2CSGVert(Vertex _vertex){
         Vector3d normal = new Vector3d(0,0,0); //calculated later by SimplifyHelper.calculateTriangleNormals
         return new eu.mihosoft.vrl.v3d.Vertex(new Vector3d(_vertex.pos.x, _vertex.pos.y,_vertex.pos.z), normal);
     }
 
-    public static Vertex convertCSGVert2myVert(eu.mihosoft.vrl.v3d.Vertex _vertex){
+    public Vertex convertCSGVert2myVert(eu.mihosoft.vrl.v3d.Vertex _vertex){
         Vertex res = new Vertex();
         res.pos = new Vector3f((float)_vertex.pos.x, (float)_vertex.pos.y, (float)_vertex.pos.z);
         return res;
     }
 
-    public static String getVertexString(Vertex vertex){
+    public String getVertexString(Vertex vertex){
         float roundToNearesth = 100.0f;
         return  Float.toString((int)(vertex.pos.x*roundToNearesth)/roundToNearesth) +
                 Float.toString((int)(vertex.pos.y*roundToNearesth)/roundToNearesth) +

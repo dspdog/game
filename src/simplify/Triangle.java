@@ -1,17 +1,19 @@
 package simplify;
 
+import eu.mihosoft.vrl.v3d.Vector3d;
 import org.lwjgl.util.vector.Vector3f;
 
 /**
  * Created by user on 2/11/2015.
  */
-class Triangle{
+public class Triangle{
     boolean deleted;
     boolean dirty;
-    Vertex[] verts;
+    public Vertex[] verts;
     double err[];
     double minimumErr;
-    Vector3f normal;
+    public Vector3d normal;
+    double area=0;
 
     public Triangle(){
         deleted=false;
@@ -24,6 +26,16 @@ class Triangle{
     public Triangle(Vertex vert1, Vertex vert2, Vertex vert3){
         this();
         verts = new Vertex[]{vert1,vert2,vert3};
+    }
+
+    public void getNormal(){
+        Vector3d e1 = new Vector3d(verts[2].pos.x - verts[1].pos.x, verts[2].pos.y - verts[1].pos.y, verts[2].pos.z - verts[1].pos.z);
+        Vector3d e2 = new Vector3d(verts[0].pos.x - verts[1].pos.x, verts[0].pos.y - verts[1].pos.y, verts[0].pos.z - verts[1].pos.z);
+        normal = e1.cross(e2).normalized(); //new Vector3d(vert.normal.x,vert.normal.y,vert.normal.z);
+    }
+
+    public void getArea(){
+        area=Math.sqrt(myAreaSquared());
     }
 
     public float myAreaSquared(){

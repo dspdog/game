@@ -7,12 +7,14 @@ import java.util.HashSet;
 /**
  * Created by user on 2/11/2015.
  */
-class Vertex{
-    Vector3f pos;
+public class Vertex{
+    public Vector3f pos;
+    public Vector3f color = null;
+
     int triangleReferenceStart =0; //index within Refs array - TriangleIndex*3 + 0/1/2
     int triangleReferenceCount =0;
     boolean isOnABorder =false;
-
+    boolean hasColor=false;
     boolean isDirty=false;
 
     SymmetricMatrix q;
@@ -31,6 +33,20 @@ class Vertex{
         triangleReferenceCount =0;
         isOnABorder =false;
         isDirty=false;
+    }
+
+    public void getColor(){
+        if(!hasColor){
+            //weighted average of face normals:
+            Vector3f normalSum=new Vector3f(0,0,0);
+            float totalArea = 0;
+            for(Triangle tri : myTriangles){
+                totalArea+=(float)tri.area;
+                normalSum.translate((float) (tri.normal.x * tri.area), (float) (tri.normal.y * tri.area), (float) (tri.normal.z * tri.area));
+            }
+            normalSum.scale(1.0f / totalArea);
+            color = normalSum;
+        }
     }
 
     public Vertex getNext(){ //random next edge
