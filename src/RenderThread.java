@@ -281,8 +281,10 @@ public class RenderThread {
                 "\nSURFACE: " + (somethingIsSelected ? "???" : "---") +
                 "\nVOLUME: " + (somethingIsSelected ? "???" : "---") +
                 "\nNAME: " + (somethingIsSelected ? objectUnderMouse.name : "---");
-        gameConsole.setStatusString(consoleStatus);
-        gameConsole.draw(myWidth, myHeight, 1024, 1024, 0, 0, 0.1f, 0.25f);
+        GameConsole.setStatusString(consoleStatus);
+        GameConsole.setPos(32,32);
+        GameConsole.setSize(512,512);
+        GameConsole.draw(myWidth, myHeight, 0.25f);
     }
 
     void cameraTransform(){//TODO camera obj --> set POV

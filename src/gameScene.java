@@ -12,6 +12,8 @@ class GameScene {
     private static CopyOnWriteArrayList<WorldObject> objs = new CopyOnWriteArrayList<>();
     public static Map<String, WorldObject> idsMap = new HashMap<>();
 
+    public static WorldObject selectionObject = null;
+
     public static Vector3f poi;
     //public static long numTris = 0;
     static float coordsScale=5.0f;
@@ -56,6 +58,14 @@ class GameScene {
     }
 
     public static void logicScene(float dt){
+
+        WorldObject objAtMouse = RenderThread.worldObject_AtMouse();
+
+        if(selectionObject!=null && objAtMouse!=null){
+            selectionObject.position.set(RenderThread.worldObject_AtMouse().position);
+            //System.out.println(selectionObject.name);
+        }
+
         for(WorldObject wo : objs){
            switch (wo.myType){
                 case CSG:
@@ -73,6 +83,12 @@ class GameScene {
     }
 
     public static void addWorldObject(WorldObject wo){
+        objs.add(wo);
+        idsMap.put(wo.stencilId+"", wo);
+    }
+
+    public static void setSelectionObject(WorldObject wo){
+        selectionObject = wo;
         objs.add(wo);
         idsMap.put(wo.stencilId+"", wo);
     }

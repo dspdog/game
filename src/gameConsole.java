@@ -1,5 +1,6 @@
 import factory.GeometryFactory;
 import factory.TextureFactory;
+import org.lwjgl.util.vector.Vector3f;
 import utils.StringHelper;
 import utils.glHelper;
 import utils.time;
@@ -10,7 +11,7 @@ import java.awt.image.BufferedImage;
 /**
  * Created by user on 1/23/2015.
  */
-public class gameConsole {
+public class GameConsole {
 
     static int consoleTexture = 0;
     static long lastConsoleUpdate = 0;
@@ -24,6 +25,17 @@ public class gameConsole {
     public static void setStatusString(String newString){statusString = newString;}
     public static void setInputString(String newString){
         inputString = newString;
+    }
+
+    public static Vector3f pos = new Vector3f(0,0,0);
+    public static Vector3f size = new Vector3f(512,512,0);
+
+    public static void setPos(int x, int y){
+        pos.set(x,y,0);
+    }
+
+    public static void setSize(int w, int h){
+        size.set(w,h,0);
     }
 
     private static void updateInputString(){
@@ -40,7 +52,7 @@ public class gameConsole {
         inputString = str;
     }
 
-    public static void draw(int screenwidth, int screenheight, int consoleWidth, int consoleHeight, float x, float y, float z, float alpha){
+    public static void draw(int screenwidth, int screenheight, float alpha){
 
         int lines_To_Draw = 24;
 
@@ -48,11 +60,11 @@ public class gameConsole {
         if (time.getTime() - lastConsoleUpdate > updatePeriodMS) {
             lastConsoleUpdate = time.getTime();
             String theString = statusString + "\n" + (GameInputs.consoleIsEnabled ? "\n" + StringHelper.getLastXLines(gameCommands.commandString, lines_To_Draw) : "") + inputString;
-            consoleTexture = getConsoleTexture(theString, consoleWidth, consoleHeight, alpha, GameInputs.consoleIsEnabled);
+            consoleTexture = getConsoleTexture(theString, (int)size.x, (int)size.y, alpha, GameInputs.consoleIsEnabled);
         }
         glHelper.enableTransparency();
         glHelper.prepare2D(screenwidth, screenheight);
-        GeometryFactory.plane2D(consoleTexture, consoleWidth/2, consoleHeight/2, x, y, z);
+        GeometryFactory.plane2D(consoleTexture, (int)size.x, (int)size.y, pos.x, pos.y, pos.z);
     }
 
     static final BufferedImage img = new BufferedImage(512, 512, BufferedImage.TYPE_INT_ARGB);

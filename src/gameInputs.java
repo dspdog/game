@@ -1,5 +1,6 @@
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.util.vector.Vector3f;
 import utils.StringHelper;
 
 /**
@@ -28,6 +29,10 @@ public class GameInputs {
     static boolean SAVE_CURRENT_OBJ = false;
 
     static boolean endProgram = false;
+
+    static boolean isDragging = false;
+    static Vector3f dragStart = new Vector3f();
+    static Vector3f dragEnd = new Vector3f();
 
     static public void pollInputs() { //adapted from http://ninjacave.com/lwjglbasics2
 
@@ -63,8 +68,18 @@ public class GameInputs {
         if(Keyboard.isKeyDown(Keyboard.KEY_ESCAPE))endProgram=true;
 
         if (Mouse.isButtonDown(0)) {
+            if(!isDragging){
+                isDragging=true;
+                dragStart = new Vector3f(mouseX,mouseY,0);
+            }
+
             //System.out.println("MOUSE DOWN @ X: " + x + " Y: " + y);
             //SAVE_CURRENT_OBJ = true;
+        }else{
+            if(!isDragging){
+                isDragging=false;
+                dragEnd = new Vector3f(mouseX,mouseY,0);
+            }
         }
 
         while (Keyboard.next()) {

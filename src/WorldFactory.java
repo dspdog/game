@@ -11,7 +11,8 @@ public class WorldFactory {
             GameScene.addWorldObject(new WorldObject(CSGFactory.arrow()).setPos(new Vector3f((i % 25) * 10, 0, i)));
         }
 
-        GameScene.addWorldObject(new WorldObject(CSGFactory.cornersBox()));
+        //new WorldObject(CSGFactory.cornersBox())
+        GameScene.setSelectionObject(new WorldObject(CSGFactory.pointyBox()));
 
         CSGProgram myProg = new CSGProgram();
       //  gameScene.addWorldObject(new WorldObject(myProg));

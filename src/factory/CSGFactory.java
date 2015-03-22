@@ -6,7 +6,6 @@ import eu.mihosoft.vrl.v3d.*;
  * Created by user on 2/4/2015.
  */
 public class CSGFactory {
-
     public static CSG testSet(){
         // we use cube and sphere as base geometries
         CSG cube = new Cube(2).toCSG();
@@ -37,11 +36,16 @@ public class CSGFactory {
         return finalShape;
     }
 
+    public static CSG cone(double girth, double length, int slices){
+        CSG cone = new Cylinder(girth*2, 0.1, length/2, slices).toCSG();
+        return cone;
+    }
+
     public static CSG roundArrow(){
         double girth = 3;
         double length = 40;
         int slices = 8;
-        CSG cone = new Cylinder(girth*2, 0.1, length/2, slices).toCSG().transformed(Transform.unity().translate(0,0,length));
+        CSG cone = cone(girth,length,slices).transformed(Transform.unity().translate(0, 0, length));
         CSG shaft = new Cylinder(girth, girth, length, slices).toCSG();
         return cone.union(shaft);
     }
@@ -50,7 +54,6 @@ public class CSGFactory {
         double girth = 3;
         double length = 32;
         int slices = 4;
-        //CSG cone = new Cylinder(girth*2, 0.1, length/2, slices).toCSG().transformed(Transform.unity().translate(0,0,length));
         CSG shaft = new Cylinder(girth, girth, length, slices).toCSG();
         return shaft;
     }
@@ -75,7 +78,16 @@ public class CSGFactory {
         return boxedVersion(xyzVersions(roundShaft())).transformed(Transform.unity().scale(0.1));
     }
 
+    public static CSG pointyBox(){
+        double girth = 3;
+        double length = 32;
+        int slices = 8;
+        CSG arrow = cone(girth, length, slices).transformed(Transform.unity().rot(45,-45,0));
+        return boxedVersion(arrow).transformed(Transform.unity().scale(0.1));
+    }
+
     public static CSG xyzArrows(){
-        return xyzVersions(roundArrow());
+        double s = 0.4;
+        return xyzVersions(roundArrow()).transformed(Transform.unity().scale(s,-s,-s));
     }
 }
