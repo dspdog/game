@@ -72,13 +72,27 @@ public class GameInputs {
 
         if(Keyboard.isKeyDown(Keyboard.KEY_ESCAPE))endProgram=true;
 
-        if (Mouse.isButtonDown(0) || Mouse.isButtonDown(1)) {
+        if (Mouse.isButtonDown(0)) { //any normal click...
             if(!isDragging){
                 clickEvent();
                 isDragging=true;
                 dragStart = new Vector3f(mouseX,mouseY,0);
             }
-        }else{
+        }
+
+        if (Mouse.isButtonDown(0) && !Mouse.isButtonDown(1)) { //left click excluding right click
+
+        }
+
+        if (Mouse.isButtonDown(1) && !Mouse.isButtonDown(0)) { //right click excluding left click
+
+        }
+
+        if (Mouse.isButtonDown(1) && Mouse.isButtonDown(0)) { //left-and-right click
+
+        }
+
+        if (!Mouse.isButtonDown(0) && !Mouse.isButtonDown(1)) { //everything unclicked
             if(isDragging){
                 isDragging=false;
                 dragEnd = new Vector3f(mouseX,mouseY,0);
