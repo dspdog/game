@@ -13,6 +13,7 @@ class GameScene {
     private static CopyOnWriteArrayList<WorldObject> objs = new CopyOnWriteArrayList<>();
     public static Map<String, WorldObject> idsMap = new HashMap<>();
 
+    public static WorldObject pointerObject = null;
     public static WorldObject selectionObject = null;
 
     public static Vector3f poi;
@@ -58,16 +59,22 @@ class GameScene {
        // numTris=tris;
     }
 
-    public static void logicScene(float dt){
-
-        WorldObject objAtMouse = RenderThread.worldObject_AtMouse();
-
-        if(objAtMouse!=null && selectionObject != null && objAtMouse!=selectionObject){
-            //setSelectionObject(new WorldObject(CSGFactory.pointyBoxBounds(objAtMouse.getCSG().getBounds())));
-            selectionObject.setCSG(CSGFactory.pointyBoxBounds(objAtMouse.getCSG().getBounds()));
-            selectionObject.position.set(objAtMouse.position);
+    public static void pointAtObj(WorldObject obj){
+        if(obj!=null && pointerObject != null && obj!= pointerObject && obj!= selectionObject){
+            pointerObject.setCSG(CSGFactory.pointyBoxBounds(obj.getCSG().getBounds()));
+            pointerObject.position.set(obj.position);
         }
+    }
 
+    public static void selectObj(WorldObject obj){
+        if(obj!=null && pointerObject != null && obj!= pointerObject && obj!= selectionObject){
+            selectionObject.setCSG(CSGFactory.cornerBoxBounds(obj.getCSG().getBounds()));
+            selectionObject.position.set(obj.position);
+        }
+    }
+
+    public static void logicScene(float dt){
+        pointAtObj(RenderThread.worldObject_AtMouse());
         for(WorldObject wo : objs){
            switch (wo.myType){
                 case CSG:
@@ -89,9 +96,15 @@ class GameScene {
         idsMap.put(wo.stencilId+"", wo);
     }
 
-    public static void setSelectionObject(WorldObject wo){
-        if(selectionObject!=null){objs.remove(selectionObject);}
+    public static void setPointerObject(WorldObject wo){
+        if(pointerObject != null){objs.remove(pointerObject);}
+        pointerObject = wo;
+        objs.add(pointerObject);
+        idsMap.put(wo.stencilId+"", wo);
+    }
 
+    public static void setSelectionObject(WorldObject wo){
+        if(selectionObject != null){objs.remove(selectionObject);}
         selectionObject = wo;
         objs.add(selectionObject);
         idsMap.put(wo.stencilId+"", wo);

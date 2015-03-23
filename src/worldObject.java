@@ -20,6 +20,9 @@ public class WorldObject {
     CSGProgram myCSGProg;
     long lastVBOUpdate=0;
 
+    static int totalWorldObjectsBuilt = 0;
+
+    int myObjectNo = 0;
     int[] VBOHandles;
     String name="";
 
@@ -58,6 +61,8 @@ public class WorldObject {
     }
 
     public WorldObject(){
+        totalWorldObjectsBuilt++;
+        myObjectNo=totalWorldObjectsBuilt;
         position = new Vector3f(0,0,0); //RandomHelper.randomPosition(100);
         rotation = new Vector3f(0,0,0); //RandomHelper.randomRotation();
         velocity = new Vector3f(0,0,0);
@@ -121,7 +126,7 @@ public class WorldObject {
     }
 
     public int getStencilId(){
-        stencilId = Math.abs(name.hashCode()%255);
+        stencilId = myObjectNo%255; //Math.abs(name.hashCode()%255);
         return stencilId;
     }
 

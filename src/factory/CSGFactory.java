@@ -96,6 +96,10 @@ public class CSGFactory {
         return boundingBox(arrow, bounds);
     }
 
+    public static CSG cornerBoxBounds(Bounds bounds){
+        return boundingBox(xyzVersions(roundShaft().transformed(Transform.unity().scale(-1f))), bounds);
+    }
+
     public static CSG xyzArrows(){
         double s = 0.4;
         return xyzVersions(roundArrow()).transformed(Transform.unity().scale(s,-s,-s));

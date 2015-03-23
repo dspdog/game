@@ -12,8 +12,8 @@ public class WorldFactory {
         }
 
         //new WorldObject(CSGFactory.cornersBox())
-        GameScene.setSelectionObject(new WorldObject(CSGFactory.uncone(1,1,3)));
-
+        GameScene.setPointerObject(new WorldObject(CSGFactory.uncone(1, 1, 3)));
+        GameScene.setSelectionObject(new WorldObject(CSGFactory.uncone(1, 1, 3)));
         CSGProgram myProg = new CSGProgram();
       //  gameScene.addWorldObject(new WorldObject(myProg));
     }

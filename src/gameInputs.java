@@ -36,6 +36,10 @@ public class GameInputs {
     static Vector3f dragStart = new Vector3f();
     static Vector3f dragEnd = new Vector3f();
 
+    static public void clickEvent(){
+       GameScene.selectObj(RenderThread.worldObject_AtMouse());
+    }
+
     static public void pollInputs() { //adapted from http://ninjacave.com/lwjglbasics2
         Mouse.setGrabbed(true);
 
@@ -68,16 +72,14 @@ public class GameInputs {
 
         if(Keyboard.isKeyDown(Keyboard.KEY_ESCAPE))endProgram=true;
 
-        if (Mouse.isButtonDown(0)) {
+        if (Mouse.isButtonDown(0) || Mouse.isButtonDown(1)) {
             if(!isDragging){
+                clickEvent();
                 isDragging=true;
                 dragStart = new Vector3f(mouseX,mouseY,0);
             }
-
-            //System.out.println("MOUSE DOWN @ X: " + x + " Y: " + y);
-            //SAVE_CURRENT_OBJ = true;
         }else{
-            if(!isDragging){
+            if(isDragging){
                 isDragging=false;
                 dragEnd = new Vector3f(mouseX,mouseY,0);
             }
@@ -89,18 +91,7 @@ public class GameInputs {
                     consoleIsEnabled = !consoleIsEnabled;
                 }else{
                     if(consoleIsEnabled){
-                        if (Keyboard.getEventKey() == Keyboard.KEY_BACK ) { //CONSOLE BACKSPACE
-                            if(inputString.length()>0)
-                            inputString=inputString.substring(0, inputString.length()-1);
-                        }else{
-                            if (Keyboard.getEventKey() == Keyboard.KEY_RETURN ) { //CONSOLE SUBMIT (RETURN KEY)
-                                if(!inputString.equals("")){gameCommands.submitCommand(inputString);}
-                                inputString="";
-                            }else{
-                                inputString+=(Keyboard.getEventCharacter()); //CONSOLE INPUT
-                            }
-
-                        }
+                        handleConsoleInput();
                     }
                 }
             } else {
@@ -108,8 +99,21 @@ public class GameInputs {
                 //    System.out.println("A Key Released");
                 //}
             }
-
             inputString = StringHelper.stripNonPrinting(inputString);
+        }
+    }
+
+    public static void handleConsoleInput(){
+        if (Keyboard.getEventKey() == Keyboard.KEY_BACK ) { //CONSOLE BACKSPACE
+            if(inputString.length()>0)
+                inputString=inputString.substring(0, inputString.length()-1);
+        }else{
+            if (Keyboard.getEventKey() == Keyboard.KEY_RETURN ) { //CONSOLE SUBMIT (RETURN KEY)
+                if(!inputString.equals("")){gameCommands.submitCommand(inputString);}
+                inputString="";
+            }else{
+                inputString+=(Keyboard.getEventCharacter()); //CONSOLE INPUT
+            }
         }
     }
 }
