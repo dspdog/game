@@ -15,6 +15,7 @@ class GameScene {
 
     public static WorldObject pointerObject = null;
     public static WorldObject selectionObject = null;
+    public static WorldObject selectedObj = null;
 
     public static Vector3f poi;
     //public static long numTris = 0;
@@ -64,10 +65,15 @@ class GameScene {
             pointerObject.setCSG(CSGFactory.pointyBoxBounds(obj.getCSG().getBounds()));
             pointerObject.position.set(obj.position);
         }
+
+        if(obj==null && pointerObject != null){
+            pointerObject.position.set(1000000,1000000,1000000);
+        }
     }
 
     public static void selectObj(WorldObject obj){
         if(obj!=null && pointerObject != null && obj!= pointerObject && obj!= selectionObject){
+            selectedObj = obj;
             selectionObject.setCSG(CSGFactory.cornerBoxBounds(obj.getCSG().getBounds()));
             selectionObject.position.set(obj.position);
         }

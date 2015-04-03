@@ -33,8 +33,11 @@ public class GameInputs {
     static boolean endProgram = false;
 
     static boolean isDragging = false;
+    static boolean isDraggingLeft = false;
+    static boolean isDraggingRight = false;
     static Vector3f dragStart = new Vector3f();
     static Vector3f dragEnd = new Vector3f();
+    static long dragEndTime = 0;
 
     static public void clickEvent(){
        GameScene.selectObj(RenderThread.worldObject_AtMouse());
@@ -72,7 +75,10 @@ public class GameInputs {
 
         if(Keyboard.isKeyDown(Keyboard.KEY_ESCAPE))endProgram=true;
 
-        if (Mouse.isButtonDown(0)) { //any normal click...
+        isDraggingLeft=Mouse.isButtonDown(0);
+        isDraggingRight=Mouse.isButtonDown(1);
+
+        if (isDraggingLeft || isDraggingRight) { //any normal click...
             if(!isDragging){
                 clickEvent();
                 isDragging=true;
@@ -80,22 +86,12 @@ public class GameInputs {
             }
         }
 
-        if (Mouse.isButtonDown(0) && !Mouse.isButtonDown(1)) { //left click excluding right click
-
-        }
-
-        if (Mouse.isButtonDown(1) && !Mouse.isButtonDown(0)) { //right click excluding left click
-
-        }
-
-        if (Mouse.isButtonDown(1) && Mouse.isButtonDown(0)) { //left-and-right click
-
-        }
-
-        if (!Mouse.isButtonDown(0) && !Mouse.isButtonDown(1)) { //everything unclicked
+        if (!isDraggingRight && !isDraggingLeft) { //unclicked
             if(isDragging){
                 isDragging=false;
                 dragEnd = new Vector3f(mouseX,mouseY,0);
+                dragEndTime = System.currentTimeMillis();
+                Mouse.setCursorPosition((int)dragStart.x,(int)dragStart.y);
             }
         }
 

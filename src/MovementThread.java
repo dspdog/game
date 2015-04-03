@@ -23,6 +23,12 @@ public class MovementThread implements Runnable {
     float rotationy=0;
     float rotationz=0;
 
+    public static Vector3f dragVector = new Vector3f();
+    static boolean lastRightClicked = false;
+    static boolean lastLeftClicked = false;
+    static float dragAmount=0;
+    static float prevDragAmount=0;
+
     public MovementThread(){
 
     }
@@ -57,8 +63,33 @@ public class MovementThread implements Runnable {
 
     void handleMouseInput(float dt){
         if(GameInputs.consoleIsEnabled)return; //skip rest of function if console is open
-        rotationx = 2f * (GameInputs.mouseY - RenderThread.myHeight/2)/RenderThread.myHeight;
-        rotationy = 180f -2f * (GameInputs.mouseX - RenderThread.myWidth/2)/RenderThread.myWidth;
+
+        if(!GameInputs.isDragging && System.currentTimeMillis()-GameInputs.dragEndTime>10){
+            rotationx = 2f * (GameInputs.mouseY - RenderThread.myHeight/2)/RenderThread.myHeight;
+            rotationy = 180f -2f * (GameInputs.mouseX - RenderThread.myWidth/2)/RenderThread.myWidth;
+            prevDragAmount=0;
+            dragAmount=0;
+        }else{
+            prevDragAmount = dragAmount;
+            dragAmount = (GameInputs.dragStart.y-GameInputs.mouseY) + (GameInputs.dragStart.x-GameInputs.mouseX);
+        }
+
+        float amount = dragAmount-prevDragAmount;
+        float dragScale = 0.1f;
+
+        amount*=dragScale;
+
+        dragVector= GameInputs.isDraggingLeft ?
+                    (GameInputs.isDraggingRight ? new Vector3f(0,amount,0) : new Vector3f(amount,0,0)) :
+                    (GameInputs.isDraggingRight ? new Vector3f(0,0,amount) : new Vector3f(0,0,0));
+
+        if(GameScene.selectedObj!=null){
+            GameScene.selectedObj.shiftPos(dragVector);
+            GameScene.selectObj(GameScene.selectedObj); //reset bounding box etc
+        }
+
+        lastLeftClicked=GameInputs.isDraggingLeft;
+        lastRightClicked=GameInputs.isDraggingRight;
     }
 
     void handleKeyboardInput(float dt){

@@ -95,6 +95,11 @@ public class WorldObject {
         return this;
     }
 
+    public WorldObject shiftPos(Vector3f pos){
+        position.translate(pos.x,pos.y,pos.z);
+        return this;
+    }
+
     public void updateVBOs(){
         if(VBODirty){
             if(isCSG){
