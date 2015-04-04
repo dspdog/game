@@ -3,9 +3,8 @@ package factory;
 import eu.mihosoft.vrl.v3d.CSG;
 import eu.mihosoft.vrl.v3d.Polygon;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL13;
+import org.lwjgl.opengl.*;
 import org.newdawn.slick.opengl.*;
-import org.lwjgl.opengl.GL11;
 
 import shapes.tree.tree;
 import utils.CSGUtils;
@@ -13,8 +12,10 @@ import utils.CubeMarcher;
 import utils.ShaderHelper;
 import utils.glHelper;
 
+import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 
+import static org.lwjgl.opengl.EXTFramebufferObject.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
 
@@ -108,9 +109,32 @@ public class GeometryFactory {
         ShaderHelper.bindShaders();
         GL13.glActiveTexture(GL13.GL_TEXTURE0);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, tex);
-        GeometryFactory.plane2D(tex, width, height, 0, 0, 0, true);
+        GeometryFactory.plane2D(tex, width/4, height/4, 0, 0, 0, true);
         ShaderHelper.releaseShaders();
     }
+
+    /*public static void depthOverlay(){
+        glHelper.prepare2D(1204, 1024);
+        int framebufferID= GL30.glGenFramebuffers();
+        GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, framebufferID);
+
+        int depthTexture = glGenTextures();
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 1024, 1024, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_INT, (ByteBuffer) null);
+        GL32.glFramebufferTexture(GL30.GL_FRAMEBUFFER, GL30.GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture); // attach it to the framebuffer
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+        //glTexParameteri(GL_TEXTURE_2D, GL_LUMINANCE, GL_INTENSITY);
+
+        glDrawBuffer(GL_NONE);
+        GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
+        ShaderHelper.bindShaders();
+        GeometryFactory.plane2D(depthTexture, 512, 512, 0, 0, 0, true);
+        ShaderHelper.releaseShaders();
+
+    }*/
 
     public static void plane2D(int tex, int size, float x, float y){
              plane2D(tex, size, size, x, y);

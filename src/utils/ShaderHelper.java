@@ -21,8 +21,19 @@ public class ShaderHelper { //http://wiki.lwjgl.org/index.php?title=GLSL_Shaders
     private static int program=0;
 
     public static void bindShaders(){
-        //ShaderHelper.setupShaders("screen.vert", "find_edges_rgb.frag");
-        ShaderHelper.setupShaders("screen.vert", "plain_texture0.frag");
+        bindTexture0Shader();
+    }
+
+    public static void bindDepthShader(){
+        bindShaders("screen.vert", "depth.frag");
+    }
+
+    public static void bindTexture0Shader(){
+        bindShaders("screen.vert", "plain_texture0.frag");
+    }
+
+    public static void bindShaders(String vertShader, String fragShader){
+        ShaderHelper.setupShaders(vertShader, fragShader);
         if(ShaderHelper.useShader){
             ARBShaderObjects.glUseProgramObjectARB(ShaderHelper.program);
         }

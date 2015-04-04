@@ -41,6 +41,10 @@ public class CSGFactory {
         return cone;
     }
 
+    public static CSG plate(){
+        return new Cylinder(32, 32, 2, 32).toCSG().transformed(new Transform().translate(0,12,0).rot(90,0,0));
+    }
+
     public static CSG uncone(double girth, double length, int slices){
         CSG cone = new Cylinder(0.1, girth*2, length/2, slices).toCSG();
         return cone;

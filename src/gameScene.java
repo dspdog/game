@@ -1,6 +1,7 @@
 import factory.CSGFactory;
 import factory.GeometryFactory;
 import org.lwjgl.util.vector.Vector3f;
+import utils.ShaderHelper;
 import utils.glHelper;
 
 import java.util.HashMap;
@@ -26,6 +27,7 @@ class GameScene {
     }
 
     public static void drawScene(){
+        ShaderHelper.bindDepthShader();
         int tris = 0;
         glHelper.updateCamVectors();
         for(WorldObject wo : objs){
@@ -57,6 +59,7 @@ class GameScene {
             glPopMatrix();
         }
         glPopMatrix();
+        ShaderHelper.releaseShaders();
        // numTris=tris;
     }
 
