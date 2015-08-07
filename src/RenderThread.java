@@ -116,6 +116,11 @@ public class RenderThread {
             update();
             renderGL();
             Display.update();
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             Display.sync(mySyncFPS); // cap fps to 60fps
         }
 

@@ -1,3 +1,4 @@
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.util.vector.Vector3f;
 import shapes.tree.tree;
 import utils.glHelper;
@@ -83,7 +84,7 @@ public class MovementThread implements Runnable {
                     (GameInputs.isDraggingRight ? new Vector3f(0,amount,0) : new Vector3f(amount,0,0)) :
                     (GameInputs.isDraggingRight ? new Vector3f(0,0,amount) : new Vector3f(0,0,0));
 
-        if(GameScene.selectedObj!=null){
+        if(GameScene.selectedObj!=null && (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))){
             GameScene.selectedObj.shiftPos(dragVector);
             GameScene.selectObj(GameScene.selectedObj); //reset bounding box etc
         }
@@ -98,7 +99,9 @@ public class MovementThread implements Runnable {
         if(GameInputs.consoleIsEnabled)return; //skip rest of function if console is open
         Vector3f poi = GameScene.poi;
 
-        float speed = dt;
+        float speedScale = 30f;
+
+        float speed = dt*speedScale;
         if(GameInputs.TURBO){speed*=5;}
         if(GameInputs.ANTI_TURBO){speed/=5;}
 
@@ -183,7 +186,7 @@ public class MovementThread implements Runnable {
                 frame++;
                 updateGameLogic();
                 //if(frame%10==0) //faster framerates
-                Thread.sleep(1);
+                Thread.sleep(10);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

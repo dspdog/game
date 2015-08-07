@@ -1,3 +1,4 @@
+import org.lwjgl.examples.Game;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.util.vector.Vector3f;
@@ -40,7 +41,13 @@ public class GameInputs {
     static long dragEndTime = 0;
 
     static public void clickEvent(){
-       GameScene.selectObj(RenderThread.worldObject_AtMouse());
+       WorldObject origObj = RenderThread.worldObject_AtMouse();
+        if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)){
+            WorldObject dupe = GameScene.dupeObj(origObj);
+            GameScene.selectObj(dupe);
+        }else{
+            GameScene.selectObj(origObj);
+        }
     }
 
     static public void pollInputs() { //adapted from http://ninjacave.com/lwjglbasics2
@@ -105,8 +112,8 @@ public class GameInputs {
                     }
                 }
             } else {
-                //if (Keyboard.getEventKey() == Keyboard.KEY_A) {
-                //    System.out.println("A Key Released");
+                //if (Keyboard.getEventKey() == Keyboard.KEY_SPACE) {
+                //    GameScene.dupeObj(GameScene.selectedObj);
                 //}
             }
             inputString = StringHelper.stripNonPrinting(inputString);

@@ -1,6 +1,7 @@
 import eu.mihosoft.vrl.v3d.CSG;
 import eu.mihosoft.vrl.v3d.FileUtil;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.lwjgl.Sys;
 import org.lwjgl.util.vector.Vector3f;
 import simplify.SuperCSG;
 import utils.CSGUtils;
@@ -88,6 +89,13 @@ public class WorldObject {
         csg.myWorldObject = this;
         getStencilId();
         updateGeometryData();
+    }
+
+    public WorldObject clone(){
+        WorldObject clone=  new WorldObject(this.getCSG());
+        clone.setPos(this.position);
+        clone.rotation = new Vector3f(this.rotation);
+        return clone;
     }
 
     public WorldObject setPos(Vector3f pos){

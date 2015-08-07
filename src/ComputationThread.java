@@ -53,7 +53,7 @@ public class ComputationThread implements Runnable {
                 frame++;
                 updateComputations();
                 //if(frame%10==0) //faster framerates
-                Thread.sleep(1);
+                Thread.sleep(10);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

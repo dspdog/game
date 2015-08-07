@@ -27,7 +27,7 @@ class GameScene {
     }
 
     public static void drawScene(){
-        ShaderHelper.bindDepthShader();
+        //ShaderHelper.bindTexture0Shader();
         int tris = 0;
         glHelper.updateCamVectors();
         for(WorldObject wo : objs){
@@ -65,7 +65,7 @@ class GameScene {
 
     public static void pointAtObj(WorldObject obj){
         if(obj!=null && pointerObject != null && obj!= pointerObject && obj!= selectionObject){
-            pointerObject.setCSG(CSGFactory.pointyBoxBounds(obj.getCSG().getBounds()));
+            pointerObject.setCSG(CSGFactory.pointyBoxBounds(obj.getCSG().getBounds())); //TODO check if bounds have changed
             pointerObject.position.set(obj.position);
         }
 
@@ -74,10 +74,26 @@ class GameScene {
         }
     }
 
+    public static WorldObject dupeObj(WorldObject obj){
+        WorldObject dupe = obj.clone();
+        addWorldObject(dupe);
+        return dupe;
+    }
+
     public static void selectObj(WorldObject obj){
         if(obj!=null && pointerObject != null && obj!= pointerObject && obj!= selectionObject){
+            //TODO clear selectedObjs list
             selectedObj = obj;
-            selectionObject.setCSG(CSGFactory.cornerBoxBounds(obj.getCSG().getBounds()));
+            selectionObject.setCSG(CSGFactory.cornerBoxBounds(obj.getCSG().getBounds())); //TODO inefficent
+            selectionObject.position.set(obj.position);
+        }
+    }
+
+    public static void addSelectObj(WorldObject obj){
+        if(obj!=null && pointerObject != null && obj!= pointerObject && obj!= selectionObject){
+            //TODO make a selectedObjs list
+            selectedObj = obj;
+            selectionObject.setCSG(CSGFactory.cornerBoxBounds(obj.getCSG().getBounds()));  //TODO inefficent
             selectionObject.position.set(obj.position);
         }
     }
