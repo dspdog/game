@@ -38,11 +38,14 @@ public class GameInputs {
     static boolean isDraggingRight = false;
     static Vector3f dragStart = new Vector3f();
     static Vector3f dragEnd = new Vector3f();
+
+    static Vector3f consoleMouseStart = new Vector3f();
+
     static long dragEndTime = 0;
 
     static public void clickEvent(){
        WorldObject origObj = RenderThread.worldObject_AtMouse();
-        if(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)){
+        if(Keyboard.isKeyDown(Keyboard.KEY_SPACE)){
             WorldObject dupe = GameScene.dupeObj(origObj);
             GameScene.selectObj(dupe);
         }else{
@@ -105,6 +108,12 @@ public class GameInputs {
         while (Keyboard.next()) {
             if (Keyboard.getEventKeyState()) {
                 if (Keyboard.getEventKey() == Keyboard.KEY_GRAVE ) {
+                    if(consoleIsEnabled){
+                        Mouse.setCursorPosition((int)consoleMouseStart.x,(int)consoleMouseStart.y);
+                    }else{
+                        Mouse.setCursorPosition(512,512);
+                        consoleMouseStart = new Vector3f(mouseX,mouseY,0);
+                    }
                     consoleIsEnabled = !consoleIsEnabled;
                 }else{
                     if(consoleIsEnabled){

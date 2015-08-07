@@ -84,7 +84,7 @@ public class MovementThread implements Runnable {
                     (GameInputs.isDraggingRight ? new Vector3f(0,amount,0) : new Vector3f(amount,0,0)) :
                     (GameInputs.isDraggingRight ? new Vector3f(0,0,amount) : new Vector3f(0,0,0));
 
-        if(GameScene.selectedObj!=null && (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_LSHIFT))){
+        if(GameScene.selectedObj!=null && (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_SPACE))){
             GameScene.selectedObj.shiftPos(dragVector);
             GameScene.selectObj(GameScene.selectedObj); //reset bounding box etc
         }
@@ -99,7 +99,7 @@ public class MovementThread implements Runnable {
         if(GameInputs.consoleIsEnabled)return; //skip rest of function if console is open
         Vector3f poi = GameScene.poi;
 
-        float speedScale = 30f;
+        float speedScale = 80f;
 
         float speed = dt*speedScale;
         if(GameInputs.TURBO){speed*=5;}
